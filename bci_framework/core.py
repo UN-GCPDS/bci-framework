@@ -71,9 +71,12 @@ class BCIFramework(QtWidgets.QMainWindow):
 
         # self.threadpool = QtCore.QThreadPool()
 
-        self.main.actionDevelopment.triggered.connect(lambda evt: self.show_interface('Development'))
-        self.main.actionVisualizations.triggered.connect(lambda evt: self.show_interface('Visualizations'))
-        self.main.actionStimulus_delivery.triggered.connect(lambda evt: self.show_interface('Stimulus_delivery'))
+        self.main.actionDevelopment.triggered.connect(
+            lambda evt: self.show_interface('Development'))
+        self.main.actionVisualizations.triggered.connect(
+            lambda evt: self.show_interface('Visualizations'))
+        self.main.actionStimulus_delivery.triggered.connect(
+            lambda evt: self.show_interface('Stimulus_delivery'))
         # self.main.actionSandbox.triggered.connect(lambda evt: self.show_interface('Sandbox'))
 
         # self.main.actionOpen_project.triggered.connect(self.open_project)
@@ -110,10 +113,10 @@ class BCIFramework(QtWidgets.QMainWindow):
 
         # self.set_time_labels()
 
-        self.montage = Montage(self.main)
+        self.connection = Connection(self)
+        self.montage = Montage(self)
         self.projects = Projects(self.main, self)
         self.development = Development(self.main, self)
-        self.connection = Connection(self.main, self)
         self.visualization = Visualization(self.main, self)
         self.records = Records(self.main, self)
 
@@ -138,7 +141,8 @@ class BCIFramework(QtWidgets.QMainWindow):
 
     def show_interface(self, interface):
         """"""
-        self.main.stackedWidget_modes.setCurrentWidget(getattr(self.main, f"page{interface}"))
+        self.main.stackedWidget_modes.setCurrentWidget(
+            getattr(self.main, f"page{interface}"))
         for action in self.main.toolBar_environs.actions():
             action.setChecked(False)
 

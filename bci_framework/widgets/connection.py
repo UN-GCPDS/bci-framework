@@ -1,41 +1,70 @@
 import json
 
 from openbci_stream.acquisition import Cyton, CytonBase
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import QTimer
-from PySide2.QtGui import QMovie
+# from ..config_manager import C
+# from PySide2.QtUiTools import QUiLoader
+# from PySide2.QtCore import QTimer
+# from PySide2.QtGui import QMovie
 
 import os
 
+
 ########################################################################
-
-
 class Connection:
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, core):
+    def __init__(self, core):
         """Constructor"""
-        self.parent = parent
+        self.parent = core.main
         self.core = core
 
         # self.parent.pushButton_disconnect.hide()
 
+        self.config = {
+            'mode': self.parent.comboBox_connection_mode,
+            'port': self.parent.comboBox_port,
+            'ip': self.parent.comboBox_ip,
+            'host': self.parent.comboBox_host,
+            'acquisition_sample_rate': self.parent.comboBox_sample_rate,
+            'streaming_sample_rate': self.parent.comboBox_streaming_sample_rate,
+            'boardmode': self.parent.comboBox_boardmode,
+            'gain': self.parent.comboBox_gain,
+            'input_type': self.parent.comboBox_input_type,
+            'bias': self.parent.comboBox_bias,
+            'srb1': self.parent.comboBox_srb1,
+            'srb2': self.parent.comboBox_srb2,
+            'pchan': self.parent.comboBox_pchan,
+            'nchan': self.parent.comboBox_nchan,
+            'test_signal_type': self.parent.comboBox_test_signal,
+            'test_signal': self.parent.checkBox_test_signal,
+
+        }
+
         self.update_connections()
         self.update_environ()
+        self.load_config()
         self.connect()
+        self.core.config.connect_widgets(self.update_config, self.config)
 
     # ----------------------------------------------------------------------
+    def load_config(self):
+        """"""
+        self.core.config.load_widgets('connection', self.config)
 
+    # ----------------------------------------------------------------------
+    def update_config(self, *args, **kwargs):
+        """"""
+        self.core.config.save_widgets('connection', self.config)
+
+    # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        # self.parent.pushButton_connect.clicked.connect(self.show_dialog_connection)
         self.parent.pushButton_connect.clicked.connect(self.openbci_connect)
-        # self.parent.pushButton_disconnect.clicked.connect(self.openbci_disconnect)
-        self.parent.comboBox_connection_mode.activated.connect(self.update_connections)
+        self.parent.comboBox_connection_mode.activated.connect(
+            self.update_connections)
 
     # ----------------------------------------------------------------------
-
     def update_connections(self):
         """"""
         if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
@@ -135,7 +164,8 @@ class Connection:
         # import time
         # self.dialog_conection.label_laptop.setEnabled(True)
 
-        self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False, daisy=daisy, montage=channels, stream_samples=int(streaming_sample_rate))
+        self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
+                             daisy=daisy, montage=channels, stream_samples=int(streaming_sample_rate))
         # self.dialog_conection.plainTextEdit.insertPlainText("\nCalling Cyton")
 
         self.openbci.command(sample_rate)
@@ -167,7 +197,8 @@ class Connection:
     # ----------------------------------------------------------------------
     def update_environ(self):
         """"""
-        os.environ['BCISTREAM_HOST'] = json.dumps(self.parent.comboBox_host.currentText())
+        os.environ['BCISTREAM_HOST'] = json.dumps(
+            self.parent.comboBox_host.currentText())
 
         sps = self.parent.comboBox_sample_rate.currentText()
         if 'k' in sps.lower():
