@@ -294,7 +294,6 @@ class Montage:
         return {i: ch.currentText() for i, ch in enumerate((self.channels_names_widgets)) if ch.currentText() != 'Off'}
 
     # ----------------------------------------------------------------------
-
     def update_environ(self):
         """"""
         os.environ['BCISTREAM_MONTAGE'] = json.dumps(self.get_montage())

@@ -100,9 +100,11 @@ class LoadPreview:
         """"""
         try:
             try:
-                mode = request.urlopen(f'http://localhost:{self.port}/mode', timeout=0.5).read()
+                mode = request.urlopen(
+                    f'http://localhost:{self.port}/mode', timeout=5).read()
             except:
-                mode = request.urlopen(f'http://localhost:5000/mode', timeout=0.5).read()
+                mode = request.urlopen(
+                    f'http://localhost:5000/mode', timeout=5).read()
 
             if mode == b'visualization':
                 self.parent.label_stream.show()
@@ -130,7 +132,8 @@ class LoadPreview:
         """"""
         if not hasattr(self, 'stream'):
             try:
-                self.stream = request.urlopen(f'http://localhost:{self.port}/', timeout=0.5)
+                self.stream = request.urlopen(
+                    f'http://localhost:{self.port}/', timeout=5)
                 self.data_stream = b''
             except:
                 pass
@@ -140,6 +143,7 @@ class LoadPreview:
         try:
             q = self.stream.read(100000)
         except:  # socket.timeout: timed out
+        # except socket.timeout:
             self.timer.singleShot(1000 / 30, self.display_video_stream)
             return
         self.data_stream += q
@@ -156,7 +160,8 @@ class LoadPreview:
             qp.loadFromData(frame[37:-2])
 
             try:
-                self.parent.label_stream.setPixmap(qp.scaled(*self.parent.label_stream.size().toTuple(), Qt.KeepAspectRatio))
+                self.parent.label_stream.setPixmap(
+                    qp.scaled(*self.parent.label_stream.size().toTuple(), Qt.KeepAspectRatio))
             except RuntimeError:
                 pass
 

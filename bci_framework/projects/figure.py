@@ -1,5 +1,6 @@
 from threading import Thread
 from multiprocessing import Process
+
 import time
 import threading
 import logging
@@ -22,14 +23,14 @@ import numpy as np
 
 pyplot.style.use('dark_background')
 q = matplotlib.cm.get_cmap('tab20')
-matplotlib.rcParams['axes.prop_cycle'] = cycler(color=[q(m) for m in np.linspace(0, 1, 16)])
+matplotlib.rcParams['axes.prop_cycle'] = cycler(
+    color=[q(m) for m in np.linspace(0, 1, 16)])
 matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
 matplotlib.rcParams['font.size'] = 15
 
 
 # ----------------------------------------------------------------------
-
 def subprocess_this(fn):
     """"""
 
@@ -132,7 +133,8 @@ class FigureStream(Figure):
         else:
             port = '5000'
 
-        threading.Thread(target=app.run, kwargs={'host': '0.0.0.0', 'port': port, 'threaded': True}).start()
+        Thread(target=app.run, kwargs={
+            'host': '0.0.0.0', 'port': port, 'threaded': True}).start()
 
     # ----------------------------------------------------------------------
     def __mode(self):
@@ -193,7 +195,7 @@ class FigureStream(Figure):
             self.__class_attr['last_access'] = time.time()
 
             # start background frame thread
-            self.__class_attr['thread'] = threading.Thread(target=self._thread)
+            self.__class_attr['thread'] = Thread(target=self._thread)
             self.__class_attr['thread'].start()
 
             # wait until frames are available

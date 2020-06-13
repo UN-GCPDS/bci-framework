@@ -8,16 +8,10 @@
     <file>icons/bci/file.svg</file>
     <file>icons/bci/icon_viz.svg</file>
     <file>icons/bci/icon_dev.svg</file>
-    <file>icons/bci/laptop.svg</file>
-    <file>icons/bci/cyton.svg</file>
-    <file>icons/bci/connecting.gif</file>
     <file>icons/bci/icon_sti.svg</file>
     <file>icons/bci/imagery.svg</file>
     <file>icons/bci/logo.svg</file>
-    <file>icons/bci/play.svg</file>
-    <file>icons/bci/record.svg</file>
     <file>icons/bci/splash.svg</file>
-    <file>icons/bci/stop.svg</file>
   </qresource>
   <qresource prefix="/">
     <file>icons/icons-dark/places/22/certificate-server.svg</file>

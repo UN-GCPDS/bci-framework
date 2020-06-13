@@ -56,7 +56,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 
     keywords = [
         '__name__', 'format', 'int', 'float', 'str', 'list', 'tuple', 'dict',
-        'set'
+        'set', 'len', 'super', 'range',
     ]
 
     # Python operators
@@ -89,10 +89,14 @@ class PythonHighlighter(QSyntaxHighlighter):
         rules = []
 
         # Keyword, operator, and brace rules
-        rules += [(r'\b%s\b' % w, 0, STYLES['keyword']) for w in PythonHighlighter.keywords_bold]
-        rules += [(r'%s' % w, 0, STYLES['keyword2']) for w in PythonHighlighter.keywords]
-        rules += [(r'%s' % o, 0, STYLES['operator']) for o in PythonHighlighter.operators]
-        rules += [(r'%s' % b, 0, STYLES['brace']) for b in PythonHighlighter.braces]
+        rules += [(r'\b%s\b' % w, 0, STYLES['keyword'])
+                  for w in PythonHighlighter.keywords_bold]
+        rules += [(r'%s' % w, 0, STYLES['keyword2'])
+                  for w in PythonHighlighter.keywords]
+        rules += [(r'%s' % o, 0, STYLES['operator'])
+                  for o in PythonHighlighter.operators]
+        rules += [(r'%s' % b, 0, STYLES['brace'])
+                  for b in PythonHighlighter.braces]
 
         rules += [(r'( )', 0, format('#4f5b62'))]
 
@@ -115,7 +119,8 @@ class PythonHighlighter(QSyntaxHighlighter):
             # Numeric literals
             (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
             (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, STYLES['numbers']),
-            (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b', 0, STYLES['numbers']),
+            (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b',
+             0, STYLES['numbers']),
 
             # From '#' until a newline
             # (r'(^"){1}(#\s*[^\n]*)(^"){1}', 1, STYLES['comment']),

@@ -33,9 +33,10 @@ class VisualizationWidget(QMdiSubWindow):
         # plot = MatplotlibWidget()
         self.setWidget(self.main)
 
-        self.main.setStyleSheet("""
+        # self.main.Form /
 
-        .QWidget {
+        self.main.setStyleSheet("""
+        QWidget.main_frame {
             border: 2px solid #263238;
         }
         """)
@@ -46,9 +47,11 @@ class VisualizationWidget(QMdiSubWindow):
         """"""
         menu = QMenu(self)
 
-        menu.addAction(QAction(QIcon.fromTheme('dialog-cancel'), "Remove", self, triggered=self.remove))
+        menu.addAction(QAction(QIcon.fromTheme('dialog-cancel'),
+                               "Remove", self, triggered=self.remove))
         if self.current_viz:
-            menu.addAction(QAction(QIcon.fromTheme('view-refresh'), "Reload", self, triggered=self.reload))
+            menu.addAction(QAction(QIcon.fromTheme('view-refresh'),
+                                   "Reload", self, triggered=self.reload))
 
         menu.exec_(event.globalPos())
 
@@ -72,10 +75,12 @@ class VisualizationWidget(QMdiSubWindow):
 
     def update_visualizations_list(self):
         """"""
-        projects = [self.parent.listWidget_projects.item(i).text() for i in range(self.parent.listWidget_projects.count())]
+        projects = [self.parent.listWidget_projects.item(
+            i).text() for i in range(self.parent.listWidget_projects.count())]
         for name in projects:
             self.main.comboBox_visualizations.addItem(name)
-        self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(self.main.comboBox_visualizations.currentText()))
+        self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(
+            self.main.comboBox_visualizations.currentText()))
 
     # ----------------------------------------------------------------------
 
@@ -83,7 +88,8 @@ class VisualizationWidget(QMdiSubWindow):
         """"""
         self.current_viz = visualization
         module = os.path.join('default_projects', visualization, visualization)
-        self.preview_stream = LoadPreview(self.main, f'{module}.py', debug=False)
+        self.preview_stream = LoadPreview(
+            self.main, f'{module}.py', debug=False)
         self.main.comboBox_visualizations.hide()
         self.main.pushButton_execute.hide()
         self.main.label_stream.show()

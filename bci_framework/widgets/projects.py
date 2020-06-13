@@ -24,7 +24,8 @@ class Projects:
         self.parent = parent
         self.core = core
 
-        self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects"))
+        self.parent.stackedWidget_projects.setCurrentWidget(
+            getattr(self.parent, "page_projects"))
 
         self.load_projects()
         self.connect()
@@ -32,19 +33,27 @@ class Projects:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent.pushButton_projects.clicked.connect(lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects")))
+        self.parent.pushButton_projects.clicked.connect(
+            lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects")))
         # self.parent.pushButton_files.clicked.connect(lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects_files")))
-        self.parent.listWidget_projects.itemDoubleClicked.connect(lambda evt: self.open_project(evt.text()))
-        self.parent.listWidget_projects.itemChanged.connect(self.project_renamed)
+        self.parent.listWidget_projects.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.text()))
+        self.parent.listWidget_projects.itemChanged.connect(
+            self.project_renamed)
 
-        self.parent.treeWidget_project.itemDoubleClicked.connect(self.open_script)
-        self.parent.treeWidget_project.itemChanged.connect(self.project_file_renamed)
+        self.parent.treeWidget_project.itemDoubleClicked.connect(
+            self.open_script)
+        self.parent.treeWidget_project.itemChanged.connect(
+            self.project_file_renamed)
         self.parent.pushButton_projects_add_file.clicked.connect(self.add_file)
-        self.parent.pushButton_projects_add_folder.clicked.connect(self.add_folder)
+        self.parent.pushButton_projects_add_folder.clicked.connect(
+            self.add_folder)
         self.parent.pushButton_projects_remove.clicked.connect(self.remove)
 
-        self.parent.pushButton_add_project.clicked.connect(self.show_create_project_dialog)
-        self.parent.pushButton_remove_project.clicked.connect(self.remove_project)
+        self.parent.pushButton_add_project.clicked.connect(
+            self.show_create_project_dialog)
+        self.parent.pushButton_remove_project.clicked.connect(
+            self.remove_project)
 
         self.parent.tabWidget_project.tabCloseRequested.connect(self.close_tab)
         self.parent.tabWidget_project.currentChanged.connect(self.tab_changed)
@@ -52,8 +61,8 @@ class Projects:
     # ----------------------------------------------------------------------
     def tab_changed(self, index):
         """"""
-        editor = self.parent.tabWidget_project.widget(index)
-        editor.update_linenumber()
+        if editor := self.parent.tabWidget_project.widget(index):
+            editor.update_linenumber()
 
     # ----------------------------------------------------------------------
     def open_script(self, item):
@@ -72,13 +81,15 @@ class Projects:
 
         projects = os.listdir('default_projects')
 
-        projects = filter(lambda f: os.path.isdir(os.path.join('default_projects', f)), projects)
+        projects = filter(lambda f: os.path.isdir(
+            os.path.join('default_projects', f)), projects)
         projects = filter(lambda f: not f.startswith('__'), projects)
 
         for project in projects:
 
             item = QListWidgetItem(self.parent.listWidget_projects)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -95,7 +106,8 @@ class Projects:
                         break
 
             icon = QIcon()
-            icon.addFile(f":/bci/icons/bci/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
+            icon.addFile(
+                f":/bci/icons/bci/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
             item.setIcon(icon)
 
     # ----------------------------------------------------------------------
@@ -103,7 +115,8 @@ class Projects:
         """"""
         global files_count, dir_count, project_name_
 
-        self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects_files"))
+        self.parent.stackedWidget_projects.setCurrentWidget(
+            getattr(self.parent, "page_projects_files"))
 
         path = os.path.join('default_projects', project_name)
 
@@ -127,8 +140,10 @@ class Projects:
 
             # for file in os.listdir(path):
 
-            files = sorted(filter(lambda f: os.path.isfile(os.path.join(path, f)), os.listdir(path)))
-            dirs = sorted(filter(lambda f: os.path.isdir(os.path.join(path, f)), os.listdir(path)))
+            files = sorted(filter(lambda f: os.path.isfile(
+                os.path.join(path, f)), os.listdir(path)))
+            dirs = sorted(filter(lambda f: os.path.isdir(
+                os.path.join(path, f)), os.listdir(path)))
 
             # print(dirs)
             # print(files)
@@ -156,7 +171,8 @@ class Projects:
                     self.open_script(tree)
                     # open_item = tree
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -165,7 +181,8 @@ class Projects:
         add_leaves(parent, path)
         parent.sortItems(0, Qt.AscendingOrder)
         parent.path = path
-        parent.setHeaderLabel(f"{os.path.split(path)[1]} [{files_count} files / {dir_count} dirs]")
+        parent.setHeaderLabel(
+            f"{os.path.split(path)[1]} [{files_count} files / {dir_count} dirs]")
 
         # if open_item:
             # self.open_script(open_item)
@@ -174,7 +191,8 @@ class Projects:
     def load_scripts(self):
         """"""
         projects = os.listdir('default_projects')
-        projects = filter(lambda d: os.path.isdir(os.path.join('default_projects', d)) and os.path.isfile(os.path.join('default_projects', d, f"{d}.py")), projects)
+        projects = filter(lambda d: os.path.isdir(os.path.join('default_projects', d)) and os.path.isfile(
+            os.path.join('default_projects', d, f"{d}.py")), projects)
 
         self.available_scripts = {'visualization': {},
                                   'stimuli': {},
@@ -189,7 +207,8 @@ class Projects:
                 if mode := module.SCRIPT.get('mode', False):
 
                     name = module.SCRIPT.get('name', 'NO NAME')
-                    self.available_scripts[mode][name] = path  # os.path.join(*scripts, file)
+                    # os.path.join(*scripts, file)
+                    self.available_scripts[mode][name] = path
 
     # ----------------------------------------------------------------------
     def show_script_in_textedit(self, module):
@@ -203,17 +222,21 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_script_in_textedit(self, module):
         """"""
-        editor = BCIEditor(linenumber=self.parent.textEdit_linenumber, extension=os.path.splitext(module)[1])
+        editor = BCIEditor(linenumber=self.parent.textEdit_linenumber,
+                           extension=os.path.splitext(module)[1])
 
-        tab = self.parent.tabWidget_project.addTab(editor, os.path.split(module)[1])
-        self.parent.tabWidget_project.widget(tab).setContentsMargins(0, 0, 0, 0)
+        tab = self.parent.tabWidget_project.addTab(
+            editor, os.path.split(module)[1])
+        self.parent.tabWidget_project.widget(
+            tab).setContentsMargins(0, 0, 0, 0)
         self.parent.tabWidget_project.widget(tab).editor = editor
         with open(module, 'r') as file:
             editor.setPlainText(file.read())
             editor.path = module
             editor.module = module
 
-            editor.textChanged.connect(lambda: self.parent.tabWidget_project.setTabText(tab, f"{self.parent.tabWidget_project.tabText(tab).strip('*')}*"))
+            editor.textChanged.connect(lambda: self.parent.tabWidget_project.setTabText(
+                tab, f"{self.parent.tabWidget_project.tabText(tab).strip('*')}*"))
 
     # ----------------------------------------------------------------------
 
@@ -225,8 +248,10 @@ class Projects:
                                                                                                       project.radioButton_visualization.isChecked(),
                                                                                                       project.radioButton_stimulus_delivery.isChecked()))
 
-        project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(lambda evt: project.destroy())
-        project.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(lambda evt: project.destroy())
+        project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
+            lambda evt: project.destroy())
+        project.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(
+            lambda evt: project.destroy())
 
         project.lineEdit_project_name.textChanged.connect(lambda str_:
                                                           project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
@@ -240,12 +265,14 @@ class Projects:
         """"""
 
         item = QListWidgetItem(self.parent.listWidget_projects)
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
         icon = QIcon()
-        icon.addFile(u":/bci/icons/bci/icon_sti.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/bci/icons/bci/icon_sti.svg",
+                     QSize(), QIcon.Normal, QIcon.Off)
         item.setIcon(icon)
 
         os.mkdir(os.path.join('default_projects', project_name))
@@ -267,7 +294,8 @@ class Projects:
         if selected := self.parent.treeWidget_project.currentItem():
             path = selected.path
         else:
-            path = os.path.join('default_projects', self.parent.treeWidget_project.project_name)
+            path = os.path.join('default_projects',
+                                self.parent.treeWidget_project.project_name)
 
         if os.path.isfile(path):
             path = os.path.dirname(path)
@@ -292,7 +320,8 @@ class Projects:
         if selected := self.parent.treeWidget_project.currentItem():
             path = selected.path
         else:
-            path = os.path.join('default_projects', self.parent.treeWidget_project.project_name)
+            path = os.path.join('default_projects',
+                                self.parent.treeWidget_project.project_name)
 
         if os.path.isfile(path):
             path = os.path.dirname(path)
@@ -329,8 +358,10 @@ class Projects:
         """"""
         if hasattr(evt, 'previous_name'):
             if evt.previous_name != evt.text():
-                shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join('default_projects', evt.previous_name, f"{evt.text()}.py"))
-                shutil.move(os.path.join('default_projects', evt.previous_name), os.path.join('default_projects', evt.text()))
+                shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join(
+                    'default_projects', evt.previous_name, f"{evt.text()}.py"))
+                shutil.move(os.path.join('default_projects', evt.previous_name), os.path.join(
+                    'default_projects', evt.text()))
                 evt.previous_name == evt.text()
 
     # ----------------------------------------------------------------------
@@ -338,18 +369,21 @@ class Projects:
         """"""
         if hasattr(evt, 'previous_name'):
             if evt.previous_name != evt.text(0):
-                new_path = os.path.join(os.path.split(evt.path)[0], evt.text(0))
+                new_path = os.path.join(
+                    os.path.split(evt.path)[0], evt.text(0))
                 shutil.move(evt.path, new_path)
 
                 if evt.path in self.project_files:
                     for i in range(self.parent.tabWidget_project.count()):
                         editor = self.parent.tabWidget_project.widget(i)
                         if editor.path == evt.path:
-                            self.parent.tabWidget_project.setTabText(i, evt.text(0))
+                            self.parent.tabWidget_project.setTabText(
+                                i, evt.text(0))
                             editor.path = new_path
                             break
 
-                    self.project_files[self.project_files.index(evt.path)] = new_path
+                    self.project_files[self.project_files.index(
+                        evt.path)] = new_path
 
                 evt.previous_name = evt.text(0)
                 evt.path = new_path
@@ -359,7 +393,8 @@ class Projects:
         """"""
         if isinstance(evt, (int, float)):
             editor_closed = self.parent.tabWidget_project.widget(evt)
-            self.project_files.pop(self.project_files.index(editor_closed.path))
+            self.project_files.pop(
+                self.project_files.index(editor_closed.path))
             self.parent.tabWidget_project.removeTab(evt)
 
         elif isinstance(evt, (str,)):
