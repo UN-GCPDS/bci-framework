@@ -109,6 +109,7 @@ class Projects:
             icon.addFile(
                 f":/bci/icons/bci/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
             item.setIcon(icon)
+            item.icon_name = icon_name
 
     # ----------------------------------------------------------------------
     def open_project(self, project_name):
@@ -260,7 +261,6 @@ class Projects:
         project.show()
 
     # ----------------------------------------------------------------------
-
     def create_project(self, project_name, visualization, stimulus):
         """"""
 
@@ -271,16 +271,25 @@ class Projects:
         item.previous_name = project_name
 
         icon = QIcon()
-        icon.addFile(u":/bci/icons/bci/icon_sti.svg",
+        icon_name = 'icon_sti'
+
+        if visualization:
+            icon_name = 'icon_viz'
+        elif stimulus:
+            icon_name = 'icon_sti'
+        else:
+            icon_name = 'icon_dev'
+
+        icon.addFile(f":/bci/icons/bci/{icon_name}.svg",
                      QSize(), QIcon.Normal, QIcon.Off)
         item.setIcon(icon)
+        item.icon_name = icon_name
 
         os.mkdir(os.path.join('default_projects', project_name))
         with open(os.path.join('default_projects', project_name, f'{project_name}.py'), 'wb') as file:
             file.write(b'')
 
     # ----------------------------------------------------------------------
-
     def remove_project(self, evt):
         """"""
 
