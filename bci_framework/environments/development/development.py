@@ -5,7 +5,7 @@ import os
 from PySide2.QtCore import QTimer, Qt
 from PySide2.QtGui import QTextCursor
 
-from bci_framework.widgets.preview import LoadPreview
+from bci_framework.subprocess_script import LoadSubprocess
 
 
 # from PySide2.QtWebEngineWidgets import QWebEngineView
@@ -106,7 +106,8 @@ class Development:
         self.parent.pushButton_stop_preview.show()
         self.parent.pushButton_script_preview.hide()
 
-        self.preview_stream = LoadPreview(self.parent, f'{module}.py', debug=True)
+        self.preview_stream = LoadSubprocess(
+            self.parent, f'{module}.py', debug=True)
         self.timer.singleShot(100, self.update_log)
         self.show_preview()
 
@@ -124,7 +125,8 @@ class Development:
         """"""
         if line := self.preview_stream.stdout.readline(timeout=0.01):
             self.parent.plainTextEdit_preview_log.moveCursor(QTextCursor.End)
-            self.parent.plainTextEdit_preview_log.insertPlainText(line.decode())
+            self.parent.plainTextEdit_preview_log.insertPlainText(
+                line.decode())
         self.timer.singleShot(1000 / 60, self.update_log)
 
     # ----------------------------------------------------------------------

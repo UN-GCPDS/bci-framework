@@ -1,5 +1,5 @@
 from PySide2.QtUiTools import QUiLoader
-from PySide2 import QtGui, QtCore, QtWidgets
+from PySide2 import QtCore
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -9,11 +9,10 @@ from PySide2.QtCore import *
 import os
 
 
-from bci_framework.widgets.preview import LoadPreview
+from bci_framework.subprocess_script import LoadSubprocess
+
 
 ########################################################################
-
-
 class VisualizationWidget(QMdiSubWindow):
     """"""
 
@@ -42,7 +41,6 @@ class VisualizationWidget(QMdiSubWindow):
         """)
 
     # ----------------------------------------------------------------------
-
     def contextMenuEvent(self, event):
         """"""
         menu = QMenu(self)
@@ -72,13 +70,13 @@ class VisualizationWidget(QMdiSubWindow):
             self.load_visualization(self.current_viz)
 
     # ----------------------------------------------------------------------
-
     def update_visualizations_list(self):
         """"""
-        projects = [self.parent.listWidget_projects.item(
-            i).text() for i in range(self.parent.listWidget_projects.count())]
-        for name in projects:
-            self.main.comboBox_visualizations.addItem(name)
+        for i in range(self.parent.listWidget_projects.count()):
+            item = self.parent.listWidget_projects.item(i)
+            if item.icon_name == 'icon_viz':
+                self.main.comboBox_visualizations.addItem(item.text())
+
         self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(
             self.main.comboBox_visualizations.currentText()))
 
@@ -88,7 +86,7 @@ class VisualizationWidget(QMdiSubWindow):
         """"""
         self.current_viz = visualization
         module = os.path.join('default_projects', visualization, visualization)
-        self.preview_stream = LoadPreview(
+        self.preview_stream = LoadSubprocess(
             self.main, f'{module}.py', debug=False)
         self.main.comboBox_visualizations.hide()
         self.main.pushButton_execute.hide()
