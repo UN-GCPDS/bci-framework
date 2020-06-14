@@ -335,7 +335,7 @@ p, li { white-space: pre-wrap; }
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::AllDockWidgetAreas</set>
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Global settings</string>
@@ -962,6 +962,22 @@ p, li { white-space: pre-wrap; }
                  <string>Test signal</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>15</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item>
                <widget class="QComboBox" name="comboBox_test_signal">
