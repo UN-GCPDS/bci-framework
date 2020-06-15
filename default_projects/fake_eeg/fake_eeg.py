@@ -27,8 +27,6 @@ class Stream(FigureStream):
         self.axis = self.add_subplot(1, 1, 1)
         self.lines = [self.axis.plot(
             [0] * prop.SAMPLE_RATE, [0] * prop.SAMPLE_RATE, '-')[0] for i in range(self.channels)]
-            
-        
 
         # self.axis.set_xlim(-self.T, 0)
         # self.axis.set_ylim(0, self.channels)
@@ -57,7 +55,6 @@ class Stream(FigureStream):
         self.axis.set_xlim(-self.T, 0)
         self.axis.set_ylim(0, self.channels)
         self.axis.set_yticklabels(prop.MONTAGE.values())
-
 
 
 if __name__ == '__main__':
