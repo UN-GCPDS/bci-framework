@@ -1,13 +1,9 @@
-from PySide2.QtUiTools import QUiLoader
-from PySide2 import QtCore
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-
-# from PySide2.QtCore import QTimer
-
 import os
 
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtGui import QIcon
+from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction
+from PySide2.QtCore import QTimer, Qt
 
 from bci_framework.subprocess_script import LoadSubprocess
 
@@ -22,13 +18,13 @@ class VisualizationWidget(QMdiSubWindow):
         super().__init__(*args, **kwargs)
 
         self.main = QUiLoader().load('bci_framework/qtgui/visualization_widget.ui', self)
-        self.main.label_stream.hide()
+        # self.main.label_stream.hide()
         self.parent = parent
         self.current_viz = None
 
         # self.timer = QTimer()
 
-        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlag(Qt.FramelessWindowHint)
         # plot = MatplotlibWidget()
         self.setWidget(self.main)
 
@@ -81,7 +77,6 @@ class VisualizationWidget(QMdiSubWindow):
             self.main.comboBox_visualizations.currentText()))
 
     # ----------------------------------------------------------------------
-
     def load_visualization(self, visualization):
         """"""
         self.current_viz = visualization
@@ -90,7 +85,7 @@ class VisualizationWidget(QMdiSubWindow):
             self.main, f'{module}.py', debug=False)
         self.main.comboBox_visualizations.hide()
         self.main.pushButton_execute.hide()
-        self.main.label_stream.show()
+        # self.main.label_stream.show()
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
