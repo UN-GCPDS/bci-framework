@@ -32,6 +32,7 @@ class Development:
         self.save_all_files()
         self.build_linenumber()
 
+        self.check_tabs()
         # self.parent.web_engine = QWebEngineView()
         # self.parent.gridLayout_webview.addWidget(self.parent.web_engine)
 
@@ -66,6 +67,19 @@ class Development:
             self.run_preview)
         self.parent.pushButton_stop_preview.clicked.connect(
             self.stop_preview)
+        self.parent.tabWidget_project.currentChanged.connect(self.check_tabs)
+
+    # ----------------------------------------------------------------------
+    def check_tabs(self, event=None):
+        """"""
+        if self.parent.tabWidget_project.count():
+            self.parent.tabWidget_project.show()
+            self.parent.textEdit_linenumber.show()
+            self.parent.widget_new_project.hide()
+        else:
+            self.parent.tabWidget_project.hide()
+            self.parent.textEdit_linenumber.hide()
+            self.parent.widget_new_project.show()
 
     # ----------------------------------------------------------------------
     def hide_preview(self):
