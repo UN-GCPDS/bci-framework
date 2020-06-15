@@ -14,6 +14,7 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
 
 while True:
 
+    t0 = time.time()
     data = {'context': 'context',
             'data': np.random.normal(0, 0.8, size=(16, 1000)),
             'binary_created': datetime.now().timestamp(),
@@ -22,5 +23,8 @@ while True:
             }
 
     producer.send('eeg', data)
-    time.sleep(1)
+
+    while time.time() < (t0 + 1):
+        time.sleep(0.01)
+
     print('.')
