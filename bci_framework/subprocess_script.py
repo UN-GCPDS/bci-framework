@@ -1,7 +1,6 @@
 """
 """
 
-
 import os
 import sys
 import socket
@@ -10,8 +9,7 @@ import subprocess
 from urllib import request
 from contextlib import closing
 
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtGui import QPixmap
+from PySide2.QtCore import QTimer
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 from bci_framework.environments.development.nbstreamreader import NonBlockingStreamReader as NBSR
@@ -71,7 +69,6 @@ class LoadSubprocess:
         """"""
         self.timer = QTimer()
         self.port = self.get_free_port()
-        # print(self.port)
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
 
@@ -91,15 +88,13 @@ class LoadSubprocess:
                     f'http://localhost:5000/mode', timeout=5).read()
 
             if mode == b'visualization':
-                self.parent.label_stream.show()
-                self.parent.widget_development_webview.hide()
-                self.load_visualization()
+                self.parent.widget_development_webview.show()
+                self.load_webview(f'http://localhost:{self.port}')
             elif mode == b'stimuli':
-                self.parent.label_stream.hide()
                 self.parent.widget_development_webview.show()
                 self.load_webview(f'http://localhost:5000/development')
         except:
-            self.timer.singleShot(1000 / 30, self.get_mode)
+            self.timer.singleShot(1000 / self.fps, self.get_mode)
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
@@ -110,46 +105,6 @@ class LoadSubprocess:
 
         if hasattr(self.parent, 'web_engine'):
             self.parent.web_engine.setUrl('about:blank')
-
-    # ----------------------------------------------------------------------
-    def load_visualization(self):
-        """"""
-        if not hasattr(self, 'stream'):
-            try:
-                self.stream = request.urlopen(
-                    f'http://localhost:{self.port}/', timeout=5)
-                self.data_stream = b''
-            except:
-                pass
-            self.timer.singleShot(1000 / 30, self.load_visualization)
-            return
-
-        try:
-            q = self.stream.read(100000)
-        except:  # socket.timeout: timed out
-        # except socket.timeout:
-            self.timer.singleShot(1000 / 30, self.load_visualization)
-            return
-        self.data_stream += q
-
-        if self.data_stream.count(b'--frame') >= 2:
-            start = self.data_stream.find(b'--frame')
-            end = self.data_stream.find(b'--frame', start + 1)
-
-            frame = self.data_stream[start:end]
-
-            self.data_stream = self.data_stream[end:]
-
-            qp = QPixmap()
-            qp.loadFromData(frame[37:-2])
-
-            try:
-                self.parent.label_stream.setPixmap(
-                    qp.scaled(*self.parent.label_stream.size().toTuple(), Qt.KeepAspectRatio))
-            except RuntimeError:
-                pass
-
-        self.timer.singleShot(1000 / 30, self.load_visualization)
 
     # ----------------------------------------------------------------------
     def load_webview(self, url):
@@ -178,5 +133,5 @@ class LoadSubprocess:
             s.bind(('', 0))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             port = str(s.getsockname()[1])
-            logging.info(f'Free port found in {port}')
+            logging.warning(f'Free port found in {port}')
             return port
