@@ -94,7 +94,7 @@ class LoadSubprocess:
                 self.parent.widget_development_webview.show()
                 self.load_webview(f'http://localhost:5000/development')
         except:
-            self.timer.singleShot(1000 / self.fps, self.get_mode)
+            self.timer.singleShot(1000 / 30, self.get_mode)
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
