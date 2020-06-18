@@ -133,6 +133,7 @@ class Development:
 
         self.parent.pushButton_stop_preview.hide()
         self.parent.pushButton_script_preview.show()
+        self.hide_preview()
 
     # ----------------------------------------------------------------------
     def update_log(self):
