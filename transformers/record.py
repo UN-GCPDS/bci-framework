@@ -52,9 +52,6 @@ class RecordTransformer:
         """"""
         self.writer.close()
 
-        with open('good.txt', 'w') as file:
-            file.write('good')
-
 
 if __name__ == '__main__':
     RecordTransformer()
