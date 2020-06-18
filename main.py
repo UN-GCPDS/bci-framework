@@ -46,6 +46,8 @@ if __name__ == "__main__":
              'success': '#17a2b8',
              }
     apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
+    # apply_stylesheet(app, theme='light_cyan_500.xml',
+                     # extra=extra, light_secondary=True)
 
     QIcon.setThemeName("icons-dark")
     # QIcon.setThemeName("breeze-dark")
