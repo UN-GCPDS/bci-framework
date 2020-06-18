@@ -37,12 +37,12 @@ class Stream(FigureStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer
+    @loop_consumer
     def stream(self, data):
         """"""
         self.T = 30
 
-        # data = data.value['data']
+        data = data.value['data']
         data = data[:, ::30]
 
         N = data.shape[1]
@@ -58,6 +58,8 @@ class Stream(FigureStream):
         self.axis.set_ylim(0, self.channels)
         self.axis.set_yticklabels(
             'Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,T5,P3,Pz,P4,T6,O1,Oz,O2'.split(','))
+            
+        self.feed()
 
 
 if __name__ == '__main__':

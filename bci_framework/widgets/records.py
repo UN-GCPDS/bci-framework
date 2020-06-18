@@ -2,12 +2,15 @@ from PySide2.QtWidgets import QTableWidgetItem, QAction, QMenu
 from PySide2.QtCore import Qt, QTimer
 from openbci_stream.handlers import HDF5_Reader
 
+from kafka import KafkaProducer
+
 from PySide2.QtGui import QIcon
 
 import os
 from datetime import datetime, timedelta
 # import numpy as np
 
+import pickle
 
 from datetime import datetime
 # import time
@@ -86,7 +89,6 @@ class Records:
             self.load_records()
 
     # ----------------------------------------------------------------------
-
     def load_records(self):
         """"""
         self.parent.tableWidget_records.clear()
@@ -181,7 +183,7 @@ class Records:
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
         value = self.parent.horizontalSlider_record.value(
         ) / self.parent.horizontalSlider_record.maximum()
-        return int(seconds * value)
+        return seconds * value
 
     # ----------------------------------------------------------------------
     def update_record_time(self):
@@ -190,7 +192,8 @@ class Records:
         self.start_play = datetime.now()
 
         self.parent.label_time_current.setStyleSheet("*{font-family: 'mono'}")
-        self.parent.label_time_current.setText(str(offset))
+        self.parent.label_time_current.setText(
+            str(offset - timedelta(microseconds=offset.microseconds)))
 
     # ----------------------------------------------------------------------
     def play_signal(self, toggled):
@@ -198,15 +201,26 @@ class Records:
         self.parent.tableWidget_records.selectRow(self.current_signal)
 
         if toggled:
-            # h, m, s = self.parent.label_time_current.text().split(':')
-            # - timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+
+            self.record_reader = HDF5_Reader(os.path.join(
+                'records', f'{self.parent.label_record_name.text()}.h5'))
+
+            self.producer_eeg = KafkaProducer(bootstrap_servers=['localhost:9092'],
+                                              compression_type='gzip',
+                                              value_serializer=pickle.dumps,
+                                              )
+            self.start_streaming = 0
+
+            # self.record_reader
+
             self.start_play = datetime.now()
             self.timer = QTimer()
-            self.timer.setInterval(1000 / 1)
+            self.timer.setInterval(1000 / 4)
             self.timer.timeout.connect(self.update_timer)
             self.timer.start()
             self.parent.pushButton_play_signal.setIcon(
                 QIcon.fromTheme('media-playback-pause'))
+
         else:
 
             self.timer.stop()
@@ -218,15 +232,32 @@ class Records:
         """"""
         now = datetime.now()
         delta = now - self.start_play + timedelta(seconds=self.get_offset())
-        self.parent.label_time_current.setText(
-            str(timedelta(seconds=int(delta.total_seconds()))))
 
         h, m, s = self.parent.label_record_primary.text()[2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
 
         value = self.parent.horizontalSlider_record.maximum(
-        ) // ((seconds / delta.total_seconds()))
+        ) / ((seconds / delta.total_seconds()))
         self.parent.horizontalSlider_record.setValue(int(value))
+
+        end_streaming = (self.record_reader.eeg.shape[0] * self.parent.horizontalSlider_record.value(
+        )) / self.parent.horizontalSlider_record.maximum()
+
+        if samples := end_streaming - self.start_streaming:
+            if samples < 0:
+                samples = (4 * self.record_reader.eeg.shape[0] / 1000)
+
+            print(samples, [max([end_streaming - samples, 0]), end_streaming])
+
+            data_ = {'context': 'context',
+                     'data': self.record_reader.eeg[max([end_streaming - samples, 0]): end_streaming].T,
+                     'binary_created': datetime.now().timestamp(),
+                     'created': datetime.now().timestamp(),
+                     'samples': samples,
+                     }
+
+            self.producer_eeg.send('eeg', data_)
+            self.start_streaming = end_streaming
 
     # ----------------------------------------------------------------------
     def update_timer_record(self):
