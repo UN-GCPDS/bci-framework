@@ -24,6 +24,7 @@ class Stream(FigureStream):
 
         # self.channels = len(prop.MONTAGE)
         self.channels = 16
+        
 
         self.axis = self.add_subplot(1, 1, 1)
         self.lines = [self.axis.plot(
