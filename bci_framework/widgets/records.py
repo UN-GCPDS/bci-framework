@@ -6,7 +6,15 @@ from PySide2.QtGui import QIcon
 
 import os
 from datetime import datetime, timedelta
-import numpy as np
+# import numpy as np
+
+
+from datetime import datetime
+# import time
+import sys
+import os
+
+from bci_framework.subprocess_script import run_subprocess
 
 
 ########################################################################
@@ -30,10 +38,14 @@ class Records:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent.tableWidget_records.itemDoubleClicked.connect(self.load_file)
-        # self.parent.tableWidget_records.itemClicked.connect(lambda: None)
-        self.parent.horizontalSlider_record.valueChanged.connect(self.update_record_time)
+        self.parent.tableWidget_records.itemDoubleClicked.connect(
+            self.load_file)
+        self.parent.horizontalSlider_record.valueChanged.connect(
+            self.update_record_time)
         self.parent.pushButton_play_signal.clicked.connect(self.play_signal)
+        self.parent.pushButton_record.toggled.connect(self.record_signal)
+
+        # self.parent.tableWidget_records.itemClicked.connect(lambda: None)
         # self.parent.horizontalSlider_record.valueChanged.connect(self.update_record_time)
 
         # self.parent.tableWidget_records.customContextMenuRequested.connect(self.table_contextMenuEvent)
@@ -48,10 +60,22 @@ class Records:
     # ----------------------------------------------------------------------
     def load_records(self):
         """"""
-        row = self.parent.tableWidget_records.rowCount()
+        self.parent.tableWidget_records.clear()
+
+        # self.parent.tableWidget_records.setRowCount(0)
+        self.parent.tableWidget_records.setColumnCount(3)
+
+        self.parent.tableWidget_records.setHorizontalHeaderLabels(
+            ['Duration', 'Datetime', 'Name'])
+
+        # for i, text in enumerate():
+            # self.parent.tableWidget_records.horizontalHeaderItem(
+                # i).setText(text)
+
+        # row = self.parent.tableWidget_records.rowCount()
         records = os.listdir('records')
         for i, filename in enumerate(records):
-            self.parent.tableWidget_records.insertRow(row + i)
+            self.parent.tableWidget_records.insertRow(i)
 
             for j, value in enumerate(self.get_metadata(filename)[:3]):
 
@@ -60,9 +84,14 @@ class Records:
                 if j != (self.parent.tableWidget_records.columnCount() - 1):
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable)
 
-                self.parent.tableWidget_records.setItem(row + i, j, item)
+                self.parent.tableWidget_records.setItem(i, j, item)
+
+        # for i, text in enumerate(['Duration', 'Datetime', 'Name']):
+            # self.parent.tableWidget_records.horizontalHeaderItem(
+                # i).setText(text)
 
     # ----------------------------------------------------------------------
+
     def get_metadata(self, filename):
         """"""
         file = HDF5_Reader(os.path.join('records', filename))
@@ -87,7 +116,8 @@ class Records:
         _, mtg, electrodes = montage.split('|')
 
         electrodes = electrodes.replace(' ', '').split(',')
-        electrodes = '\n'.join([', '.join(electrodes[n:n + 8]) for n in range(0, len(electrodes), 8)])
+        electrodes = '\n'.join([', '.join(electrodes[n:n + 8])
+                                for n in range(0, len(electrodes), 8)])
 
         self.parent.label_record_name.setText(name)
         self.parent.label_record_primary.setText(f" [{duration}]")
@@ -96,10 +126,14 @@ class Records:
         self.parent.label_record_montage.setText(mtg)
 
         self.parent.label_record_name.setStyleSheet("*{font-family: 'mono'}")
-        self.parent.label_record_primary.setStyleSheet("*{font-family: 'mono'}")
-        self.parent.label_record_datetime.setStyleSheet("*{font-family: 'mono'}")
-        self.parent.label_record_channels.setStyleSheet("*{font-family: 'mono'}")
-        self.parent.label_record_montage.setStyleSheet("*{font-family: 'mono'}")
+        self.parent.label_record_primary.setStyleSheet(
+            "*{font-family: 'mono'}")
+        self.parent.label_record_datetime.setStyleSheet(
+            "*{font-family: 'mono'}")
+        self.parent.label_record_channels.setStyleSheet(
+            "*{font-family: 'mono'}")
+        self.parent.label_record_montage.setStyleSheet(
+            "*{font-family: 'mono'}")
 
         self.parent.horizontalSlider_record.setValue(0)
         self.parent.widget_record.show()
@@ -113,7 +147,8 @@ class Records:
         """"""
         h, m, s = self.parent.label_record_primary.text()[2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
-        value = self.parent.horizontalSlider_record.value() / self.parent.horizontalSlider_record.maximum()
+        value = self.parent.horizontalSlider_record.value(
+        ) / self.parent.horizontalSlider_record.maximum()
         return int(seconds * value)
 
     # ----------------------------------------------------------------------
@@ -132,27 +167,60 @@ class Records:
 
         if toggled:
             # h, m, s = self.parent.label_time_current.text().split(':')
-            self.start_play = datetime.now()  # - timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            # - timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            self.start_play = datetime.now()
             self.timer = QTimer()
             self.timer.setInterval(1000 / 1)
             self.timer.timeout.connect(self.update_timer)
             self.timer.start()
-            self.parent.pushButton_play_signal.setIcon(QIcon.fromTheme('media-playback-pause'))
+            self.parent.pushButton_play_signal.setIcon(
+                QIcon.fromTheme('media-playback-pause'))
         else:
 
             self.timer.stop()
-            self.parent.pushButton_play_signal.setIcon(QIcon.fromTheme('media-playback-start'))
+            self.parent.pushButton_play_signal.setIcon(
+                QIcon.fromTheme('media-playback-start'))
 
     # ----------------------------------------------------------------------
     def update_timer(self):
         """"""
         now = datetime.now()
         delta = now - self.start_play + timedelta(seconds=self.get_offset())
-        self.parent.label_time_current.setText(str(timedelta(seconds=int(delta.total_seconds()))))
+        self.parent.label_time_current.setText(
+            str(timedelta(seconds=int(delta.total_seconds()))))
 
         h, m, s = self.parent.label_record_primary.text()[2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
 
-        value = self.parent.horizontalSlider_record.maximum() // ((seconds / delta.total_seconds()))
+        value = self.parent.horizontalSlider_record.maximum(
+        ) // ((seconds / delta.total_seconds()))
         self.parent.horizontalSlider_record.setValue(int(value))
 
+    # ----------------------------------------------------------------------
+    def update_timer_record(self):
+        """"""
+        now = datetime.now()
+        delta = now - self.start_record
+
+        n_time = datetime.strptime(str(delta), '%H:%M:%S.%f').time()
+
+        self.parent.pushButton_record.setText(
+            f"Recording [{n_time.strftime('%H:%M:%S')}]")
+
+    # ----------------------------------------------------------------------
+    def record_signal(self, toggled):
+        """"""
+        if toggled:
+            self.start_record = datetime.now()
+            self.timer = QTimer()
+            self.timer.setInterval(1000 / 1)
+            self.timer.timeout.connect(self.update_timer_record)
+            self.timer.start()
+            self.subprocess_script = run_subprocess(
+                [sys.executable, os.path.join('transformers', 'record.py')])
+
+        else:
+            self.timer.stop()
+            self.parent.pushButton_record.setText(f"Record")
+            self.subprocess_script.terminate()
+            self.load_records()
