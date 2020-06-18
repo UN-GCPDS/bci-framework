@@ -13,6 +13,7 @@ from datetime import datetime
 # import time
 import sys
 import os
+import shutil
 
 from bci_framework.subprocess_script import run_subprocess
 
@@ -45,6 +46,12 @@ class Records:
         self.parent.pushButton_play_signal.clicked.connect(self.play_signal)
         self.parent.pushButton_record.toggled.connect(self.record_signal)
 
+        self.parent.tableWidget_records.itemChanged.connect(
+            self.record_renamed)
+
+        self.parent.pushButton_remove_record.clicked.connect(
+            self.remove_record)
+
         # self.parent.tableWidget_records.itemClicked.connect(lambda: None)
         # self.parent.horizontalSlider_record.valueChanged.connect(self.update_record_time)
 
@@ -58,11 +65,33 @@ class Records:
         # menu.exec_(event.globalPos())
 
     # ----------------------------------------------------------------------
+    def remove_record(self):
+        """"""
+        filename = self.parent.tableWidget_records.currentItem().previous_name
+        os.remove(os.path.join('records', f'{filename}.h5'))
+        self.load_records()
+
+    # ----------------------------------------------------------------------
+    def record_renamed(self, item):
+        """"""
+        if not hasattr(item, 'previous_name'):
+            return
+
+        old_name = item.previous_name
+        new_name = item.text()
+
+        if old_name != new_name:
+            shutil.move(os.path.join('records', f'{old_name}.h5'),
+                        os.path.join('records', f'{new_name}.h5'))
+            self.load_records()
+
+    # ----------------------------------------------------------------------
+
     def load_records(self):
         """"""
         self.parent.tableWidget_records.clear()
 
-        # self.parent.tableWidget_records.setRowCount(0)
+        self.parent.tableWidget_records.setRowCount(0)
         self.parent.tableWidget_records.setColumnCount(3)
 
         self.parent.tableWidget_records.setHorizontalHeaderLabels(
@@ -80,18 +109,20 @@ class Records:
             for j, value in enumerate(self.get_metadata(filename)[:3]):
 
                 item = QTableWidgetItem(value)
+                item.previous_name = value
 
                 if j != (self.parent.tableWidget_records.columnCount() - 1):
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable)
 
                 self.parent.tableWidget_records.setItem(i, j, item)
 
+        self.parent.tableWidget_records.sortByColumn(1)
+
         # for i, text in enumerate(['Duration', 'Datetime', 'Name']):
             # self.parent.tableWidget_records.horizontalHeaderItem(
                 # i).setText(text)
 
     # ----------------------------------------------------------------------
-
     def get_metadata(self, filename):
         """"""
         file = HDF5_Reader(os.path.join('records', filename))
@@ -103,7 +134,7 @@ class Records:
 
         duration = str(timedelta(seconds=samples / sample_rate))
 
-        return [duration, dtm, filename.replace('.h5', ''), header['montage']]
+        return [duration, dtm, filename.replace('.h5', ''), header['montage'], header['channels']]
 
     # ----------------------------------------------------------------------
     def load_file(self, item):
@@ -111,11 +142,12 @@ class Records:
         self.current_signal = item.row()
         name = self.parent.tableWidget_records.item(item.row(), 2).text()
 
-        duration, datetime, _, montage = self.get_metadata(f"{name}.h5")
+        duration, datetime, _, montage, electrodes = self.get_metadata(
+            f"{name}.h5")
 
-        _, mtg, electrodes = montage.split('|')
+        # _, mtg, electrodes = montage.split('|')
 
-        electrodes = electrodes.replace(' ', '').split(',')
+        electrodes = list(electrodes.values())
         electrodes = '\n'.join([', '.join(electrodes[n:n + 8])
                                 for n in range(0, len(electrodes), 8)])
 
@@ -123,7 +155,7 @@ class Records:
         self.parent.label_record_primary.setText(f" [{duration}]")
         self.parent.label_record_datetime.setText(datetime)
         self.parent.label_record_channels.setText(electrodes)
-        self.parent.label_record_montage.setText(mtg)
+        self.parent.label_record_montage.setText(montage)
 
         self.parent.label_record_name.setStyleSheet("*{font-family: 'mono'}")
         self.parent.label_record_primary.setStyleSheet(
