@@ -12,7 +12,7 @@ from contextlib import closing
 from PySide2.QtCore import QTimer
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
-from bci_framework.environments.development.nbstreamreader import NonBlockingStreamReader as NBSR
+from bci_framework.nbstreamreader import NonBlockingStreamReader as NBSR
 
 
 # ----------------------------------------------------------------------
@@ -101,7 +101,8 @@ class LoadSubprocess:
         """"""
         self.timer.stop()
         if hasattr(self, 'subprocess_script'):
-            self.subprocess_script.kill()
+            # self.subprocess_script.kill()
+            self.subprocess_script.terminate()
 
         if hasattr(self.parent, 'web_engine'):
             self.parent.web_engine.setUrl('about:blank')
