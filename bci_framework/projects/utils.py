@@ -29,7 +29,7 @@ def loop_consumer(fn):
         with OpenBCIConsumer(host=prop.HOST) as stream:
             for data in stream:
                 fn(cls, data, *args, **kwargs)
-                cls.feed()
+                # cls.feed()
     return wrap
 
 
@@ -42,7 +42,7 @@ def fake_loop_consumer(fn):
 
             data = np.random.normal(0, 1, size=(16, 1000))
             fn(cls, data, *args, **kwargs)
-            cls.feed()
+            # cls.feed()
 
             while time.time() < (t0 + 1):
                 time.sleep(0.01)
