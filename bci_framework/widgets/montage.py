@@ -15,12 +15,13 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-matplotlib.use('Qt5Agg')
-pyplot.style.use('dark_background')
-q = matplotlib.cm.get_cmap('tab20')
-matplotlib.rcParams['axes.prop_cycle'] = cycler(
-    color=[q(m) for m in np.linspace(0, 1, 16)])
-# matplotlib.rcParams['figure.dpi'] = 90
+# matplotlib.use('Qt5Agg')
+# os.environ.get('PYSIDEMATERIAL_THEME', '')
+# # pyplot.style.use('dark_background')
+# q = matplotlib.cm.get_cmap('tab20')
+# matplotlib.rcParams['axes.prop_cycle'] = cycler(
+    # color=[q(m) for m in np.linspace(0, 1, 16)])
+# # matplotlib.rcParams['figure.dpi'] = 90
 
 
 ########################################################################
@@ -46,6 +47,14 @@ class Montage:
         self.parent = core.main
         self.core = core
 
+        matplotlib.use('Qt5Agg')
+        if 'dark' in os.environ.get('PYSIDEMATERIAL_THEME', '').lower():
+            pyplot.style.use('dark_background')
+        q = matplotlib.cm.get_cmap('tab20')
+        matplotlib.rcParams['axes.prop_cycle'] = cycler(
+            color=[q(m) for m in np.linspace(0, 1, 16)])
+        # matplotlib.rcParams['figure.dpi'] = 90
+
         self.channels_names_widgets = []
 
         self.topoplot = Topoplot()
@@ -60,6 +69,9 @@ class Montage:
 
         self.parent.comboBox_montages.addItems(
             mne.channels.get_builtin_montages())
+
+        self.parent.comboBox_montage_channels.addItems(
+            [f"{i+1} channel{'s'[:i]}" for i in range(16)])
 
         self.set_saved_montages()
         self.load_montage()
@@ -88,9 +100,9 @@ class Montage:
         self.parent.comboBox_historical_montages.editTextChanged.connect(
             lambda evt: self.parent.pushButton_save_montage.setEnabled(bool(self.parent.comboBox_historical_montages.currentText())))
 
-        self.parent.spinBox_montage_channels.valueChanged.connect(
+        self.parent.comboBox_montage_channels.activated.connect(
             self.generate_list_channels)
-        self.parent.spinBox_montage_channels.valueChanged.connect(
+        self.parent.comboBox_montage_channels.activated.connect(
             self.update_topoplot)
 
         self.parent.pushButton_save_montage.clicked.connect(self.save_montage)
@@ -102,8 +114,8 @@ class Montage:
 
         self.montage_name = self.parent.comboBox_montages.currentText()
         self.montage = mne.channels.make_standard_montage(self.montage_name)
-        self.parent.spinBox_montage_channels.setMaximum(
-            len(self.montage.ch_names))
+        # self.parent.spinBox_montage_channels.setMaximum(
+            # len(self.montage.ch_names))
 
         # self.generate_list_channels()
         # self.update_topoplot()
@@ -183,7 +195,8 @@ class Montage:
 
         self.channels_names_widgets = []
         self.labels_names_widgets = []
-        for i in range(self.parent.spinBox_montage_channels.value()):
+        # for i in range(self.parent.spinBox_montage_channels.value()):
+        for i in range(self.parent.comboBox_montage_channels.currentIndex() + 1):
 
             if i % 2:
                 layout = self.parent.gridLayout_list_channels_right
@@ -238,6 +251,8 @@ class Montage:
         saved_montages = self.core.config['montages']
 
         for saved in saved_montages.keys():
+            if not saved.startswith('montage'):
+                continue
             # if saved.endswith('name'):
             # m = saved.replace('_name', '')
             name, *_ = saved_montages.get(saved).split('|')
@@ -247,7 +262,6 @@ class Montage:
         self.parent.comboBox_historical_montages.setCurrentText('')
 
     # ----------------------------------------------------------------------
-
     def load_montage(self, name=None):
         """"""
         saved_montages = self.core.config['montages']
@@ -257,6 +271,8 @@ class Montage:
             self.parent.comboBox_historical_montages.setCurrentText(name)
 
         for saved in saved_montages.keys():
+            if not saved.startswith('montage'):
+                continue
             saved_name, montage, channels = saved_montages.get(
                 saved).split('|')
             if name == saved_name:
@@ -267,9 +283,11 @@ class Montage:
         self.montage_name = montage
         self.parent.comboBox_montages.setCurrentText(self.montage_name)
         self.montage = mne.channels.make_standard_montage(self.montage_name)
-        self.parent.spinBox_montage_channels.setMaximum(
-            len(self.montage.ch_names))
-        self.parent.spinBox_montage_channels.setValue(len(channels))
+        # self.parent.spinBox_montage_channels.setMaximum(
+            # len(self.montage.ch_names))
+        # self.parent.spinBox_montage_channels.setValue(len(channels))
+        self.parent.comboBox_montage_channels.setCurrentIndex(
+            len(channels) - 1)
 
         self.generate_list_channels()
         [wg.setCurrentText(ch) for wg, ch in zip(
@@ -285,7 +303,8 @@ class Montage:
             if channels.count(channel) > 1:
                 label.setStyleSheet("*{color: #ff1744;}")
             else:
-                label.setStyleSheet("*{color: white;}")
+                label.setStyleSheet(
+                    f"*{{color: {os.environ.get('PYSIDEMATERIAL_SECONDARYTEXTCOLOR', '')};}}")
 
     # ----------------------------------------------------------------------
 
@@ -297,3 +316,4 @@ class Montage:
     def update_environ(self):
         """"""
         os.environ['BCISTREAM_MONTAGE'] = json.dumps(self.get_montage())
+        os.environ['BCISTREAM_MONTAGE_NAME'] = json.dumps(self.montage_name)
