@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1222</width>
-    <height>710</height>
+    <height>780</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
     <item row="0" column="0" rowspan="2">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageStimulus_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -360,7 +360,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <property name="documentMode">
         <bool>false</bool>
@@ -416,8 +416,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>410</width>
-                 <height>552</height>
+                 <width>411</width>
+                 <height>619</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -1087,22 +1087,6 @@ p, li { white-space: pre-wrap; }
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QSpinBox" name="spinBox_montage_channels">
-                <property name="suffix">
-                 <string> channels</string>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>16</number>
-                </property>
-                <property name="value">
-                 <number>8</number>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0">
                <widget class="QComboBox" name="comboBox_montages">
                 <property name="currentIndex">
@@ -1118,6 +1102,25 @@ p, li { white-space: pre-wrap; }
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="2">
+               <widget class="QComboBox" name="comboBox_montage_channels"/>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>30</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -1164,7 +1167,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>411</width>
-                  <height>428</height>
+                  <height>492</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_9">
@@ -1224,7 +1227,7 @@ p, li { white-space: pre-wrap; }
              </spacer>
             </item>
             <item row="3" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0">
+             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,0">
               <item>
                <widget class="QComboBox" name="comboBox_historical_montages">
                 <property name="editable">
@@ -1234,6 +1237,22 @@ p, li { white-space: pre-wrap; }
                  <number>-1</number>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>30</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_save_montage">
@@ -1269,7 +1288,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
@@ -1354,7 +1373,7 @@ p, li { white-space: pre-wrap; }
                 </size>
                </property>
                <property name="movement">
-                <enum>QListView::Free</enum>
+                <enum>QListView::Static</enum>
                </property>
                <property name="flow">
                 <enum>QListView::LeftToRight</enum>
@@ -1591,7 +1610,11 @@ p, li { white-space: pre-wrap; }
                  </layout>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QPlainTextEdit" name="plainTextEdit_preview_log"/>
+                 <widget class="QPlainTextEdit" name="plainTextEdit_preview_log">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -1998,7 +2021,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_13</tabstop>
   <tabstop>lineEdit</tabstop>
   <tabstop>pushButton_12</tabstop>
-  <tabstop>spinBox_montage_channels</tabstop>
   <tabstop>pushButton_add_visualizarion</tabstop>
   <tabstop>pushButton_record</tabstop>
   <tabstop>comboBox_montages</tabstop>
