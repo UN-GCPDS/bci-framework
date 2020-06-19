@@ -3,6 +3,7 @@ from PySide2.QtCore import Qt, QTimer
 from openbci_stream.handlers import HDF5_Reader
 
 from kafka import KafkaProducer
+from kafka.errors import NoBrokersAvailable
 
 from PySide2.QtGui import QIcon
 
@@ -19,6 +20,8 @@ import os
 import shutil
 
 from bci_framework.subprocess_script import run_subprocess
+from bci_framework.dialogs import Dialogs
+from bci_framework import doc_urls
 
 
 ########################################################################
@@ -71,8 +74,15 @@ class Records:
     def remove_record(self):
         """"""
         filename = self.parent.tableWidget_records.currentItem().previous_name
-        os.remove(os.path.join('records', f'{filename}.h5'))
-        self.load_records()
+
+        response = Dialogs.question_message(self.parent, 'Remove file?',
+                                            f"""<p>This action cannot be undone.<br><br>
+                                            <nobr>Remove permanently the file <code>{filename}.h5</code> from your system?</nobr></p>
+
+                                            """)
+        if response:
+            os.remove(os.path.join('records', f'{filename}.h5'))
+            self.load_records()
 
     # ----------------------------------------------------------------------
     def record_renamed(self, item):
@@ -205,10 +215,25 @@ class Records:
             self.record_reader = HDF5_Reader(os.path.join(
                 'records', f'{self.parent.label_record_name.text()}.h5'))
 
-            self.producer_eeg = KafkaProducer(bootstrap_servers=['localhost:9092'],
-                                              compression_type='gzip',
-                                              value_serializer=pickle.dumps,
-                                              )
+            try:
+                self.producer_eeg = KafkaProducer(bootstrap_servers=['localhost:9092'],
+                                                  compression_type='gzip',
+                                                  value_serializer=pickle.dumps,
+                                                  )
+            except NoBrokersAvailable:
+
+                Dialogs.critical_message(
+                    self.parent, 'Kafka: Error!',
+                    f"""<p>Kafka: No Brokers Available!<br><br>
+
+                    Please, refer to the documentation for complete guide about how to
+                    <a href='{doc_urls.CONFIGURE_KAFKA}'>configure Cafka</a>.
+                    </p>"""
+                )
+
+                self.parent.pushButton_play_signal.setChecked(False)
+                return
+
             self.start_streaming = 0
 
             # self.record_reader
