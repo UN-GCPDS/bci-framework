@@ -36,6 +36,8 @@ class VisualizationWidget(QMdiSubWindow):
         }
         """)
 
+        self.update_visualizations_list()
+
     # ----------------------------------------------------------------------
     def contextMenuEvent(self, event):
         """"""
@@ -50,7 +52,6 @@ class VisualizationWidget(QMdiSubWindow):
         menu.exec_(event.globalPos())
 
     # ----------------------------------------------------------------------
-
     def remove(self):
         """"""
         self.stop_preview()
@@ -82,7 +83,7 @@ class VisualizationWidget(QMdiSubWindow):
         self.current_viz = visualization
         module = os.path.join('default_projects', visualization, visualization)
         self.preview_stream = LoadSubprocess(
-            self.main, f'{module}.py', debug=False)
+            self.main, f'{module}.py', debug=False, web_view='gridLayout_webview')
         self.main.comboBox_visualizations.hide()
         self.main.pushButton_execute.hide()
         # self.main.label_stream.show()
