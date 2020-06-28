@@ -4,7 +4,7 @@ from PySide2.QtCore import Qt
 
 from bci_framework.qtgui.icons import resource_rc
 from bci_framework.widgets import Montage, Projects, Connection, Records
-from bci_framework.environments import Development, Visualization
+from bci_framework.environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 
 ########################################################################
@@ -40,9 +40,11 @@ class BCIFramework(QtWidgets.QMainWindow):
         self.connection = Connection(self)
         self.montage = Montage(self)
         self.projects = Projects(self.main, self)
-        self.development = Development(self.main, self)
-        self.visualization = Visualization(self.main, self)
         self.records = Records(self.main, self)
+
+        self.development = Development(self)
+        self.visualization = Visualization(self)
+        self.stimuli_delivery = StimuliDelivery(self)
 
         self.status_bar('No connected!')
         self.status_bar('No connected!')
