@@ -34,7 +34,7 @@
     <item row="0" column="0" rowspan="2">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimulus_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -54,7 +54,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_22"/>
+            <layout class="QGridLayout" name="gridLayout_stimuli_webview"/>
            </item>
           </layout>
          </widget>
@@ -62,10 +62,12 @@
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QPushButton" name="pushButton_12">
-            <property name="text">
-             <string>Load experiment...</string>
-            </property>
+           <widget class="QComboBox" name="comboBox_load_experiment">
+            <item>
+             <property name="text">
+              <string>Load experiment...</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -89,7 +91,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineEdit_stimuli_ip">
             <property name="minimumSize">
              <size>
               <width>200</width>
@@ -231,9 +233,6 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="pageVisualizations">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="0">
-         <widget class="QMdiArea" name="mdiArea"/>
-        </item>
         <item row="1" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
@@ -282,7 +281,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset theme="media-record">
-              <normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+              <normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -290,6 +289,9 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="2" column="0">
+         <widget class="QMdiArea" name="mdiArea"/>
         </item>
        </layout>
       </widget>
@@ -335,7 +337,7 @@ p, li { white-space: pre-wrap; }
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Global settings</string>
+    <string/>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -416,8 +418,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>411</width>
-                 <height>619</height>
+                 <width>410</width>
+                 <height>552</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -1166,8 +1168,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>411</width>
-                  <height>492</height>
+                  <width>100</width>
+                  <height>30</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_9">
@@ -1326,7 +1328,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1346,7 +1348,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1451,7 +1453,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="go-up">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -1465,7 +1467,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1485,7 +1487,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1508,7 +1510,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -1553,7 +1555,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-stop">
-                      <normaloff>../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -1567,7 +1569,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-start">
-                      <normaloff>../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -1594,7 +1596,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="edit-delete">
-                      <normaloff>../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -1654,6 +1656,19 @@ p, li { white-space: pre-wrap; }
             <property name="bottomMargin">
              <number>0</number>
             </property>
+            <item row="2" column="0">
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <item>
@@ -1676,7 +1691,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="edit-delete">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1736,19 +1751,6 @@ p, li { white-space: pre-wrap; }
                </property>
               </column>
              </widget>
-            </item>
-            <item row="2" column="0">
-             <spacer name="verticalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item row="3" column="0">
              <widget class="QWidget" name="widget_record" native="true">
@@ -1884,7 +1886,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-playback-start">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2036,7 +2038,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionSave">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -2059,8 +2061,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>tabWidget_project</tabstop>
   <tabstop>checkBox_show_impedance</tabstop>
   <tabstop>pushButton_13</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>pushButton_12</tabstop>
+  <tabstop>lineEdit_stimuli_ip</tabstop>
   <tabstop>pushButton_add_visualizarion</tabstop>
   <tabstop>pushButton_record</tabstop>
   <tabstop>comboBox_montages</tabstop>
