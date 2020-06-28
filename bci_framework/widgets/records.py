@@ -226,7 +226,7 @@ class Records:
                     self.parent, 'Kafka: Error!',
                     f"""<p>Kafka: No Brokers Available!<br><br>
 
-                    Please, refer to the documentation for complete guide about how to
+                    Please, refer to the documentation for a complete guide about how to
                     <a href='{doc_urls.CONFIGURE_KAFKA}'>configure Cafka</a>.
                     </p>"""
                 )
