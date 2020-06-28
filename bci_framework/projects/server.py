@@ -90,8 +90,8 @@ def make_app(class_):
 
     return Application([
 
-        url(r'^/$', DashboardHandler),
-        url(r'^/delivery', StimuliHandler),
+        url(r'^/$', StimuliHandler),
+        url(r'^/delivery', DashboardHandler),  # GUI
         url(r'^/development', DevelopmentHandler),
         url(r'^/mode', ModeHandler),
         url(r'^/root/(.*)', StaticFileHandler, {'path': sys.path[0]}),
