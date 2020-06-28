@@ -48,12 +48,18 @@ class Montage:
         self.core = core
 
         matplotlib.use('Qt5Agg')
-        if 'dark' in os.environ.get('PYSIDEMATERIAL_THEME', '').lower():
-            pyplot.style.use('dark_background')
+        # if 'dark' in os.environ.get('PYSIDEMATERIAL_THEME', '').lower():
+        pyplot.style.use('seaborn-dark')
         q = matplotlib.cm.get_cmap('tab20')
         matplotlib.rcParams['axes.prop_cycle'] = cycler(
             color=[q(m) for m in np.linspace(0, 1, 16)])
         # matplotlib.rcParams['figure.dpi'] = 90
+
+        if os.getenv('PYSIDEMATERIAL_SECONDARYDARKCOLOR', ''):
+            pyplot.rcParams['axes.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
+            pyplot.rcParams['figure.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
+            pyplot.rcParams['savefig.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
+        # pyplot.rcParams['axes.facecolor'] = 'g'
 
         self.channels_names_widgets = []
 
@@ -121,12 +127,16 @@ class Montage:
         # self.update_topoplot()
 
     # ----------------------------------------------------------------------
-
     def update_topoplot(self):
         """"""
 
         matplotlib.rcParams['text.color'] = "#ffffff"
         matplotlib.rcParams['font.size'] = 16
+        # matplotlib.rcParams['figure.facecolor'] = '#00ff00'
+        # matplotlib.rcParams['axes.facecolor'] = '#00ffff'
+        # os.getenv('PYSIDEMATERIAL_SECONDARYDARKCOLOR', '#000000')
+
+        # self.topoplot.ax.set_facecolor("#ff0000")
 
         self.topoplot.ax.clear()
 
@@ -170,7 +180,11 @@ class Montage:
                                               markeredgecolor='#4f5b62', linewidth=0, markersize=30),
                              mask=channels_mask,
                              )
+
+        # self.topoplot.ax.set_facecolor("red")
+
         self.topoplot.draw()
+        # self.topoplot.ax.set_facecolor("m")
         # self.update_montage_name()
         self.validate_channels()
 
