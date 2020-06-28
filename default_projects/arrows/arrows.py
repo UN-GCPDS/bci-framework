@@ -12,10 +12,11 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def __init__(self):
         """"""
-        document.select('head')[0] <= html.LINK(href='/root/styles.css', type='text/css', rel='stylesheet')
+        document.select('head')[0] <= html.LINK(
+            href='/root/styles.css', type='text/css', rel='stylesheet')
 
-        self.dashboard
         self.stimuli_area
+        self.dashboard
 
         self.hint = html.SPAN('', id='hint')
         self.stimuli_area.clear()
@@ -27,7 +28,6 @@ class Arrows(StimuliAPI):
         self.progressbar = MDCLinearProgress()
         self.progressbar.style = {'position': 'relative', 'bottom': '4px', }
         self.stimuli_area <= self.progressbar
-        
 
         self.build_dashboard()
 
@@ -37,62 +37,83 @@ class Arrows(StimuliAPI):
         # Stimuli set
         label = MDCComponent(html.SPAN('Stimuli set'))
         label.mdc.typography('subtitle1')
-        self.dashboard <= label
+        # self.dashboard <= label
         self.checkboxes = []
         form = MDCForm(formfield_style={'width': '100px'})
-        self.checkboxes.append(form.mdc.Checkbox('Right', value='&#x1f83a;', checked=True))
-        self.checkboxes.append(form.mdc.Checkbox('Left', value='&#x1f838;', checked=True))
-        self.checkboxes.append(form.mdc.Checkbox('Up', value='&#x1f839;', checked=False))
-        self.checkboxes.append(form.mdc.Checkbox('Down', value='&#x1f83b;', checked=False))
+        form <= label
+
+        self.checkboxes.append(form.mdc.Checkbox(
+            'Right', value='&#x1f83a;', checked=True))
+        self.checkboxes.append(form.mdc.Checkbox(
+            'Left', value='&#x1f838;', checked=True))
+        self.checkboxes.append(form.mdc.Checkbox(
+            'Up', value='&#x1f839;', checked=False))
+        self.checkboxes.append(form.mdc.Checkbox(
+            'Down', value='&#x1f83b;', checked=False))
         self.dashboard <= form
 
         # Repetitions
         label = MDCComponent(html.SPAN('Repetitions'))
         label.mdc.typography('subtitle1')
-        self.dashboard <= label
+        # self.dashboard <= label
         form = MDCForm(formfield_style={'width': '100px'})
+        form <= label
+
         self.repetitions = form.mdc.TextField('', value=40, type='number')
         self.dashboard <= form
 
         # Stimulus duration
+        form = MDCForm()
         label = MDCComponent(html.SPAN('Stimulus duration: '))
         label.mdc.typography('subtitle1')
-        self.dashboard <= label
-        self.dashboard <= MDCComponent(html.SPAN('4000 ms', id='stimulus_duration')).mdc.typography('caption')
-        form = MDCForm()
-        self.stimulus_duration = form.mdc.Slider('Slider', min=0, max=6000, step=100, valuenow=4000, continuous=True)
+        form <= label
+        form <= MDCComponent(
+            html.SPAN('4000 ms', id='stimulus_duration')).mdc.typography('caption')
+        # form <=
+        self.stimulus_duration = form.mdc.Slider(
+            'Slider', min=0, max=6000, step=100, valuenow=4000, continuous=True)
         self.dashboard <= form
-        self.stimulus_duration.mdc.listen('MDCSlider:input', self.update_times_from_sliders)
+        self.stimulus_duration.mdc.listen(
+            'MDCSlider:input', self.update_times_from_sliders)
 
         # Stimulus rest
+        form = MDCForm()
         label = MDCComponent(html.SPAN('Stimulus rest: '))
         label.mdc.typography('subtitle1')
-        self.dashboard <= label
-        self.dashboard <= MDCComponent(html.SPAN('1000 ms', id='stimulus_rest')).mdc.typography('caption')
-        form = MDCForm()
-        self.stimulus_rest = form.mdc.Slider('Slider', min=0, max=6000, step=100, valuenow=1200, continuous=True)
+        form <= label
+        form <= MDCComponent(
+            html.SPAN('1000 ms', id='stimulus_rest')).mdc.typography('caption')
+        self.stimulus_rest = form.mdc.Slider(
+            'Slider', min=0, max=6000, step=100, valuenow=1200, continuous=True)
         self.dashboard <= form
-        self.stimulus_rest.mdc.listen('MDCSlider:input', self.update_times_from_sliders)
+        self.stimulus_rest.mdc.listen(
+            'MDCSlider:input', self.update_times_from_sliders)
 
         # Aditional stimulus aleatory rest
+        form = MDCForm()
         label = MDCComponent(html.SPAN('Aditional stimulus aleatory rest: '))
         label.mdc.typography('subtitle1')
-        self.dashboard <= label
-        self.dashboard <= MDCComponent(html.SPAN('800 ms', id='stimulus_random_rest')).mdc.typography('caption')
-        form = MDCForm()
-        self.stimulus_random_rest = form.mdc.Slider('Slider', min=0, max=1000, step=100, valuenow=800, continuous=True)
+        form <= label
+        form <= MDCComponent(
+            html.SPAN('800 ms', id='stimulus_random_rest')).mdc.typography('caption')
+        self.stimulus_random_rest = form.mdc.Slider(
+            'Slider', min=0, max=1000, step=100, valuenow=800, continuous=True)
         self.dashboard <= form
-        self.stimulus_random_rest.mdc.listen('MDCSlider:input', self.update_times_from_sliders)
+        self.stimulus_random_rest.mdc.listen(
+            'MDCSlider:input', self.update_times_from_sliders)
 
          # Theme
         form = MDCForm(formfield_style={'width': '100%', 'height': '40px'})
         self.theme = form.mdc.Switch('Dark Theme')
-        self.theme.bind('change', lambda evt: self.change_theme(self.theme.mdc.checked))
+        self.theme.bind('change', lambda evt: self.change_theme(
+            self.theme.mdc.checked))
         self.dashboard <= form
 
         # Start - Stop
-        self.button_start = MDCButton('Start', raised=True, style={'margin': '0 15px'})
-        self.button_stop = MDCButton('Stop', raised=True, style={'margin': '0 15px'})
+        self.button_start = MDCButton(
+            'Start', raised=True, style={'margin': '0 15px'})
+        self.button_stop = MDCButton(
+            'Stop', raised=True, style={'margin': '0 15px'})
         self.button_start.bind('click', self.start)
         self.button_stop.bind('click', self.stop)
         self.dashboard <= self.button_start
@@ -103,9 +124,12 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def update_times_from_sliders(self, evt=None):
         """"""
-        document.select_one('#stimulus_duration').text = f'{self.stimulus_duration.attrs["aria-valuenow"]} ms'
-        document.select_one('#stimulus_rest').text = f'{self.stimulus_rest.attrs["aria-valuenow"]} ms'
-        document.select_one('#stimulus_random_rest').text = f'0 - {self.stimulus_random_rest.attrs["aria-valuenow"]} ms'
+        document.select_one(
+            '#stimulus_duration').text = f'{self.stimulus_duration.attrs["aria-valuenow"]} ms'
+        document.select_one(
+            '#stimulus_rest').text = f'{self.stimulus_rest.attrs["aria-valuenow"]} ms'
+        document.select_one(
+            '#stimulus_random_rest').text = f'0 - {self.stimulus_random_rest.attrs["aria-valuenow"]} ms'
 
     # ----------------------------------------------------------------------
     def start(self, evt=None):
@@ -124,12 +148,14 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def random_stimulus(self):
         """"""
-        stimuli_list = [chb.mdc.value for chb in self.checkboxes if chb.mdc.checked]
-        
+        stimuli_list = [
+            chb.mdc.value for chb in self.checkboxes if chb.mdc.checked]
+
         # calculate the aleatory rest time
         aleatory_pause = int(self.stimulus_rest.attrs["aria-valuenow"])
-        aleatory_pause += random.randint(0, int(self.stimulus_random_rest.attrs["aria-valuenow"]))
-        
+        aleatory_pause += random.randint(
+            0, int(self.stimulus_random_rest.attrs["aria-valuenow"]))
+
         self.show_stimulus(random.choice(stimuli_list), aleatory_pause)
 
     # ----------------------------------------------------------------------
@@ -145,8 +171,10 @@ class Arrows(StimuliAPI):
         """"""
         self.actual_repetition += 1
         self.hint.html = direction  # update stimulus in window
-        self.interval = timer.set_timeout(lambda:self.hide_stimulus(aleatory_pause), int(self.stimulus_duration.attrs["aria-valuenow"]))  # rest
-        self.progressbar.mdc.set_progress(self.actual_repetition / self.total_repetition)
+        self.interval = timer.set_timeout(lambda: self.hide_stimulus(
+            aleatory_pause), int(self.stimulus_duration.attrs["aria-valuenow"]))  # rest
+        self.progressbar.mdc.set_progress(
+            self.actual_repetition / self.total_repetition)
         print(f"Progress: {self.actual_repetition / self.total_repetition}")
 
     # ----------------------------------------------------------------------
@@ -154,7 +182,8 @@ class Arrows(StimuliAPI):
     def hide_stimulus(self, aleatory_pause):
         """"""
         self.hint.html = ''  # clear the stimulusClosed WS
-        self.interval = timer.set_timeout(self.random_stimulus, aleatory_pause)  # show new stimuli after a delay
+        # show new stimuli after a delay
+        self.interval = timer.set_timeout(self.random_stimulus, aleatory_pause)
         print(f"Aleatory pause: {aleatory_pause}")
 
     # ----------------------------------------------------------------------

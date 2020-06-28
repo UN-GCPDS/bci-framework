@@ -1,10 +1,14 @@
 
-.bci_dashboard {
+body {
+    background-color: '#31363b' !important;
+}
 
+.bci_dashboard {
+    background-color: '#31363b' !important;
 }
 
 .bci_stimuli {
-
+    background-color: '#31363b' !important;
     
 }
 
