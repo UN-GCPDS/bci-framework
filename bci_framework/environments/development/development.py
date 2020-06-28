@@ -8,17 +8,15 @@ from PySide2.QtGui import QTextCursor
 from bci_framework.subprocess_script import LoadSubprocess
 
 
-# from PySide2.QtWebEngineWidgets import QWebEngineView
-
 ########################################################################
 class Development:
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, core):
+    def __init__(self, core):
         """Constructor"""
 
-        self.parent = parent
+        self.parent = core.main
         self.core = core
 
         self.parent.pushButton_stop_preview.hide()
@@ -33,8 +31,6 @@ class Development:
         self.build_linenumber()
 
         self.check_tabs()
-        # self.parent.web_engine = QWebEngineView()
-        # self.parent.gridLayout_webview.addWidget(self.parent.web_engine)
 
     # ----------------------------------------------------------------------
     def build_linenumber(self):
@@ -121,7 +117,7 @@ class Development:
         self.parent.pushButton_script_preview.hide()
 
         self.preview_stream = LoadSubprocess(
-            self.parent, f'{module}.py', debug=True)
+            self.parent, f'{module}.py', debug=True, web_view='gridLayout_webview', endpoint='development')
         self.timer.singleShot(100, self.update_log)
         self.show_preview()
 
