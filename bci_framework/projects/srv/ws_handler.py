@@ -5,7 +5,7 @@ import json
 import random
 
 # from tornado.httpserver import HTTPServer
-from tornado.websocket import WebSocketHandler
+from tornado.websocket import WebSocketHandler, WebSocketClosedError
 # from tornado.ioloop import IOLoop
 # from tornado.web import Application, url  # RequestHandler, StaticFileHandler, Application, url
 # import os
@@ -80,8 +80,11 @@ class WSHandler(WebSocketHandler):
     # ----------------------------------------------------------------------
     def bci_feed(self, **kwargs):
         """"""
-
-        for client in clients:
+        for i, client in enumerate(clients):
             if client != self:
-                client.write_message(kwargs)
+                try:
+                    client.write_message(kwargs)
+                except WebSocketClosedError:
+                    clients.pop(i)
+
 
