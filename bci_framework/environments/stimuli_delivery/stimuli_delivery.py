@@ -20,10 +20,10 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def update_experiments_list(self):
         """"""
-        for i in range(self.parent.listWidget_projects.count()):
-            item = self.parent.listWidget_projects.item(i)
-            if item.icon_name == 'icon_sti':
-                self.parent.comboBox_load_experiment.addItem(item.text())
+        for i in range(self.parent.listWidget_projects_delivery.count()):
+            item = self.parent.listWidget_projects_delivery.item(i)
+            # if item.icon_name == 'icon_sti':
+            self.parent.comboBox_load_experiment.addItem(item.text())
 
         self.parent.comboBox_load_experiment.activated.connect(lambda evt: self.load_experiment(
             self.parent.comboBox_load_experiment.currentText()))
@@ -33,7 +33,7 @@ class StimuliDelivery:
         """"""
         module = os.path.join('default_projects', experiment, experiment)
         self.preview_stream = LoadSubprocess(
-            self.parent, f'{module}.py', debug=False, web_view='gridLayout_stimuli_webview', endpoint='development')
+            self.parent, f'{module}.py', debug=False, web_view='gridLayout_stimuli_webview', endpoint='delivery')
 
         self.parent.lineEdit_stimuli_ip.setText(
             f'{self.get_local_ip_address()}:5000')

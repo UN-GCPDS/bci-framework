@@ -6,6 +6,8 @@ import json
 import os
 
 ########################################################################
+
+
 class Properties:
     """Simple access to environ values.
 
@@ -23,7 +25,13 @@ class Properties:
             ...
     ```
     """
-    #----------------------------------------------------------------------
+
+    SAMPLE_RATE = 250
+    MONTAGE = {f'{i}': i for i in range(3)}
+    HOST = '192.168.1.1'
+
+    # ----------------------------------------------------------------------
+
     def __getattr__(self, attr):
         """Add the prefix to environ variable and try to get it."""
         if prop := os.environ.get(f"BCISTREAM_{attr}", None):

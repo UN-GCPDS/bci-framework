@@ -69,10 +69,10 @@ class VisualizationWidget(QMdiSubWindow):
     # ----------------------------------------------------------------------
     def update_visualizations_list(self):
         """"""
-        for i in range(self.parent.listWidget_projects.count()):
-            item = self.parent.listWidget_projects.item(i)
-            if item.icon_name == 'icon_viz':
-                self.main.comboBox_visualizations.addItem(item.text())
+        for i in range(self.parent.listWidget_projects_visualizations.count()):
+            item = self.parent.listWidget_projects_visualizations.item(i)
+            # if item.icon_name == 'icon_viz':
+            self.main.comboBox_visualizations.addItem(item.text())
 
         self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(
             self.main.comboBox_visualizations.currentText()))

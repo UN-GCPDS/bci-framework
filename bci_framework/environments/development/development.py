@@ -1,6 +1,7 @@
 import os
 # import traceback
 # from importlib import reload
+import psutil
 
 from PySide2.QtCore import QTimer, Qt
 from PySide2.QtGui import QTextCursor
@@ -117,9 +118,14 @@ class Development:
         self.parent.pushButton_script_preview.hide()
 
         self.preview_stream = LoadSubprocess(
-            self.parent, f'{module}.py', debug=True, web_view='gridLayout_webview', endpoint='development')
+            self.parent, f'{module}.py', debug=True, web_view='gridLayout_webview', endpoint='delivery')
         self.timer.singleShot(100, self.update_log)
         self.show_preview()
+
+        current_process = psutil.Process()
+        children = current_process.children(recursive=True)
+        for child in children:
+            print('Child pid is {}'.format(child.pid))
 
     # ----------------------------------------------------------------------
     def stop_preview(self):

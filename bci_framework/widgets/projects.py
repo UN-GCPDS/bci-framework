@@ -36,9 +36,18 @@ class Projects:
         self.parent.pushButton_projects.clicked.connect(
             lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects")))
         # self.parent.pushButton_files.clicked.connect(lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects_files")))
-        self.parent.listWidget_projects.itemDoubleClicked.connect(
+        self.parent.listWidget_projects_visualizations.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
-        self.parent.listWidget_projects.itemChanged.connect(
+        self.parent.listWidget_projects_delivery.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.text()))
+        self.parent.listWidget_projects_others.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.text()))
+
+        self.parent.listWidget_projects_visualizations.itemChanged.connect(
+            self.project_renamed)
+        self.parent.listWidget_projects_delivery.itemChanged.connect(
+            self.project_renamed)
+        self.parent.listWidget_projects_others.itemChanged.connect(
             self.project_renamed)
 
         self.parent.treeWidget_project.itemDoubleClicked.connect(
@@ -77,7 +86,9 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_projects(self):
         """"""
-        self.parent.listWidget_projects.clear()
+        self.parent.listWidget_projects_visualizations.clear()
+        self.parent.listWidget_projects_delivery.clear()
+        self.parent.listWidget_projects_others.clear()
 
         projects = os.listdir('default_projects')
 
@@ -87,29 +98,37 @@ class Projects:
 
         for project in projects:
 
-            item = QListWidgetItem(self.parent.listWidget_projects)
+            with open(os.path.join('default_projects', project, project + '.py'), 'r') as file:
+                lines = file.readlines()
+
+                modules = {'FigureStream': (self.parent.listWidget_projects_visualizations, 'icon_viz'),
+                           'StimuliServer': (self.parent.listWidget_projects_delivery, 'icon_sti'),
+                           }
+                widget, icon_name = (
+                    self.parent.listWidget_projects_others, 'icon_dev')
+                for module in modules:
+                    if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
+                        widget, icon_name = modules[module]
+                        break
+
+            item = QListWidgetItem(widget)
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
                           Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
-
-            with open(os.path.join('default_projects', project, project + '.py'), 'r') as file:
-                lines = file.readlines()
-
-                modules = {'FigureStream': 'icon_viz',
-                           'StimuliServer': 'icon_sti',
-                           }
-                icon_name = 'icon_dev'
-                for module in modules:
-                    if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
-                        icon_name = modules[module]
-                        break
 
             icon = QIcon()
             icon.addFile(
                 f":/bci/icons/bci/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
             item.setIcon(icon)
             item.icon_name = icon_name
+
+        self.parent.groupBox_visualizations.setVisible(
+            self.parent.listWidget_projects_visualizations.count())
+        self.parent.groupBox_delivery.setVisible(
+            self.parent.listWidget_projects_delivery.count())
+        self.parent.groupBox_others.setVisible(
+            self.parent.listWidget_projects_others.count())
 
     # ----------------------------------------------------------------------
     def open_project(self, project_name):
@@ -263,22 +282,31 @@ class Projects:
     # ----------------------------------------------------------------------
     def create_project(self, project_name, visualization, stimulus):
         """"""
-
-        item = QListWidgetItem(self.parent.listWidget_projects)
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-        item.setText(project_name)
-        item.previous_name = project_name
+        # item = QListWidgetItem(self.parent.li)
+        # item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      # | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        # item.setText(project_name)
+        # item.previous_name = project_name
 
         icon = QIcon()
         icon_name = 'icon_sti'
 
         if visualization:
             icon_name = 'icon_viz'
+            item = QListWidgetItem(
+                self.parent.listWidget_projects_visualizations)
         elif stimulus:
             icon_name = 'icon_sti'
+            item = QListWidgetItem(
+                self.parent.listWidget_projects_visualizations)
         else:
             icon_name = 'icon_dev'
+            item = QListWidgetItem(self.parent.listWidget_projects_others)
+
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setText(project_name)
+        item.previous_name = project_name
 
         icon.addFile(f":/bci/icons/bci/{icon_name}.svg",
                      QSize(), QIcon.Normal, QIcon.Off)

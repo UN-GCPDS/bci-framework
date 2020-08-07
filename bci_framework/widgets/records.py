@@ -181,7 +181,7 @@ class Records:
 
         self.parent.horizontalSlider_record.setValue(0)
         self.parent.widget_record.show()
-        self.core.show_interface('Visualizations')
+        # self.core.show_interface('Visualizations')
         # self.parent.tableWidget_records.setSelectionMode(QAbstractItemView.SelectRows)
         # self.parent.tableWidget_records.selectRow(item.row())
         # self.parent.tableWidget_records.setSelectionMode(QAbstractItemView.NoSelection)
@@ -272,7 +272,7 @@ class Records:
             if samples < 0:
                 samples = (4 * self.record_reader.eeg.shape[0] / 1000)
 
-            print(samples, [max([end_streaming - samples, 0]), end_streaming])
+            # print(samples, [max([end_streaming - samples, 0]), end_streaming])
 
             data_ = {'context': 'context',
                      'data': self.record_reader.eeg[max([end_streaming - samples, 0]): end_streaming].T,

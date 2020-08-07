@@ -2,6 +2,7 @@ from bci_framework.projects.figure import FigureStream
 from bci_framework.projects import properties as prop
 from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 
+import logging
 import numpy as np
 
 
@@ -14,35 +15,48 @@ class Stream(FigureStream):
         """"""
         super().__init__(figsize=(16, 9), dpi=60)
 
-        self.channels = len(prop.MONTAGE)
+        self.channels = 3
+
+        self.T = 5
 
         self.axis = self.add_subplot(1, 1, 1)
-        self.lines = [self.axis.plot(np.zeros(prop.SAMPLE_RATE), np.zeros(prop.SAMPLE_RATE), '-')[0] for i
+        self.lines = [self.axis.plot(np.zeros(prop.SAMPLE_RATE * self.T), np.zeros(prop.SAMPLE_RATE * self.T), '-')[0] for i
                       in range(self.channels)]
+                      
+        self.axis.set_ylim(-30, 30)
+        self.axis.set_xlim(-self.T, 0)
 
         self.stream()
 
     # ----------------------------------------------------------------------
     @loop_consumer
+    # @fake_loop_consumer
     def stream(self, data):
         """"""
-        self.T = 30
 
-        data, aux = data.value['data']
-        data = data[:, ::30] * 0.2
+        _, data = data.value['data']
+        # data = data[:, ::30] * 0.2
+
+        data = data[:, [data.mean(axis=0) != 0][0]]
+        data = data[:, [np.sum(np.abs(data), axis=0) < 2][0]]
 
         N = data.shape[1]
+        
+        self.axis.set_ylim(-5, 5)
 
         for i, line in enumerate(self.lines):
             y_data = line.get_ydata()
             y_data = np.roll(y_data, -N)
-            y_data[-N:] = i + data[i]
+            y_data[-N:] = data[i]
             line.set_ydata(y_data)
             line.set_xdata(np.linspace(-self.T, 0, y_data.shape[0]))
 
-        self.axis.set_xlim(-self.T, 0)
-        self.axis.set_ylim(0, self.channels)
-        self.axis.set_yticklabels(prop.MONTAGE.values())
+        # self.axis.set_xlim(-self.T, 0)
+        self.axis.set_ylim(-1.5, 1.5)
+        self.axis.legend(['X', 'Y', 'Z'])
+        
+        
+        # logging.warning(data.max())
 
         self.feed()
 

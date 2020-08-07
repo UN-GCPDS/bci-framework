@@ -29,6 +29,8 @@ class Arrows(StimuliAPI):
         self.progressbar.style = {'position': 'relative', 'bottom': '4px', }
         self.stimuli_area <= self.progressbar
 
+        self.stimuli_area <= html.DIV(Class='cross')
+
         self.build_dashboard()
 
     # ----------------------------------------------------------------------

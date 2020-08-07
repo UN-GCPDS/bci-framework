@@ -40,7 +40,15 @@ def fake_loop_consumer(fn):
         while True:
             t0 = time.time()
 
-            data = np.random.normal(0, 1, size=(16, 1000))
+            eeg = np.random.normal(0, 0.2, size=(16, 1000))
+            aux = np.random.normal(0, 0.2, size=(3, 1000))
+
+            class data:
+                """"""
+
+            data.value = {}
+            data.value['data'] = eeg, aux
+
             fn(cls, data, *args, **kwargs)
             # cls.feed()
 

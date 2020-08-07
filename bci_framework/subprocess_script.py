@@ -58,6 +58,8 @@ class LoadSubprocess:
     def __init__(self, parent, path=None, debug=False, web_view='gridLayout_webview', endpoint=''):
         """Constructor"""
 
+        print('subprocess.......................')
+
         self.parent = parent
         self.debug = debug
         self.endpoint = endpoint
@@ -91,10 +93,12 @@ class LoadSubprocess:
 
             if mode == b'visualization':
                 self.parent.widget_development_webview.show()
-                self.load_webview(f'http://localhost:{self.port}')
+                self.load_webview(
+                    f'http://localhost:{self.port}', debug_javascript=False)
             elif mode == b'stimuli':
                 self.parent.widget_development_webview.show()
-                self.load_webview(f'http://localhost:5000/{self.endpoint}')
+                self.load_webview(
+                    f'http://localhost:5000/{self.endpoint}', debug_javascript=True)
         except:
             self.timer.singleShot(1000 / 30, self.get_mode)
 
@@ -110,7 +114,7 @@ class LoadSubprocess:
             self.parent.web_engine.setUrl('about:blank')
 
     # ----------------------------------------------------------------------
-    def load_webview(self, url):
+    def load_webview(self, url, debug_javascript=False):
         """"""
         if not hasattr(self.parent, 'web_engine'):
             self.parent.web_engine = QWebEngineView()
@@ -125,7 +129,7 @@ class LoadSubprocess:
 
             self.web_view.addWidget(self.parent.web_engine)
 
-        if self.debug:
+        if debug_javascript and self.debug:
             console = JavaScriptConsole()
             page = QWebEnginePage(self.parent.web_engine)
             page.javaScriptConsoleMessage = console.feed

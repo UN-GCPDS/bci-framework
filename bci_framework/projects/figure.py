@@ -13,6 +13,7 @@ from flask import Flask, Response
 
 import sys
 
+import mne
 
 import matplotlib
 from matplotlib import pyplot
@@ -28,6 +29,10 @@ matplotlib.rcParams['axes.prop_cycle'] = cycler(
 matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
 matplotlib.rcParams['font.size'] = 15
+
+
+logger = logging.getLogger("mne")
+logger.setLevel(logging.CRITICAL)
 
 
 # ----------------------------------------------------------------------

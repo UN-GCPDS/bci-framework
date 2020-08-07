@@ -5,6 +5,7 @@ from openbci_stream.acquisition import Cyton, CytonBase
 # from PySide2.QtUiTools import QUiLoader
 # from PySide2.QtCore import QTimer
 # from PySide2.QtGui import QMovie
+from ..dialogs import Dialogs
 
 import os
 
@@ -60,7 +61,7 @@ class Connection:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent.pushButton_connect.clicked.connect(self.openbci_connect)
+        self.parent.pushButton_connect.clicked.connect(self.on_connect)
         self.parent.comboBox_connection_mode.activated.connect(
             self.update_connections)
 
@@ -111,15 +112,32 @@ class Connection:
     def on_connect(self, toggled):
         """"""
         if toggled:
-            self.openbci_connect(toggled)
+            try:
+                self.openbci_connect()
+            except:
+                checks = []
+
+                if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
+                    checks.extend(['* Check that USB dongle were connected',
+                                   '* Verify serial permissions',
+                                   ])
+
+                if self.parent.comboBox_host.currentText() != 'localhost':
+                    checks.extend([f'* The server may not running, or running on a different IP that {self.parent.comboBox_host.currentText()}',
+                                   '* This machine must have access to the server or running in the same network.',
+                                   ])
+                checks = '\n'.join(checks)
+                Dialogs.critical_message(
+                    self.parent, 'Connection error', f"{checks}")
+
+                self.parent.pushButton_connect.setChecked(False)
+
         else:
             self.openbci_disconnect()
 
     # ----------------------------------------------------------------------
     def openbci_connect(self):
         """"""
-        # dialog_conection.update()
-
         if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
             mode = 'serial'
             endpoint = self.parent.comboBox_port.currentText()
@@ -161,29 +179,21 @@ class Connection:
         channels = self.core.montage.get_montage()
         daisy = max(channels.keys()) > 8
 
-        # import time
-        # self.dialog_conection.label_laptop.setEnabled(True)
-
         self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
                              daisy=daisy, montage=channels, stream_samples=int(streaming_sample_rate))
-        # self.dialog_conection.plainTextEdit.insertPlainText("\nCalling Cyton")
 
         self.openbci.command(sample_rate)
-        # self.dialog_conection.plainTextEdit.insertPlainText("\nSample rate")
 
         self.openbci.leadoff_impedance(channels, pchan=pchan, nchan=nchan)
-        # self.dialog_conection.plainTextEdit.insertPlainText("\LeadOff impedance")
+
         self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
                                       gain=gain,
                                       input_type=adsinput,
                                       bias=bias,
                                       srb2=srb2,
                                       srb1=srb1)
-        # self.dialog_conection.plainTextEdit.insertPlainText("\nSettings")
 
-        # self.dialog_conection.label_openbci.setEnabled(True)
-
-        # self.parent.pushButton_disconnect.show()
+        self.openbci.start_stream()
         self.parent.pushButton_connect.setText('Disconnect')
 
         self.update_environ()
@@ -192,6 +202,7 @@ class Connection:
     def openbci_disconnect(self):
         """"""
         # self.openbci.
+        self.openbci.stop_stream()
         self.parent.pushButton_connect.setText('Connect')
 
     # ----------------------------------------------------------------------
@@ -206,4 +217,6 @@ class Connection:
         else:
             sps = int(sps)
         os.environ['BCISTREAM_SAMPLE_RATE'] = json.dumps(sps)
+        os.environ['BCISTREAM_STREAMING_SAMPLE_RATE'] = json.dumps(
+            int(self.parent.comboBox_streaming_sample_rate.currentText()))
 

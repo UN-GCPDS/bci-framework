@@ -39,18 +39,18 @@ class DashboardHandler(RequestHandler):
         self.render("srv/templates/index.html", **variables)
 
 
-########################################################################
-class DevelopmentHandler(RequestHandler):
-    def get(self):
-        class_ = self.settings['class']
-        module = self.settings['module']
-        port = self.settings['port']
-        seed = self.settings['seed']
-        mode = 'development'
+# ########################################################################
+# class DevelopmentHandler(RequestHandler):
+    # def get(self):
+        # class_ = self.settings['class']
+        # module = self.settings['module']
+        # port = self.settings['port']
+        # seed = self.settings['seed']
+        # mode = 'development'
 
-        variables = locals().copy()
-        variables.pop('self')
-        self.render("srv/templates/index.html", **variables)
+        # variables = locals().copy()
+        # variables.pop('self')
+        # self.render("srv/templates/index.html", **variables)
 
 
 ########################################################################
@@ -92,7 +92,7 @@ def make_app(class_):
 
         url(r'^/$', StimuliHandler),
         url(r'^/delivery', DashboardHandler),  # GUI
-        url(r'^/development', DevelopmentHandler),
+        # url(r'^/development', DevelopmentHandler),
         url(r'^/mode', ModeHandler),
         url(r'^/root/(.*)', StaticFileHandler, {'path': sys.path[0]}),
         url(r'^/ws', WSHandler),

@@ -15,6 +15,11 @@
           overflow:hidden;
       }
 
+      .bci_dashboard,
+      .bci_stimuli {
+          border: 0px solid;
+          border-radius: 0;
+      }
 
       {% if mode == 'stimuli' %}
 
@@ -28,7 +33,46 @@
             height: 100vh;
         }
 
-      {% elif mode == 'development' %}
+        .cross {
+            background: black;
+            height: 40px;
+            width: 1px;
+            position: absolute;
+            left: 50%;
+            top: calc(50% - 20px);
+        }
+
+        .cross::after {
+            background: black;
+            content: '';
+            height: 1px;
+            left: -20px;
+            position: absolute;
+            top: 20px;
+            width: 40px;
+        }
+
+        .cross_contrast {
+            background: white;
+            height: 42px;
+            width: 3px;
+            position: absolute;
+            left: calc(50% - 1px);
+            top: calc(50% - 21px);
+        }
+
+        .cross_contrast::after {
+            background: white;
+            content: '';
+            height: 3px;
+            left: -21px;
+            position: absolute;
+            top: 20px;
+            width: 42px;
+        }
+
+
+      {% elif mode == 'dashboard' %}
 
         body {
         display: inline-flex;
@@ -47,26 +91,6 @@
             border-radius: 2px;
             width: calc(50vw - 15px);
             height: calc(100vh - 4px);
-        }
-
-      {% elif mode == 'dashboard' %}
-
-        body {
-            display: inline-flex;
-        }
-
-        .bci_dashboard {
-            margin: 15px;
-            height: calc(100vh - 30px);
-            width: calc(100vw - 30px);
-        }
-
-        .bci_stimuli {
-            background-color: #f5f5f5;
-            border: 1px solid #cccccc;
-            border-radius: 2px;
-            width: 40vw;
-            height: 40vh;
         }
 
 
@@ -89,11 +113,13 @@ arr = {{class_}}()
 arr.connect(f'{{port}}')
 arr._bci_mode = '{{mode}}'
 
+
 autoinit()
 
     </script>
 
-
+  <div class='cross'></div>
+  <div class='cross_contrast'></div>
   </body>
 
 </html>

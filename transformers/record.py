@@ -26,6 +26,7 @@ class RecordTransformer:
         # self.writer = HDF5_Writer(f'{filename}.h5')
 
         header = {'sample_rate': prop.SAMPLE_RATE,
+                  'streaming_sample_rate': prop.STREAMING_SAMPLE_RATE,
                   'datetime': now.timestamp(),
                   'montage': prop.MONTAGE_NAME,
                   'channels': prop.MONTAGE,
