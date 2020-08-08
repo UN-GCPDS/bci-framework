@@ -67,7 +67,8 @@ class BCIEditor(QTextEdit):
 
         if lines != lines_ln:
             content = [f'{l}' for l in range(1, lines + 1)]
-            self.linenumber.setHtml(f'<p style="text-align: right; line-height: 18px">{"<br>".join(content)}</p>')
+            self.linenumber.setHtml(
+                f'<p style="text-align: right; line-height: 18px">{"<br>".join(content)}</p>')
         self.linenumber.verticalScrollBar().setValue(self.verticalScrollBar().value())
 
     # ----------------------------------------------------------------------
@@ -83,125 +84,154 @@ class BCIEditor(QTextEdit):
     # ----------------------------------------------------------------------
     def keyPressEvent(self, event):
         """"""
-
         # Replace Tabs with Spaces
         if event.key() == Qt.Key_Tab:
             tc = self.textCursor()
             tc.insertText(" " * 4)
             return
 
+        # print(event.key())
+
+        # Toggle comment
+        if (event.key() == Qt.Key_Period) and bool(event.modifiers() & Qt.ControlModifier):
+            tc = self.textCursor()
+            # pos = tc.position()
+            tc.select(tc.LineUnderCursor)
+            line = tc.selectedText()
+
+            if line.strip()[0] == '#':
+                self._uncomment()
+            else:
+                self._comment()
+
         # Comment
         if (event.key() == Qt.Key_Slash) and bool(event.modifiers() & Qt.ControlModifier):
-            tc = self.textCursor()
-
-            if tc.selectedText():
-                start = tc.selectionStart()
-                end = tc.selectionEnd()
-
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
-                start = tc.position()
-
-                tc.setPosition(end, tc.MoveAnchor)
-                tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
-                end = tc.position()
-
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.setPosition(end, tc.KeepAnchor)
-                selected = tc.selectedText()
-                tc.removeSelectedText()
-
-                commented = []
-                for line in selected.split('\u2029'):
-                    if line.strip():
-                        start_ = line.find(line.replace(' ', '')[0])
-                        commented.append(" " * start_ + '# ' + line[start_:])
-                        end += 2
-                    else:
-                        commented.append(line)
-                tc.insertText('\u2029'.join(commented))
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.setPosition(end, tc.KeepAnchor)
-                self.setTextCursor(tc)
-
-            else:
-                tc.select(tc.LineUnderCursor)
-                if line := tc.selectedText():
-                    tc.removeSelectedText()
-                    start = line.find(line.replace(' ', '')[0])
-                    tc.insertText(" " * start + '# ' + line[start:])
-            return
+            return self._comment()
 
         # Uncomment
         if (event.key() == Qt.Key_Question) and bool(event.modifiers() & Qt.ControlModifier):
-            tc = self.textCursor()
+            return self._uncomment()
 
-            if tc.selectedText():
-                start = tc.selectionStart()
-                end = tc.selectionEnd()
-
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
-                start = tc.position()
-
-                tc.setPosition(end, tc.MoveAnchor)
-                tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
-                end = tc.position()
-
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.setPosition(end, tc.KeepAnchor)
-                selected = tc.selectedText()
-                tc.removeSelectedText()
-
-                uncommented = []
-                for line in selected.split('\u2029'):
-                    if line.strip():
-                        start_ = line.find(line.replace(' ', '')[0])
-
-                        if line[start_:start_ + 2] == '# ':
-                            uncommented.append(line.replace('# ', '', 1))
-                        else:
-                            tc.insertText(selected)
-                            return
-                        end -= 2
-                    else:
-                        uncommented.append(line)
-
-                if uncommented:
-                    tc.insertText('\u2029'.join(uncommented))
-                    tc.setPosition(start, tc.MoveAnchor)
-                    tc.setPosition(end, tc.KeepAnchor)
-                    self.setTextCursor(tc)
-                else:
-                    tc.insertText(selected)
-
-            else:
-                tc.select(tc.LineUnderCursor)
-                if line := tc.selectedText():
-                    tc.removeSelectedText()
-                    start = line.find(line.replace(' ', '')[0])
-                    if line[start:start + 2] == '# ':
-                        tc.insertText(line.replace('# ', '', 1))
-                    else:
-                        tc.insertText(line)
-            return
-
+        # On enter
         if event.key() in [Qt.Key_Enter, Qt.Key_Enter - 1]:
-            tc = self.textCursor()
-            pos = tc.position()
-            tc.select(tc.LineUnderCursor)
-            line = tc.selectedText()
-            if line.isspace() or line == "":
-                len_s = len(line)
-            else:
-                normal = line.replace(" ", "")
-                len_s = line.find(normal[0])
-
-            if line.strip().endswith(':'):
-                len_s += 4
-
-            tc.setPosition(pos)
-            tc.insertText("\n" + " " * len_s)
-            return
+            return self._on_enter()
 
         super().keyPressEvent(event)
+
+    # ----------------------------------------------------------------------
+    def _on_enter(self):
+        """"""
+        tc = self.textCursor()
+        pos = tc.position()
+        tc.select(tc.LineUnderCursor)
+        line = tc.selectedText()
+
+        if line.isspace() or line == "":
+            len_s = len(line)
+        else:
+            normal = line.replace(" ", "")
+            len_s = line.find(normal[0])
+
+        if line.strip().endswith(':'):
+            len_s += 4
+
+        tc.setPosition(pos)
+        tc.insertText("\n" + " " * len_s)
+        return
+
+    # ----------------------------------------------------------------------
+    def _uncomment(self):
+        """"""
+        tc = self.textCursor()
+
+        if tc.selectedText():
+            start = tc.selectionStart()
+            end = tc.selectionEnd()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
+            start = tc.position()
+
+            tc.setPosition(end, tc.MoveAnchor)
+            tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
+            end = tc.position()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            selected = tc.selectedText()
+            tc.removeSelectedText()
+
+            uncommented = []
+            for line in selected.split('\u2029'):
+                if line.strip():
+                    start_ = line.find(line.replace(' ', '')[0])
+
+                    if line[start_:start_ + 2] == '# ':
+                        uncommented.append(line.replace('# ', '', 1))
+                    else:
+                        tc.insertText(selected)
+                        return
+                    end -= 2
+                else:
+                    uncommented.append(line)
+
+            if uncommented:
+                tc.insertText('\u2029'.join(uncommented))
+                tc.setPosition(start, tc.MoveAnchor)
+                tc.setPosition(end, tc.KeepAnchor)
+                self.setTextCursor(tc)
+            else:
+                tc.insertText(selected)
+
+        else:
+            tc.select(tc.LineUnderCursor)
+            if line := tc.selectedText():
+                tc.removeSelectedText()
+                start = line.find(line.replace(' ', '')[0])
+                if line[start:start + 2] == '# ':
+                    tc.insertText(line.replace('# ', '', 1))
+                else:
+                    tc.insertText(line)
+
+    # ----------------------------------------------------------------------
+    def _comment(self):
+        """"""
+        tc = self.textCursor()
+
+        if tc.selectedText():
+            start = tc.selectionStart()
+            end = tc.selectionEnd()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
+            start = tc.position()
+
+            tc.setPosition(end, tc.MoveAnchor)
+            tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
+            end = tc.position()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            selected = tc.selectedText()
+            tc.removeSelectedText()
+
+            commented = []
+            for line in selected.split('\u2029'):
+                if line.strip():
+                    start_ = line.find(line.replace(' ', '')[0])
+                    commented.append(" " * start_ + '# ' + line[start_:])
+                    end += 2
+                else:
+                    commented.append(line)
+            tc.insertText('\u2029'.join(commented))
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            self.setTextCursor(tc)
+
+        else:
+            tc.select(tc.LineUnderCursor)
+            if line := tc.selectedText():
+                tc.removeSelectedText()
+                start = line.find(line.replace(' ', '')[0])
+                tc.insertText(" " * start + '# ' + line[start:])
+
