@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QTextEdit
-from PySide2.QtGui import QTextOption, QWheelEvent
+from PySide2.QtGui import QTextOption, QWheelEvent, QKeySequence
 from PySide2.QtCore import Qt, QPoint
 # from PySide2 import QtGui, QtCore
 from .highlighters import PythonHighlighter, CSSHighlighter
@@ -90,7 +90,7 @@ class BCIEditor(QTextEdit):
             tc.insertText(" " * 4)
             return
 
-        # print(event.key())
+        print(event.key())
 
         # Toggle comment
         if (event.key() == Qt.Key_Period) and bool(event.modifiers() & Qt.ControlModifier):
@@ -100,17 +100,25 @@ class BCIEditor(QTextEdit):
             line = tc.selectedText()
 
             if line.strip()[0] == '#':
-                self._uncomment()
+                self._remove_symbol('# ')
             else:
-                self._comment()
+                self._insert_symbol('# ')
 
         # Comment
         if (event.key() == Qt.Key_Slash) and bool(event.modifiers() & Qt.ControlModifier):
-            return self._comment()
+            return self._insert_symbol('# ')
 
         # Uncomment
         if (event.key() == Qt.Key_Question) and bool(event.modifiers() & Qt.ControlModifier):
-            return self._uncomment()
+            return self._remove_symbol('# ')
+
+        # Unindent
+        if (event.key() == Qt.Key_Less) and bool(event.modifiers() & Qt.ControlModifier):
+            return self._remove_symbol('    ')
+
+        # Indent
+        if (event.key() == Qt.Key_Greater) and bool(event.modifiers() & Qt.ControlModifier):
+            return self._insert_symbol('    ')
 
         # On enter
         if event.key() in [Qt.Key_Enter, Qt.Key_Enter - 1]:
@@ -140,7 +148,7 @@ class BCIEditor(QTextEdit):
         return
 
     # ----------------------------------------------------------------------
-    def _uncomment(self):
+    def _remove_symbol(self, char='#'):
         """"""
         tc = self.textCursor()
 
@@ -166,12 +174,16 @@ class BCIEditor(QTextEdit):
                 if line.strip():
                     start_ = line.find(line.replace(' ', '')[0])
 
-                    if line[start_:start_ + 2] == '# ':
-                        uncommented.append(line.replace('# ', '', 1))
+                    if char.isspace():
+                        uncommented.append(line.replace(f'{char}', '', 1))
                     else:
-                        tc.insertText(selected)
-                        return
-                    end -= 2
+                        if line[start_:start_ + len(char)] == f'{char}':
+                            uncommented.append(line.replace(f'{char}', '', 1))
+                        else:
+                            tc.insertText(selected)
+                            return
+
+                    end -= len(char)
                 else:
                     uncommented.append(line)
 
@@ -187,14 +199,18 @@ class BCIEditor(QTextEdit):
             tc.select(tc.LineUnderCursor)
             if line := tc.selectedText():
                 tc.removeSelectedText()
-                start = line.find(line.replace(' ', '')[0])
-                if line[start:start + 2] == '# ':
-                    tc.insertText(line.replace('# ', '', 1))
+
+                if char.isspace():
+                    tc.insertText(line.replace(f'{char}', '', 1))
                 else:
-                    tc.insertText(line)
+                    start = line.find(line.replace(' ', '')[0])
+                    if line[start:start + len(char)] == f'{char}':
+                        tc.insertText(line.replace(f'{char}', '', 1))
+                    else:
+                        tc.insertText(line)
 
     # ----------------------------------------------------------------------
-    def _comment(self):
+    def _insert_symbol(self, char='#'):
         """"""
         tc = self.textCursor()
 
@@ -219,8 +235,8 @@ class BCIEditor(QTextEdit):
             for line in selected.split('\u2029'):
                 if line.strip():
                     start_ = line.find(line.replace(' ', '')[0])
-                    commented.append(" " * start_ + '# ' + line[start_:])
-                    end += 2
+                    commented.append(" " * start_ + f'{char}' + line[start_:])
+                    end += len(char)
                 else:
                     commented.append(line)
             tc.insertText('\u2029'.join(commented))
@@ -233,5 +249,5 @@ class BCIEditor(QTextEdit):
             if line := tc.selectedText():
                 tc.removeSelectedText()
                 start = line.find(line.replace(' ', '')[0])
-                tc.insertText(" " * start + '# ' + line[start:])
+                tc.insertText(" " * start + f'{char}' + line[start:])
 
