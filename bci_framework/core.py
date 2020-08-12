@@ -25,8 +25,15 @@ class BCIFramework(QtWidgets.QMainWindow):
             lambda evt: self.show_interface('Visualizations'))
         self.main.actionStimulus_delivery.triggered.connect(
             lambda evt: self.show_interface('Stimulus_delivery'))
+        self.main.actionHome.triggered.connect(
+            lambda evt: self.show_interface('Home'))
+        self.main.actionDocumentation.triggered.connect(
+            lambda evt: self.show_interface('Documentation'))
 
-        self.show_interface('Development')
+        # self.show_interface('Development')
+        self.show_interface('Home')
+        # self.show_interface('Documentation')
+        # self.main.stackedWidget_modes.setCurrentWidget(self.main.pa)
 
         self.config = ConfigManager()
 
@@ -47,8 +54,29 @@ class BCIFramework(QtWidgets.QMainWindow):
         self.stimuli_delivery = StimuliDelivery(self)
 
         self.status_bar('No connected!')
-        self.status_bar('No connected!')
-        self.status_bar('No connected!')
+        # self.status_bar('No connected!')
+        # self.status_bar('No connected!')
+
+        self.main.tabWidget_widgets.setCurrentIndex(0)
+        self.style_welcome()
+
+        self.connect()
+
+    # ----------------------------------------------------------------------
+    def connect(self):
+        """"""
+        self.main.dockWidget_global.dockLocationChanged.connect(
+            self.update_dock_tabs)
+
+    # ----------------------------------------------------------------------
+    def update_dock_tabs(self, event):
+        """"""
+        if b'Left' in event.name:
+            self.main.tabWidget_widgets.setTabPosition(
+                self.main.tabWidget_widgets.East)
+        elif b'Right' in event.name:
+            self.main.tabWidget_widgets.setTabPosition(
+                self.main.tabWidget_widgets.West)
 
     # ----------------------------------------------------------------------
     def show_interface(self, interface):
@@ -57,7 +85,10 @@ class BCIFramework(QtWidgets.QMainWindow):
             getattr(self.main, f"page{interface}"))
         for action in self.main.toolBar_environs.actions():
             action.setChecked(False)
-        getattr(self.main, f"action{interface}").setChecked(True)
+        for action in self.main.toolBar_Documentation.actions():
+            action.setChecked(False)
+        if action := getattr(self.main, f"action{interface}", False):
+            action.setChecked(True)
 
     # ----------------------------------------------------------------------
     def set_editor(self):
@@ -88,3 +119,41 @@ class BCIFramework(QtWidgets.QMainWindow):
             statusbar.addWidget(statusbar.label)
 
         statusbar.label.setText(message)
+
+    # ----------------------------------------------------------------------
+    def style_welcome(self):
+        """"""
+        style = """
+        *{
+        max-height: 50px;
+        min-height: 50px;
+        }
+        """
+        self.main.pushButton_4.setStyleSheet(style)
+        self.main.pushButton_6.setStyleSheet(style)
+        self.main.pushButton_8.setStyleSheet(style)
+
+        style = """
+        *{
+        border-color: #4dd0e1;
+
+        }
+        """
+        self.main.frame_3.setStyleSheet(style)
+        self.main.frame_2.setStyleSheet(style)
+        self.main.frame.setStyleSheet(style)
+
+        style = """
+        *{
+        font-family: "Roboto Light";
+        font-weight: 400;
+        font-size: 18px;
+        }
+        """
+        # color: #4dd0e1;
+
+        self.main.label_15.setStyleSheet(style)
+        self.main.label_16.setStyleSheet(style)
+        self.main.label_17.setStyleSheet(style)
+
+

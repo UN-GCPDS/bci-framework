@@ -2,6 +2,7 @@ from openbci_stream.consumer import OpenBCIConsumer
 from bci_framework.projects import properties as prop
 import numpy as np
 import time
+from datetime import datetime
 
 
 # ----------------------------------------------------------------------
@@ -28,7 +29,8 @@ def loop_consumer(fn):
     def wrap(cls, *args, **kwargs):
         with OpenBCIConsumer(host=prop.HOST) as stream:
             for data in stream:
-                fn(cls, data, *args, **kwargs)
+                # if data.topic == 'eeg':
+                fn(cls, data, data.topic, *args, **kwargs)
                 # cls.feed()
     return wrap
 
@@ -45,12 +47,17 @@ def fake_loop_consumer(fn):
 
             class data:
                 """"""
+                value = {}
 
-            data.value = {}
+            data.value['timestamp'] = datetime.now()
             data.value['data'] = eeg, aux
+            fn(cls, data, 'eeg', *args, **kwargs)
 
-            fn(cls, data, *args, **kwargs)
-            # cls.feed()
+            if np.random.random() > 0.9:
+                data.value['timestamp'] = datetime.now()
+                data.value['data'] = chr(
+                    np.random.choice(range(ord('A'), ord('Z') + 1)))
+                fn(cls, data, 'marker', *args, **kwargs)
 
             while time.time() < (t0 + 1):
                 time.sleep(0.01)

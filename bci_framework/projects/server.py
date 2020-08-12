@@ -21,7 +21,10 @@ port = '5000'
 # ----------------------------------------------------------------------
 def stimulus(method):
     def wrap(*args, **kwargs):
-        method(*args, **kwargs)
+        try:
+            method(*args, **kwargs)
+        except:
+            method()
     return wrap
 
 
@@ -106,6 +109,6 @@ def StimuliServer(class_):
     print("Stimuli Delivery running on port {}".format(port))
     application = make_app(class_)
     http_server = HTTPServer(application)
-    http_server.listen(port)
+    http_server.listen(port, '0.0.0.0')
     IOLoop.instance().start()
 

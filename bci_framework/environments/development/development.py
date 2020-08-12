@@ -110,15 +110,16 @@ class Development:
         """"""
         self.save_all_files()
         self.stop_preview()
-        module = os.path.join(self.parent.treeWidget_project.path, os.path.split(
-            self.parent.treeWidget_project.path)[1])
+        # module = os.path.join(self.parent.treeWidget_project.path, os.path.split(
+            # self.parent.treeWidget_project.path)[1])
+        module = os.path.join(self.parent.treeWidget_project.path, 'main.py')
         # self.parent.plainTextEdit_preview_log.hide()
         self.parent.plainTextEdit_preview_log.setPlainText('')
         self.parent.pushButton_stop_preview.show()
         self.parent.pushButton_script_preview.hide()
 
         self.preview_stream = LoadSubprocess(
-            self.parent, f'{module}.py', debug=True, web_view='gridLayout_webview', endpoint='delivery')
+            self.parent, module, debug=True, web_view='gridLayout_webview', endpoint='delivery')
         self.timer.singleShot(100, self.update_log)
         self.show_preview()
 

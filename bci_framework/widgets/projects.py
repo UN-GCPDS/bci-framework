@@ -1,9 +1,11 @@
 import os
 # import sys
+import json
+import pickle
 
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QSize
-from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QWidget
+from PySide2.QtWidgets import QStyle, QListWidgetItem, QTreeWidgetItem, QDialogButtonBox
 # from bci_framework.highlighters import PythonHighlighter
 from bci_framework.editor import BCIEditor
 
@@ -35,20 +37,33 @@ class Projects:
         """"""
         self.parent.pushButton_projects.clicked.connect(
             lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects")))
-        # self.parent.pushButton_files.clicked.connect(lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects_files")))
-        self.parent.listWidget_projects_visualizations.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.text()))
-        self.parent.listWidget_projects_delivery.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.text()))
-        self.parent.listWidget_projects_others.itemDoubleClicked.connect(
+        self.parent.listWidget_projects.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
-        self.parent.listWidget_projects_visualizations.itemChanged.connect(
+        # self.parent.listWidget_projects_visualizations.itemDoubleClicked.connect(
+            # lambda evt: self.open_project(evt.text()))
+        # self.parent.listWidget_projects_delivery.itemDoubleClicked.connect(
+            # lambda evt: self.open_project(evt.text()))
+        # self.parent.listWidget_projects_others.itemDoubleClicked.connect(
+            # lambda evt: self.open_project(evt.text()))
+
+        # self.parent.listWidget_projects.itemClicked.connect(
+            # self.there_can_only_be_one)
+        # self.parent.listWidget_projects_visualizations.itemClicked.connect(
+            # self.there_can_only_be_one)
+        # self.parent.listWidget_projects_delivery.itemClicked.connect(
+            # self.there_can_only_be_one)
+        # self.parent.listWidget_projects_others.itemClicked.connect(
+            # self.there_can_only_be_one)
+
+        self.parent.listWidget_projects.itemChanged.connect(
             self.project_renamed)
-        self.parent.listWidget_projects_delivery.itemChanged.connect(
-            self.project_renamed)
-        self.parent.listWidget_projects_others.itemChanged.connect(
-            self.project_renamed)
+        # self.parent.listWidget_projects_visualizations.itemChanged.connect(
+            # self.project_renamed)
+        # self.parent.listWidget_projects_delivery.itemChanged.connect(
+            # self.project_renamed)
+        # self.parent.listWidget_projects_others.itemChanged.connect(
+            # self.project_renamed)
 
         self.parent.treeWidget_project.itemDoubleClicked.connect(
             self.open_script)
@@ -67,6 +82,15 @@ class Projects:
         self.parent.tabWidget_project.tabCloseRequested.connect(self.close_tab)
         self.parent.tabWidget_project.currentChanged.connect(self.tab_changed)
 
+    # # ----------------------------------------------------------------------
+    # def there_can_only_be_one(self, event):
+        # """"""
+        # self.parent.listWidget_projects.clearSelection()
+        # # self.parent.listWidget_projects_delivery.clearSelection()
+        # # self.parent.listWidget_projects_others.clearSelection()
+        # # self.parent.listWidget_projects_visualizations.clearSelection()
+        # event.setSelected(True)
+
     # ----------------------------------------------------------------------
     def tab_changed(self, index):
         """"""
@@ -77,7 +101,7 @@ class Projects:
     def open_script(self, item):
         """"""
         if not item.path in self.project_files:
-            self.project_files.append(item.path)
+            # self.project_files.append(item.path)
             self.load_script_in_textedit(item.path)
         # else:
         self.show_script_in_textedit(item.path)
@@ -86,9 +110,10 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_projects(self):
         """"""
-        self.parent.listWidget_projects_visualizations.clear()
-        self.parent.listWidget_projects_delivery.clear()
-        self.parent.listWidget_projects_others.clear()
+        self.parent.listWidget_projects.clear()
+        # self.parent.listWidget_projects_visualizations.clear()
+        # self.parent.listWidget_projects_delivery.clear()
+        # self.parent.listWidget_projects_others.clear()
 
         projects = os.listdir('default_projects')
 
@@ -98,14 +123,14 @@ class Projects:
 
         for project in projects:
 
-            with open(os.path.join('default_projects', project, project + '.py'), 'r') as file:
+            with open(os.path.join('default_projects', project, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
-                modules = {'FigureStream': (self.parent.listWidget_projects_visualizations, 'icon_viz'),
-                           'StimuliServer': (self.parent.listWidget_projects_delivery, 'icon_sti'),
+                modules = {'FigureStream': (self.parent.listWidget_projects, 'icon_viz'),
+                           'StimuliServer': (self.parent.listWidget_projects, 'icon_sti'),
                            }
                 widget, icon_name = (
-                    self.parent.listWidget_projects_others, 'icon_dev')
+                    self.parent.listWidget_projects, 'icon_dev')
                 for module in modules:
                     if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
@@ -123,12 +148,17 @@ class Projects:
             item.setIcon(icon)
             item.icon_name = icon_name
 
-        self.parent.groupBox_visualizations.setVisible(
-            self.parent.listWidget_projects_visualizations.count())
-        self.parent.groupBox_delivery.setVisible(
-            self.parent.listWidget_projects_delivery.count())
-        self.parent.groupBox_others.setVisible(
-            self.parent.listWidget_projects_others.count())
+            # self.parent.listWidget_projects.setItemDelegate(HTMLDelegate())
+
+            # item.setData(
+                # Qt.UserRole, "<b>{0}</b>".format('data to store for this QListWidgetItem'))
+
+        # self.parent.groupBox_visualizations.setVisible(
+            # self.parent.listWidget_projects_visualizations.count())
+        # self.parent.groupBox_delivery.setVisible(
+            # self.parent.listWidget_projects_delivery.count())
+        # self.parent.groupBox_others.setVisible(
+            # self.parent.listWidget_projects_others.count())
 
     # ----------------------------------------------------------------------
     def open_project(self, project_name):
@@ -139,16 +169,13 @@ class Projects:
             getattr(self.parent, "page_projects_files"))
 
         path = os.path.join('default_projects', project_name)
+        # path = project_name
 
-        # sys.path.append(path)
+        self.parent.tabWidget_project.clear()
+
         parent = self.parent.treeWidget_project
         parent.project_name = project_name
-
         parent.clear()
-
-        # tree = QTreeWidgetItem(parent)
-        # tree.setText(0, '../Projects')
-        # tree.path = "__action"
 
         files_count = 0
         dir_count = 0
@@ -158,15 +185,10 @@ class Projects:
         def add_leaves(parent, path):
             global files_count, dir_count, project_name_
 
-            # for file in os.listdir(path):
-
             files = sorted(filter(lambda f: os.path.isfile(
                 os.path.join(path, f)), os.listdir(path)))
             dirs = sorted(filter(lambda f: os.path.isdir(
                 os.path.join(path, f)), os.listdir(path)))
-
-            # print(dirs)
-            # print(files)
 
             for file in dirs:
                 if file == '__pycache__':
@@ -183,20 +205,20 @@ class Projects:
 
             for file in files:
 
+                if file.startswith('.'):
+                    continue
+
                 tree = QTreeWidgetItem(parent)
                 tree.setText(0, file)
                 tree.path = os.path.join(path, file)
                 tree.previous_name = file
-                if project_name_ + '.py' == file:
-                    self.open_script(tree)
-                    # open_item = tree
+                # if 'main.py' == file:
+                    # self.open_script(tree)
 
                 tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
                               Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
-
-                # print(file)
 
         add_leaves(parent, path)
         parent.sortItems(0, Qt.AscendingOrder)
@@ -204,15 +226,27 @@ class Projects:
         parent.setHeaderLabel(
             f"{os.path.split(path)[1]} [{files_count} files / {dir_count} dirs]")
 
-        # if open_item:
-            # self.open_script(open_item)
+        if os.path.exists(os.path.join(path, '.bcifr')):
+            files = list(
+                set(pickle.load(open(os.path.join(path, '.bcifr'), 'rb'))))
+
+            if 'main.py' in files:
+                files.pop(files.index('main.py'))
+
+            self.load_script_in_textedit(os.path.join(path, 'main.py'))
+            for file in files:
+                self.load_script_in_textedit(os.path.join(path, file))
+            self.core.show_interface('Development')
+        else:
+            if os.path.exists(os.path.join(path, 'main.py')):
+                self.load_script_in_textedit(os.path.join(path, 'main.py'))
 
     # ----------------------------------------------------------------------
     def load_scripts(self):
         """"""
         projects = os.listdir('default_projects')
         projects = filter(lambda d: os.path.isdir(os.path.join('default_projects', d)) and os.path.isfile(
-            os.path.join('default_projects', d, f"{d}.py")), projects)
+            os.path.join('default_projects', d, f"main.py")), projects)
 
         self.available_scripts = {'visualization': {},
                                   'stimuli': {},
@@ -258,11 +292,25 @@ class Projects:
             editor.textChanged.connect(lambda: self.parent.tabWidget_project.setTabText(
                 tab, f"{self.parent.tabWidget_project.tabText(tab).strip('*')}*"))
 
-    # ----------------------------------------------------------------------
+        parent = os.path.split(module)[0]
 
+        files = []
+        for i in range(self.parent.tabWidget_project.count()):
+            files.append(self.parent.tabWidget_project.tabText(i))
+        pickle.dump(set(files), open(os.path.join(parent, '.bcifr'), 'wb'))
+
+        if module not in self.project_files:
+            self.project_files.append(module)
+
+        # if selected := self.parent.treeWidget_project.currentItem():
+            # path = selected.path
+        # else:
+            # path = os.path.join('default_projects',
+                                # self.parent.treeWidget_project.project_name)
+
+    # ----------------------------------------------------------------------
     def show_create_project_dialog(self):
         """"""
-
         project = QUiLoader().load('bci_framework/qtgui/new_project.ui', self.parent)
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(lambda evt: self.create_project(project.lineEdit_project_name.text(),
                                                                                                       project.radioButton_visualization.isChecked(),
@@ -282,26 +330,18 @@ class Projects:
     # ----------------------------------------------------------------------
     def create_project(self, project_name, visualization, stimulus):
         """"""
-        # item = QListWidgetItem(self.parent.li)
-        # item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      # | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-        # item.setText(project_name)
-        # item.previous_name = project_name
-
         icon = QIcon()
         icon_name = 'icon_sti'
 
         if visualization:
             icon_name = 'icon_viz'
-            item = QListWidgetItem(
-                self.parent.listWidget_projects_visualizations)
+            item = QListWidgetItem(self.parent.listWidget_projects)
         elif stimulus:
             icon_name = 'icon_sti'
-            item = QListWidgetItem(
-                self.parent.listWidget_projects_visualizations)
+            item = QListWidgetItem(self.parent.listWidget_projects)
         else:
             icon_name = 'icon_dev'
-            item = QListWidgetItem(self.parent.listWidget_projects_others)
+            item = QListWidgetItem(self.parent.listWidget_projects)
 
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
                       Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -314,15 +354,20 @@ class Projects:
         item.icon_name = icon_name
 
         os.mkdir(os.path.join('default_projects', project_name))
-        with open(os.path.join('default_projects', project_name, f'{project_name}.py'), 'wb') as file:
+        with open(os.path.join('default_projects', project_name, f'main.py'), 'wb') as file:
             file.write(b'')
 
     # ----------------------------------------------------------------------
     def remove_project(self, evt):
         """"""
-
-        selected_project = self.parent.listWidget_projects.currentItem().text()
-        shutil.rmtree(os.path.join('default_projects', selected_project))
+        # item = [self.parent.listWidget_projects_delivery.currentItem(),
+                # self.parent.listWidget_projects_visualizations.currentItem(),
+                # self.parent.listWidget_projects_others.currentItem(),
+                # ]
+        selected_project = self.parent.listWidget_projects.currentItem()
+        # selected_project = list(filter(None, item))[0]
+        shutil.rmtree(os.path.join(
+            'default_projects', selected_project.text()))
         self.load_projects()
 
     # ----------------------------------------------------------------------
@@ -394,9 +439,9 @@ class Projects:
     def project_renamed(self, evt):
         """"""
         if hasattr(evt, 'previous_name'):
-            if evt.previous_name != evt.text():
-                shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join(
-                    'default_projects', evt.previous_name, f"{evt.text()}.py"))
+            if evt.previous_name.strip() != evt.text().strip():
+                # shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join(
+                    # 'default_projects', evt.previous_name, f"{evt.text()}.py"))
                 shutil.move(os.path.join('default_projects', evt.previous_name), os.path.join(
                     'default_projects', evt.text()))
                 evt.previous_name == evt.text()

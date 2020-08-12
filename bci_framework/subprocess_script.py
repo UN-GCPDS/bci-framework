@@ -86,10 +86,10 @@ class LoadSubprocess:
         try:
             try:
                 mode = request.urlopen(
-                    f'http://localhost:{self.port}/mode', timeout=5).read()
+                    f'http://localhost:{self.port}/mode', timeout=10).read()
             except:
                 mode = request.urlopen(
-                    f'http://localhost:5000/mode', timeout=5).read()
+                    f'http://localhost:5000/mode', timeout=10).read()
 
             if mode == b'visualization':
                 self.parent.widget_development_webview.show()

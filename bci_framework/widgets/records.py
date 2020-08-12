@@ -275,7 +275,8 @@ class Records:
             # print(samples, [max([end_streaming - samples, 0]), end_streaming])
 
             data_ = {'context': 'context',
-                     'data': self.record_reader.eeg[max([end_streaming - samples, 0]): end_streaming].T,
+                     'data': (self.record_reader.eeg[max([end_streaming - samples, 0]): end_streaming].T,
+                              self.record_reader.aux[max([end_streaming - samples, 0]): end_streaming].T),
                      'binary_created': datetime.now().timestamp(),
                      'created': datetime.now().timestamp(),
                      'samples': samples,

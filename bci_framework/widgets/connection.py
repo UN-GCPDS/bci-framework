@@ -112,6 +112,7 @@ class Connection:
     def on_connect(self, toggled):
         """"""
         if toggled:
+            # self.openbci_connect()
             try:
                 self.openbci_connect()
             except:
@@ -183,6 +184,11 @@ class Connection:
                              daisy=daisy, montage=channels, stream_samples=int(streaming_sample_rate))
 
         self.openbci.command(sample_rate)
+
+        # Some time this command not take effect
+        self.openbci.command(boardmode)
+        self.openbci.command(boardmode)
+        self.openbci.command(boardmode)
 
         self.openbci.leadoff_impedance(channels, pchan=pchan, nchan=nchan)
 
