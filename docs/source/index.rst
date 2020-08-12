@@ -1,4 +1,4 @@
-.. include:: _notebooks/00-readme.rst
+.. include:: _notebooks/readme.rst
 
 
 Navigation
