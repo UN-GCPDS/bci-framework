@@ -9,7 +9,7 @@ import subprocess
 from urllib import request
 from contextlib import closing
 
-from PySide2.QtCore import QTimer
+from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 from bci_framework.nbstreamreader import NonBlockingStreamReader as NBSR
@@ -64,6 +64,7 @@ class LoadSubprocess:
         self.debug = debug
         self.endpoint = endpoint
         self.web_view = getattr(self.parent, web_view)
+        self.plot_size = QSize(0, 0)
 
         if path:
             self.load_path(path)
@@ -84,23 +85,21 @@ class LoadSubprocess:
     def get_mode(self):
         """"""
         try:
-            try:
-                mode = request.urlopen(
-                    f'http://localhost:{self.port}/mode', timeout=10).read()
-            except:
-                mode = request.urlopen(
-                    f'http://localhost:5000/mode', timeout=10).read()
-
-            if mode == b'visualization':
-                self.parent.widget_development_webview.show()
-                self.load_webview(
-                    f'http://localhost:{self.port}', debug_javascript=False)
-            elif mode == b'stimuli':
-                self.parent.widget_development_webview.show()
-                self.load_webview(
-                    f'http://localhost:5000/{self.endpoint}', debug_javascript=True)
+            mode = request.urlopen(
+                f'http://localhost:{self.port}/mode', timeout=10).read()
         except:
             self.timer.singleShot(1000 / 30, self.get_mode)
+            return
+
+        if mode == b'visualization':
+            self.parent.widget_development_webview.show()
+            self.url = f'http://localhost:{self.port}'
+            self.load_webview(debug_javascript=False)
+            # self.parent.web_engine.resizeEvent.connect()
+        elif mode == b'stimuli':
+            self.parent.widget_development_webview.show()
+            self.url = f'http://localhost:{self.port}/{self.endpoint}'
+            self.load_webview(debug_javascript=True)
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
@@ -114,7 +113,7 @@ class LoadSubprocess:
             self.parent.web_engine.setUrl('about:blank')
 
     # ----------------------------------------------------------------------
-    def load_webview(self, url, debug_javascript=False):
+    def load_webview(self, debug_javascript=False):
         """"""
         if not hasattr(self.parent, 'web_engine'):
             self.parent.web_engine = QWebEngineView()
@@ -140,7 +139,23 @@ class LoadSubprocess:
             # settings = self.parent.web_engine.settings()
             # settings.ShowScrollBars(False)
 
-        self.parent.web_engine.setUrl(url)
+        # self.parent.web_engine.setUrl(url)
+        self.timer.singleShot(100, self.auto_size)
+
+    # ----------------------------------------------------------------------
+    def auto_size(self):
+        """"""
+        dpi = float(os.environ['BCISTREAM_DPI'])
+        f = 2.7
+
+        size = self.parent.web_engine.size()
+        if self.plot_size != size:
+            self.parent.web_engine.setUrl(
+                self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}')
+
+            self.plot_size = size
+
+        self.timer.singleShot(1000, self.auto_size)
 
     # ----------------------------------------------------------------------
     def get_free_port(self):

@@ -12,6 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   bci_framework.environments.visualization.offline
-   bci_framework.environments.visualization.view_widget
    bci_framework.environments.visualization.visualization
+   bci_framework.environments.visualization.visualization_widget

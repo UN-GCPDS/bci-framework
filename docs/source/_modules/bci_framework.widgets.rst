@@ -14,6 +14,5 @@ Submodules
 
    bci_framework.widgets.connection
    bci_framework.widgets.montage
-   bci_framework.widgets.preview
    bci_framework.widgets.projects
    bci_framework.widgets.records

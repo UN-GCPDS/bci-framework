@@ -7,7 +7,9 @@ from bci_framework import BCIFramework
 import sys
 import os
 
-# from PySide2 import QtCore, QtWidgets
+"""A distributed processing tool, stimuli delivery, psychophysiological
+experiments, and real-time visualizations for OpenBCI."""
+
 
 os.environ.setdefault('APP_NAME', 'BCI Framework')
 
@@ -17,14 +19,12 @@ if __name__ == "__main__":
 
     QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
     app = QApplication(sys.argv)
-    # app.setStyle("Fusion")
 
-    # QIcon.setThemeName("zafiro")
-    # QIcon.setThemeName("icons-dark")
-    # QIcon.setThemeName("breeze-dark")
+    os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
-    # pixmap = QPixmap("assets/splash2.svg")
-    # splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint|Qt.FramelessWindowHint)
+    # pixmap = QPixmap("assets/splash3.svg")
+    # splash = QSplashScreen(
+        # pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
     # splash.setMask(pixmap.mask())
     # splash.show()
     # splash.setStyleSheet("""
@@ -32,14 +32,14 @@ if __name__ == "__main__":
         # font-weight: normal;
         # font-size: 11pt;
         # """)
+
     # def splash_logging(msg):
         # if not splash is None:
-            # splash.showMessage('\t'+msg, color=QColor("#888e93"), alignment=Qt.AlignBottom)
+            # splash.showMessage(
+                # '\t' + msg, color=QColor("#888e93"), alignment=Qt.AlignBottom)
     # splash_logging(f'eeg-framework 0.1')
 
     app.processEvents()
-
-    # apply_stylesheet(app, theme='light_blue.xml', light_secondary=True)
 
     extra = {'danger': '#dc3545',
              'warning': '#ffc107',
@@ -50,7 +50,6 @@ if __name__ == "__main__":
                      # extra=extra, light_secondary=True)
 
     QIcon.setThemeName("icons-dark")
-    # QIcon.setThemeName("breeze-dark")
 
     frame = BCIFramework()
     frame.main.showMaximized()

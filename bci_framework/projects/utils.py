@@ -29,7 +29,12 @@ def loop_consumer(fn):
     def wrap(cls, *args, **kwargs):
         with OpenBCIConsumer(host=prop.HOST) as stream:
             for data in stream:
-                # if data.topic == 'eeg':
+                if data.topic == 'eeg':
+                    data.value['data'][0] = data.value['data'][0][:,
+                                                                  ::cls.subsample]
+                    data.value['data'][1] = data.value['data'][1][:,
+                                                                  ::cls.subsample]
+
                 fn(cls, data, data.topic, *args, **kwargs)
                 # cls.feed()
     return wrap
@@ -42,8 +47,20 @@ def fake_loop_consumer(fn):
         while True:
             t0 = time.time()
 
-            eeg = np.random.normal(0, 0.2, size=(16, 1000))
-            aux = np.random.normal(0, 0.2, size=(3, 1000))
+            eeg = np.random.normal(0, 0.2, size=(
+                16, prop.SAMPLE_RATE // cls.subsample))
+
+            if prop.BOARDMODE == 'default':
+                aux = np.random.normal(0, 0.2, size=(
+                    3, prop.SAMPLE_RATE // cls.subsample))
+            elif prop.BOARDMODE == 'analog':
+                aux = np.random.normal(0, 0.2, size=(
+                    3, prop.SAMPLE_RATE // cls.subsample))
+            elif prop.BOARDMODE == 'digital':
+                aux = np.random.normal(0, 0.2, size=(
+                    5, prop.SAMPLE_RATE // cls.subsample))
+            else:
+                aux = None
 
             class data:
                 """"""
@@ -59,7 +76,7 @@ def fake_loop_consumer(fn):
                     np.random.choice(range(ord('A'), ord('Z') + 1)))
                 fn(cls, data, 'marker', *args, **kwargs)
 
-            while time.time() < (t0 + 1):
+            while time.time() < (t0 + prop.SAMPLE_RATE / prop.STREAMING_SAMPLE_RATE):
                 time.sleep(0.01)
 
     return wrap

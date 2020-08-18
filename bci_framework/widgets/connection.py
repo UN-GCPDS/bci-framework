@@ -1,13 +1,16 @@
-import json
-
+import os
+from ..dialogs import Dialogs
 from openbci_stream.acquisition import Cyton, CytonBase
+import json
+import time
+import logging
+
+from ..projects import properties as prop
+
 # from ..config_manager import C
 # from PySide2.QtUiTools import QUiLoader
 # from PySide2.QtCore import QTimer
 # from PySide2.QtGui import QMovie
-from ..dialogs import Dialogs
-
-import os
 
 
 ########################################################################
@@ -43,8 +46,8 @@ class Connection:
         }
 
         self.update_connections()
-        self.update_environ()
         self.load_config()
+        self.update_environ()
         self.connect()
         self.core.config.connect_widgets(self.update_config, self.config)
 
@@ -115,7 +118,7 @@ class Connection:
             # self.openbci_connect()
             try:
                 self.openbci_connect()
-            except:
+            except Exception as e:
                 checks = []
 
                 if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
@@ -133,8 +136,14 @@ class Connection:
 
                 self.parent.pushButton_connect.setChecked(False)
 
+                Dialogs.critical_message(self.parent, 'Error', e)
+
         else:
-            self.openbci_disconnect()
+            try:
+                self.openbci_disconnect()
+            except:
+                pass
+            self.core.status_bar(f'Disconnect')
 
     # ----------------------------------------------------------------------
     def openbci_connect(self):
@@ -142,9 +151,11 @@ class Connection:
         if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
             mode = 'serial'
             endpoint = self.parent.comboBox_port.currentText()
+            os.environ['BCISTREAM_CONNECTION'] = json.dumps('serial')
         else:
             mode = 'wifi'
             endpoint = self.parent.comboBox_ip.currentText()
+            os.environ['BCISTREAM_CONNECTION'] = json.dumps('wifi')
 
         host = self.parent.comboBox_host.currentText()
 
@@ -178,17 +189,29 @@ class Connection:
         nchan = getattr(CytonBase, nchan.replace(' ', '_'))
 
         channels = self.core.montage.get_montage()
-        daisy = max(channels.keys()) > 8
+        # # daisy = prop.DAISY
 
         self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
-                             daisy=daisy, montage=channels, stream_samples=int(streaming_sample_rate))
+                             daisy=prop.DAISY, montage=channels, stream_samples=int(streaming_sample_rate))
 
         self.openbci.command(sample_rate)
 
         # Some time this command not take effect
-        self.openbci.command(boardmode)
-        self.openbci.command(boardmode)
-        self.openbci.command(boardmode)
+        boardmode_setted = False
+        for _ in range(10):
+            if b'Success' in self.openbci.command(boardmode):
+                logging.info(f'Bardmode setted in {boardmode} mode')
+                boardmode_setted = True
+                break
+            time.sleep(0.1)
+
+        self.boardmode = self.openbci.boardmode
+        if not boardmode_setted:
+            logging.warning('Boardmode not setted!')
+            Dialogs.warning_message(
+                self.parent, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
+            self.parent.comboBox_boardmode.setCurrentText(
+                self.boardmode.capitalize())
 
         self.openbci.leadoff_impedance(channels, pchan=pchan, nchan=nchan)
 
@@ -201,6 +224,9 @@ class Connection:
 
         self.openbci.start_stream()
         self.parent.pushButton_connect.setText('Disconnect')
+
+        self.core.status_bar(
+            f'OpenBCI connected and streaming in <b>{self.boardmode}</b> mode to <b>{endpoint}</b> running in <b>{host}</b>')
 
         self.update_environ()
 
@@ -225,4 +251,9 @@ class Connection:
         os.environ['BCISTREAM_SAMPLE_RATE'] = json.dumps(sps)
         os.environ['BCISTREAM_STREAMING_SAMPLE_RATE'] = json.dumps(
             int(self.parent.comboBox_streaming_sample_rate.currentText()))
+
+        os.environ['BCISTREAM_BOARDMODE'] = json.dumps(
+            self.parent.comboBox_boardmode.currentText().lower())
+
+
 

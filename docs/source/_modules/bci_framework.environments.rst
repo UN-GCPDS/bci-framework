@@ -13,12 +13,5 @@ Subpackages
    :maxdepth: 4
 
    bci_framework.environments.development
-   bci_framework.environments.visualization
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
    bci_framework.environments.stimuli_delivery
+   bci_framework.environments.visualization

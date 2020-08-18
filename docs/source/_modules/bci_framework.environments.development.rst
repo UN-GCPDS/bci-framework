@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 4
 
    bci_framework.environments.development.development
-   bci_framework.environments.development.nbstreamreader

@@ -22,14 +22,15 @@ class RecordTransformer:
         filename = now.strftime('%x%X').replace('/', '_').replace(':', '_')
 
         self.writer = HDF5_Writer(os.path.join(
-            'records', f'record-{filename}.h5'))
+            'records',
+            f'record-{filename}.h5'))
         # self.writer = HDF5_Writer(f'{filename}.h5')
 
         header = {'sample_rate': prop.SAMPLE_RATE,
                   'streaming_sample_rate': prop.STREAMING_SAMPLE_RATE,
                   'datetime': now.timestamp(),
                   'montage': prop.MONTAGE_NAME,
-                  'channels': prop.MONTAGE,
+                  'channels': prop.CHANNELS,
                   }
         self.writer.add_header(header)
 
@@ -40,13 +41,23 @@ class RecordTransformer:
         self.save_data()
 
     # ----------------------------------------------------------------------
-    # @loop_consumer
-
-    @fake_loop_consumer
-    def save_data(self, data):
+    @loop_consumer
+    def save_data(self, data, topic):
         """"""
-        # self.writer.add_eeg(data.value['data'], data.timestamp / 1000)
-        self.writer.add_eeg(data.T, datetime.now().timestamp())
+        # os.environ['BCI_RECORDING'] = 'True'
+
+        if topic == 'eeg':
+            dt = data.value['binary_created']
+            # dt = data.timestamp / 1000
+            eeg, aux = data.value['data']
+            self.writer.add_eeg(eeg, dt)
+            self.writer.add_aux(aux)
+
+        elif topic == 'marker':
+            marker = data.value['marker']
+            dt = data.value['datetime']
+            # dt = data.timestamp / 1000
+            self.writer.add_marker(marker, dt)
 
     # ----------------------------------------------------------------------
     def stop(self, *args, **kwargs):

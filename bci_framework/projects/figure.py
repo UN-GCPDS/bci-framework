@@ -6,10 +6,12 @@ import threading
 import logging
 from matplotlib.figure import Figure
 
+from bci_framework.projects import properties as prop
+
 from io import BytesIO
 from queue import Queue
 
-from flask import Flask, Response
+from flask import Flask, Response, request
 
 import sys
 
@@ -23,9 +25,10 @@ import numpy as np
 # matplotlib.use('agg')
 
 pyplot.style.use('dark_background')
-q = matplotlib.cm.get_cmap('tab20')
+q = matplotlib.cm.get_cmap('rainbow')
 matplotlib.rcParams['axes.prop_cycle'] = cycler(
     color=[q(m) for m in np.linspace(0, 1, 16)])
+
 matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
 matplotlib.rcParams['font.size'] = 15
@@ -129,16 +132,20 @@ class FigureStream(Figure):
         self.__output = BytesIO()
         self.__buffer = Queue(maxsize=60)
 
-        app = Flask(__name__)
-        app.add_url_rule('/', view_func=self.__video_feed)
-        app.add_url_rule('/mode', view_func=self.__mode)
+        self.subsample = 1
+        self.size = 'auto'
+        # self.tight_layout(rect=[0, 0.03, 1, 0.95])
+
+        self.app = Flask(__name__)
+        self.app.add_url_rule('/', view_func=self.__video_feed)
+        self.app.add_url_rule('/mode', view_func=self.__mode)
 
         if len(sys.argv) > 1:
             port = sys.argv[1]
         else:
             port = '5000'
 
-        Thread(target=app.run, kwargs={
+        Thread(target=self.app.run, kwargs={
             'host': '0.0.0.0', 'port': port, 'threaded': True}).start()
 
     # ----------------------------------------------------------------------
@@ -192,9 +199,18 @@ class FigureStream(Figure):
         self.__class_attr['thread'] = None
 
     # ----------------------------------------------------------------------
-
     def __video_feed(self):
         """"""
+
+        if self.size == 'auto':
+            width = request.values.get('width', None)
+            height = request.values.get('height', None)
+            if width and height and width.replace('.', '').isdigit() and height.replace('.', '').isdigit():
+                self.set_size_inches(float(width), float(height))
+
+            dpi = request.values.get('dpi', None)
+            if dpi and dpi.replace('.', '').isdigit():
+                    self.set_dpi(float(dpi))
 
         if self.__class_attr['thread'] is None:
             self.__class_attr['last_access'] = time.time()
@@ -211,7 +227,6 @@ class FigureStream(Figure):
         return Response(self.__get_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # ----------------------------------------------------------------------
-
     def clients(self):
         """"""
         return len(self.__class_attr['event'].events)
@@ -222,7 +237,6 @@ class FigureStream(Figure):
         return self.__buffer.qsize()
 
     # ----------------------------------------------------------------------
-
     def feed(self):
         """"""
         self.__output.truncate(0)
@@ -230,3 +244,69 @@ class FigureStream(Figure):
         self.canvas.print_figure(self.__output, format='jpeg')
 
         return self.__buffer.put(self.__output.getvalue())
+
+    # ----------------------------------------------------------------------
+    def get_info(self):
+        """"""
+        info = mne.create_info(list(prop.CHANNELS.values()),
+                               sfreq=prop.SAMPLE_RATE, ch_types="eeg")
+        info.set_montage(prop.MONTAGE_NAME)
+        return info
+
+    # ----------------------------------------------------------------------
+    def create_lines(self, mode='eeg', time=15, cmap='winter', subplot=[1, 1, 1]):
+        """"""
+        mode = mode.lower()
+        sr = prop.SAMPLE_RATE
+
+        if mode == 'eeg':
+            channels = len(prop.CHANNELS)
+            labels = None
+            ylim = 0, 16
+        elif mode == 'accel' or mode == 'default':
+            channels = 3
+            labels = ['X', 'Y', 'Z']
+            ylim = -6, 6
+            sr = sr / 10
+        elif mode == 'analog' and not prop.CONNECTION == 'wifi':
+            channels = 3
+            labels = ['A5(D11)', 'A6(D12)', 'A7(D13)']
+            ylim = 0, 255
+        elif mode == 'analog' and prop.CONNECTION == 'wifi':
+            channels = 2
+            labels = ['A5(D11)', 'A6(D12)']
+            ylim = 0, 255
+        elif mode == 'digital' and not prop.CONNECTION == 'wifi':
+            channels = 5
+            labels = ['D11', 'D12', 'D13', 'D17', 'D18']
+            ylim = 0, 1.2
+        elif mode == 'digital' and prop.CONNECTION == 'wifi':
+            channels = 3
+            labels = ['D11', 'D12', 'D17']
+            ylim = 0, 1.2
+
+        q = matplotlib.cm.get_cmap(cmap)
+        matplotlib.rcParams['axes.prop_cycle'] = cycler(
+            color=[q(m) for m in np.linspace(0, 1, channels)])
+
+        axis = self.add_subplot(*subplot)
+
+        a = np.empty(int(sr * time / self.subsample))
+        a.fill(np.nan)
+
+        lines = [axis.plot(a.copy(), a.copy(
+        ), '-', label=(labels[i] if labels else None))[0] for i in range(channels)]
+        axis.set_xlim(-time, 0)
+        axis.set_ylim(*ylim)
+
+        if mode != 'eeg':
+            axis.legend()
+
+        axis.grid(True, color='#ffffff', alpha=0.25, zorder=0)
+
+        lines = np.array(lines)
+        return axis, lines
+
+
+
+

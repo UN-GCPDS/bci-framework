@@ -27,3 +27,6 @@ Submodules
    bci_framework.config_manager
    bci_framework.core
    bci_framework.dialogs
+   bci_framework.doc_urls
+   bci_framework.nbstreamreader
+   bci_framework.subprocess_script

@@ -53,7 +53,7 @@ class BCIFramework(QtWidgets.QMainWindow):
         self.visualization = Visualization(self)
         self.stimuli_delivery = StimuliDelivery(self)
 
-        self.status_bar('No connected!')
+        self.status_bar('OpenBCI no connected')
         # self.status_bar('No connected!')
         # self.status_bar('No connected!')
 

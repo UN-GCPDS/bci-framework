@@ -141,6 +141,8 @@ class Development:
     # ----------------------------------------------------------------------
     def update_log(self):
         """"""
+        if not hasattr(self.preview_stream, 'stdout'):
+            return
         if line := self.preview_stream.stdout.readline(timeout=0.01):
             self.parent.plainTextEdit_preview_log.moveCursor(QTextCursor.End)
             self.parent.plainTextEdit_preview_log.insertPlainText(

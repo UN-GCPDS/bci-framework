@@ -11,11 +11,11 @@ from .srv.ws_handler import WSHandler
 StimuliAPI = object
 DEBUG = True
 
-# if len(sys.argv) > 1:
-    # port = sys.argv[1]
-# else:
-    # port = '5000'
-port = '5000'
+if len(sys.argv) > 1:
+    port = sys.argv[1]
+else:
+    port = '5000'
+# port = '5000'
 
 
 # ----------------------------------------------------------------------
@@ -86,7 +86,7 @@ def make_app(class_):
         "xsrf_cookies": False,
         'class': class_,
         'module': os.path.split(sys.path[0])[-1],
-        'port': 5000,
+        'port': port,
         'autoreload': False,
         'seed': random.randint(0, 1000),
     }

@@ -18,6 +18,7 @@ from datetime import datetime
 import sys
 import os
 import shutil
+import time
 
 from bci_framework.subprocess_script import run_subprocess
 from bci_framework.dialogs import Dialogs
@@ -116,17 +117,26 @@ class Records:
         # row = self.parent.tableWidget_records.rowCount()
         records = os.listdir('records')
         for i, filename in enumerate(records):
+            if not filename.endswith('h5'):
+                continue
+
             self.parent.tableWidget_records.insertRow(i)
 
-            for j, value in enumerate(self.get_metadata(filename)[:3]):
-
-                item = QTableWidgetItem(value)
-                item.previous_name = value
-
-                if j != (self.parent.tableWidget_records.columnCount() - 1):
-                    item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-
-                self.parent.tableWidget_records.setItem(i, j, item)
+            try:
+                for j, value in enumerate(self.get_metadata(filename)[:3]):
+                    item = QTableWidgetItem(value)
+                    item.previous_name = value
+                    if j != (self.parent.tableWidget_records.columnCount() - 1):
+                        item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                    self.parent.tableWidget_records.setItem(i, j, item)
+            except:
+                # item = QTableWidgetItem(f"[Corrupted file]")
+                # self.parent.tableWidget_records.setItem(i, 0, item)
+                # item = QTableWidgetItem(f"[Corrupted file]")
+                # self.parent.tableWidget_records.setItem(i, 1, item)
+                # item = QTableWidgetItem(f"{filename}")
+                # self.parent.tableWidget_records.setItem(i, 2, item)
+                pass
 
         self.parent.tableWidget_records.sortByColumn(1)
 
@@ -140,11 +150,11 @@ class Records:
         file = HDF5_Reader(os.path.join('records', filename))
 
         header = file.header
-        samples, channels = file.eeg.shape
+        channels, samples = file.eeg.shape
         dtm = datetime.fromtimestamp(header['datetime']).strftime("%x %X")
         sample_rate = header['sample_rate']
 
-        duration = str(timedelta(seconds=samples / sample_rate))
+        duration = str(timedelta(seconds=int(samples / sample_rate)))
 
         return [duration, dtm, filename.replace('.h5', ''), header['montage'], header['channels']]
 
@@ -305,11 +315,15 @@ class Records:
             self.timer.setInterval(1000 / 1)
             self.timer.timeout.connect(self.update_timer_record)
             self.timer.start()
+            # os.environ['BCI_RECORDING'] ------------------= 'False'
             self.subprocess_script = run_subprocess(
                 [sys.executable, os.path.join('transformers', 'record.py')])
+
+            # os.environ['BCI_RECORDING']
 
         else:
             self.timer.stop()
             self.parent.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
+            # time.sleep(3)
             self.load_records()

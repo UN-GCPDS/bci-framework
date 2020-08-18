@@ -46,3 +46,13 @@ class Dialogs:
                                                 QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
 
         return msgBox == QtWidgets.QMessageBox.Ok
+
+    # ----------------------------------------------------------------------
+
+    @classmethod
+    def warning_message(self, parent, title, text):
+        """"""
+        msgBox = QtWidgets.QMessageBox.warning(parent,
+                                               title,
+                                               text,
+                                               QtWidgets.QMessageBox.Ok)

@@ -18,25 +18,19 @@ class VisualizationWidget(QMdiSubWindow):
         super().__init__(*args, **kwargs)
 
         self.main = QUiLoader().load('bci_framework/qtgui/visualization_widget.ui', self)
-        # self.main.label_stream.hide()
         self.parent = parent
         self.current_viz = None
 
-        # self.timer = QTimer()
-
         self.setWindowFlag(Qt.FramelessWindowHint)
-        # plot = MatplotlibWidget()
         self.setWidget(self.main)
-
-        # self.main.Form /
 
         self.main.setStyleSheet("""
         QWidget.main_frame {
-            border: 2px solid #263238;
+            border: 2px solid red;
         }
         """)
 
-        self.update_visualizations_list()
+        # self.update_visualizations_list()
 
     # ----------------------------------------------------------------------
     def contextMenuEvent(self, event):
@@ -66,26 +60,26 @@ class VisualizationWidget(QMdiSubWindow):
         if self.current_viz:
             self.load_visualization(self.current_viz)
 
-    # ----------------------------------------------------------------------
-    def update_visualizations_list(self):
-        """"""
-        for i in range(self.parent.listWidget_projects.count()):
-            item = self.parent.listWidget_projects.item(i)
-            if item.icon_name == 'icon_viz':
-                self.main.comboBox_visualizations.addItem(item.text())
+    # # ----------------------------------------------------------------------
+    # def update_visualizations_list(self):
+        # """"""
+        # for i in range(self.parent.listWidget_projects.count()):
+            # item = self.parent.listWidget_projects.item(i)
+            # if item.icon_name == 'icon_viz':
+                # self.main.comboBox_visualizations.addItem(item.text())
 
-        self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(
-            self.main.comboBox_visualizations.currentText()))
+        # self.main.pushButton_execute.clicked.connect(lambda evt: self.load_visualization(
+            # self.main.comboBox_visualizations.currentText()))
 
     # ----------------------------------------------------------------------
     def load_visualization(self, visualization):
         """"""
         self.current_viz = visualization
-        module = os.path.join('default_projects', visualization, visualization)
+        module = os.path.join('default_projects', visualization, 'main.py')
         self.preview_stream = LoadSubprocess(
-            self.main, f'{module}.py', debug=False, web_view='gridLayout_webview')
-        self.main.comboBox_visualizations.hide()
-        self.main.pushButton_execute.hide()
+            self.main, module, debug=False, web_view='gridLayout_webview')
+        # self.main.comboBox_visualizations.hide()
+        # self.main.pushButton_execute.hide()
         # self.main.label_stream.show()
 
     # ----------------------------------------------------------------------

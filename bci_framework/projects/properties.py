@@ -26,8 +26,7 @@ class Properties:
     ```
     """
 
-    # SAMPLE_RATE = 250
-    # MONTAGE = {f'{i}': i for i in range(16)}
+    # SAMPLE_RATE = 1000
     # HOST = '192.168.1.1'
 
     # ----------------------------------------------------------------------

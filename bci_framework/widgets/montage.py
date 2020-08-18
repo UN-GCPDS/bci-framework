@@ -321,13 +321,14 @@ class Montage:
                     f"*{{color: {os.environ.get('PYSIDEMATERIAL_SECONDARYTEXTCOLOR', '')};}}")
 
     # ----------------------------------------------------------------------
-
     def get_montage(self):
         """"""
-        return {i: ch.currentText() for i, ch in enumerate((self.channels_names_widgets)) if ch.currentText() != 'Off'}
+        return {i + 1: ch.currentText() for i, ch in enumerate((self.channels_names_widgets)) if ch.currentText() != 'Off'}
 
     # ----------------------------------------------------------------------
     def update_environ(self):
         """"""
-        os.environ['BCISTREAM_MONTAGE'] = json.dumps(self.get_montage())
+        os.environ['BCISTREAM_CHANNELS'] = json.dumps(self.get_montage())
         os.environ['BCISTREAM_MONTAGE_NAME'] = json.dumps(self.montage_name)
+        os.environ['BCISTREAM_DAISY'] = json.dumps(
+            bool(list(filter(lambda x: x > 8, self.get_montage().keys()))))

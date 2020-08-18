@@ -1,17 +1,9 @@
 import json
-
-# import threading
-# import socket
-import random
-
-# from tornado.httpserver import HTTPServer
+import pickle
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
-# from tornado.ioloop import IOLoop
-# from tornado.web import Application, url  # RequestHandler, StaticFileHandler, Application, url
-# import os
+from kafka import KafkaProducer
 
-# DEBUG = socket.gethostname() == "arch"
-# DEBUG = True
+from bci_framework.projects import properties as prop
 
 clients = []
 
@@ -19,6 +11,16 @@ clients = []
 ########################################################################
 class WSHandler(WebSocketHandler):
     """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, *args, **kwargs):
+        """"""
+        self.marker_producer = KafkaProducer(
+            bootstrap_servers=[f'{prop.HOST}:9092'],
+            compression_type='gzip',
+            value_serializer=pickle.dumps
+        )
+        super().__init__(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def check_origin(self, origin):
@@ -86,5 +88,12 @@ class WSHandler(WebSocketHandler):
                     client.write_message(kwargs)
                 except WebSocketClosedError:
                     clients.pop(i)
+
+    # ----------------------------------------------------------------------
+    def bci_marker(self, **kwargs):
+        """"""
+        marker = kwargs['marker']
+        # marker['datetime'] = str(marker['datetime'])
+        self.marker_producer.send('marker', marker)
 
 
