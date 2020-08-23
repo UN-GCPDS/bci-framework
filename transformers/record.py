@@ -19,11 +19,12 @@ class RecordTransformer:
 
         now = datetime.now()
 
-        filename = now.strftime('%x%X').replace('/', '_').replace(':', '_')
+        filename = now.strftime('%x-%X').replace('/', '_').replace(':', '_')
+        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        os.makedirs(records_dir, exist_ok=True)
 
         self.writer = HDF5_Writer(os.path.join(
-            'records',
-            f'record-{filename}.h5'))
+            records_dir, f'record-{filename}.h5'))
         # self.writer = HDF5_Writer(f'{filename}.h5')
 
         header = {'sample_rate': prop.SAMPLE_RATE,
@@ -42,7 +43,7 @@ class RecordTransformer:
 
     # ----------------------------------------------------------------------
     @loop_consumer
-    def save_data(self, data, topic):
+    def save_data(self, data, topic, **kwargs):
         """"""
         # os.environ['BCI_RECORDING'] = 'True'
 

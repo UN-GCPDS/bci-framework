@@ -12,46 +12,48 @@ class Stream(FigureStream):
     # ----------------------------------------------------------------------
     def __init__(self):
         """"""
-        super().__init__(figsize=(16, 9), dpi=60)
+        super().__init__()
 
+        self.L = 1000
         t = 30
-        self.subsample = 32
-
-        self.axis, self.lines = self.create_lines(mode='eeg', time=t, cmap='cool')
-        self.time = np.linspace(-t, 0, self.lines[0].get_ydata().shape[0])
+        
+        self.create_buffer(t, aux_shape=3)
+       
+        self.axis, self.time, self.lines = self.create_lines(mode='eeg', time=-t, window=self.L, cmap='cool')
 
         self.axis.set_title('Raw EEG')
         self.axis.set_xlabel('Time [s]')   
         self.axis.set_ylabel('Channel')    
-
+        
+ 
+        self.axis.set_ylim(0, len(prop.CHANNELS)+1)
+        self.axis.set_yticks(range(1, len(prop.CHANNELS)+1))
+        self.axis.set_yticklabels(prop.CHANNELS.values())
+        
         self.stream()
-
+        
     # ----------------------------------------------------------------------
     @loop_consumer
-    # @fake_loop_consumer
-    def stream(self, data, topic):
-        """"""
-        if topic == "eeg":
+    def stream(self, data, topic, frame):
+        """""" 
+        
+        if topic == "eeg" and not frame % 5:
 
-             data, aux = data.value['data']
-             N = data.shape[1]
-
-             for i, line in enumerate(self.lines):
-                 y_data = line.get_ydata()
-                 y_data = np.roll(y_data, -N)
-                 y_data[-N:] = i + data[i] - data[i].mean() + 1
-                 line.set_data(self.time, y_data)
-
-             self.axis.set_ylim(0, len(prop.CHANNELS)+1)
-             self.axis.set_yticks(range(1, 17))
-             self.axis.set_yticklabels(prop.CHANNELS.values())
-
-             self.feed()
-
+            eeg = self.resample(self.buffer_eeg, self.L, axis=1)
+            eeg = self.centralize(eeg)
+        
+            for i, line in enumerate(self.lines):
+                line.set_data(self.time, eeg[i]+i+1)
+            
+            # if not frame % 5:
+            # logging.warning(f'feed! {frame} {prop.CHANNELS}')
+            self.feed()
+        
         elif topic == "marker":
-
             data = data.value
             logging.warning(data)
+      
+      
 
 
 if __name__ == '__main__':

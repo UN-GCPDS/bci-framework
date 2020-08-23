@@ -13,9 +13,9 @@ class Stream(FigureStream):
     # ----------------------------------------------------------------------
     def __init__(self):
         """"""
-        super().__init__(figsize=(16, 9), dpi=60)
+        super().__init__()
         
-        self.resample = 32
+        self.subsample = 25
         t = 30
         
         # self.tight_layout(rect=[0.03, 0.03, 1, 0.95])

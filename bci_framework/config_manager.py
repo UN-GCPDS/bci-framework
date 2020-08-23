@@ -14,7 +14,9 @@ class ConfigManager(ConfigParser):
         """Constructor"""
         super().__init__()
 
-        self.filename = os.path.abspath(filename)
+        user_dir = os.path.join(os.getenv('BCISTREAM_HOME'))
+        os.makedirs(user_dir, exist_ok=True)
+        self.filename = os.path.join(user_dir, filename)
         self.load()
 
     # ----------------------------------------------------------------------
@@ -23,7 +25,8 @@ class ConfigManager(ConfigParser):
         if os.path.exists(self.filename):
             self.read(self.filename)
         else:
-            shutil.copyfile('bciframework.default', self.filename)
+            shutil.copyfile(os.path.join(
+                os.getenv('BCISTREAM_ROOT'), 'bciframework.default'), self.filename)
         self.read(self.filename)
 
     # ----------------------------------------------------------------------

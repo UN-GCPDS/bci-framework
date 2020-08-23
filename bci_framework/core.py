@@ -3,7 +3,7 @@ from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
 
 from bci_framework.qtgui.icons import resource_rc
-from bci_framework.widgets import Montage, Projects, Connection, Records
+from bci_framework.widgets import Montage, Projects, Connection, Records, Impedances
 from bci_framework.environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 
@@ -48,6 +48,7 @@ class BCIFramework(QtWidgets.QMainWindow):
         self.montage = Montage(self)
         self.projects = Projects(self.main, self)
         self.records = Records(self.main, self)
+        self.impedances = Impedances(self.main, self)
 
         self.development = Development(self)
         self.visualization = Visualization(self)

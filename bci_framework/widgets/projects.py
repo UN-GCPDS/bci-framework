@@ -26,6 +26,12 @@ class Projects:
         self.parent = parent
         self.core = core
 
+        self.projects_dir = os.path.join(
+            os.getenv('BCISTREAM_HOME'), 'projects')
+        os.makedirs(self.projects_dir, exist_ok=True)
+        self.parent.label_projects_path.setText(self.projects_dir)
+        self.parent.label_projects_path.setStyleSheet('*{font-family: mono;}')
+
         self.parent.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent, "page_projects"))
 
@@ -115,15 +121,15 @@ class Projects:
         # self.parent.listWidget_projects_delivery.clear()
         # self.parent.listWidget_projects_others.clear()
 
-        projects = os.listdir('default_projects')
+        projects = os.listdir(self.projects_dir)
 
         projects = filter(lambda f: os.path.isdir(
-            os.path.join('default_projects', f)), projects)
+            os.path.join(self.projects_dir, f)), projects)
         projects = filter(lambda f: not f.startswith('__'), projects)
 
         for project in projects:
 
-            with open(os.path.join('default_projects', project, 'main.py'), 'r') as file:
+            with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
                 modules = {'FigureStream': (self.parent.listWidget_projects, 'icon_viz'),
@@ -137,8 +143,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -168,7 +174,7 @@ class Projects:
         self.parent.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent, "page_projects_files"))
 
-        path = os.path.join('default_projects', project_name)
+        path = os.path.join(self.projects_dir, project_name)
         # path = project_name
 
         self.parent.tabWidget_project.clear()
@@ -215,8 +221,8 @@ class Projects:
                 # if 'main.py' == file:
                     # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -244,9 +250,9 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_scripts(self):
         """"""
-        projects = os.listdir('default_projects')
-        projects = filter(lambda d: os.path.isdir(os.path.join('default_projects', d)) and os.path.isfile(
-            os.path.join('default_projects', d, f"main.py")), projects)
+        projects = os.listdir(self.projects_dir)
+        projects = filter(lambda d: os.path.isdir(os.path.join(self.projects_dir, d)) and os.path.isfile(
+            os.path.join(self.projects_dir, d, f"main.py")), projects)
 
         self.available_scripts = {'visualization': {},
                                   'stimuli': {},
@@ -254,7 +260,7 @@ class Projects:
 
         for project in projects:
 
-            path = '.'.join(['default_projects', project, project])
+            path = '.'.join([self.projects_dir, project, project])
             module = __import__(path, fromlist=[None])
 
             if hasattr(module, 'SCRIPT'):
@@ -323,7 +329,7 @@ class Projects:
 
         project.lineEdit_project_name.textChanged.connect(lambda str_:
                                                           project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
-                                                              os.path.join('default_projects', str_))))
+                                                              os.path.join(self.projects_dir, str_))))
 
         project.show()
 
@@ -343,8 +349,8 @@ class Projects:
             icon_name = 'icon_dev'
             item = QListWidgetItem(self.parent.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -353,8 +359,8 @@ class Projects:
         item.setIcon(icon)
         item.icon_name = icon_name
 
-        os.mkdir(os.path.join('default_projects', project_name))
-        with open(os.path.join('default_projects', project_name, f'main.py'), 'wb') as file:
+        os.mkdir(os.path.join(self.projects_dir, project_name))
+        with open(os.path.join(self.projects_dir, project_name, f'main.py'), 'wb') as file:
             file.write(b'')
 
     # ----------------------------------------------------------------------
@@ -367,7 +373,7 @@ class Projects:
         selected_project = self.parent.listWidget_projects.currentItem()
         # selected_project = list(filter(None, item))[0]
         shutil.rmtree(os.path.join(
-            'default_projects', selected_project.text()))
+            self.projects_dir, selected_project.text()))
         self.load_projects()
 
     # ----------------------------------------------------------------------
@@ -376,7 +382,7 @@ class Projects:
         if selected := self.parent.treeWidget_project.currentItem():
             path = selected.path
         else:
-            path = os.path.join('default_projects',
+            path = os.path.join(self.projects_dir,
                                 self.parent.treeWidget_project.project_name)
 
         if os.path.isfile(path):
@@ -402,7 +408,7 @@ class Projects:
         if selected := self.parent.treeWidget_project.currentItem():
             path = selected.path
         else:
-            path = os.path.join('default_projects',
+            path = os.path.join(self.projects_dir,
                                 self.parent.treeWidget_project.project_name)
 
         if os.path.isfile(path):
@@ -442,8 +448,8 @@ class Projects:
             if evt.previous_name.strip() != evt.text().strip():
                 # shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join(
                     # 'default_projects', evt.previous_name, f"{evt.text()}.py"))
-                shutil.move(os.path.join('default_projects', evt.previous_name), os.path.join(
-                    'default_projects', evt.text()))
+                shutil.move(os.path.join(self.projects_dir, evt.previous_name), os.path.join(
+                    self.projects_dir, evt.text()))
                 evt.previous_name == evt.text()
 
     # ----------------------------------------------------------------------

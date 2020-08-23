@@ -132,7 +132,7 @@ class FigureStream(Figure):
         self.__output = BytesIO()
         self.__buffer = Queue(maxsize=60)
 
-        self.subsample = 1
+        self.subsample = None
         self.size = 'auto'
         # self.tight_layout(rect=[0, 0.03, 1, 0.95])
 
@@ -212,6 +212,13 @@ class FigureStream(Figure):
             if dpi and dpi.replace('.', '').isdigit():
                     self.set_dpi(float(dpi))
 
+        else:
+
+            self.set_size_inches(*self.size)
+            dpi = request.values.get('dpi', None)
+            if dpi and dpi.replace('.', '').isdigit():
+                    self.set_dpi(float(dpi))
+
         if self.__class_attr['thread'] is None:
             self.__class_attr['last_access'] = time.time()
 
@@ -254,7 +261,13 @@ class FigureStream(Figure):
         return info
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode='eeg', time=15, cmap='winter', subplot=[1, 1, 1]):
+    def get_montage(self):
+        """"""
+        montage = mne.channels.make_standard_montage(prop.MONTAGE_NAME)
+        return montage
+
+    # ----------------------------------------------------------------------
+    def create_lines(self, mode='eeg', time=-15, window=1000, cmap='winter', fill=np.nan, subplot=[1, 1, 1]):
         """"""
         mode = mode.lower()
         sr = prop.SAMPLE_RATE
@@ -291,22 +304,66 @@ class FigureStream(Figure):
 
         axis = self.add_subplot(*subplot)
 
-        a = np.empty(int(sr * time / self.subsample))
-        a.fill(np.nan)
+        a = np.empty(window)
+        a.fill(fill)
 
         lines = [axis.plot(a.copy(), a.copy(
         ), '-', label=(labels[i] if labels else None))[0] for i in range(channels)]
-        axis.set_xlim(-time, 0)
+
+        if time > 0:
+            axis.set_xlim(0, time)
+            time = np.linspace(0, time, window)
+        else:
+            axis.set_xlim(time, 0)
+            time = np.linspace(time, 0, window)
         axis.set_ylim(*ylim)
 
         if mode != 'eeg':
             axis.legend()
 
         axis.grid(True, color='#ffffff', alpha=0.25, zorder=0)
-
         lines = np.array(lines)
-        return axis, lines
 
+        return axis, time, lines
 
+    # ----------------------------------------------------------------------
+    def create_buffer(self, seconds=30, aux_shape=3, fill=0):
+        """"""
+        chs = len(prop.CHANNELS)
+        time = (prop.SAMPLE_RATE * seconds)
 
+        self.buffer_eeg = np.empty((chs, time))
+        self.buffer_eeg.fill(fill)
 
+        self.buffer_aux = np.empty((aux_shape, time))
+        self.buffer_aux.fill(fill)
+
+    # ----------------------------------------------------------------------
+    def update_buffer(self, eeg, aux):
+        """"""
+        c = eeg.shape[1]
+        self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
+        self.buffer_eeg[:, -c:] = eeg
+
+        d = aux.shape[1]
+        self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
+        self.buffer_aux[:, -d:] = aux
+
+    # ----------------------------------------------------------------------
+    def resample(self, x, num, axis=-1):
+        """"""
+        ndim = x.shape[axis] // num
+        return x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
+
+    # ----------------------------------------------------------------------
+    def centralize(self, x, axis=0):
+        """"""
+        return np.apply_along_axis(lambda x_: x_ - x_.mean(), axis, x)
+
+    # ----------------------------------------------------------------------
+    def get_evoked(self):
+        """"""
+        comment = "bcistream"
+        evoked = mne.EvokedArray(
+            self.buffer_eeg, self.get_info(), 0, comment=comment, nave=0)
+        return evoked

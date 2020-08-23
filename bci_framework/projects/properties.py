@@ -26,6 +26,7 @@ class Properties:
     ```
     """
 
+    # CHANNELS = {f'{ch}': ch for ch in range(7)}
     # SAMPLE_RATE = 1000
     # HOST = '192.168.1.1'
 

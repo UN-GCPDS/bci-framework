@@ -41,6 +41,12 @@ class Records:
         self.load_records()
         self.connect()
 
+        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        os.makedirs(records_dir, exist_ok=True)
+
+        self.parent.label_records_path.setText(records_dir)
+        self.parent.label_records_path.setStyleSheet('*{font-family: mono;}')
+
         self.parent.widget_record.hide()
 
     # ----------------------------------------------------------------------
@@ -82,7 +88,8 @@ class Records:
 
                                             """)
         if response:
-            os.remove(os.path.join('records', f'{filename}.h5'))
+            records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+            os.remove(os.path.join(records_dir, f'{filename}.h5'))
             self.load_records()
 
     # ----------------------------------------------------------------------
@@ -93,10 +100,11 @@ class Records:
 
         old_name = item.previous_name
         new_name = item.text()
+        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
 
         if old_name != new_name:
-            shutil.move(os.path.join('records', f'{old_name}.h5'),
-                        os.path.join('records', f'{new_name}.h5'))
+            shutil.move(os.path.join(records_dir, f'{old_name}.h5'),
+                        os.path.join(records_dir, f'{new_name}.h5'))
             self.load_records()
 
     # ----------------------------------------------------------------------
@@ -115,7 +123,8 @@ class Records:
                 # i).setText(text)
 
         # row = self.parent.tableWidget_records.rowCount()
-        records = os.listdir('records')
+        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        records = os.listdir(records_dir)
         for i, filename in enumerate(records):
             if not filename.endswith('h5'):
                 continue
@@ -129,7 +138,9 @@ class Records:
                     if j != (self.parent.tableWidget_records.columnCount() - 1):
                         item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                     self.parent.tableWidget_records.setItem(i, j, item)
-            except:
+            except Exception as msg:
+                self.parent.tableWidget_records.removeRow(i)
+                # print(msg)
                 # item = QTableWidgetItem(f"[Corrupted file]")
                 # self.parent.tableWidget_records.setItem(i, 0, item)
                 # item = QTableWidgetItem(f"[Corrupted file]")
@@ -147,7 +158,8 @@ class Records:
     # ----------------------------------------------------------------------
     def get_metadata(self, filename):
         """"""
-        file = HDF5_Reader(os.path.join('records', filename))
+        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        file = HDF5_Reader(os.path.join(records_dir, filename))
 
         header = file.header
         channels, samples = file.eeg.shape

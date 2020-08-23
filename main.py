@@ -6,12 +6,17 @@ from PySide2.QtCore import Qt, QRect, QCoreApplication
 from bci_framework import BCIFramework
 import sys
 import os
+from pathlib import Path
 
 """A distributed processing tool, stimuli delivery, psychophysiological
 experiments, and real-time visualizations for OpenBCI."""
 
 
 os.environ.setdefault('APP_NAME', 'BCI Framework')
+os.environ.setdefault(
+    'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
+os.environ.setdefault('BCISTREAM_HOME', os.path.join(
+    Path.home(), '.bciframework'))
 
 
 if __name__ == "__main__":

@@ -12,6 +12,14 @@ from ..projects import properties as prop
 # from PySide2.QtCore import QTimer
 # from PySide2.QtGui import QMovie
 
+# from contextlib import contextmanager
+# from PyQt4 import QtCore
+# from PyQt4.QtGui import QApplication, QCursor
+
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QApplication
+from PySide2.QtGui import QCursor
+
 
 ########################################################################
 class Connection:
@@ -45,8 +53,8 @@ class Connection:
 
         }
 
-        self.update_connections()
         self.load_config()
+        self.update_connections()
         self.update_environ()
         self.connect()
         self.core.config.connect_widgets(self.update_config, self.config)
@@ -116,9 +124,11 @@ class Connection:
         """"""
         if toggled:
             # self.openbci_connect()
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             try:
                 self.openbci_connect()
-            except Exception as e:
+            except:
+                QApplication.restoreOverrideCursor()
                 checks = []
 
                 if 'serial' in self.parent.comboBox_connection_mode.currentText().lower():
@@ -130,20 +140,23 @@ class Connection:
                     checks.extend([f'* The server may not running, or running on a different IP that {self.parent.comboBox_host.currentText()}',
                                    '* This machine must have access to the server or running in the same network.',
                                    ])
+                else:
+                    checks.extend([f'* Verify that Kafka is running on this machine',
+                                   ])
+
                 checks = '\n'.join(checks)
                 Dialogs.critical_message(
                     self.parent, 'Connection error', f"{checks}")
 
                 self.parent.pushButton_connect.setChecked(False)
 
-                Dialogs.critical_message(self.parent, 'Error', e)
+                self.openbci_disconnect()
+
+            finally:
+                QApplication.restoreOverrideCursor()
 
         else:
-            try:
-                self.openbci_disconnect()
-            except:
-                pass
-            self.core.status_bar(f'Disconnect')
+            self.openbci_disconnect()
 
     # ----------------------------------------------------------------------
     def openbci_connect(self):
@@ -189,13 +202,22 @@ class Connection:
         nchan = getattr(CytonBase, nchan.replace(' ', '_'))
 
         channels = self.core.montage.get_montage()
-        # # daisy = prop.DAISY
 
         self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
                              daisy=prop.DAISY, montage=channels, stream_samples=int(streaming_sample_rate))
 
         self.openbci.command(sample_rate)
 
+        # if self.parent.checkBox_test_signal.isChecked():
+            # test_signal = self.parent.comboBox_test_signal.currentText()
+            # test_signal = getattr(
+                # CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
+            # self.openbci.command(test_signal)
+
+            # self.core.status_bar(
+                # f'OpenBCI connected on test mode ({test_signal}) to <b>{endpoint}</b> running in <b>{host}</b>')
+
+        # else:
         # Some time this command not take effect
         boardmode_setted = False
         for _ in range(10):
@@ -223,21 +245,41 @@ class Connection:
                                       srb1=srb1)
 
         self.openbci.start_stream()
+
+        if self.parent.checkBox_test_signal.isChecked():
+            test_signal = self.parent.comboBox_test_signal.currentText()
+            test_signal = getattr(
+                CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
+            self.openbci.command(test_signal)
+
+            self.core.status_bar(
+                f'OpenBCI connected on test mode ({test_signal}) to <b>{endpoint}</b> running in <b>{host}</b>')
+
+        else:
+
+            self.openbci.activate_channel(channels)
+            self.core.status_bar(
+                f'OpenBCI connected and streaming in <b>{self.boardmode}</b> mode to <b>{endpoint}</b> running in <b>{host}</b>')
+
         self.parent.pushButton_connect.setText('Disconnect')
-
-        self.core.status_bar(
-            f'OpenBCI connected and streaming in <b>{self.boardmode}</b> mode to <b>{endpoint}</b> running in <b>{host}</b>')
-
         self.update_environ()
 
     # ----------------------------------------------------------------------
     def openbci_disconnect(self):
         """"""
         # self.openbci.
-        self.openbci.stop_stream()
+        if self.parent.checkBox_test_signal.isChecked():
+            self.parent.groupBox_settings.setEnabled(False)
+            self.parent.groupBox_leadoff_impedance.setEnabled(False)
+        try:
+            self.openbci.stop_stream()
+        except:
+            pass
         self.parent.pushButton_connect.setText('Connect')
+        self.core.status_bar(f'Disconnect')
 
     # ----------------------------------------------------------------------
+
     def update_environ(self):
         """"""
         os.environ['BCISTREAM_HOST'] = json.dumps(

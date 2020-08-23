@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1084</width>
-    <height>602</height>
+    <width>1200</width>
+    <height>766</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -868,13 +868,13 @@ p, li { white-space: pre-wrap; }
      <property name="bottomMargin">
       <number>0</number>
      </property>
-     <item row="1" column="0">
+     <item row="1" column="1">
       <widget class="QTabWidget" name="tabWidget_widgets">
        <property name="tabPosition">
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>2</number>
        </property>
        <property name="documentMode">
         <bool>false</bool>
@@ -961,7 +961,7 @@ p, li { white-space: pre-wrap; }
                  </spacer>
                 </item>
                 <item row="2" column="0">
-                 <widget class="QGroupBox" name="groupBox_3">
+                 <widget class="QGroupBox" name="groupBox_leadoff_impedance">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
@@ -1028,7 +1028,7 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QGroupBox" name="groupBox_2">
+                 <widget class="QGroupBox" name="groupBox_settings">
                   <property name="title">
                    <string>Channel settings</string>
                   </property>
@@ -1172,7 +1172,7 @@ p, li { white-space: pre-wrap; }
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_4">
                        <property name="text">
-                        <string>SRB2</string>
+                        <string>SRB1</string>
                        </property>
                       </widget>
                      </item>
@@ -1210,7 +1210,7 @@ p, li { white-space: pre-wrap; }
                      <item row="1" column="0">
                       <widget class="QLabel" name="label_3">
                        <property name="text">
-                        <string>SRB1</string>
+                        <string>SRB2</string>
                        </property>
                       </widget>
                      </item>
@@ -1220,7 +1220,7 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QGroupBox" name="groupBox">
+                 <widget class="QGroupBox" name="groupBox_configuration">
                   <property name="title">
                    <string>Basic configuration</string>
                   </property>
@@ -1660,8 +1660,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>411</width>
-                  <height>355</height>
+                  <width>100</width>
+                  <height>30</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_9">
@@ -1762,6 +1762,56 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="tab_impedances">
+        <attribute name="title">
+         <string>Impedances</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_22" rowstretch="0,1,0">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_20">
+           <item>
+            <widget class="QPushButton" name="pushButton_start_impedance_measurement">
+             <property name="text">
+              <string>Measure Impedance</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_28">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <layout class="QGridLayout" name="gridLayout_impedances"/>
+         </item>
+         <item row="2" column="0">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tab_records">
         <attribute name="title">
          <string>Records</string>
@@ -1778,7 +1828,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <item row="0" column="0" rowspan="2">
           <widget class="QWidget" name="widget" native="true">
-           <layout class="QGridLayout" name="gridLayout_20" rowstretch="0,1,0">
+           <layout class="QGridLayout" name="gridLayout_20" rowstretch="0,0,0,1,0">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -1791,19 +1841,19 @@ p, li { white-space: pre-wrap; }
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="0" column="0">
+            <item row="0" column="0" colspan="2">
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <item>
                <widget class="QPushButton" name="pushButton_record">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="text">
                  <string>Record</string>
                 </property>
                 <property name="icon">
                  <iconset theme="media-record">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -1830,7 +1880,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="edit-delete">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1848,7 +1898,50 @@ p, li { white-space: pre-wrap; }
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0" colspan="2">
+             <widget class="QTableWidget" name="tableWidget_records">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>60</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>120</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Duration</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Datetime</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Name</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="2">
              <widget class="QWidget" name="widget_record" native="true">
               <layout class="QGridLayout" name="gridLayout_15">
                <item row="0" column="0">
@@ -1982,7 +2075,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-playback-start">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2003,47 +2096,14 @@ p, li { white-space: pre-wrap; }
               </layout>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QTableWidget" name="tableWidget_records">
-              <property name="alternatingRowColors">
-               <bool>true</bool>
+            <item row="1" column="0" colspan="2">
+             <widget class="QLabel" name="label_records_path">
+              <property name="text">
+               <string>.~/...</string>
               </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>60</number>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>120</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>false</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Duration</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Datetime</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Name</string>
-               </property>
-              </column>
              </widget>
             </item>
            </layout>
@@ -2087,64 +2147,7 @@ p, li { white-space: pre-wrap; }
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <spacer name="horizontalSpacer_14">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_add_project">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>22</width>
-                   <height>22</height>
-                  </size>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_remove_project">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>22</width>
-                   <height>22</height>
-                  </size>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QListWidget" name="listWidget_projects">
                <property name="editTriggers">
                 <set>QAbstractItemView::SelectedClicked</set>
@@ -2178,6 +2181,73 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="currentRow">
                 <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <spacer name="horizontalSpacer_14">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_add_project">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="folder-new">
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_remove_project">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="edit-delete">
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_projects_path">
+               <property name="text">
+                <string>.~/...</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -2234,7 +2304,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="go-up">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -2248,7 +2318,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2268,7 +2338,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2291,7 +2361,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2336,7 +2406,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-stop">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -2350,7 +2420,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-start">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -2377,7 +2447,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="edit-delete">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -2557,7 +2627,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionSave">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -2627,7 +2697,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>comboBox_port</tabstop>
   <tabstop>comboBox_ip</tabstop>
   <tabstop>comboBox_host</tabstop>
-  <tabstop>pushButton_connect</tabstop>
   <tabstop>tableWidget_records</tabstop>
   <tabstop>horizontalSlider_record</tabstop>
   <tabstop>pushButton_play_signal</tabstop>
@@ -2643,27 +2712,27 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>903</x>
-     <y>673</y>
+     <x>819</x>
+     <y>710</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1022</x>
-     <y>678</y>
+     <x>943</x>
+     <y>705</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>checkBox_test_signal</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_3</receiver>
+   <receiver>groupBox_leadoff_impedance</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>903</x>
-     <y>673</y>
+     <x>819</x>
+     <y>710</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1214</x>
+     <x>1070</x>
      <y>641</y>
     </hint>
    </hints>
@@ -2671,15 +2740,15 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>checkBox_test_signal</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_2</receiver>
+   <receiver>groupBox_settings</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>903</x>
-     <y>673</y>
+     <x>819</x>
+     <y>710</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1214</x>
+     <x>1070</x>
      <y>521</y>
     </hint>
    </hints>
@@ -2691,8 +2760,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>858</x>
-     <y>619</y>
+     <x>792</x>
+     <y>657</y>
     </hint>
     <hint type="destinationlabel">
      <x>1022</x>
@@ -2707,43 +2776,43 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>858</x>
-     <y>619</y>
+     <x>792</x>
+     <y>657</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1215</x>
-     <y>265</y>
+     <x>787</x>
+     <y>125</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_connect</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox</receiver>
+   <receiver>groupBox_configuration</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
+     <x>733</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1213</x>
-     <y>281</y>
+     <x>1070</x>
+     <y>339</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_connect</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_2</receiver>
+   <receiver>groupBox_settings</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
+     <x>733</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1214</x>
+     <x>1070</x>
      <y>521</y>
     </hint>
    </hints>
@@ -2751,15 +2820,15 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_connect</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_3</receiver>
+   <receiver>groupBox_leadoff_impedance</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
+     <x>733</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1214</x>
+     <x>1070</x>
      <y>641</y>
     </hint>
    </hints>
@@ -2771,12 +2840,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
+     <x>733</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>903</x>
-     <y>673</y>
+     <x>819</x>
+     <y>710</y>
     </hint>
    </hints>
   </connection>
@@ -2787,44 +2856,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
+     <x>733</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1022</x>
-     <y>678</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_connect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>widget_montage</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1215</x>
-     <y>595</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_connect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>widget</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1209</x>
-     <y>679</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1215</x>
-     <y>571</y>
+     <x>943</x>
+     <y>705</y>
     </hint>
    </hints>
   </connection>
@@ -2835,12 +2872,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>858</x>
-     <y>619</y>
+     <x>792</x>
+     <y>657</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1215</x>
-     <y>310</y>
+     <x>785</x>
+     <y>171</y>
     </hint>
    </hints>
   </connection>
@@ -2851,12 +2888,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1212</x>
-     <y>677</y>
+     <x>872</x>
+     <y>151</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1213</x>
-     <y>632</y>
+     <x>874</x>
+     <y>157</y>
     </hint>
    </hints>
   </connection>
@@ -2867,12 +2904,124 @@ p, li { white-space: pre-wrap; }
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>330</x>
-     <y>319</y>
+     <x>50</x>
+     <y>69</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1151</x>
-     <y>119</y>
+     <x>1143</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_play_signal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_record</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>817</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>816</x>
+     <y>111</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scrollArea</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>710</x>
+     <y>429</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>997</x>
+     <y>491</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_historical_montages</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>674</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>831</x>
+     <y>715</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_save_montage</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>656</x>
+     <y>423</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1059</x>
+     <y>730</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_montages</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>729</x>
+     <y>413</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>811</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_montage_channels</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>694</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1123</x>
+     <y>105</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_record</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>696</x>
+     <y>423</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>789</x>
+     <y>113</y>
     </hint>
    </hints>
   </connection>
