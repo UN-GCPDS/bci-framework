@@ -1,0 +1,26 @@
+[montages]
+montage1 = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,T5,P3,Pz,P4,T6,O1,Oz,O2
+last_montage = Basic 8ch
+montage2 = standard_1020|Fp1,Fp2,T3,C3,C4,T4,O1,O2
+montage3 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2,Off
+montage4 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2,Off
+montage5 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2
+
+[connection]
+mode = WiFi Module
+port = /dev/ttyUSB1
+ip = 192.168.1.113
+host = 192.168.1.1
+acquisition_sample_rate = 1K
+streaming_sample_rate = 100
+boardmode = ANALOG
+gain = 24
+input_type = NORMAL
+bias = INCLUDE
+srb1 = DISCONNECT
+srb2 = CONNECT
+pchan = TEST SIGNAL NOT APPLIED
+nchan = TEST SIGNAL APPLIED
+test_signal_type = 2X SLOW
+test_signal = False
+
