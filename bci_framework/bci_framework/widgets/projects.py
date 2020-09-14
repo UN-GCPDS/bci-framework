@@ -28,8 +28,10 @@ class Projects:
         self.parent = parent
         self.core = core
 
-        # self.projects_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'projects')
-        self.projects_dir = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects')
+        if '--debug' in sys.argv:
+            self.projects_dir = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects')
+        else:
+            self.projects_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'projects')
 
         os.makedirs(self.projects_dir, exist_ok=True)
         self.parent.label_projects_path.setText(self.projects_dir)

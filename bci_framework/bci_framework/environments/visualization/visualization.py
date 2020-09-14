@@ -1,5 +1,7 @@
 from .visualization_widget import VisualizationWidget
 
+from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidget
+
 
 ########################################################################
 class Visualization:
@@ -19,7 +21,7 @@ class Visualization:
     def connect(self):
         """"""
         # self.parent.comboBox_load_visualization.activated.connect(
-            # self.add_subwindow)
+        # self.add_subwindow)
         self.parent.pushButton_load_visualizarion.clicked.connect(
             self.add_subwindow)
 

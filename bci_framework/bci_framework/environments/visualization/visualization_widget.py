@@ -1,9 +1,12 @@
 import os
+import sys
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction
 from PySide2.QtCore import QTimer, Qt
+
+from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidget
 
 from ...subprocess_script import LoadSubprocess
 
@@ -16,21 +19,44 @@ class VisualizationWidget(QMdiSubWindow):
     def __init__(self, parent, *args, **kwargs):
         """Constructor"""
         super().__init__(*args, **kwargs)
-
-        self.main = QUiLoader().load('bci_framework/qtgui/visualization_widget.ui', self)
+        ui = os.path.realpath(os.path.join(__file__, '..', '..', '..', 'qtgui', 'visualization_widget.ui'))
+        self.main = QUiLoader().load(ui, self)
         self.parent = parent
         self.current_viz = None
+
+        if '--debug' in sys.argv:
+            self.projects_dir = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects')
+        else:
+            self.projects_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'projects')
+
+        self.menubar = QMenuBar(self)
+
+        menu_file = QMenu("File")
+        menu_file.addAction("Save")
+        menu_file.addAction("Exit")
+        self.menubar.addMenu(menu_file)
+
+        menu_edit = QMenu("Edit")
+        menu_edit.addAction("Save")
+        menu_edit.addAction("Exit")
+        self.menubar.addMenu(menu_edit)
+
+        # box = QVBoxLayout(self.main)
+        # box.setMenuBar(menubar)
+        self.main.gridLayout_menubar.setMenuBar(self.menubar)
+        # self.main.gridLayout_webview.setMenuBar(menubar)
+        # self.main.gridLayout_menubar.setStretch(0, 1)
+
+        # self.menubar.
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWidget(self.main)
 
         self.main.setStyleSheet("""
-        QWidget.main_frame {
-            border: 2px solid red;
+        * {
+        border: 2px solid red;
         }
         """)
-
-        # self.update_visualizations_list()
 
     # ----------------------------------------------------------------------
     def contextMenuEvent(self, event):
@@ -75,12 +101,12 @@ class VisualizationWidget(QMdiSubWindow):
     def load_visualization(self, visualization):
         """"""
         self.current_viz = visualization
-        module = os.path.join('default_projects', visualization, 'main.py')
+        module = os.path.join(self.projects_dir, visualization, 'main.py')
         self.preview_stream = LoadSubprocess(
             self.main, module, debug=False, web_view='gridLayout_webview')
-        # self.main.comboBox_visualizations.hide()
-        # self.main.pushButton_execute.hide()
-        # self.main.label_stream.show()
+
+        self.menubar.adjustSize()
+        self.menubar.setStyleSheet("""QMenuBar::item {width: 1px;}""")
 
     # ----------------------------------------------------------------------
     def stop_preview(self):

@@ -19,7 +19,7 @@ from .nbstreamreader import NonBlockingStreamReader as NBSR
 def run_subprocess(call):
     """"""
     my_env = os.environ.copy()
-    my_env['PYTHONPATH'] = ":".join(sys.path)
+    my_env['PYTHONPATH'] = ":".join(sys.path + [os.path.join(os.path.dirname(sys.argv[0]), 'bci_framework')])
 
     return subprocess.Popen(call,
                             stdout=subprocess.PIPE,
@@ -118,14 +118,6 @@ class LoadSubprocess:
         if not hasattr(self.parent, 'web_engine'):
             self.parent.web_engine = QWebEngineView()
 
-            self.parent.web_engine.setStyleSheet("""
-            * {
-                background-color: red;
-                border: 1px solid blue;
-                border-radius: 4px;
-            }
-            """)
-
             self.web_view.addWidget(self.parent.web_engine)
 
         if debug_javascript and self.debug:
@@ -140,6 +132,7 @@ class LoadSubprocess:
             # settings.ShowScrollBars(False)
 
         # self.parent.web_engine.setUrl(url)
+
         self.timer.singleShot(100, self.auto_size)
 
     # ----------------------------------------------------------------------
