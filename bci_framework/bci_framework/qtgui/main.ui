@@ -34,7 +34,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -71,15 +71,15 @@
            <widget class="QComboBox" name="comboBox_load_experiment">
             <item>
              <property name="text">
-              <string>Load experiment...</string>
+              <string>Select experiment...</string>
              </property>
             </item>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_9">
+           <widget class="QPushButton" name="pushButton_load_experiment">
             <property name="text">
-             <string>load</string>
+             <string>Load experiment</string>
             </property>
            </widget>
           </item>
@@ -119,9 +119,16 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_13">
+           <widget class="QPushButton" name="pushButton_stimuli_browser">
             <property name="text">
-             <string>Restart delivery</string>
+             <string>Open in browser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_stimuli_subwindow">
+            <property name="text">
+             <string>Open in subwindow</string>
             </property>
            </widget>
           </item>
@@ -270,7 +277,8 @@ p, li { white-space: pre-wrap; }
              <string>Add visualization</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -288,14 +296,14 @@ p, li { white-space: pre-wrap; }
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_11">
+           <widget class="QPushButton" name="pushButton_visualizations_reload_all">
             <property name="text">
              <string>Reload all</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_10">
+           <widget class="QPushButton" name="pushButton_visualizations_remove_all">
             <property name="text">
              <string>Remove all</string>
             </property>
@@ -874,7 +882,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="documentMode">
         <bool>false</bool>
@@ -1917,7 +1925,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
