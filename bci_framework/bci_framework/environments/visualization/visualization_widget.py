@@ -168,10 +168,10 @@ class VisualizationWidget(QMdiSubWindow):
             menu_view.addAction(
                 QAction('Reload', menu_view, triggered=self.reload))
             menu_view.addAction(
-                QAction('Close', menu_view, triggered=self.remove))
+                QAction('Save capture', menu_view, triggered=self.save_img))
             menu_view.addSeparator()
             menu_view.addAction(
-                QAction('Save capture', menu_view, triggered=self.save_img))
+                QAction('Close', menu_view, triggered=self.remove))
         else:
             menu_view.setEnabled(False)
         self.menubar.addMenu(menu_view)
