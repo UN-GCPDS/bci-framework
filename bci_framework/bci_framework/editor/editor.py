@@ -26,7 +26,7 @@ class BCIEditor(QTextEdit):
         color: white;
         height: 18px;
         font-weight: normal;
-        font-family: 'monospace';
+        font-family: 'DejaVu Sans Mono';
         font-size: 15px;
         line-height: 15px;
         border: 1px solid #263238;
@@ -178,7 +178,8 @@ class BCIEditor(QTextEdit):
                         uncommented.append(line.replace(f'{char}', '', 1))
                     else:
                         if line[start_:start_ + len(char)] == f'{char}':
-                            uncommented.append(line.replace(f'{char}', '', 1))
+                            uncommented.append(
+                                line.replace(f'{char}', '', 1))
                         else:
                             tc.insertText(selected)
                             return
@@ -235,7 +236,8 @@ class BCIEditor(QTextEdit):
             for line in selected.split('\u2029'):
                 if line.strip():
                     start_ = line.find(line.replace(' ', '')[0])
-                    commented.append(" " * start_ + f'{char}' + line[start_:])
+                    commented.append(
+                        " " * start_ + f'{char}' + line[start_:])
                     end += len(char)
                 else:
                     commented.append(line)
