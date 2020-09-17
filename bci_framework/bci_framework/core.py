@@ -133,7 +133,7 @@ class BCIFramework:
         self.main.plainTextEdit_preview_log.setStyleSheet("""
         *{
         font-weight: normal;
-        font-family: 'mono';
+        font-family: 'DejaVu Sans Mono';
         font-size: 13px;
         }
         """)
