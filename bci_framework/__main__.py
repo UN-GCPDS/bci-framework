@@ -21,17 +21,25 @@ experiments, and real-time visualizations for OpenBCI."""
 
 
 os.environ.setdefault('APP_NAME', 'BCI Framework')
-os.environ.setdefault('BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
-os.environ.setdefault('BCISTREAM_HOME', os.path.join(Path.home(), '.bciframework'))
-os.environ.setdefault('BCISTREAM_PIDS', os.path.join(os.getenv('BCISTREAM_HOME'), '.pids'))
-os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
+os.environ.setdefault(
+    'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
+os.environ.setdefault('BCISTREAM_HOME', os.path.join(
+    Path.home(), '.bciframework'))
+os.environ.setdefault('BCISTREAM_PIDS', os.path.join(
+    os.getenv('BCISTREAM_HOME'), '.pids'))
+os.environ.setdefault('BCISTREAM_TMP', os.path.join(
+    os.getenv('BCISTREAM_HOME'), 'tmp'))
 
 
 if not os.path.exists(os.getenv('BCISTREAM_TMP')):
     os.mkdir(os.getenv('BCISTREAM_TMP'))
 
 
+# sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 # ----------------------------------------------------------------------
+
+
 def kill_subprocess():
     """"""
     print('Killing subprocess')
@@ -39,15 +47,14 @@ def kill_subprocess():
         for pid in map(int, file.readlines()):
             try:
                 print(f'Killing {pid}')
-                os.kill(pid, signal.SIGKILL) #or signal.SIGKILL
+                os.kill(pid, signal.SIGKILL)  # or signal.SIGKILL
             except ProcessLookupError:
                 pass
-            
+
     with open(os.environ['BCISTREAM_PIDS'], 'w') as file:
         pass
-    
-    
-        
+
+
 # ----------------------------------------------------------------------
 def main():
     """"""
@@ -60,7 +67,7 @@ def main():
     app.processEvents()
     app.setQuitOnLastWindowClosed(False)
     app.lastWindowClosed.connect(kill_subprocess)
-    app.lastWindowClosed.connect(lambda :app.quit())
+    app.lastWindowClosed.connect(lambda: app.quit())
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
@@ -86,7 +93,7 @@ def main():
 
     frame = BCIFramework()
     frame.main.showMaximized()
-    
+
     if '--no_splash' in sys.argv:
         splash.finish(frame)
 
