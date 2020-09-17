@@ -26,7 +26,7 @@ class Stream(FigureStream):
         self.axis.set_xlabel('Time [s]')
         self.axis.set_ylabel('Channel')
 
-        # self.axis.set_ylim(0, len(prop.CHANNELS)+1)
+        self.axis.set_ylim(0, len(prop.CHANNELS)+1)
         self.axis.set_yticks(range(1, len(prop.CHANNELS) + 1))
         self.axis.set_yticklabels(prop.CHANNELS.values())
         
@@ -44,9 +44,7 @@ class Stream(FigureStream):
 
             for i, line in enumerate(self.lines):
                 line.set_data(self.time, eeg[i] + i + 1)
-
-            # if not frame % 5:
-            logging.warning(f'feed! {frame} {prop.CHANNELS} {eeg.max()}')
+                
             self.feed()
 
         elif topic == "marker":

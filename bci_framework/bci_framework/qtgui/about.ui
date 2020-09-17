@@ -39,7 +39,7 @@
       </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Verison</string>
+        <string>Version</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="tab_license">
@@ -84,6 +84,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</string>
        <attribute name="title">
         <string>Credits</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_3"/>
       </widget>
      </widget>
     </item>

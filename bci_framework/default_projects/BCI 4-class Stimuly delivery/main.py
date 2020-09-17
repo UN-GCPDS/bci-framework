@@ -185,7 +185,8 @@ class Arrows(StimuliAPI):
         """"""
         self.hint.html = ''  # clear the stimulusClosed WS
         # show new stimuli after a delay
-        self.interval = timer.set_timeout(self.random_stimulus, aleatory_pause)
+        self.interval = timer.set_timeout(
+            self.random_stimulus, aleatory_pause)
         print(f"Aleatory pause: {aleatory_pause}")
 
     # ----------------------------------------------------------------------

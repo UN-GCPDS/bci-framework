@@ -98,6 +98,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="lineEdit_stimuli_ip">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>200</width>
@@ -120,6 +123,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_stimuli_browser">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Open in browser</string>
             </property>
@@ -127,6 +133,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_stimuli_subwindow">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Open in subwindow</string>
             </property>
@@ -278,7 +287,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset theme="list-add">
-              <normaloff>.</normaloff>.</iconset>
+              <normaloff>../../../../../../../.designer/backup</normaloff>../../../../../../../.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -297,6 +306,9 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_visualizations_reload_all">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Reload all</string>
             </property>
@@ -304,6 +316,9 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_visualizations_remove_all">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Remove all</string>
             </property>
@@ -1130,7 +1145,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
-                       <normaloff>../../../../../.designer/backup</normaloff>../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="iconSize">
                       <size>
@@ -1152,6 +1167,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item row="1" column="0">
              <widget class="QCheckBox" name="checkBox_view_impedances">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="layoutDirection">
                <enum>Qt::RightToLeft</enum>
               </property>
@@ -1418,7 +1436,10 @@ p, li { white-space: pre-wrap; }
                       <enum>Qt::RightToLeft</enum>
                      </property>
                      <property name="text">
-                      <string>Send leadoff commands</string>
+                      <string>Not send leadoff commands</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -2000,7 +2021,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2020,7 +2041,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2101,7 +2122,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="go-up">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -2115,7 +2136,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2135,7 +2156,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2158,7 +2179,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2203,7 +2224,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-stop">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -2217,7 +2238,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="media-playback-start">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="flat">
                      <bool>false</bool>
@@ -2244,7 +2265,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="icon">
                      <iconset theme="edit-delete">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -2316,7 +2337,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="media-record">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -2343,7 +2364,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="edit-delete">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -2538,7 +2559,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-playback-start">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2726,7 +2747,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionSave">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -2809,8 +2830,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1057</x>
-     <y>684</y>
+     <x>1015</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
      <x>1022</x>
@@ -2825,8 +2846,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1057</x>
-     <y>684</y>
+     <x>1015</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -2841,12 +2862,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1099</x>
-     <y>151</y>
+     <x>1369</x>
+     <y>750</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1101</x>
-     <y>157</y>
+     <x>1370</x>
+     <y>612</y>
     </hint>
    </hints>
   </connection>
@@ -2857,12 +2878,12 @@ p, li { white-space: pre-wrap; }
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>50</x>
-     <y>69</y>
+     <x>217</x>
+     <y>387</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1370</x>
-     <y>126</y>
+     <x>1017</x>
+     <y>100</y>
     </hint>
    </hints>
   </connection>
@@ -2873,12 +2894,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1057</x>
-     <y>684</y>
+     <x>1015</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1088</x>
-     <y>128</y>
+     <x>1046</x>
+     <y>132</y>
     </hint>
    </hints>
   </connection>
@@ -2889,12 +2910,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1102</x>
-     <y>756</y>
+     <x>1060</x>
+     <y>746</y>
     </hint>
    </hints>
   </connection>
@@ -2905,12 +2926,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1221</x>
-     <y>761</y>
+     <x>1179</x>
+     <y>751</y>
     </hint>
    </hints>
   </connection>
@@ -2921,12 +2942,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1088</x>
-     <y>128</y>
+     <x>1046</x>
+     <y>132</y>
     </hint>
    </hints>
   </connection>
@@ -2937,12 +2958,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1102</x>
-     <y>756</y>
+     <x>1060</x>
+     <y>746</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1221</x>
-     <y>761</y>
+     <x>1179</x>
+     <y>751</y>
     </hint>
    </hints>
   </connection>
@@ -2950,15 +2971,15 @@ p, li { white-space: pre-wrap; }
    <sender>checkBox_send_leadoff</sender>
    <signal>toggled(bool)</signal>
    <receiver>label_12</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1330</x>
      <y>602</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1047</x>
-     <y>641</y>
+     <x>1014</x>
+     <y>649</y>
     </hint>
    </hints>
   </connection>
@@ -2966,7 +2987,7 @@ p, li { white-space: pre-wrap; }
    <sender>checkBox_send_leadoff</sender>
    <signal>toggled(bool)</signal>
    <receiver>comboBox_nchan</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1360</x>
@@ -2985,8 +3006,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1102</x>
-     <y>756</y>
+     <x>1060</x>
+     <y>746</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -2998,15 +3019,15 @@ p, li { white-space: pre-wrap; }
    <sender>checkBox_send_leadoff</sender>
    <signal>toggled(bool)</signal>
    <receiver>label_13</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1303</x>
      <y>611</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1043</x>
-     <y>683</y>
+     <x>1016</x>
+     <y>687</y>
     </hint>
    </hints>
   </connection>
@@ -3017,8 +3038,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3030,11 +3051,11 @@ p, li { white-space: pre-wrap; }
    <sender>checkBox_send_leadoff</sender>
    <signal>toggled(bool)</signal>
    <receiver>comboBox_pchan</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1391</x>
-     <y>607</y>
+     <x>1364</x>
+     <y>611</y>
     </hint>
     <hint type="destinationlabel">
      <x>1184</x>
@@ -3049,8 +3070,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1397</x>
-     <y>421</y>
+     <x>1364</x>
+     <y>425</y>
     </hint>
     <hint type="destinationlabel">
      <x>1302</x>
@@ -3069,8 +3090,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1163</x>
-     <y>512</y>
+     <x>1133</x>
+     <y>540</y>
     </hint>
    </hints>
   </connection>
@@ -3085,8 +3106,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1126</x>
-     <y>439</y>
+     <x>1093</x>
+     <y>464</y>
     </hint>
    </hints>
   </connection>
@@ -3101,8 +3122,8 @@ p, li { white-space: pre-wrap; }
      <y>423</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1240</x>
-     <y>496</y>
+     <x>1210</x>
+     <y>501</y>
     </hint>
    </hints>
   </connection>
@@ -3113,8 +3134,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3129,8 +3150,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1102</x>
-     <y>756</y>
+     <x>1060</x>
+     <y>746</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3149,8 +3170,8 @@ p, li { white-space: pre-wrap; }
      <y>423</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1047</x>
-     <y>489</y>
+     <x>1034</x>
+     <y>501</y>
     </hint>
    </hints>
   </connection>
@@ -3165,8 +3186,8 @@ p, li { white-space: pre-wrap; }
      <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1037</x>
-     <y>455</y>
+     <x>999</x>
+     <y>463</y>
     </hint>
    </hints>
   </connection>
@@ -3181,8 +3202,8 @@ p, li { white-space: pre-wrap; }
      <y>420</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1180</x>
-     <y>477</y>
+     <x>1141</x>
+     <y>502</y>
     </hint>
    </hints>
   </connection>
@@ -3197,8 +3218,8 @@ p, li { white-space: pre-wrap; }
      <y>420</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1246</x>
-     <y>451</y>
+     <x>1210</x>
+     <y>463</y>
     </hint>
    </hints>
   </connection>
@@ -3213,8 +3234,8 @@ p, li { white-space: pre-wrap; }
      <y>414</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1030</x>
-     <y>525</y>
+     <x>996</x>
+     <y>539</y>
     </hint>
    </hints>
   </connection>
@@ -3225,12 +3246,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1379</x>
-     <y>424</y>
+     <x>1364</x>
+     <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1360</x>
-     <y>481</y>
+     <x>1334</x>
+     <y>502</y>
     </hint>
    </hints>
   </connection>
@@ -3241,8 +3262,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3257,12 +3278,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1407</x>
-     <y>126</y>
+     <x>1365</x>
+     <y>134</y>
     </hint>
    </hints>
   </connection>
@@ -3273,8 +3294,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>1092</x>
@@ -3289,8 +3310,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1057</x>
-     <y>684</y>
+     <x>1015</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
      <x>1091</x>
@@ -3305,12 +3326,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1349</x>
-     <y>746</y>
+     <x>1126</x>
+     <y>353</y>
     </hint>
    </hints>
   </connection>
@@ -3321,12 +3342,28 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1408</x>
-     <y>762</y>
+     <x>915</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
      <y>125</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBox_view_impedances</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>877</x>
+     <y>394</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1324</x>
+     <y>159</y>
     </hint>
    </hints>
   </connection>

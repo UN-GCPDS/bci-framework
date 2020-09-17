@@ -196,11 +196,24 @@ class BCIFramework:
     # ----------------------------------------------------------------------
     def show_about(self, event=None):
         """"""
-        about = QUiLoader().load('bci_framework/qtgui/about.ui', self)
+
+        frame = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'about.ui')
+        about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 
         about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(
             lambda evt: about.destroy())
+
+        about.tabWidget.setCurrentIndex(0)
+
+        about.plainTextEdit_license.setStyleSheet("""
+        *{
+        font-weight: normal;
+        font-family: 'DejaVu Sans Mono';
+        font-size: 13px;
+        }
+        """)
 
         about.show()
 

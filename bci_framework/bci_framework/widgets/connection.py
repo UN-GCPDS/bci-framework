@@ -87,9 +87,11 @@ class Connection:
                 self.parent_frame.comboBox_sample_rate.setCurrentIndex(0)
 
             for index in range(3, self.parent_frame.comboBox_streaming_sample_rate.count()):
-                self.parent_frame.comboBox_streaming_sample_rate.model().item(index).setEnabled(False)
+                self.parent_frame.comboBox_streaming_sample_rate.model().item(
+                    index).setEnabled(False)
             if self.parent_frame.comboBox_streaming_sample_rate.currentIndex() >= 3:
-                self.parent_frame.comboBox_streaming_sample_rate.setCurrentIndex(2)
+                self.parent_frame.comboBox_streaming_sample_rate.setCurrentIndex(
+                    2)
 
             self.parent_frame.label_port_ip.setText('Port')
             self.parent_frame.comboBox_ip.hide()
@@ -227,8 +229,9 @@ class Connection:
 
         self.session_settings(channels, bias, gain, srb1, adsinput, srb2)
 
-        if self.parent_frame.checkBox_send_leadoff.isChecked():
-            self.openbci.leadoff_impedance(channels, pchan=pchan, nchan=nchan)
+        if not self.parent_frame.checkBox_send_leadoff.isChecked():
+            self.openbci.leadoff_impedance(
+                channels, pchan=pchan, nchan=nchan)
 
         if self.parent_frame.checkBox_test_signal.isChecked():
             test_signal = self.parent_frame.comboBox_test_signal.currentText()

@@ -289,7 +289,8 @@ class Montage:
         self.connect()
 
         self.topoplot_impedance = TopoplotImpedances()
-        self.parent_frame.gridLayout_impedances.addWidget(self.topoplot_impedance)
+        self.parent_frame.gridLayout_impedances.addWidget(
+            self.topoplot_impedance)
         self.update_impedance()
 
         self.load_montage()
@@ -318,7 +319,8 @@ class Montage:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent_frame.comboBox_montages.activated.connect(self.update_topoplot)
+        self.parent_frame.comboBox_montages.activated.connect(
+            self.update_topoplot)
         # self.parent.comboBox_historical_montages.activated.connect(
         # lambda evt: self.load_montage(self.parent.comboBox_historical_montages.currentText()))
         # self.parent.comboBox_historical_montages.editTextChanged.connect(
@@ -329,14 +331,16 @@ class Montage:
         self.parent_frame.comboBox_montage_channels.activated.connect(
             self.update_topoplot)
 
-        self.parent_frame.pushButton_save_montage.clicked.connect(self.save_montage)
+        self.parent_frame.pushButton_save_montage.clicked.connect(
+            self.save_montage)
         self.parent_frame.pushButton_remove_montage.clicked.connect(
             self.delete_montage)
 
         self.parent_frame.tableWidget_montages.itemDoubleClicked.connect(
             self.load_montage)
 
-        self.parent_frame.checkBox_view_impedances.clicked.connect(self.change_plot)
+        self.parent_frame.checkBox_view_impedances.clicked.connect(
+            self.change_plot)
 
     # ----------------------------------------------------------------------
     def change_plot(self):
@@ -499,7 +503,8 @@ class Montage:
     def delete_montage(self, event=None):
         """"""
         row = self.parent_frame.tableWidget_montages.currentRow()
-        config_name = self.parent_frame.tableWidget_montages.item(row, 0).config_name
+        config_name = self.parent_frame.tableWidget_montages.item(
+            row, 0).config_name
         self.core.config.remove_option('montages', config_name)
         self.core.config.save()
         self.set_saved_montages()
@@ -580,11 +585,11 @@ class Montage:
         for channel, label in zip(channels, self.labels_names_widgets):
             if channels.count(channel) > 1:
                 label.setStyleSheet(
-                    "QLabel{color: #ff1744;}QLabel:disabled{color: rgb(255, 23, 68, 0.2)};")
+                    "QLabel{color: #ff1744;}QLabel:disabled{color: rgba(255, 23, 68, 0.2)};")
             else:
                 label.setStyleSheet(
                     f"QLabel{{color: {os.environ.get('PYSIDEMATERIAL_SECONDARYTEXTCOLOR', '')};}}"
-                    f"QLabel:disabled{{color: rgb(255, 255, 255, 0.2) }}")
+                    f"QLabel:disabled{{color: rgba(255, 255, 255, 0.2) }}")
 
     # ----------------------------------------------------------------------
     def get_montage(self):
