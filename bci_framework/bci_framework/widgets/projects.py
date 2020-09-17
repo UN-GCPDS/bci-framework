@@ -29,13 +29,16 @@ class Projects:
         self.core = core
 
         if '--debug' in sys.argv:
-            self.projects_dir = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects')
+            self.projects_dir = os.path.join(
+                os.getenv('BCISTREAM_ROOT'), 'default_projects')
         else:
-            self.projects_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'projects')
+            self.projects_dir = os.path.join(
+                os.getenv('BCISTREAM_HOME'), 'projects')
 
         os.makedirs(self.projects_dir, exist_ok=True)
         self.parent_frame.label_projects_path.setText(self.projects_dir)
-        self.parent_frame.label_projects_path.setStyleSheet('*{font-family: mono;}')
+        self.parent_frame.label_projects_path.setStyleSheet(
+            '*{font-family: "DejaVu Sans Mono";}')
 
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent_frame, "page_projects"))
@@ -80,18 +83,22 @@ class Projects:
             self.open_script)
         self.parent_frame.treeWidget_project.itemChanged.connect(
             self.project_file_renamed)
-        self.parent_frame.pushButton_projects_add_file.clicked.connect(self.add_file)
+        self.parent_frame.pushButton_projects_add_file.clicked.connect(
+            self.add_file)
         self.parent_frame.pushButton_projects_add_folder.clicked.connect(
             self.add_folder)
-        self.parent_frame.pushButton_projects_remove.clicked.connect(self.remove)
+        self.parent_frame.pushButton_projects_remove.clicked.connect(
+            self.remove)
 
         self.parent_frame.pushButton_add_project.clicked.connect(
             self.show_create_project_dialog)
         self.parent_frame.pushButton_remove_project.clicked.connect(
             self.remove_project)
 
-        self.parent_frame.tabWidget_project.tabCloseRequested.connect(self.close_tab)
-        self.parent_frame.tabWidget_project.currentChanged.connect(self.tab_changed)
+        self.parent_frame.tabWidget_project.tabCloseRequested.connect(
+            self.close_tab)
+        self.parent_frame.tabWidget_project.currentChanged.connect(
+            self.tab_changed)
 
     # # ----------------------------------------------------------------------
     # def there_can_only_be_one(self, event):
@@ -148,8 +155,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -226,8 +233,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -301,7 +308,7 @@ class Projects:
             editor.module = module
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
-                tab, f"{self.parent.tabWidget_project.tabText(tab).strip('*')}*"))
+                tab, f"{self.parent_frame.tabWidget_project.tabText(tab).strip('*')}*"))
 
         parent = os.path.split(module)[0]
 
@@ -354,8 +361,8 @@ class Projects:
             icon_name = 'icon_dev'
             item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -468,7 +475,8 @@ class Projects:
 
                 if evt.path in self.project_files:
                     for i in range(self.parent_frame.tabWidget_project.count()):
-                        editor = self.parent_frame.tabWidget_project.widget(i)
+                        editor = self.parent_frame.tabWidget_project.widget(
+                            i)
                         if editor.path == evt.path:
                             self.parent_frame.tabWidget_project.setTabText(
                                 i, evt.text(0))

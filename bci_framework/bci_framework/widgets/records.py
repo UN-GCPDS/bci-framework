@@ -37,14 +37,16 @@ class Records:
         self.core = core
         self.current_signal = None
 
-        self.records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        self.records_dir = os.path.join(
+            os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(self.records_dir, exist_ok=True)
 
         self.load_records()
         self.connect()
 
         self.parent_frame.label_records_path.setText(self.records_dir)
-        self.parent_frame.label_records_path.setStyleSheet('*{font-family: mono;}')
+        self.parent_frame.label_records_path.setStyleSheet(
+            '*{font-family: "DejaVu Sans Mono";}')
 
         self.parent_frame.widget_record.hide()
 
@@ -55,8 +57,10 @@ class Records:
             self.load_file)
         self.parent_frame.horizontalSlider_record.valueChanged.connect(
             self.update_record_time)
-        self.parent_frame.pushButton_play_signal.clicked.connect(self.play_signal)
-        self.parent_frame.pushButton_record.toggled.connect(self.record_signal)
+        self.parent_frame.pushButton_play_signal.clicked.connect(
+            self.play_signal)
+        self.parent_frame.pushButton_record.toggled.connect(
+            self.record_signal)
 
         self.parent_frame.tableWidget_records.itemChanged.connect(
             self.record_renamed)
@@ -169,7 +173,8 @@ class Records:
     def load_file(self, item):
         """"""
         self.current_signal = item.row()
-        name = self.parent_frame.tableWidget_records.item(item.row(), 2).text()
+        name = self.parent_frame.tableWidget_records.item(
+            item.row(), 2).text()
 
         duration, datetime, _, montage, electrodes = self.get_metadata(
             f"{name}.h5")
@@ -186,7 +191,8 @@ class Records:
         self.parent_frame.label_record_channels.setText(electrodes)
         self.parent_frame.label_record_montage.setText(montage)
 
-        self.parent_frame.label_record_name.setStyleSheet("*{font-family: 'mono'}")
+        self.parent_frame.label_record_name.setStyleSheet(
+            "*{font-family: 'mono'}")
         self.parent_frame.label_record_primary.setStyleSheet(
             "*{font-family: 'mono'}")
         self.parent_frame.label_record_datetime.setStyleSheet(
@@ -206,7 +212,8 @@ class Records:
     # ----------------------------------------------------------------------
     def get_offset(self):
         """"""
-        h, m, s = self.parent_frame.label_record_primary.text()[2:-1].split(':')
+        h, m, s = self.parent_frame.label_record_primary.text()[
+            2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
         value = self.parent_frame.horizontalSlider_record.value(
         ) / self.parent_frame.horizontalSlider_record.maximum()
@@ -218,7 +225,8 @@ class Records:
         offset = timedelta(seconds=self.get_offset())
         self.start_play = datetime.now()
 
-        self.parent_frame.label_time_current.setStyleSheet("*{font-family: 'mono'}")
+        self.parent_frame.label_time_current.setStyleSheet(
+            "*{font-family: 'mono'}")
         self.parent_frame.label_time_current.setText(
             str(offset - timedelta(microseconds=offset.microseconds)))
 
@@ -229,7 +237,8 @@ class Records:
 
         if toggled:
 
-            self.record_reader = HDF5_Reader(os.path.join(self.records_dir, f'{self.parent.label_record_name.text()}.h5'))
+            self.record_reader = HDF5_Reader(os.path.join(
+                self.records_dir, f'{self.parent.label_record_name.text()}.h5'))
 
             try:
                 self.producer_eeg = KafkaProducer(bootstrap_servers=['localhost:9092'],
@@ -274,13 +283,16 @@ class Records:
         now = datetime.now()
         delta = now - self.start_play + timedelta(seconds=self.get_offset())
 
-        h, m, s = self.parent_frame.label_record_primary.text()[2:-1].split(':')
+        h, m, s = self.parent_frame.label_record_primary.text()[
+            2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
 
-        value = self.parent_frame.horizontalSlider_record.maximum() / ((seconds / delta.total_seconds()))
+        value = self.parent_frame.horizontalSlider_record.maximum() / \
+            ((seconds / delta.total_seconds()))
         self.parent_frame.horizontalSlider_record.setValue(int(value))
 
-        end_streaming = (self.record_reader.eeg.shape[1] * self.parent_frame.horizontalSlider_record.value()) / self.parent_frame.horizontalSlider_record.maximum()
+        end_streaming = (self.record_reader.eeg.shape[1] * self.parent_frame.horizontalSlider_record.value(
+        )) / self.parent_frame.horizontalSlider_record.maximum()
 
         if samples := end_streaming - self.start_streaming:
             if samples < 0:
@@ -289,8 +301,8 @@ class Records:
             # print(samples, [max([end_streaming - samples, 0]), end_streaming])
 
             data_ = {'context': 'context',
-                     'data': (self.record_reader.eeg[: ,max([end_streaming - samples, 0]): end_streaming],
-                              self.record_reader.aux[: ,max([end_streaming - samples, 0]): end_streaming]),
+                     'data': (self.record_reader.eeg[:, max([end_streaming - samples, 0]): end_streaming],
+                              self.record_reader.aux[:, max([end_streaming - samples, 0]): end_streaming]),
                      'binary_created': datetime.now().timestamp(),
                      'created': datetime.now().timestamp(),
                      'samples': samples,
