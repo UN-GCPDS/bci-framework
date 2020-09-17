@@ -138,7 +138,6 @@ class LoadSubprocess:
 
         if not hasattr(self.main, 'web_engine'):
             self.main.web_engine = QWebEngineView()
-
             self.web_view.addWidget(self.main.web_engine)
 
         if debug_javascript and self.debug:
@@ -152,10 +151,11 @@ class LoadSubprocess:
             # settings = self.parent.web_engine.settings()
             # settings.ShowScrollBars(False)
 
-        # self.parent.web_engine.setUrl(url)
-
         # self.feed()
-        self.timer.singleShot(1000, self.auto_size)
+        if not debug_javascript:
+            self.timer.singleShot(1000, self.auto_size)
+        else:
+            self.main.web_engine.setUrl(self.url)
 
     # # ----------------------------------------------------------------------
     # def feed(self):
@@ -164,6 +164,7 @@ class LoadSubprocess:
         # self.timer.singleShot(800, lambda :request.urlopen(f'{self.url}/feed', timeout=1))
 
     # ----------------------------------------------------------------------
+
     def auto_size(self, timer=True):
         """"""
         if self.stopped:
