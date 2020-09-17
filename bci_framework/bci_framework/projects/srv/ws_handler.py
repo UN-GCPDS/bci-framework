@@ -49,7 +49,8 @@ class WSHandler(WebSocketHandler):
                 elif self == client_g['device']:
                     client_g['device'] = None
                     print('Clossed: device')
-                    client_g['web'].write_message({'log': 'Device unlinked', })
+                    client_g['web'].write_message(
+                        {'log': 'Device unlinked', })
 
     # ----------------------------------------------------------------------
     def print_log(self, message):
