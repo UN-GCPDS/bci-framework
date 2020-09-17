@@ -13,14 +13,13 @@ import os
 import webbrowser
 
 ########################################################################
-class BCIFramework(QtWidgets.QMainWindow):
+class BCIFramework:
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super().__init__()
 
         self.main = QUiLoader().load(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                                  'qtgui', 'main.ui'), self)
+                                                  'qtgui', 'main.ui'))
 
         self.main.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
         self.main.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
@@ -70,12 +69,17 @@ class BCIFramework(QtWidgets.QMainWindow):
             'docs', 'build', 'html', 'index.html'))
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
+        # from .dialogs import Dialogs
+
+        # Dialogs.save_filename(self, '', '', '')
+
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
         self.main.dockWidget_global.dockLocationChanged.connect(
             self.update_dock_tabs)
-        self.main.tabWidget_widgets.currentChanged.connect(self.widget_update)
+        self.main.tabWidget_widgets.currentChanged.connect(
+            self.widget_update)
 
         self.main.pushButton_add_project_2.clicked.connect(
             self.projects.show_create_project_dialog)
@@ -190,7 +194,6 @@ class BCIFramework(QtWidgets.QMainWindow):
         self.main.label_17.setStyleSheet(style)
 
     # ----------------------------------------------------------------------
-
     def show_about(self, event=None):
         """"""
         about = QUiLoader().load('bci_framework/qtgui/about.ui', self)
@@ -200,3 +203,5 @@ class BCIFramework(QtWidgets.QMainWindow):
             lambda evt: about.destroy())
 
         about.show()
+
+

@@ -261,7 +261,7 @@ class Montage:
     # ----------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
-        self.parent = core.main
+        self.parent_frame = core.main
         self.core = core
 
         if os.getenv('PYSIDEMATERIAL_SECONDARYDARKCOLOR', ''):
@@ -272,16 +272,16 @@ class Montage:
         self.channels_names_widgets = []
 
         self.topoplot = TopoplotMontage()
-        self.parent.gridLayout_montage.addWidget(self.topoplot)
+        self.parent_frame.gridLayout_montage.addWidget(self.topoplot)
 
         # self.topoplot_impedance = TopoplotImpedances()
         # self.parent.gridLayout_impedances.addWidget(self.topoplot_impedance)
         # self.update_impedance()
 
-        self.parent.comboBox_montages.addItems(
+        self.parent_frame.comboBox_montages.addItems(
             mne.channels.get_builtin_montages())
 
-        self.parent.comboBox_montage_channels.addItems(
+        self.parent_frame.comboBox_montage_channels.addItems(
             [f"{i+1} channel{'s'[:i]}" for i in range(16)])
 
         self.set_saved_montages()
@@ -289,7 +289,7 @@ class Montage:
         self.connect()
 
         self.topoplot_impedance = TopoplotImpedances()
-        self.parent.gridLayout_impedances.addWidget(self.topoplot_impedance)
+        self.parent_frame.gridLayout_impedances.addWidget(self.topoplot_impedance)
         self.update_impedance()
 
         self.load_montage()
@@ -312,40 +312,40 @@ class Montage:
     # ----------------------------------------------------------------------
     def set_spliter_position(self):
         """"""
-        self.parent.splitter_montage.moveSplitter(
-            self.parent.splitter_montage.getRange(1)[1] // 2, 1)
+        self.parent_frame.splitter_montage.moveSplitter(
+            self.parent_frame.splitter_montage.getRange(1)[1] // 2, 1)
 
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent.comboBox_montages.activated.connect(self.update_topoplot)
+        self.parent_frame.comboBox_montages.activated.connect(self.update_topoplot)
         # self.parent.comboBox_historical_montages.activated.connect(
         # lambda evt: self.load_montage(self.parent.comboBox_historical_montages.currentText()))
         # self.parent.comboBox_historical_montages.editTextChanged.connect(
         # lambda evt: self.parent.pushButton_save_montage.setEnabled(bool(self.parent.comboBox_historical_montages.currentText())))
 
-        self.parent.comboBox_montage_channels.activated.connect(
+        self.parent_frame.comboBox_montage_channels.activated.connect(
             self.update_topoplot)
-        self.parent.comboBox_montage_channels.activated.connect(
+        self.parent_frame.comboBox_montage_channels.activated.connect(
             self.update_topoplot)
 
-        self.parent.pushButton_save_montage.clicked.connect(self.save_montage)
-        self.parent.pushButton_remove_montage.clicked.connect(
+        self.parent_frame.pushButton_save_montage.clicked.connect(self.save_montage)
+        self.parent_frame.pushButton_remove_montage.clicked.connect(
             self.delete_montage)
 
-        self.parent.tableWidget_montages.itemDoubleClicked.connect(
+        self.parent_frame.tableWidget_montages.itemDoubleClicked.connect(
             self.load_montage)
 
-        self.parent.checkBox_view_impedances.clicked.connect(self.change_plot)
+        self.parent_frame.checkBox_view_impedances.clicked.connect(self.change_plot)
 
     # ----------------------------------------------------------------------
     def change_plot(self):
         """"""
-        if self.parent.checkBox_view_impedances.isChecked():  # impedances
-            self.parent.stackedWidget_montage.setCurrentIndex(1)
+        if self.parent_frame.checkBox_view_impedances.isChecked():  # impedances
+            self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
             # self.topoplot_impedance.configure()
         else:  # montage
-            self.parent.stackedWidget_montage.setCurrentIndex(0)
+            self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
         self.start_impedance_measurement()
 
@@ -358,7 +358,7 @@ class Montage:
     # ----------------------------------------------------------------------
     def get_mne_montage(self):
         """"""
-        montage_name = self.parent.comboBox_montages.currentText()
+        montage_name = self.parent_frame.comboBox_montages.currentText()
         montage = mne.channels.make_standard_montage(montage_name)
         return montage
 
@@ -369,7 +369,7 @@ class Montage:
         # self.montage = mne.channels.make_standard_montage(montage_name)
         montage = self.get_mne_montage()
 
-        channels = self.parent.comboBox_montage_channels.currentIndex() + 1
+        channels = self.parent_frame.comboBox_montage_channels.currentIndex() + 1
 
         self.generate_list_channels()
         electrodes = [ch.currentText() for ch in self.channels_names_widgets]
@@ -386,7 +386,7 @@ class Montage:
     # ----------------------------------------------------------------------
     def generate_list_channels(self):
         """"""
-        for layout in [self.parent.gridLayout_list_channels_right, self.parent.gridLayout_list_channels_left]:
+        for layout in [self.parent_frame.gridLayout_list_channels_right, self.parent_frame.gridLayout_list_channels_left]:
 
             for i in reversed(range(layout.count())):
                 if item := layout.takeAt(i):
@@ -405,12 +405,12 @@ class Montage:
         self.labels_names_widgets = []
         montage = self.get_mne_montage()
         # for i in range(self.parent.spinBox_montage_channels.value()):
-        for i in range(self.parent.comboBox_montage_channels.currentIndex() + 1):
+        for i in range(self.parent_frame.comboBox_montage_channels.currentIndex() + 1):
 
             if i % 2:
-                layout = self.parent.gridLayout_list_channels_right
+                layout = self.parent_frame.gridLayout_list_channels_right
             else:
-                layout = self.parent.gridLayout_list_channels_left
+                layout = self.parent_frame.gridLayout_list_channels_left
 
             channel_label = QLabel(f'CH{i+1}')
             self.labels_names_widgets.append(channel_label)
@@ -481,7 +481,7 @@ class Montage:
 
     def save_montage(self):
         """"""
-        montage_name = self.parent.comboBox_montages.currentText()
+        montage_name = self.parent_frame.comboBox_montages.currentText()
         channels_names = ','.join([ch.currentText()
                                    for ch in self.channels_names_widgets])
 
@@ -498,8 +498,8 @@ class Montage:
 
     def delete_montage(self, event=None):
         """"""
-        row = self.parent.tableWidget_montages.currentRow()
-        config_name = self.parent.tableWidget_montages.item(row, 0).config_name
+        row = self.parent_frame.tableWidget_montages.currentRow()
+        config_name = self.parent_frame.tableWidget_montages.item(row, 0).config_name
         self.core.config.remove_option('montages', config_name)
         self.core.config.save()
         self.set_saved_montages()
@@ -507,12 +507,12 @@ class Montage:
     # ----------------------------------------------------------------------
     def set_saved_montages(self):
         """"""
-        self.parent.tableWidget_montages.clear()
+        self.parent_frame.tableWidget_montages.clear()
 
-        self.parent.tableWidget_montages.setRowCount(0)
-        self.parent.tableWidget_montages.setColumnCount(3)
+        self.parent_frame.tableWidget_montages.setRowCount(0)
+        self.parent_frame.tableWidget_montages.setColumnCount(3)
 
-        self.parent.tableWidget_montages.setHorizontalHeaderLabels(
+        self.parent_frame.tableWidget_montages.setHorizontalHeaderLabels(
             ['Montage', 'Channels', 'Electrodes'])
 
         saved_montages = self.core.config['montages']
@@ -523,17 +523,17 @@ class Montage:
                 continue
             montage, electrodes = saved_montages.get(saved).split('|')
 
-            self.parent.tableWidget_montages.insertRow(i)
+            self.parent_frame.tableWidget_montages.insertRow(i)
 
             # try:
             item = QTableWidgetItem(montage)
             item.config_name = saved
 
-            self.parent.tableWidget_montages.setItem(
+            self.parent_frame.tableWidget_montages.setItem(
                 i, 0, item)
-            self.parent.tableWidget_montages.setItem(
+            self.parent_frame.tableWidget_montages.setItem(
                 i, 1, QTableWidgetItem(f"{len(electrodes.split(','))-electrodes.split(',').count('Off')} ch"))
-            self.parent.tableWidget_montages.setItem(
+            self.parent_frame.tableWidget_montages.setItem(
                 i, 2, QTableWidgetItem(' '.join(electrodes.split(','))))
 
             i += 1
@@ -548,9 +548,9 @@ class Montage:
                 'montages', 'last_montage').split('|')
             channels = channels.split(',')
         else:
-            montage_name = self.parent.tableWidget_montages.item(
+            montage_name = self.parent_frame.tableWidget_montages.item(
                 event.row(), 0).text()
-            channels = self.parent.tableWidget_montages.item(
+            channels = self.parent_frame.tableWidget_montages.item(
                 event.row(), 2).text()
             channels = channels.split(' ')
             self.core.config.set('montages', 'last_montage',
@@ -559,12 +559,12 @@ class Montage:
 
         # self.montage_name = montage_name
 
-        self.parent.comboBox_montages.setCurrentText(montage_name)
+        self.parent_frame.comboBox_montages.setCurrentText(montage_name)
         # self.montage = mne.channels.make_standard_montage(self.montage_name)
         # self.parent.spinBox_montage_channels.setMaximum(
         # len(self.montage.ch_names))
         # self.parent.spinBox_montage_channels.setValue(len(channels))
-        self.parent.comboBox_montage_channels.setCurrentIndex(
+        self.parent_frame.comboBox_montage_channels.setCurrentIndex(
             len(channels) - 1)
 
         self.generate_list_channels()
@@ -596,7 +596,7 @@ class Montage:
         """"""
         os.environ['BCISTREAM_CHANNELS'] = json.dumps(self.get_montage())
         os.environ['BCISTREAM_MONTAGE_NAME'] = json.dumps(
-            self.parent.comboBox_montages.currentText())
+            self.parent_frame.comboBox_montages.currentText())
         os.environ['BCISTREAM_DAISY'] = json.dumps(
             bool(list(filter(lambda x: x > 8, self.get_montage().keys()))))
 
@@ -604,7 +604,7 @@ class Montage:
     @thread_this
     def start_impedance_measurement(self):
         """"""
-        if self.parent.checkBox_view_impedances.isChecked():
+        if self.parent_frame.checkBox_view_impedances.isChecked():
 
             if not hasattr(self.core.connection, 'openbci'):
                 self.core.connection.openbci_connect()

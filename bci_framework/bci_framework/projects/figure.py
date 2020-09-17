@@ -22,12 +22,14 @@ from matplotlib import pyplot
 
 from cycler import cycler
 import numpy as np
+
 # matplotlib.use('agg')
 
 pyplot.style.use('dark_background')
 q = matplotlib.cm.get_cmap('rainbow')
 matplotlib.rcParams['axes.prop_cycle'] = cycler(
-    color=[q(m) for m in np.linspace(0, 1, 16)])
+    color=[q(m) for m in np.linspace(0, 1, 16)]
+)
 
 matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
@@ -121,8 +123,10 @@ class FigureStream(Figure):
     __class_attr = {
         'thread': None,  # background thread that reads frames from stream
         'frame': None,  # current frame is stored here by background thread
-        'last_access': 0,  # time of last client access to the source
-        'event': StreamEvent()}
+        'last_access': 0,  # time of last client access to the source,
+        # 'keep_alive': time.time(), 
+        'event': StreamEvent(),
+    }
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -139,14 +143,23 @@ class FigureStream(Figure):
         self.app = Flask(__name__)
         self.app.add_url_rule('/', view_func=self.__video_feed)
         self.app.add_url_rule('/mode', view_func=self.__mode)
+        self.app.add_url_rule('/feed', view_func=self.__feed)
 
         if len(sys.argv) > 1:
             port = sys.argv[1]
         else:
             port = '5000'
 
-        Thread(target=self.app.run, kwargs={
-            'host': '0.0.0.0', 'port': port, 'threaded': True}).start()
+        Thread(
+            target=self.app.run,
+            kwargs={'host': '0.0.0.0', 'port': port, 'threaded': True},
+        ).start()
+        
+    #----------------------------------------------------------------------
+    def __feed(self):
+        """"""
+        self.feed()
+        return 'true'
 
     # ----------------------------------------------------------------------
     def __mode(self):
@@ -162,14 +175,16 @@ class FigureStream(Figure):
             self.__class_attr['event'].wait()
             self.__class_attr['event'].clear()
             frame = self.__class_attr['frame']
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            yield (
+                b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
+            )
 
     # #----------------------------------------------------------------------
     # @staticmethod
     # def frames():
-        # """"Generator that returns frames from the stream."""
-        # raise RuntimeError('Must be implemented by subclasses.')
+    # """"Generator that returns frames from the stream."""
+    # raise RuntimeError('Must be implemented by subclasses.')
 
     # ----------------------------------------------------------------------
     # @classmethod
@@ -182,7 +197,8 @@ class FigureStream(Figure):
         while True:
 
             try:
-                frame = self.__buffer.get(timeout=5)
+                # frame = self.__buffer.get(timeout=5)
+                frame = self.__buffer.get()
             except:
                 break
 
@@ -190,22 +206,27 @@ class FigureStream(Figure):
             self.__class_attr['event'].set()  # send signal to clients
             time.sleep(0)
 
-            # if there hasn't been any clients asking for frames in
-            # the last 10 seconds then stop the thread
-            if time.time() - self.__class_attr['last_access'] > 10:
-                # frames_iterator.close()
-                logging.info('Stopping stream thread due to inactivity.')
-                break
+            # # if there hasn't been any clients asking for frames in
+            # # the last 10 seconds then stop the thread
+            # if time.time() - self.__class_attr['last_access'] > 10:
+                # # frames_iterator.close()
+                # logging.info('Stopping stream thread due to inactivity.')
+                # break
+              
         self.__class_attr['thread'] = None
 
     # ----------------------------------------------------------------------
     def __video_feed(self):
         """"""
-
         if self.size == 'auto':
             width = request.values.get('width', None)
             height = request.values.get('height', None)
-            if width and height and width.replace('.', '').isdigit() and height.replace('.', '').isdigit():
+            if (
+                width
+                and height
+                and width.replace('.', '').isdigit()
+                and height.replace('.', '').isdigit()
+            ):
                 self.set_size_inches(float(width), float(height))
 
             dpi = request.values.get('dpi', None)
@@ -213,7 +234,6 @@ class FigureStream(Figure):
                 self.set_dpi(float(dpi))
 
         else:
-
             self.set_size_inches(*self.size)
             dpi = request.values.get('dpi', None)
             if dpi and dpi.replace('.', '').isdigit():
@@ -221,6 +241,7 @@ class FigureStream(Figure):
 
         if self.__class_attr['thread'] is None:
             self.__class_attr['last_access'] = time.time()
+            # self.__class_attr['keep_alive'] = time.time()
 
             # start background frame thread
             self.__class_attr['thread'] = Thread(target=self._thread)
@@ -228,10 +249,19 @@ class FigureStream(Figure):
 
             # wait until frames are available
             while self.__get_frames() is None:
-                time.sleep(0)
+                time.sleep(10)
 
         # stream = Stream()
-        return Response(self.__get_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+        # time.sleep(10)        
+        # self.feed()
+        # self.feed()
+        # time.sleep(10)
+        self.feed()
+        return Response(
+            self.__get_frames(),
+            mimetype='multipart/x-mixed-replace; boundary=frame',
+        )
 
     # ----------------------------------------------------------------------
     def clients(self):
@@ -248,15 +278,20 @@ class FigureStream(Figure):
         """"""
         self.__output.truncate(0)
         self.__output.seek(0)
-        self.canvas.print_figure(self.__output, format='jpeg')
+        self.canvas.print_figure(
+            self.__output, format='jpeg', dpi=self.get_dpi()
+        )
 
         return self.__buffer.put(self.__output.getvalue())
 
     # ----------------------------------------------------------------------
     def get_info(self):
         """"""
-        info = mne.create_info(list(prop.CHANNELS.values()),
-                               sfreq=prop.SAMPLE_RATE, ch_types="eeg")
+        info = mne.create_info(
+            list(prop.CHANNELS.values()),
+            sfreq=prop.SAMPLE_RATE,
+            ch_types="eeg",
+        )
         info.set_montage(prop.MONTAGE_NAME)
         return info
 
@@ -267,7 +302,7 @@ class FigureStream(Figure):
         return montage
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode='eeg', time=-15, window=1000, cmap='winter', fill=np.nan, subplot=[1, 1, 1]):
+    def create_lines(self, mode='eeg', time=-15, window=1000, cmap='winter', fill=np.nan, subplot=[1, 1, 1],):
         """"""
         mode = mode.lower()
         sr = prop.SAMPLE_RATE
@@ -300,15 +335,23 @@ class FigureStream(Figure):
 
         q = matplotlib.cm.get_cmap(cmap)
         matplotlib.rcParams['axes.prop_cycle'] = cycler(
-            color=[q(m) for m in np.linspace(0, 1, channels)])
+            color=[q(m) for m in np.linspace(0, 1, channels)]
+        )
 
         axis = self.add_subplot(*subplot)
 
         a = np.empty(window)
         a.fill(fill)
 
-        lines = [axis.plot(a.copy(), a.copy(
-        ), '-', label=(labels[i] if labels else None))[0] for i in range(channels)]
+        lines = [
+            axis.plot(
+                a.copy(),
+                a.copy(),
+                '-',
+                label=(labels[i] if labels else None),
+            )[0]
+            for i in range(channels)
+        ]
 
         if time > 0:
             axis.set_xlim(0, time)
@@ -330,7 +373,7 @@ class FigureStream(Figure):
     def create_buffer(self, seconds=30, aux_shape=3, fill=0):
         """"""
         chs = len(prop.CHANNELS)
-        time = (prop.SAMPLE_RATE * seconds)
+        time = prop.SAMPLE_RATE * seconds
 
         self.buffer_eeg = np.empty((chs, time))
         self.buffer_eeg.fill(fill)
@@ -345,15 +388,18 @@ class FigureStream(Figure):
         self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
         self.buffer_eeg[:, -c:] = eeg
 
-        d = aux.shape[1]
-        self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
-        self.buffer_aux[:, -d:] = aux
+        if not aux is None:            
+            d = aux.shape[1]
+            self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
+            self.buffer_aux[:, -d:] = aux
 
     # ----------------------------------------------------------------------
     def resample(self, x, num, axis=-1):
         """"""
         ndim = x.shape[axis] // num
-        return x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
+        return (
+            x[:, : ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
+        )
 
     # ----------------------------------------------------------------------
     def centralize(self, x, axis=0):
@@ -365,5 +411,6 @@ class FigureStream(Figure):
         """"""
         comment = "bcistream"
         evoked = mne.EvokedArray(
-            self.buffer_eeg, self.get_info(), 0, comment=comment, nave=0)
+            self.buffer_eeg, self.get_info(), 0, comment=comment, nave=0
+        )
         return evoked

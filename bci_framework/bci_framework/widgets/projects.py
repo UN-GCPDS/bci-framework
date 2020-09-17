@@ -25,7 +25,7 @@ class Projects:
 
         self.project_files = []
 
-        self.parent = parent
+        self.parent_frame = parent
         self.core = core
 
         if '--debug' in sys.argv:
@@ -34,11 +34,11 @@ class Projects:
             self.projects_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'projects')
 
         os.makedirs(self.projects_dir, exist_ok=True)
-        self.parent.label_projects_path.setText(self.projects_dir)
-        self.parent.label_projects_path.setStyleSheet('*{font-family: mono;}')
+        self.parent_frame.label_projects_path.setText(self.projects_dir)
+        self.parent_frame.label_projects_path.setStyleSheet('*{font-family: mono;}')
 
-        self.parent.stackedWidget_projects.setCurrentWidget(
-            getattr(self.parent, "page_projects"))
+        self.parent_frame.stackedWidget_projects.setCurrentWidget(
+            getattr(self.parent_frame, "page_projects"))
 
         self.load_projects()
         self.connect()
@@ -46,9 +46,9 @@ class Projects:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent.pushButton_projects.clicked.connect(
-            lambda evt: self.parent.stackedWidget_projects.setCurrentWidget(getattr(self.parent, "page_projects")))
-        self.parent.listWidget_projects.itemDoubleClicked.connect(
+        self.parent_frame.pushButton_projects.clicked.connect(
+            lambda evt: self.parent_frame.stackedWidget_projects.setCurrentWidget(getattr(self.parent_frame, "page_projects")))
+        self.parent_frame.listWidget_projects.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
         # self.parent.listWidget_projects_visualizations.itemDoubleClicked.connect(
@@ -67,7 +67,7 @@ class Projects:
         # self.parent.listWidget_projects_others.itemClicked.connect(
         # self.there_can_only_be_one)
 
-        self.parent.listWidget_projects.itemChanged.connect(
+        self.parent_frame.listWidget_projects.itemChanged.connect(
             self.project_renamed)
         # self.parent.listWidget_projects_visualizations.itemChanged.connect(
         # self.project_renamed)
@@ -76,22 +76,22 @@ class Projects:
         # self.parent.listWidget_projects_others.itemChanged.connect(
         # self.project_renamed)
 
-        self.parent.treeWidget_project.itemDoubleClicked.connect(
+        self.parent_frame.treeWidget_project.itemDoubleClicked.connect(
             self.open_script)
-        self.parent.treeWidget_project.itemChanged.connect(
+        self.parent_frame.treeWidget_project.itemChanged.connect(
             self.project_file_renamed)
-        self.parent.pushButton_projects_add_file.clicked.connect(self.add_file)
-        self.parent.pushButton_projects_add_folder.clicked.connect(
+        self.parent_frame.pushButton_projects_add_file.clicked.connect(self.add_file)
+        self.parent_frame.pushButton_projects_add_folder.clicked.connect(
             self.add_folder)
-        self.parent.pushButton_projects_remove.clicked.connect(self.remove)
+        self.parent_frame.pushButton_projects_remove.clicked.connect(self.remove)
 
-        self.parent.pushButton_add_project.clicked.connect(
+        self.parent_frame.pushButton_add_project.clicked.connect(
             self.show_create_project_dialog)
-        self.parent.pushButton_remove_project.clicked.connect(
+        self.parent_frame.pushButton_remove_project.clicked.connect(
             self.remove_project)
 
-        self.parent.tabWidget_project.tabCloseRequested.connect(self.close_tab)
-        self.parent.tabWidget_project.currentChanged.connect(self.tab_changed)
+        self.parent_frame.tabWidget_project.tabCloseRequested.connect(self.close_tab)
+        self.parent_frame.tabWidget_project.currentChanged.connect(self.tab_changed)
 
     # # ----------------------------------------------------------------------
     # def there_can_only_be_one(self, event):
@@ -105,7 +105,7 @@ class Projects:
     # ----------------------------------------------------------------------
     def tab_changed(self, index):
         """"""
-        if editor := self.parent.tabWidget_project.widget(index):
+        if editor := self.parent_frame.tabWidget_project.widget(index):
             editor.update_linenumber()
 
     # ----------------------------------------------------------------------
@@ -121,7 +121,7 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_projects(self):
         """"""
-        self.parent.listWidget_projects.clear()
+        self.parent_frame.listWidget_projects.clear()
         # self.parent.listWidget_projects_visualizations.clear()
         # self.parent.listWidget_projects_delivery.clear()
         # self.parent.listWidget_projects_others.clear()
@@ -137,11 +137,11 @@ class Projects:
             with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
-                modules = {'FigureStream': (self.parent.listWidget_projects, 'icon_viz'),
-                           'StimuliServer': (self.parent.listWidget_projects, 'icon_sti'),
+                modules = {'FigureStream': (self.parent_frame.listWidget_projects, 'icon_viz'),
+                           'StimuliServer': (self.parent_frame.listWidget_projects, 'icon_sti'),
                            }
                 widget, icon_name = (
-                    self.parent.listWidget_projects, 'icon_dev')
+                    self.parent_frame.listWidget_projects, 'icon_dev')
                 for module in modules:
                     if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
@@ -176,15 +176,15 @@ class Projects:
         """"""
         global files_count, dir_count, project_name_
 
-        self.parent.stackedWidget_projects.setCurrentWidget(
-            getattr(self.parent, "page_projects_files"))
+        self.parent_frame.stackedWidget_projects.setCurrentWidget(
+            getattr(self.parent_frame, "page_projects_files"))
 
         path = os.path.join(self.projects_dir, project_name)
         # path = project_name
 
-        self.parent.tabWidget_project.clear()
+        self.parent_frame.tabWidget_project.clear()
 
-        parent = self.parent.treeWidget_project
+        parent = self.parent_frame.treeWidget_project
         parent.project_name = project_name
         parent.clear()
 
@@ -278,36 +278,36 @@ class Projects:
     # ----------------------------------------------------------------------
     def show_script_in_textedit(self, module):
         """"""
-        for i in range(self.parent.tabWidget_project.count()):
-            editor = self.parent.tabWidget_project.widget(i)
+        for i in range(self.parent_frame.tabWidget_project.count()):
+            editor = self.parent_frame.tabWidget_project.widget(i)
             if editor.path == module:
-                self.parent.tabWidget_project.setCurrentIndex(i)
+                self.parent_frame.tabWidget_project.setCurrentIndex(i)
                 return
 
     # ----------------------------------------------------------------------
     def load_script_in_textedit(self, module):
         """"""
-        editor = BCIEditor(linenumber=self.parent.textEdit_linenumber,
+        editor = BCIEditor(linenumber=self.parent_frame.textEdit_linenumber,
                            extension=os.path.splitext(module)[1])
 
-        tab = self.parent.tabWidget_project.addTab(
+        tab = self.parent_frame.tabWidget_project.addTab(
             editor, os.path.split(module)[1])
-        self.parent.tabWidget_project.widget(
+        self.parent_frame.tabWidget_project.widget(
             tab).setContentsMargins(0, 0, 0, 0)
-        self.parent.tabWidget_project.widget(tab).editor = editor
+        self.parent_frame.tabWidget_project.widget(tab).editor = editor
         with open(module, 'r') as file:
             editor.setPlainText(file.read())
             editor.path = module
             editor.module = module
 
-            editor.textChanged.connect(lambda: self.parent.tabWidget_project.setTabText(
+            editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
                 tab, f"{self.parent.tabWidget_project.tabText(tab).strip('*')}*"))
 
         parent = os.path.split(module)[0]
 
         files = []
-        for i in range(self.parent.tabWidget_project.count()):
-            files.append(self.parent.tabWidget_project.tabText(i))
+        for i in range(self.parent_frame.tabWidget_project.count()):
+            files.append(self.parent_frame.tabWidget_project.tabText(i))
         pickle.dump(set(files), open(os.path.join(parent, '.bcifr'), 'wb'))
 
         if module not in self.project_files:
@@ -322,7 +322,7 @@ class Projects:
     # ----------------------------------------------------------------------
     def show_create_project_dialog(self):
         """"""
-        project = QUiLoader().load('bci_framework/qtgui/new_project.ui', self.parent)
+        project = QUiLoader().load('bci_framework/qtgui/new_project.ui', self.parent_frame)
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(lambda evt: self.create_project(project.lineEdit_project_name.text(),
                                                                                                       project.radioButton_visualization.isChecked(),
                                                                                                       project.radioButton_stimulus_delivery.isChecked()))
@@ -346,13 +346,13 @@ class Projects:
 
         if visualization:
             icon_name = 'icon_viz'
-            item = QListWidgetItem(self.parent.listWidget_projects)
+            item = QListWidgetItem(self.parent_frame.listWidget_projects)
         elif stimulus:
             icon_name = 'icon_sti'
-            item = QListWidgetItem(self.parent.listWidget_projects)
+            item = QListWidgetItem(self.parent_frame.listWidget_projects)
         else:
             icon_name = 'icon_dev'
-            item = QListWidgetItem(self.parent.listWidget_projects)
+            item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
                       Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -375,7 +375,7 @@ class Projects:
         # self.parent.listWidget_projects_visualizations.currentItem(),
         # self.parent.listWidget_projects_others.currentItem(),
         # ]
-        selected_project = self.parent.listWidget_projects.currentItem()
+        selected_project = self.parent_frame.listWidget_projects.currentItem()
         # selected_project = list(filter(None, item))[0]
         shutil.rmtree(os.path.join(
             self.projects_dir, selected_project.text()))
@@ -384,11 +384,11 @@ class Projects:
     # ----------------------------------------------------------------------
     def add_file(self):
         """"""
-        if selected := self.parent.treeWidget_project.currentItem():
+        if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
         else:
             path = os.path.join(self.projects_dir,
-                                self.parent.treeWidget_project.project_name)
+                                self.parent_frame.treeWidget_project.project_name)
 
         if os.path.isfile(path):
             path = os.path.dirname(path)
@@ -405,16 +405,16 @@ class Projects:
                 file.close()
                 break
 
-        self.open_project(self.parent.treeWidget_project.project_name)
+        self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
     def add_folder(self):
         """"""
-        if selected := self.parent.treeWidget_project.currentItem():
+        if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
         else:
             path = os.path.join(self.projects_dir,
-                                self.parent.treeWidget_project.project_name)
+                                self.parent_frame.treeWidget_project.project_name)
 
         if os.path.isfile(path):
             path = os.path.dirname(path)
@@ -428,12 +428,12 @@ class Projects:
                 os.mkdir(filename)
                 break
 
-        self.open_project(self.parent.treeWidget_project.project_name)
+        self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
     def remove(self):
         """"""
-        if selected := self.parent.treeWidget_project.currentItem():
+        if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
             self.close_tab(path)
         else:
@@ -444,7 +444,7 @@ class Projects:
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-        self.open_project(self.parent.treeWidget_project.project_name)
+        self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
     def project_renamed(self, evt):
@@ -467,10 +467,10 @@ class Projects:
                 shutil.move(evt.path, new_path)
 
                 if evt.path in self.project_files:
-                    for i in range(self.parent.tabWidget_project.count()):
-                        editor = self.parent.tabWidget_project.widget(i)
+                    for i in range(self.parent_frame.tabWidget_project.count()):
+                        editor = self.parent_frame.tabWidget_project.widget(i)
                         if editor.path == evt.path:
-                            self.parent.tabWidget_project.setTabText(
+                            self.parent_frame.tabWidget_project.setTabText(
                                 i, evt.text(0))
                             editor.path = new_path
                             break
@@ -485,15 +485,15 @@ class Projects:
     def close_tab(self, evt):
         """"""
         if isinstance(evt, (int, float)):
-            editor_closed = self.parent.tabWidget_project.widget(evt)
+            editor_closed = self.parent_frame.tabWidget_project.widget(evt)
             self.project_files.pop(
                 self.project_files.index(editor_closed.path))
-            self.parent.tabWidget_project.removeTab(evt)
+            self.parent_frame.tabWidget_project.removeTab(evt)
 
         elif isinstance(evt, (str,)):
             if evt in self.project_files:
-                for i in range(self.parent.tabWidget_project.count()):
-                    editor = self.parent.tabWidget_project.widget(i)
+                for i in range(self.parent_frame.tabWidget_project.count()):
+                    editor = self.parent_frame.tabWidget_project.widget(i)
                     if editor.path == evt:
                         return self.close_tab(i)
 

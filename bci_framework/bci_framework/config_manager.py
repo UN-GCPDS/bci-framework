@@ -36,6 +36,15 @@ class ConfigManager(ConfigParser):
             self.add_section(section)
 
         return super().set(section, option, value)
+    
+    # ----------------------------------------------------------------------
+    def get(self, section, option, default=None, *args, **kwargs):
+        """"""
+        if self.has_option(section, option):
+            return super().get(section, option, *args, **kwargs)
+        else:
+            self.set(section, option, default)
+            return default
 
     # ----------------------------------------------------------------------
     def save(self):

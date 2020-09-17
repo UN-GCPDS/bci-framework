@@ -26,9 +26,9 @@ class Properties:
     ```
     """
 
-    # CHANNELS = {f'{ch}': ch for ch in range(7)}
+    # CHANNELS = {f'{ch}': ch for ch in range(8)}
     # SAMPLE_RATE = 1000
-    # HOST = '192.168.1.1'
+    # HOST = 'localhost'
 
     # ----------------------------------------------------------------------
     def __getattr__(self, attr):

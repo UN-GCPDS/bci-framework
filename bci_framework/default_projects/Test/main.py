@@ -2,16 +2,11 @@ from bci_framework.projects.figure import FigureStream
 from bci_framework.projects import properties as prop
 from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 
-from openbci_stream.utils import autokill_process
-
-autokill_process(name='testssss')
-
 import logging
 import numpy as np
 
+
 ########################################################################
-
-
 class Stream(FigureStream):
     """"""
 
@@ -34,7 +29,7 @@ class Stream(FigureStream):
         # self.axis.set_ylim(0, len(prop.CHANNELS)+1)
         self.axis.set_yticks(range(1, len(prop.CHANNELS) + 1))
         self.axis.set_yticklabels(prop.CHANNELS.values())
-
+        
         self.stream()
 
     # ----------------------------------------------------------------------

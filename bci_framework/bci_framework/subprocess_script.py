@@ -4,6 +4,7 @@
 import os
 import sys
 import socket
+import signal
 import logging
 import subprocess
 from urllib import request
@@ -13,13 +14,15 @@ from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 from .nbstreamreader import NonBlockingStreamReader as NBSR
+from .projects import properties as prop
 
 
 # ----------------------------------------------------------------------
 def run_subprocess(call):
     """"""
     my_env = os.environ.copy()
-    my_env['PYTHONPATH'] = ":".join(sys.path + [os.path.join(os.path.dirname(sys.argv[0]), 'bci_framework')])
+    my_env['PYTHONPATH'] = ":".join(
+        sys.path + [os.path.join(os.path.dirname(sys.argv[0]), 'bci_framework')])
 
     return subprocess.Popen(call,
                             stdout=subprocess.PIPE,
@@ -60,11 +63,15 @@ class LoadSubprocess:
 
         print('subprocess.......................')
 
-        self.parent = parent
+        self.main = parent
         self.debug = debug
         self.endpoint = endpoint
-        self.web_view = getattr(self.parent, web_view)
+        self.web_view = getattr(self.main, web_view)
         self.plot_size = QSize(0, 0)
+        self.plot_dpi = 0
+        self.stopped = False
+
+        self.main.DPI = 60
 
         if path:
             self.load_path(path)
@@ -76,6 +83,9 @@ class LoadSubprocess:
         self.port = self.get_free_port()
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
+
+        with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
+            file.write(f'{self.subprocess_script.pid}\n')
 
         if self.debug:
             self.stdout = NBSR(self.subprocess_script.stdout)
@@ -92,12 +102,12 @@ class LoadSubprocess:
             return
 
         if mode == b'visualization':
-            self.parent.widget_development_webview.show()
+            self.main.widget_development_webview.show()
             self.url = f'http://localhost:{self.port}'
             self.load_webview(debug_javascript=False)
             # self.parent.web_engine.resizeEvent.connect()
         elif mode == b'stimuli':
-            self.parent.widget_development_webview.show()
+            self.main.widget_development_webview.show()
             self.url = f'http://localhost:{self.port}/{self.endpoint}'
             self.load_webview(debug_javascript=True)
 
@@ -105,26 +115,37 @@ class LoadSubprocess:
     def stop_preview(self):
         """"""
         self.timer.stop()
+        self.stopped = True
         if hasattr(self, 'subprocess_script'):
             # self.subprocess_script.kill()
             self.subprocess_script.terminate()
+            try:
+                os.kill(self.subprocess_script.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
 
-        if hasattr(self.parent, 'web_engine'):
-            self.parent.web_engine.setUrl('about:blank')
+        if hasattr(self.main, 'web_engine'):
+            self.main.web_engine.setUrl('about:blank')
+
+    # # ----------------------------------------------------------------------
+    # def force_feed(self):
+        # """"""
+        # request.urlopen(f'{self.url}/feed', timeout=1)
 
     # ----------------------------------------------------------------------
     def load_webview(self, debug_javascript=False):
         """"""
-        if not hasattr(self.parent, 'web_engine'):
-            self.parent.web_engine = QWebEngineView()
 
-            self.web_view.addWidget(self.parent.web_engine)
+        if not hasattr(self.main, 'web_engine'):
+            self.main.web_engine = QWebEngineView()
+
+            self.web_view.addWidget(self.main.web_engine)
 
         if debug_javascript and self.debug:
             console = JavaScriptConsole()
-            page = QWebEnginePage(self.parent.web_engine)
+            page = QWebEnginePage(self.main.web_engine)
             page.javaScriptConsoleMessage = console.feed
-            self.parent.web_engine.setPage(page)
+            self.main.web_engine.setPage(page)
             self.stdout = console
             page.profile().clearHttpCache()
             # self.parent.web_engine.setZoomFactor(0.5)
@@ -133,22 +154,35 @@ class LoadSubprocess:
 
         # self.parent.web_engine.setUrl(url)
 
-        self.timer.singleShot(100, self.auto_size)
+        # self.feed()
+        self.timer.singleShot(1000, self.auto_size)
+
+    # # ----------------------------------------------------------------------
+    # def feed(self):
+        # """"""
+        # self.auto_size(timer=False)
+        # self.timer.singleShot(800, lambda :request.urlopen(f'{self.url}/feed', timeout=1))
 
     # ----------------------------------------------------------------------
-    def auto_size(self):
+    def auto_size(self, timer=True):
         """"""
-        dpi = float(os.environ['BCISTREAM_DPI'])
-        f = 2.7
+        if self.stopped:
+            return
 
-        size = self.parent.web_engine.size()
-        if self.plot_size != size:
-            self.parent.web_engine.setUrl(
-                self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}')
+        dpi = prop.DPI
+        f = dpi / self.main.DPI
+        try:
+            size = self.main.web_engine.size()
+            if self.plot_size != size or self.plot_dpi != self.main.DPI:
+                self.main.web_engine.setUrl(
+                    self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}')
+                self.plot_size = size
+                self.plot_dpi = self.main.DPI
+        except:
+            pass
 
-            self.plot_size = size
-
-        self.timer.singleShot(1000, self.auto_size)
+        if timer:
+            self.timer.singleShot(1000, self.auto_size)
 
     # ----------------------------------------------------------------------
     def get_free_port(self):
@@ -159,3 +193,4 @@ class LoadSubprocess:
             port = str(s.getsockname()[1])
             logging.warning(f'Free port found in {port}')
             return port
+

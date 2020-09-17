@@ -2,12 +2,13 @@ from multiprocessing import freeze_support
 from pyside_material import apply_stylesheet  # , set_icons_theme
 from PySide2.QtWidgets import QApplication, QSplashScreen
 from PySide2.QtGui import QPixmap, QBitmap, QImage, QBrush, QPainter, QColor, QIcon
-from PySide2.QtCore import Qt, QRect, QCoreApplication
+from PySide2.QtCore import Qt, QRect, QCoreApplication, SIGNAL
 from .bci_framework import BCIFramework
 import sys
 import os
 from pathlib import Path
 
+import signal
 
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
@@ -20,19 +21,46 @@ experiments, and real-time visualizations for OpenBCI."""
 
 
 os.environ.setdefault('APP_NAME', 'BCI Framework')
-os.environ.setdefault(
-    'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
-os.environ.setdefault('BCISTREAM_HOME', os.path.join(
-    Path.home(), '.bciframework'))
+os.environ.setdefault('BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
+os.environ.setdefault('BCISTREAM_HOME', os.path.join(Path.home(), '.bciframework'))
+os.environ.setdefault('BCISTREAM_PIDS', os.path.join(os.getenv('BCISTREAM_HOME'), '.pids'))
+os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
+
+
+if not os.path.exists(os.getenv('BCISTREAM_TMP')):
+    os.mkdir(os.getenv('BCISTREAM_TMP'))
 
 
 # ----------------------------------------------------------------------
+def kill_subprocess():
+    """"""
+    print('Killing subprocess')
+    with open(os.environ['BCISTREAM_PIDS'], 'r') as file:
+        for pid in map(int, file.readlines()):
+            try:
+                print(f'Killing {pid}')
+                os.kill(pid, signal.SIGKILL) #or signal.SIGKILL
+            except ProcessLookupError:
+                pass
+            
+    with open(os.environ['BCISTREAM_PIDS'], 'w') as file:
+        pass
+    
+    
+        
+# ----------------------------------------------------------------------
 def main():
     """"""
+    kill_subprocess()
     freeze_support()
 
     QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
+
     app = QApplication(sys.argv)
+    app.processEvents()
+    app.setQuitOnLastWindowClosed(False)
+    app.lastWindowClosed.connect(kill_subprocess)
+    app.lastWindowClosed.connect(lambda :app.quit())
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
@@ -48,7 +76,6 @@ def main():
             font-size: 11pt;
             """)
 
-    app.processEvents()
     extra = {'danger': '#dc3545',
              'warning': '#ffc107',
              'success': '#17a2b8',
@@ -59,7 +86,7 @@ def main():
 
     frame = BCIFramework()
     frame.main.showMaximized()
-
+    
     if '--no_splash' in sys.argv:
         splash.finish(frame)
 
