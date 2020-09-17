@@ -42,7 +42,7 @@ class Development:
         background-color: #263238;
         color: white;
         font-weight: normal;
-        font-family: 'monospace';
+        font-family: 'DejaVu Sans Mono';
         font-size: 15px;
         line-height: 15px;
         border: 0px solid #4f5b62;
@@ -64,7 +64,8 @@ class Development:
             self.run_preview)
         self.parent_frame.pushButton_stop_preview.clicked.connect(
             self.stop_preview)
-        self.parent_frame.tabWidget_project.currentChanged.connect(self.check_tabs)
+        self.parent_frame.tabWidget_project.currentChanged.connect(
+            self.check_tabs)
 
     # ----------------------------------------------------------------------
     def check_tabs(self, event=None):
@@ -112,7 +113,8 @@ class Development:
         self.stop_preview()
         # module = os.path.join(self.parent.treeWidget_project.path, os.path.split(
         # self.parent.treeWidget_project.path)[1])
-        module = os.path.join(self.parent_frame.treeWidget_project.path, 'main.py')
+        module = os.path.join(
+            self.parent_frame.treeWidget_project.path, 'main.py')
         # self.parent.plainTextEdit_preview_log.hide()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
         self.parent_frame.pushButton_stop_preview.show()
@@ -144,7 +146,8 @@ class Development:
         if not hasattr(self.preview_stream, 'stdout'):
             return
         if line := self.preview_stream.stdout.readline(timeout=0.01):
-            self.parent_frame.plainTextEdit_preview_log.moveCursor(QTextCursor.End)
+            self.parent_frame.plainTextEdit_preview_log.moveCursor(
+                QTextCursor.End)
             self.parent_frame.plainTextEdit_preview_log.insertPlainText(
                 line.decode())
         self.timer.singleShot(1000 / 60, self.update_log)
