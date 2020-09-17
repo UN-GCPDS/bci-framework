@@ -9,6 +9,7 @@ from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidg
 from ...dialogs import Dialogs
 from ...config_manager import ConfigManager
 
+
 ########################################################################
 class Visualization:
     """"""
@@ -32,9 +33,13 @@ class Visualization:
         # self.add_subwindow)
         self.parent_frame.pushButton_load_visualizarion.clicked.connect(
             self.add_subwindow)
+        self.parent_frame.pushButton_visualizations_remove_all.clicked.connect(
+            self.remove_all)
+        self.parent_frame.pushButton_visualizations_reload_all.clicked.connect(
+            self.reload_all)
 
     # ----------------------------------------------------------------------
-    def update_visualizations_list(self, event=None):
+    def update_visualizations_list(self):
         """"""
         for i in range(self.parent_frame.listWidget_projects.count()):
             item = self.parent_frame.listWidget_projects.item(i)
@@ -43,9 +48,22 @@ class Visualization:
                 # self.parent.comboBox_load_visualization.addItem(item.text())
 
     # ----------------------------------------------------------------------
-    def add_subwindow(self, event=None):
-        """"""        
-        sub = VisualizationWidget(self.parent_frame.mdiArea, self.visualizations_list)
+    def reload_all(self):
+        """"""
+        for sub in self.parent_frame.mdiArea.subWindowList():
+            sub.reload()
+
+    # ----------------------------------------------------------------------
+    def remove_all(self):
+        """"""
+        for sub in self.parent_frame.mdiArea.subWindowList():
+            sub.remove()
+
+    # ----------------------------------------------------------------------
+    def add_subwindow(self):
+        """"""
+        sub = VisualizationWidget(
+            self.parent_frame.mdiArea, self.visualizations_list)
         self.parent_frame.mdiArea.addSubWindow(sub)
         sub.show()
         self.parent_frame.mdiArea.tileSubWindows()
