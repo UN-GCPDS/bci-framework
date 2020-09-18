@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1385</width>
-    <height>783</height>
+    <height>772</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -60,42 +60,23 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_stimuli_webview"/>
+            <widget class="QMdiArea" name="mdiArea_stimuli">
+             <property name="background">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
+               </color>
+              </brush>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QComboBox" name="comboBox_load_experiment">
-            <item>
-             <property name="text">
-              <string>Select experiment...</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_load_experiment">
-            <property name="text">
-             <string>Load experiment</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_13">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item>
            <widget class="QLineEdit" name="lineEdit_stimuli_ip">
             <property name="enabled">
@@ -120,6 +101,19 @@
              <bool>true</bool>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_stimuli_browser">
@@ -234,27 +228,16 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="widget_development_webview" native="true">
-           <layout class="QGridLayout" name="gridLayout_11">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_webview"/>
-            </item>
-           </layout>
+          <widget class="QMdiArea" name="mdiArea_development">
+           <property name="background">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </property>
           </widget>
          </widget>
         </item>
@@ -897,7 +880,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="documentMode">
         <bool>false</bool>
@@ -989,7 +972,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>399</width>
-                  <height>466</height>
+                  <height>456</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1025,7 +1008,7 @@ p, li { white-space: pre-wrap; }
                       <x>0</x>
                       <y>0</y>
                       <width>387</width>
-                      <height>454</height>
+                      <height>444</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1074,8 +1057,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>399</width>
-                  <height>466</height>
+                  <width>215</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1325,7 +1308,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>411</width>
-                 <height>622</height>
+                 <height>611</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">

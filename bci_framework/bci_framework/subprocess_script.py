@@ -126,6 +126,7 @@ class LoadSubprocess:
 
         if hasattr(self.main, 'web_engine'):
             self.main.web_engine.setUrl('about:blank')
+            # self.main.web_engine.setUrl('')
 
     # # ----------------------------------------------------------------------
     # def force_feed(self):
@@ -156,6 +157,11 @@ class LoadSubprocess:
             self.timer.singleShot(1000, self.auto_size)
         else:
             self.main.web_engine.setUrl(self.url)
+
+    # ----------------------------------------------------------------------
+    def reload(self):
+        """"""
+        self.main.web_engine.setUrl(self.url)
 
     # # ----------------------------------------------------------------------
     # def feed(self):

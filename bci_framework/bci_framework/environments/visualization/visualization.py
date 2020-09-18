@@ -22,8 +22,8 @@ class Visualization:
         self.core = core
         self.config = ConfigManager()
 
-        self.visualizations_list = []
-        self.update_visualizations_list()
+        # self.visualizations_list = []
+        # self.update_visualizations_list()
         self.connect()
 
     # ----------------------------------------------------------------------
@@ -39,8 +39,9 @@ class Visualization:
             self.reload_all)
 
     # ----------------------------------------------------------------------
-    def update_visualizations_list(self):
+    def on_focus(self):
         """"""
+        self.visualizations_list = []
         for i in range(self.parent_frame.listWidget_projects.count()):
             item = self.parent_frame.listWidget_projects.item(i)
             if item.icon_name == 'icon_viz':

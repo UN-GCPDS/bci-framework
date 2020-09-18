@@ -7,6 +7,7 @@ from PySide2.QtCore import QTimer, Qt
 from PySide2.QtGui import QTextCursor
 
 from ...subprocess_script import LoadSubprocess
+from ..visualization.visualization_widget import VisualizationWidget, StimuliWidget
 
 
 ########################################################################
@@ -61,7 +62,7 @@ class Development:
         """Constructor"""
 
         self.parent_frame.pushButton_script_preview.clicked.connect(
-            self.run_preview)
+            self.reload)
         self.parent_frame.pushButton_stop_preview.clicked.connect(
             self.stop_preview)
         self.parent_frame.tabWidget_project.currentChanged.connect(
@@ -82,6 +83,7 @@ class Development:
     # ----------------------------------------------------------------------
     def hide_preview(self):
         """"""
+        self.parent_frame.mdiArea_development.hide()
         self.parent_frame.splitter_preview.moveSplitter(
             self.parent_frame.splitter_preview.getRange(1)[1], 1)
         self.handle_width = self.parent_frame.splitter_preview.handleWidth()
@@ -90,6 +92,7 @@ class Development:
     # ----------------------------------------------------------------------
     def show_preview(self):
         """"""
+        self.parent_frame.mdiArea_development.show()
         self.parent_frame.splitter_preview.moveSplitter(
             self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
         self.parent_frame.splitter_preview.setHandleWidth(self.handle_width)
@@ -105,25 +108,24 @@ class Development:
         # if editor.path:
         # with open(editor.path, 'w') as file:
         # file.write(script)
+    # ----------------------------------------------------------------------
+    def get_visualization(self):
+        """"""
+        return os.path.split(self.parent_frame.treeWidget_project.path)[1]
 
     # ----------------------------------------------------------------------
-    def run_preview(self):
+    def reload(self):
         """"""
+        self.show_preview()
+
         self.save_all_files()
-        self.stop_preview()
-        # module = os.path.join(self.parent.treeWidget_project.path, os.path.split(
-        # self.parent.treeWidget_project.path)[1])
-        module = os.path.join(
-            self.parent_frame.treeWidget_project.path, 'main.py')
-        # self.parent.plainTextEdit_preview_log.hide()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
+
+        self.sub.load_visualization(self.get_visualization(), debug=self)
+        self.timer.singleShot(100, self.update_log)
+
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
-
-        self.preview_stream = LoadSubprocess(
-            self.parent_frame, module, debug=True, web_view='gridLayout_webview', endpoint='delivery')
-        self.timer.singleShot(100, self.update_log)
-        self.show_preview()
 
         current_process = psutil.Process()
         children = current_process.children(recursive=True)
@@ -131,10 +133,29 @@ class Development:
             print('Child pid is {}'.format(child.pid))
 
     # ----------------------------------------------------------------------
+    def on_focus(self):
+        """"""
+        if not self.parent_frame.mdiArea_development.subWindowList():
+            self.build_preview()
+
+    # ----------------------------------------------------------------------
+    def build_preview(self):
+        """"""
+        self.sub = VisualizationWidget(
+            self.parent_frame.mdiArea_development, [])
+        self.parent_frame.mdiArea_development.addSubWindow(self.sub)
+        self.sub.show()
+        self.parent_frame.mdiArea_development.tileSubWindows()
+
+        # sub.widgets_set_enabled = self.widgets_set_enabled
+        # sub.update_ip = self.update_ip
+        self.sub.update_menu_bar(self.get_visualization(), debug=self)
+
+    # ----------------------------------------------------------------------
     def stop_preview(self):
         """"""
-        if hasattr(self, 'preview_stream'):
-            self.preview_stream.stop_preview()
+        if hasattr(self, 'sub'):
+            self.sub.stop_preview()
 
         self.parent_frame.pushButton_stop_preview.hide()
         self.parent_frame.pushButton_script_preview.show()
@@ -143,9 +164,9 @@ class Development:
     # ----------------------------------------------------------------------
     def update_log(self):
         """"""
-        if not hasattr(self.preview_stream, 'stdout'):
+        if not hasattr(self.sub.stream_subprocess, 'stdout'):
             return
-        if line := self.preview_stream.stdout.readline(timeout=0.01):
+        if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
             self.parent_frame.plainTextEdit_preview_log.moveCursor(
                 QTextCursor.End)
             self.parent_frame.plainTextEdit_preview_log.insertPlainText(

@@ -55,7 +55,7 @@ class BCIFramework:
         self.records = Records(self.main, self)
 
         self.development = Development(self)
-        self.visualization = Visualization(self)
+        self.visualizations = Visualization(self)
         self.stimuli_delivery = StimuliDelivery(self)
 
         self.status_bar('OpenBCI no connected')
@@ -127,7 +127,19 @@ class BCIFramework:
         if action := getattr(self.main, f"action{interface}", False):
             action.setChecked(True)
 
+        if mod := getattr(self, f'{interface.lower().replace(" ", "_")}', False):
+            if mod and hasattr(mod, 'on_focus'):
+                mod.on_focus()
+
+        # if hasattr(getattr(self, f'{interface.lower().replace(" ", "_")}'), 'on_focus'):
+            # getattr(
+                # getattr(self, f'{interface.lower().replace(" ", "_")}'), 'on_focus')()
+
+        # if interface == 'Stimuli_delivery':
+            # self.mdiArea_stimuli
+
     # ----------------------------------------------------------------------
+
     def set_editor(self):
         """"""
         self.main.plainTextEdit_preview_log.setStyleSheet("""
