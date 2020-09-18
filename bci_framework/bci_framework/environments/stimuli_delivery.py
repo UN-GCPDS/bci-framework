@@ -5,7 +5,7 @@ import sys
 import webbrowser
 
 from PySide2.QtUiTools import QUiLoader
-from ..visualization.visualization_widget import StimuliWidget
+from ..stream_handler import StimuliWidget
 # import logging
 
 ########################################################################

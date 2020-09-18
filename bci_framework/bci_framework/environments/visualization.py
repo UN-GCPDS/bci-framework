@@ -2,12 +2,12 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from .visualization_widget import VisualizationWidget
 
 from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidget
 
-from ...dialogs import Dialogs
-from ...config_manager import ConfigManager
+from ..stream_handler import VisualizationWidget
+from ..dialogs import Dialogs
+from ..config_manager import ConfigManager
 
 
 ########################################################################

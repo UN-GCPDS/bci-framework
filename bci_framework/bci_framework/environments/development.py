@@ -6,8 +6,8 @@ import psutil
 from PySide2.QtCore import QTimer, Qt
 from PySide2.QtGui import QTextCursor
 
-from ...subprocess_script import LoadSubprocess
-from ..visualization.visualization_widget import VisualizationWidget, StimuliWidget
+from ..subprocess_script import LoadSubprocess
+from ..stream_handler import VisualizationWidget, StimuliWidget
 
 
 ########################################################################
