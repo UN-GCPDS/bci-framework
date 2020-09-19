@@ -244,7 +244,6 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
             self.loaded()
 
     # ----------------------------------------------------------------------
-
     def reload(self):
         """"""
         if self.is_visualization:
@@ -258,10 +257,21 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
     def save_img(self):
         """"""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
+        filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
+        self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
+
         path = self.config.get(
             'directories', 'screenshots', str(Path.home()))
         dst = Dialogs.save_filename(self.mdi_area, 'Save\
         capture', os.path.join(path, name), filter="Images (*.jpg)")
+
+        if dst:
+            shutil.move(filename, dst)
+            self.config.set('directories', 'screenshots',
+                            str(os.path.dirname(dst)))
+            self.config.save()
+        else:
+            os.remove(filename)
 
     # ----------------------------------------------------------------------
     def update_menu_bar(self, visualization=None, debugger=False):
