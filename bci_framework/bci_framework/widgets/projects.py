@@ -183,6 +183,11 @@ class Projects:
         """"""
         global files_count, dir_count, project_name_
 
+        if self.parent_frame.listWidget_projects.currentItem().icon_name == 'icon_viz':
+            self.mode = 'visualization'
+        else:
+            self.mode = 'stimuli'
+
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent_frame, "page_projects_files"))
 
@@ -258,6 +263,8 @@ class Projects:
         else:
             if os.path.exists(os.path.join(path, 'main.py')):
                 self.load_script_in_textedit(os.path.join(path, 'main.py'))
+
+        self.core.development.build_preview()
 
     # ----------------------------------------------------------------------
     def load_scripts(self):

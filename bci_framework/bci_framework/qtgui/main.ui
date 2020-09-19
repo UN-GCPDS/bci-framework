@@ -34,7 +34,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -971,8 +971,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>399</width>
-                  <height>456</height>
+                  <width>96</width>
+                  <height>95</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1007,8 +1007,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>387</width>
-                      <height>444</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1307,8 +1307,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>411</width>
-                 <height>611</height>
+                 <width>410</width>
+                 <height>608</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -1929,7 +1929,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
@@ -2658,82 +2658,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Stimuli Delivery</string>
-   </property>
-  </action>
-  <action name="actionplay">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/icon/icons/play.svg</normaloff>:/icon/icons/play.svg</iconset>
-   </property>
-   <property name="text">
-    <string>play</string>
-   </property>
-  </action>
-  <action name="actionstop">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/icon/icons/stop.svg</normaloff>:/icon/icons/stop.svg</iconset>
-   </property>
-   <property name="text">
-    <string>stop</string>
-   </property>
-  </action>
-  <action name="actionrecord">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/icon/icons/record.svg</normaloff>:/icon/icons/record.svg</iconset>
-   </property>
-   <property name="text">
-    <string>record</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About OpenBCI...</string>
-   </property>
-  </action>
-  <action name="actionAbout_EEG_Framework">
-   <property name="text">
-    <string>About EEG Framework...</string>
-   </property>
-  </action>
-  <action name="actionCheck_for_updates">
-   <property name="text">
-    <string>Check for updates...</string>
-   </property>
-  </action>
-  <action name="actionNew_project">
-   <property name="text">
-    <string>New project...</string>
-   </property>
-  </action>
-  <action name="actionOpen_project">
-   <property name="text">
-    <string>Open project</string>
-   </property>
-  </action>
-  <action name="action_1">
-   <property name="text">
-    <string>#1</string>
-   </property>
-  </action>
-  <action name="action_2">
-   <property name="text">
-    <string>#2</string>
-   </property>
-  </action>
-  <action name="action_3">
-   <property name="text">
-    <string>#3</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="icon">
-    <iconset theme="document-save">
-     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-   </property>
-   <property name="text">
-    <string>Save</string>
    </property>
   </action>
   <action name="actionHome">

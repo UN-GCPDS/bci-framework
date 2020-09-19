@@ -4,8 +4,10 @@ import socket
 import sys
 import webbrowser
 
+from PySide2.QtCore import QTimer
+
 from PySide2.QtUiTools import QUiLoader
-from ..stream_handler import StimuliWidget
+from ..stream_handler import VisualizationWidget
 # import logging
 
 ########################################################################
@@ -36,21 +38,29 @@ class StimuliDelivery:
         self.stimuli_list = []
         self.update_experiments_list()
 
+        self.parent_frame.mdiArea_stimuli.tileSubWindows()
+
         if not self.parent_frame.mdiArea_stimuli.subWindowList():
             self.build_dashboard()
 
     # ----------------------------------------------------------------------
     def build_dashboard(self):
         """"""
-        sub = StimuliWidget(
-            self.parent_frame.mdiArea_stimuli, self.stimuli_list)
+        sub = VisualizationWidget(
+            self.parent_frame.mdiArea_stimuli, self.stimuli_list, mode='stimuli')
         self.parent_frame.mdiArea_stimuli.addSubWindow(sub)
         sub.show()
         self.parent_frame.mdiArea_stimuli.tileSubWindows()
 
-        sub.widgets_set_enabled = self.widgets_set_enabled
+        # sub.destroyed.connect(self.widgets_set_enabled)
+
+        # sub.widgets_set_enabled = self.widgets_set_enabled
         sub.update_ip = self.update_ip
         sub.update_menu_bar()
+        sub.loaded = self.widgets_set_enabled
+
+        # self.widgets_set_enabled()
+        QTimer().singleShot(100, self.widgets_set_enabled)
 
     # ----------------------------------------------------------------------
     def update_experiments_list(self):
@@ -123,14 +133,19 @@ class StimuliDelivery:
         self.sub_window_delivery.webEngineView.setUrl(f'http://{url}/')
 
     # ----------------------------------------------------------------------
-    def widgets_set_enabled(self, enabled):
+    def widgets_set_enabled(self):
         """"""
+        if subwindows := self.parent_frame.mdiArea_stimuli.subWindowList():
+            sub = subwindows[0]
+            enabled = hasattr(sub, 'stream_subprocess')
+        else:
+            enabled = False
+
         self.parent_frame.lineEdit_stimuli_ip.setEnabled(enabled)
         self.parent_frame.pushButton_stimuli_browser.setEnabled(enabled)
         self.parent_frame.pushButton_stimuli_subwindow.setEnabled(enabled)
 
     # ----------------------------------------------------------------------
-
     def update_ip(self, port):
         """"""
         self.parent_frame.lineEdit_stimuli_ip.setText(

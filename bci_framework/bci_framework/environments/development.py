@@ -7,7 +7,7 @@ from PySide2.QtCore import QTimer, Qt
 from PySide2.QtGui import QTextCursor
 
 from ..subprocess_script import LoadSubprocess
-from ..stream_handler import VisualizationWidget, StimuliWidget
+from ..stream_handler import VisualizationWidget
 
 
 ########################################################################
@@ -121,35 +121,43 @@ class Development:
         self.save_all_files()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
 
-        self.sub.load_visualization(self.get_visualization(), debug=self)
-        self.timer.singleShot(100, self.update_log)
+        self.sub.load_visualization(self.get_visualization(), debugger=self)
+        # self.timer.singleShot(100, self.update_log)
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
 
-        current_process = psutil.Process()
-        children = current_process.children(recursive=True)
-        for child in children:
-            print('Child pid is {}'.format(child.pid))
+        # current_process = psutil.Process()
+        # children = current_process.children(recursive=True)
+        # for child in children:
+            # print('Child pid is {}'.format(child.pid))
 
     # ----------------------------------------------------------------------
     def on_focus(self):
         """"""
-        if not self.parent_frame.mdiArea_development.subWindowList():
-            self.build_preview()
+        # if not self.parent_frame.mdiArea_development.subWindowList():
+            # self.build_preview()
+        self.parent_frame.mdiArea_development.tileSubWindows()
 
     # ----------------------------------------------------------------------
     def build_preview(self):
         """"""
+        self.stop_preview()
+        for sub in self.parent_frame.mdiArea_development.subWindowList():
+            sub.remove()
+
+        if sub := getattr(self, 'sub', False):
+            sub.deleteLater()
+
         self.sub = VisualizationWidget(
-            self.parent_frame.mdiArea_development, [])
+            self.parent_frame.mdiArea_development, [], mode=self.mode)
         self.parent_frame.mdiArea_development.addSubWindow(self.sub)
         self.sub.show()
         self.parent_frame.mdiArea_development.tileSubWindows()
 
         # sub.widgets_set_enabled = self.widgets_set_enabled
         # sub.update_ip = self.update_ip
-        self.sub.update_menu_bar(self.get_visualization(), debug=self)
+        # self.sub.update_menu_bar(self.get_visualization(), debugger=self)
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
@@ -165,7 +173,14 @@ class Development:
     def update_log(self):
         """"""
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
+            try:
+                self.sub.stream_subprocess.start_debug()
+            except:
+                pass
+            finally:
+                self.timer.singleShot(1000 / 60, self.update_log)
             return
+
         if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
             self.parent_frame.plainTextEdit_preview_log.moveCursor(
                 QTextCursor.End)
@@ -187,3 +202,9 @@ class Development:
                         i, tab_text.strip('*'))
 
         self.timer_autosave.singleShot(10000, self.save_all_files)
+
+    # ----------------------------------------------------------------------
+    @property
+    def mode(self):
+        """"""
+        return self.core.projects.mode

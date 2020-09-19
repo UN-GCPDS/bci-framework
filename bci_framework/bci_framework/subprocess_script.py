@@ -1,6 +1,5 @@
 """
 """
-
 import os
 import sys
 import socket
@@ -54,124 +53,11 @@ class JavaScriptConsole:
 
 
 ########################################################################
-class LoadSubprocess:
+class VisualizationSubprocess:
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, path=None, debug=False, web_view='gridLayout_webview', endpoint=''):
-        """Constructor"""
-
-        print('subprocess.......................')
-
-        self.main = parent
-        self.debug = debug
-        self.endpoint = endpoint
-        self.web_view = getattr(self.main, web_view)
-        self.plot_size = QSize(0, 0)
-        self.plot_dpi = 0
-        self.stopped = False
-
-        self.main.DPI = 60
-
-        if path:
-            self.load_path(path)
-
-    # ----------------------------------------------------------------------
-    def load_path(self, path):
-        """"""
-        self.timer = QTimer()
-        self.port = self.get_free_port()
-        self.subprocess_script = run_subprocess(
-            [sys.executable, path, self.port])
-
-        with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
-            file.write(f'{self.subprocess_script.pid}\n')
-
-        if self.debug:
-            self.stdout = NBSR(self.subprocess_script.stdout)
-        self.timer.singleShot(500, self.get_mode)
-
-    # ----------------------------------------------------------------------
-    def get_mode(self):
-        """"""
-        try:
-            mode = request.urlopen(
-                f'http://localhost:{self.port}/mode', timeout=10).read()
-        except:
-            self.timer.singleShot(1000 / 30, self.get_mode)
-            return
-
-        if mode == b'visualization':
-            self.main.widget_development_webview.show()
-            self.url = f'http://localhost:{self.port}'
-            self.load_webview(debug_javascript=False)
-            # self.parent.web_engine.resizeEvent.connect()
-        elif mode == b'stimuli':
-            self.main.widget_development_webview.show()
-            self.url = f'http://localhost:{self.port}/{self.endpoint}'
-            self.load_webview(debug_javascript=True)
-
-    # ----------------------------------------------------------------------
-    def stop_preview(self):
-        """"""
-        self.timer.stop()
-        self.stopped = True
-        if hasattr(self, 'subprocess_script'):
-            # self.subprocess_script.kill()
-            self.subprocess_script.terminate()
-            try:
-                os.kill(self.subprocess_script.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-
-        if hasattr(self.main, 'web_engine'):
-            self.main.web_engine.setUrl('about:blank')
-            # self.main.web_engine.setUrl('')
-
-    # # ----------------------------------------------------------------------
-    # def force_feed(self):
-        # """"""
-        # request.urlopen(f'{self.url}/feed', timeout=1)
-
-    # ----------------------------------------------------------------------
-    def load_webview(self, debug_javascript=False):
-        """"""
-
-        if not hasattr(self.main, 'web_engine'):
-            self.main.web_engine = QWebEngineView()
-            self.web_view.addWidget(self.main.web_engine)
-
-        if debug_javascript and self.debug:
-            console = JavaScriptConsole()
-            page = QWebEnginePage(self.main.web_engine)
-            page.javaScriptConsoleMessage = console.feed
-            self.main.web_engine.setPage(page)
-            self.stdout = console
-            page.profile().clearHttpCache()
-            # self.parent.web_engine.setZoomFactor(0.5)
-            # settings = self.parent.web_engine.settings()
-            # settings.ShowScrollBars(False)
-
-        # self.feed()
-        if not debug_javascript:
-            self.timer.singleShot(1000, self.auto_size)
-        else:
-            self.main.web_engine.setUrl(self.url)
-
-    # ----------------------------------------------------------------------
-    def reload(self):
-        """"""
-        self.main.web_engine.setUrl(self.url)
-
-    # # ----------------------------------------------------------------------
-    # def feed(self):
-        # """"""
-        # self.auto_size(timer=False)
-        # self.timer.singleShot(800, lambda :request.urlopen(f'{self.url}/feed', timeout=1))
-
-    # ----------------------------------------------------------------------
-
-    def auto_size(self, timer=True):
+    def viz_auto_size(self, timer=True):
         """"""
         if self.stopped:
             return
@@ -189,7 +75,146 @@ class LoadSubprocess:
             pass
 
         if timer:
-            self.timer.singleShot(1000, self.auto_size)
+            self.timer.singleShot(1000, self.viz_auto_size)
+
+    # ----------------------------------------------------------------------
+    def viz_debug(self):
+        """"""
+        self.stdout = NBSR(self.subprocess_script.stdout)
+
+    # ----------------------------------------------------------------------
+    def viz_start(self):
+        """"""
+        self.timer.singleShot(1000, self.viz_auto_size)
+
+
+########################################################################
+class StimuliSubprocess:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def stm_debug(self):
+        """"""
+        console = JavaScriptConsole()
+        page = QWebEnginePage(self.main.web_engine)
+        page.javaScriptConsoleMessage = console.feed
+        self.main.web_engine.setPage(page)
+        self.stdout = console
+        page.profile().clearHttpCache()
+
+    # ----------------------------------------------------------------------
+    def stm_start(self):
+        """"""
+        self.main.web_engine.setUrl(self.url)
+
+
+########################################################################
+class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
+    """"""
+    # ----------------------------------------------------------------------
+
+    def __init__(self, parent, path=None):
+        """Constructor"""
+
+        self.main = parent
+
+        self.web_view = self.main.gridLayout_webview
+        self.plot_size = QSize(0, 0)
+        self.plot_dpi = 0
+        self.stopped = False
+
+        if path:
+            self.load_path(path)
+
+    # ----------------------------------------------------------------------
+    def load_path(self, path):
+        """"""
+        self.timer = QTimer()
+        self.port = self.get_free_port()
+        self.subprocess_script = run_subprocess(
+            [sys.executable, path, self.port])
+
+        # Register the PID to kill it later
+        with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
+            file.write(f'{self.subprocess_script.pid}\n')
+
+        # self.timer.singleShot(500, self.prepare)
+        self.prepare()
+
+    # ----------------------------------------------------------------------
+    def prepare(self):
+        """"""
+        # Try to get mode
+        try:
+            self.mode = request.urlopen(
+                f'http://localhost:{self.port}/mode', timeout=10).read().decode()
+        except:  # if fail
+            self.timer.singleShot(1000 / 30, self.prepare)  # call again
+            return
+
+        # and only when the mode is explicit...
+
+        if self.mode == 'visualization':
+            self.is_visualization = True
+            self.is_stimuli = False
+            endpoint = ''
+        elif self.mode == 'stimuli':
+            self.is_visualization = False
+            self.is_stimuli = True
+            endpoint = 'delivery'
+
+        self.main.widget_development_webview.show()
+        self.url = f'http://localhost:{self.port}/{endpoint}'
+        self.load_webview()
+
+    # ----------------------------------------------------------------------
+    def stop_preview(self):
+        """"""
+        self.timer.stop()
+        self.stopped = True
+        if hasattr(self, 'subprocess_script'):
+            self.subprocess_script.terminate()
+            try:
+                os.kill(self.subprocess_script.pid, signal.SIGKILL)
+                logging.info(
+                    f'killing subprocess with PID {self.subprocess_script.pid}')
+            except ProcessLookupError:
+                logging.info(
+                    f'error when try to kill subprocess with PID {self.subprocess_script.pid}')
+
+        # TODO: A wait page could be a nice idea
+        self.main.widget_development_webview.hide()
+        if hasattr(self.main, 'web_engine'):
+            self.main.web_engine.setUrl('about:blank')
+
+    # ----------------------------------------------------------------------
+    def load_webview(self):
+        """"""
+        self.main.widget_development_webview.show()
+
+        # Create main QWebEngineView object
+        if not hasattr(self.main, 'web_engine'):
+            self.main.web_engine = QWebEngineView()
+            self.web_view.addWidget(self.main.web_engine)
+
+        # Set URL and start interface
+        if self.is_visualization:
+            self.viz_start()
+        elif self.is_stimuli:
+            self.stm_start()
+
+    # ----------------------------------------------------------------------
+    def start_debug(self):
+        """"""
+        if self.is_stimuli:
+            self.stm_debug()
+        elif self.is_visualization:
+            self.viz_debug()
+
+    # ----------------------------------------------------------------------
+    def reload(self):
+        """"""
+        self.main.web_engine.setUrl(self.url)
 
     # ----------------------------------------------------------------------
     def get_free_port(self):
@@ -198,6 +223,7 @@ class LoadSubprocess:
             s.bind(('', 0))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             port = str(s.getsockname()[1])
-            logging.warning(f'Free port found in {port}')
+            logging.info(f'Free port found in {port}')
             return port
+
 
