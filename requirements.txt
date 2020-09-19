@@ -26,5 +26,6 @@ scipy==1.5.2
 shiboken2==5.15.1
 six==1.15.0
 tables==3.6.1
+tornado==6.0.4
 urllib3==1.25.10
 Werkzeug==1.0.1
