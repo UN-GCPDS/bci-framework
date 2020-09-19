@@ -42,11 +42,11 @@ if not os.path.exists(os.getenv('BCISTREAM_TMP')):
 # ----------------------------------------------------------------------
 def kill_subprocess():
     """Kill explicit created process."""
-    logging.info('Killing subprocess')
+
     with open(os.environ['BCISTREAM_PIDS'], 'r') as file:
         for pid in map(int, file.readlines()):
             try:
-                logging.info(f'Killing {pid}')
+                logging.info(f'killing {pid}')
                 os.kill(pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
@@ -58,12 +58,12 @@ def kill_subprocess():
 # ----------------------------------------------------------------------
 def kill_childs():
     """Kill all child process created by main app."""
-    logging.info('Killing child subprocess')
+
     current_process = psutil.Process()
     children = current_process.children(recursive=True)
     for child in children:
         try:
-            logging.info(f'Killing {child.pid}')
+            logging.info(f'killing {child.pid}')
             os.kill(child.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass

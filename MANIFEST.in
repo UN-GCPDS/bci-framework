@@ -1,0 +1,7 @@
+recursive-include bci_framework/ *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-exclude assets/ *
+recursive-exclude local/ *
+recursive-exclude docs/ *
