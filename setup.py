@@ -1,5 +1,6 @@
 import os
 from setuptools import setup
+from pip.
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
@@ -7,6 +8,9 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 version_str = open(os.path.join(
     'bci_framework', '_version.txt'), 'r').read().strip()
+
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup(
     name='bci-framework',
@@ -20,16 +24,7 @@ setup(
 
     download_url='https://github.com/UN-GCPDS/bci_framework',
 
-    install_requires=['openbci-stream',
-                      'pyside-material',
-                      'gcpds.utils',
-                      ],
-
-    scripts=[
-        "cmd/openbci_cli",
-        "cmd/stream_rpyc",
-        "cmd/stream_eeg",
-    ],
+    install_requires=requirements,
 
     include_package_data=True,
     license='BSD 2-Clause "Simplified" License',
