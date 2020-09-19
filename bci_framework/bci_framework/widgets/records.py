@@ -166,6 +166,7 @@ class Records:
         sample_rate = header['sample_rate']
 
         duration = str(timedelta(seconds=int(samples / sample_rate)))
+        file.close()
 
         return [duration, dtm, filename.replace('.h5', ''), header['montage'], header['channels']]
 
