@@ -7,6 +7,8 @@ from .bci_framework import BCIFramework
 import sys
 import os
 from pathlib import Path
+import psutil
+import logging
 
 import signal
 
@@ -38,21 +40,33 @@ if not os.path.exists(os.getenv('BCISTREAM_TMP')):
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 # ----------------------------------------------------------------------
-
-
 def kill_subprocess():
-    """"""
-    print('Killing subprocess')
+    """Kill explicit created process."""
+    logging.info('Killing subprocess')
     with open(os.environ['BCISTREAM_PIDS'], 'r') as file:
         for pid in map(int, file.readlines()):
             try:
-                print(f'Killing {pid}')
-                os.kill(pid, signal.SIGKILL)  # or signal.SIGKILL
+                logging.info(f'Killing {pid}')
+                os.kill(pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
 
     with open(os.environ['BCISTREAM_PIDS'], 'w') as file:
         pass
+
+
+# ----------------------------------------------------------------------
+def kill_childs():
+    """Kill all child process created by main app."""
+    logging.info('Killing child subprocess')
+    current_process = psutil.Process()
+    children = current_process.children(recursive=True)
+    for child in children:
+        try:
+            logging.info(f'Killing {child.pid}')
+            os.kill(child.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
 
 
 # ----------------------------------------------------------------------
@@ -67,6 +81,7 @@ def main():
     app.processEvents()
     app.setQuitOnLastWindowClosed(False)
     app.lastWindowClosed.connect(kill_subprocess)
+    app.lastWindowClosed.connect(kill_childs)
     app.lastWindowClosed.connect(lambda: app.quit())
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
