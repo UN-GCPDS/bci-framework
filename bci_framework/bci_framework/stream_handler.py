@@ -26,6 +26,7 @@ class VisualizationsMenu:
     def build_menu_visualization(self, visualization, debugger=False):
         """"""
         self.menubar = QMenuBar(self)
+        self.menubar.setMinimumWidth(1e4)
 
         self.accent_menubar = QMenuBar(self)
 
@@ -95,6 +96,7 @@ class VisualizationsMenu:
         self.menubar = QMenuBar(self)
 
         self.right_menubar = QMenuBar(self)
+        self.menubar.setMinimumWidth(1e4)
 
         # Title
         if debugger:
@@ -284,7 +286,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.main.gridLayout_menubar.setMenuBar(self.menubar)
         self.menubar.adjustSize()
         self.menubar.setStyleSheet(
-            self.menubar.styleSheet() + """QMenuBar::item {width: 1px;}""")
+            self.menubar.styleSheet() + """QMenuBar::item {width: 10000px;}""")
 
     # ----------------------------------------------------------------------
     def stop_preview(self):
