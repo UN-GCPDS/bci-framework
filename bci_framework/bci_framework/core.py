@@ -1,5 +1,5 @@
 from PySide2.QtUiTools import QUiLoader
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui, QtCore
 from PySide2.QtCore import Qt, QTimer
 
 from PySide2.QtWidgets import QDialogButtonBox
@@ -35,10 +35,7 @@ class BCIFramework:
         self.main.actionDocumentation.triggered.connect(
             lambda evt: self.show_interface('Documentation'))
 
-        # self.show_interface('Development')
         self.show_interface('Home')
-        # self.show_interface('Documentation')
-        # self.main.stackedWidget_modes.setCurrentWidget(self.main.pa)
 
         self.config = ConfigManager()
 
@@ -48,6 +45,7 @@ class BCIFramework:
             tool_button.setMinimumWidth(200)
 
         self.set_editor()
+        self.build_collapse_button()
 
         self.montage = Montage(self)
         self.connection = Connection(self)
@@ -69,17 +67,58 @@ class BCIFramework:
             'docs', 'build', 'html', 'index.html'))
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
-        # from .dialogs import Dialogs
+    # ----------------------------------------------------------------------
+    def build_collapse_button(self):
+        """"""
+        # # Corner widget not work on 'West' Tabs, but its make space
+        # container = QtWidgets.QWidget(self.main)
+        # layout = QtWidgets.QHBoxLayout(container)
+        # layout.addWidget(QtWidgets.QPushButton())
+        # self.main.tabWidget_widgets.setCornerWidget(
+            # container, Qt.TopLeftCorner)
 
-        # Dialogs.save_filename(self, '', '', '')
+        # And with the space is possible to add ad custom widget
+        self.pushButton_collapse_dock = QtWidgets.QPushButton(
+            self.main.dockWidget_global)
+        self.pushButton_collapse_dock.clicked.connect(
+            self.set_dock_collapsed)
+
+        icon = QtGui.QIcon.fromTheme('arrow-right-double')
+        self.pushButton_collapse_dock.setIcon(icon)
+        self.pushButton_collapse_dock.setCheckable(True)
+        self.pushButton_collapse_dock.setFlat(True)
+
+        w = self.main.tabWidget_widgets.tabBar().width()
+        self.pushButton_collapse_dock.setMinimumWidth(w)
+        self.pushButton_collapse_dock.setMaximumWidth(w)
+        self.pushButton_collapse_dock.move(5, 5)
+
+    # ----------------------------------------------------------------------
+    def set_dock_collapsed(self, collapsed):
+        """"""
+        if collapsed:
+            w = self.main.tabWidget_widgets.tabBar().width() + 10
+            icon = QtGui.QIcon.fromTheme('arrow-left-double')
+            self.previous_width = self.main.dockWidget_global.width()
+        else:
+            if self.main.dockWidget_global.width() > 50:
+                return
+            icon = QtGui.QIcon.fromTheme('arrow-right-double')
+            w = self.previous_width
+
+        self.pushButton_collapse_dock.setIcon(icon)
+        self.main.dockWidget_global.setMaximumWidth(w)
+        self.main.dockWidget_global.setMinimumWidth(w)
 
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.main.dockWidget_global.dockLocationChanged.connect(
-            self.update_dock_tabs)
+        # self.main.dockWidget_global.dockLocationChanged.connect(
+            # self.update_dock_tabs)
+        # self.main.tabWidget_widgets.currentChanged.connect(
+            # self.widget_update)
         self.main.tabWidget_widgets.currentChanged.connect(
-            self.widget_update)
+            lambda: self.set_dock_collapsed(False))
 
         self.main.pushButton_add_project_2.clicked.connect(
             self.projects.show_create_project_dialog)
@@ -97,13 +136,13 @@ class BCIFramework:
 
         self.main.pushButton_show_about.clicked.connect(self.show_about)
 
-    # ----------------------------------------------------------------------
-    def widget_update(self, index):
-        """"""
-        tab = self.main.tabWidget_widgets.tabText(index)
+    # # ----------------------------------------------------------------------
+    # def widget_update(self, index):
+        # """"""
+        # tab = self.main.tabWidget_widgets.tabText(index)
 
-        if tab == 'Impedances':
-            self.impedances.update_impedance()
+        # if tab == 'Impedances':
+            # self.impedances.update_impedance()
 
     # ----------------------------------------------------------------------
     def update_dock_tabs(self, event):
@@ -131,15 +170,7 @@ class BCIFramework:
             if mod and hasattr(mod, 'on_focus'):
                 mod.on_focus()
 
-        # if hasattr(getattr(self, f'{interface.lower().replace(" ", "_")}'), 'on_focus'):
-            # getattr(
-                # getattr(self, f'{interface.lower().replace(" ", "_")}'), 'on_focus')()
-
-        # if interface == 'Stimuli_delivery':
-            # self.mdiArea_stimuli
-
     # ----------------------------------------------------------------------
-
     def set_editor(self):
         """"""
         self.main.plainTextEdit_preview_log.setStyleSheet("""
