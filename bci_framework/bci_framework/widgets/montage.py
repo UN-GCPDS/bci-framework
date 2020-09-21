@@ -1,5 +1,6 @@
 import os
 import json
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from PySide2.QtCore import QTimer
 from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QLineEdit
@@ -23,21 +24,47 @@ from gcpds.utils.filters import GenericButterBand, notch60, FiltersChain
 
 # from ..config_manager import ConfigManager
 from ..projects import properties as prop
-from ..projects.figure import thread_this
+from ..projects.figure import thread_this, subprocess_this
 
 
 ########################################################################
-class TopoplotMontage(FigureCanvas):
+class FigureTopo(FigureCanvas):
     """"""
 
     # ----------------------------------------------------------------------
     def __init__(self):
+        """Constructor"""
         super().__init__(Figure(figsize=(1, 1), dpi=90))
+        self.resize_timer = QTimer()
+        self.resize_timer.timeout.connect(self.do_resize_now)
 
+    # ----------------------------------------------------------------------
+    def resizeEvent(self, event):
+        """"""
+        self.lastEvent = (event.size().width(), event.size().height())
+        self.resize_timer.stop()
+        self.resize_timer.start(200)
+
+    # ----------------------------------------------------------------------
+    def do_resize_now(self):
+        newsize = QtCore.QSize(*self.lastEvent)
+        # create new event from the stored size
+        event = QtGui.QResizeEvent(newsize, QtCore.QSize(1, 1))
+        # print "Now I let you resize."
+        # and propagate the event to let the canvas resize.
+        super().resizeEvent(event)
+
+
+########################################################################
+class TopoplotMontage(FigureTopo):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super().__init__()
+        # self.connect_resize()
         self.ax = self.figure.add_subplot(111)
         self.reset_plot()
-        # self.figure.subplots_adjust(
-        # left=0.03, bottom=0.03, right=0.97, top=0.97, wspace=0, hspace=0)
 
     # ----------------------------------------------------------------------
     def reset_plot(self):
@@ -114,13 +141,13 @@ class TopoplotMontage(FigureCanvas):
 
 
 ########################################################################
-class TopoplotImpedances(FigureCanvas):
+class TopoplotImpedances(FigureTopo):
     """"""
 
     # ----------------------------------------------------------------------
     def __init__(self):
         """"""
-        super().__init__(Figure(figsize=(1, 1), dpi=90))
+        super().__init__()
         self.ax = self.figure.add_subplot(111)
         self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
         self.cmap = 'RdYlGn'
@@ -274,10 +301,6 @@ class Montage:
         self.topoplot = TopoplotMontage()
         self.parent_frame.gridLayout_montage.addWidget(self.topoplot)
 
-        # self.topoplot_impedance = TopoplotImpedances()
-        # self.parent.gridLayout_impedances.addWidget(self.topoplot_impedance)
-        # self.update_impedance()
-
         self.parent_frame.comboBox_montages.addItems(
             mne.channels.get_builtin_montages())
 
@@ -295,7 +318,7 @@ class Montage:
 
         self.load_montage()
 
-        QTimer().singleShot(100, self.set_spliter_position)
+        QTimer().singleShot(10, self.set_spliter_position)
 
     # ----------------------------------------------------------------------
     def update_impedance(self, z=None):
