@@ -136,6 +136,7 @@ class FigureStream(Figure):
         self.__output = BytesIO()
         self.__buffer = Queue(maxsize=60)
 
+        self.boundary = False
         self.subsample = None
         self.size = 'auto'
         # self.tight_layout(rect=[0, 0.03, 1, 0.95])
@@ -302,7 +303,7 @@ class FigureStream(Figure):
         return montage
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode='eeg', time=-15, window='auto', cmap='winter', fill=np.nan, subplot=[1, 1, 1],):
+    def create_lines(self, mode='eeg', time=-15, window='auto', cmap='cool', fill=np.nan, subplot=[1, 1, 1],):
         """"""
         mode = mode.lower()
         sr = prop.SAMPLE_RATE
@@ -340,6 +341,8 @@ class FigureStream(Figure):
 
         axis = self.add_subplot(*subplot)
 
+        # pyplot.set_cmap(q)
+
         if window == 'auto':
             window = self.get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
                                              n=1000)
@@ -374,7 +377,7 @@ class FigureStream(Figure):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds=30, aux_shape=3, fill=0, boundary=False):
+    def create_buffer(self, seconds=30, aux_shape=3, fill=0):
         """"""
         chs = len(prop.CHANNELS)
         time = prop.SAMPLE_RATE * seconds
@@ -385,35 +388,36 @@ class FigureStream(Figure):
         self.buffer_aux = np.empty((aux_shape, time))
         self.buffer_aux.fill(fill)
 
-        if boundary:
-            self.boundary = 0
-            self.boundary_aux = 0
+    # ----------------------------------------------------------------------
+    def create_boundary(self, axis, min=0, max=17):
+        """"""
+        self.boundary = 0
+        self.boundary_aux = 0
 
-            axis = self.gca()
-            self.boundary_line = axis.vlines(
-                999, -1, 17, color='w', zorder=99)
-            self.boundary_aux_line = axis.vlines(
-                999, -1, 17, color='w', zorder=99)
-
-        else:
-            self.boundary = False
+        # axis = self.gca()
+        self.boundary_line = axis.vlines(
+            0, min, max, color='w', zorder=99)
+        self.boundary_aux_line = axis.vlines(
+            0, max, max, color='w', zorder=99)
 
     # ----------------------------------------------------------------------
     def plot_boundary(self, eeg=True, aux=False):
         """"""
-        if eeg:
+        if eeg and hasattr(self, 'boundary_line'):
             segments = self.boundary_line.get_segments()
             segments[0][:, 0] = [self.boundary / prop.SAMPLE_RATE,
                                  self.boundary / prop.SAMPLE_RATE]
             self.boundary_line.set_segments(segments)
-        elif aux:
+        elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
             segments[0][:, 0] = [self.boundary_aux
                                  / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
-    # ----------------------------------------------------------------------
+        else:
+            logging.warning('No "boundary" to plot')
 
+    # ----------------------------------------------------------------------
     def update_buffer(self, eeg, aux):
         """"""
         if self.boundary is False:
@@ -432,16 +436,9 @@ class FigureStream(Figure):
             roll = 0
             if self.boundary + c >= self.buffer_eeg.shape[1]:
                 roll = self.buffer_eeg.shape[1] - (self.boundary + c)
-
-                if roll:
-                    self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
-
-                # logging.warning([self.boundary, c, self.boundary
-                                 # + c, eeg.shape, self.buffer_eeg.shape, roll])
-
+                self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
                 self.buffer_eeg[:, -eeg.shape[1]:] = eeg
-                if roll:
-                    self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
+                self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
 
             else:
                 self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg

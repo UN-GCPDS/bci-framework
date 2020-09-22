@@ -75,7 +75,7 @@ def fake_loop_consumer(fn):
             t0 = time.time()
 
             eeg = np.random.normal(0, 0.2, size=(
-                len(prop.CHANNELS), int(prop.SAMPLE_RATE / (1000 / prop.STREAMING_SAMPLE_RATE))))
+                len(prop.CHANNELS), int(prop.STREAMING_PACKAGE_SIZE)))
 
             if prop.BOARDMODE == 'default':
                 aux = np.random.normal(0, 0.2, size=(
@@ -110,8 +110,8 @@ def fake_loop_consumer(fn):
                     np.random.choice(range(ord('A'), ord('Z') + 1)))
                 fn(cls, data, 'marker', *args, **kwargs)
 
-            # while time.time() < (t0 + (prop.STREAMING_SAMPLE_RATE / 1000)):
-            while time.time() < (t0 + (prop.STREAMING_SAMPLE_RATE / 1000)):
+            # while time.time() < (t0 + (prop.STREAMING_PACKAGE_SIZE / 1000)):
+            while time.time() < (t0 + (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):
                 time.sleep(0.01)
 
     return wrap
