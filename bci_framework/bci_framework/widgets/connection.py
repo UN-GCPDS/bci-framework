@@ -305,7 +305,7 @@ class Connection:
         else:
             sps = int(sps)
         os.environ['BCISTREAM_SAMPLE_RATE'] = json.dumps(sps)
-        os.environ['BCISTREAM_STREAMING_SAMPLE_RATE'] = json.dumps(
+        os.environ['BCISTREAM_STREAMING_PACKAGE_SIZE'] = json.dumps(
             int(self.parent_frame.comboBox_streaming_sample_rate.currentText()))
 
         os.environ['BCISTREAM_BOARDMODE'] = json.dumps(

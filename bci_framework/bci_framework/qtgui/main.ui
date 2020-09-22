@@ -883,7 +883,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -989,7 +989,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>399</width>
-                  <height>482</height>
+                  <height>401</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1025,7 +1025,7 @@ p, li { white-space: pre-wrap; }
                       <x>0</x>
                       <y>0</y>
                       <width>387</width>
-                      <height>470</height>
+                      <height>389</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1074,8 +1074,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>399</width>
-                  <height>470</height>
+                  <width>215</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1817,7 +1817,7 @@ p, li { white-space: pre-wrap; }
                      <item row="4" column="0">
                       <widget class="QLabel" name="label_9">
                        <property name="text">
-                        <string>Streaming sample rate</string>
+                        <string>Streaming package size</string>
                        </property>
                       </widget>
                      </item>
@@ -1933,7 +1933,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">

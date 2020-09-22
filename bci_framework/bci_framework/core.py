@@ -9,8 +9,11 @@ from .widgets import Montage, Projects, Connection, Records
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 
+import psutil
 import os
 import webbrowser
+import json
+
 
 ########################################################################
 class BCIFramework:
@@ -66,6 +69,26 @@ class BCIFramework:
         docs = os.path.abspath(os.path.join(
             'docs', 'build', 'html', 'index.html'))
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
+
+        self.register_subprocess()
+
+    # ----------------------------------------------------------------------
+    def register_subprocess(self):
+        """"""
+        self.subprocess_timer = QTimer()
+        self.subprocess_timer.timeout.connect(self.save_subprocess)
+        self.subprocess_timer.setInterval(5)
+        self.subprocess_timer.start()
+
+    # ----------------------------------------------------------------------
+    def save_subprocess(self):
+        """"""
+        current_process = psutil.Process()
+        children = current_process.children(recursive=True)
+        file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
+        with open(file, 'w') as file_:
+            json.dump({ch.pid: ch.name()
+                       for ch in children}, file_, indent=2)
 
     # ----------------------------------------------------------------------
     def build_collapse_button(self):

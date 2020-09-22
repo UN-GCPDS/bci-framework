@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import psutil
 import logging
+import json
 
 import signal
 
@@ -27,8 +28,8 @@ os.environ.setdefault(
     'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
 os.environ.setdefault('BCISTREAM_HOME', os.path.join(
     Path.home(), '.bciframework'))
-os.environ.setdefault('BCISTREAM_PIDS', os.path.join(
-    os.getenv('BCISTREAM_HOME'), '.pids'))
+# os.environ.setdefault('BCISTREAM_PIDS', os.path.join(
+    # os.getenv('BCISTREAM_HOME'), '.pids'))
 os.environ.setdefault('BCISTREAM_TMP', os.path.join(
     os.getenv('BCISTREAM_HOME'), 'tmp'))
 
@@ -41,23 +42,31 @@ if not os.path.exists(os.getenv('BCISTREAM_TMP')):
 
 # ----------------------------------------------------------------------
 def kill_subprocess():
-    """Kill explicit created process."""
+    """Kill all subprocess registered.
 
-    with open(os.environ['BCISTREAM_PIDS'], 'r') as file:
-        for pid in map(int, file.readlines()):
+    On start, kill previous live subprocess. On exit, kill all subprocess
+    registered in the current (parent) process.
+    """
+
+    file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
+    if not os.path.exists(file):
+        return
+
+    with open(file, 'r') as file_:
+        subs = json.load(file_)
+        for sub in subs:
             try:
-                logging.info(f'killing {pid}')
-                os.kill(pid, signal.SIGKILL)
+                os.kill(int(sub), signal.SIGKILL)
+                logging.info(f'killing {sub}')
             except ProcessLookupError:
                 pass
 
-    with open(os.environ['BCISTREAM_PIDS'], 'w') as file:
-        pass
+    os.remove(file)
 
 
 # ----------------------------------------------------------------------
 def kill_childs():
-    """Kill all child process created by main app."""
+    """Kill the remaning childs not registered yet (only on exit)."""
 
     current_process = psutil.Process()
     children = current_process.children(recursive=True)

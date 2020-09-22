@@ -134,9 +134,9 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
 
-        # Register the PID to kill it later
-        with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
-            file.write(f'{self.subprocess_script.pid}\n')
+        # # Register the PID to kill it later
+        # with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
+            # file.write(f'{self.subprocess_script.pid}\n')
 
         # self.timer.singleShot(500, self.prepare)
         self.prepare()
