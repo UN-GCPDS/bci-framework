@@ -222,10 +222,10 @@ class FigureStream(Figure):
             width = request.values.get('width', None)
             height = request.values.get('height', None)
             if (
-                width
-                and height
-                and width.replace('.', '').isdigit()
-                and height.replace('.', '').isdigit()
+                width and
+                height and
+                width.replace('.', '').isdigit() and
+                height.replace('.', '').isdigit()
             ):
                 self.set_size_inches(float(width), float(height))
 
@@ -408,8 +408,8 @@ class FigureStream(Figure):
             self.boundary_line.set_segments(segments)
         elif aux:
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux /
-                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux
+                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
     # ----------------------------------------------------------------------
@@ -431,13 +431,20 @@ class FigureStream(Figure):
 
             roll = 0
             if self.boundary + c >= self.buffer_eeg.shape[1]:
-                roll = self.boundary + c
+                roll = self.buffer_eeg.shape[1] - (self.boundary + c)
 
-            if roll:
-                self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
-            self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg
-            if roll:
-                self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
+                if roll:
+                    self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
+
+                # logging.warning([self.boundary, c, self.boundary
+                                 # + c, eeg.shape, self.buffer_eeg.shape, roll])
+
+                self.buffer_eeg[:, -eeg.shape[1]:] = eeg
+                if roll:
+                    self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
+
+            else:
+                self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg
 
             self.boundary += c
             self.boundary = self.boundary % self.buffer_eeg.shape[1]
