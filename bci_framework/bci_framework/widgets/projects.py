@@ -51,6 +51,11 @@ class Projects:
         """"""
         self.parent_frame.pushButton_projects.clicked.connect(
             lambda evt: self.parent_frame.stackedWidget_projects.setCurrentWidget(getattr(self.parent_frame, "page_projects")))
+
+        # development opbect not exist, so use lambda
+        self.parent_frame.pushButton_projects.clicked.connect(lambda evt:
+                                                              self.core.development.stop_preview())
+
         self.parent_frame.listWidget_projects.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
@@ -336,7 +341,9 @@ class Projects:
     # ----------------------------------------------------------------------
     def show_create_project_dialog(self):
         """"""
-        project = QUiLoader().load('bci_framework/qtgui/new_project.ui', self.parent_frame)
+        file = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'new_project.ui')
+        project = QUiLoader().load(file, self.parent_frame)
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(lambda evt: self.create_project(project.lineEdit_project_name.text(),
                                                                                                       project.radioButton_visualization.isChecked(),
                                                                                                       project.radioButton_stimulus_delivery.isChecked()))
