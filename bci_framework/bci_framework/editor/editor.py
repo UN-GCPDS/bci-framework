@@ -124,9 +124,33 @@ class BCIEditor(QTextEdit):
         if event.key() in [Qt.Key_Enter, Qt.Key_Enter - 1]:
             return self._on_enter()
 
+        # On back space
+        if event.key() == Qt.Key_Backspace:
+            return self._on_back_space()
+
         super().keyPressEvent(event)
 
     # ----------------------------------------------------------------------
+    def _on_back_space(self):
+        """"""
+        tc = self.textCursor()
+        pos = tc.position()
+        tc.movePosition(tc.StartOfLine, tc.KeepAnchor)
+        previous = tc.selectedText()
+
+        if previous[-4:] == '    ':
+            if d := len(previous) % 4:
+                previous = previous[:-d]
+            else:
+                previous = previous[:-4]
+            tc.insertText(previous)
+            return
+        else:
+            tc.insertText(previous[:-1])
+            return
+
+    # ----------------------------------------------------------------------
+
     def _on_enter(self):
         """"""
         tc = self.textCursor()
