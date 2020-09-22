@@ -160,6 +160,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.main = QUiLoader().load(ui, self)
         self.mdi_area = mdi_area
 
+        self.main.DPI = 60
         self.mode = mode
         self.current_viz = None
         self.visualizations_list = visualizations_list
