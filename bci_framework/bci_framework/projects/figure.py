@@ -124,7 +124,7 @@ class FigureStream(Figure):
         'thread': None,  # background thread that reads frames from stream
         'frame': None,  # current frame is stored here by background thread
         'last_access': 0,  # time of last client access to the source,
-        # 'keep_alive': time.time(), 
+        # 'keep_alive': time.time(),
         'event': StreamEvent(),
     }
 
@@ -154,8 +154,8 @@ class FigureStream(Figure):
             target=self.app.run,
             kwargs={'host': '0.0.0.0', 'port': port, 'threaded': True},
         ).start()
-        
-    #----------------------------------------------------------------------
+
+    # ----------------------------------------------------------------------
     def __feed(self):
         """"""
         self.feed()
@@ -212,7 +212,7 @@ class FigureStream(Figure):
                 # # frames_iterator.close()
                 # logging.info('Stopping stream thread due to inactivity.')
                 # break
-              
+
         self.__class_attr['thread'] = None
 
     # ----------------------------------------------------------------------
@@ -253,7 +253,7 @@ class FigureStream(Figure):
 
         # stream = Stream()
 
-        # time.sleep(10)        
+        # time.sleep(10)
         # self.feed()
         # self.feed()
         # time.sleep(10)
@@ -302,7 +302,7 @@ class FigureStream(Figure):
         return montage
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode='eeg', time=-15, window=1000, cmap='winter', fill=np.nan, subplot=[1, 1, 1],):
+    def create_lines(self, mode='eeg', time=-15, window='auto', cmap='winter', fill=np.nan, subplot=[1, 1, 1],):
         """"""
         mode = mode.lower()
         sr = prop.SAMPLE_RATE
@@ -340,6 +340,10 @@ class FigureStream(Figure):
 
         axis = self.add_subplot(*subplot)
 
+        if window == 'auto':
+            window = self.get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
+                                             n=1000)
+
         a = np.empty(window)
         a.fill(fill)
 
@@ -370,7 +374,7 @@ class FigureStream(Figure):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds=30, aux_shape=3, fill=0):
+    def create_buffer(self, seconds=30, aux_shape=3, fill=0, boundary=False):
         """"""
         chs = len(prop.CHANNELS)
         time = prop.SAMPLE_RATE * seconds
@@ -381,25 +385,86 @@ class FigureStream(Figure):
         self.buffer_aux = np.empty((aux_shape, time))
         self.buffer_aux.fill(fill)
 
+        if boundary:
+            self.boundary = 0
+            self.boundary_aux = 0
+
+            axis = self.gca()
+            self.boundary_line = axis.vlines(
+                999, -1, 17, color='w', zorder=99)
+            self.boundary_aux_line = axis.vlines(
+                999, -1, 17, color='w', zorder=99)
+
+        else:
+            self.boundary = False
+
     # ----------------------------------------------------------------------
+    def plot_boundary(self, eeg=True, aux=False):
+        """"""
+        if eeg:
+            segments = self.boundary_line.get_segments()
+            segments[0][:, 0] = [self.boundary / prop.SAMPLE_RATE,
+                                 self.boundary / prop.SAMPLE_RATE]
+            self.boundary_line.set_segments(segments)
+        elif aux:
+            segments = self.boundary_aux_line.get_segments()
+            segments[0][:, 0] = [self.boundary_aux /
+                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            self.boundary_aux_line.set_segments(segments)
+
+    # ----------------------------------------------------------------------
+
     def update_buffer(self, eeg, aux):
         """"""
-        c = eeg.shape[1]
-        self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
-        self.buffer_eeg[:, -c:] = eeg
+        if self.boundary is False:
+            c = eeg.shape[1]
+            self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
+            self.buffer_eeg[:, -c:] = eeg
 
-        if not aux is None:            
-            d = aux.shape[1]
-            self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
-            self.buffer_aux[:, -d:] = aux
+            if not aux is None:
+                d = aux.shape[1]
+                self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
+                self.buffer_aux[:, -d:] = aux
+
+        else:
+            c = eeg.shape[1]
+
+            roll = 0
+            if self.boundary + c >= self.buffer_eeg.shape[1]:
+                roll = self.boundary + c
+
+            if roll:
+                self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
+            self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg
+            if roll:
+                self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
+
+            self.boundary += c
+            self.boundary = self.boundary % self.buffer_eeg.shape[1]
+
+            if not aux is None:
+                d = aux.shape[1]
+
+                roll = 0
+                if self.boundary_aux + d >= self.buffer_aux.shape[1]:
+                    roll = self.boundary_aux + d
+
+                if roll:
+                    self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
+                self.buffer_aux[:,
+                                self.boundary_aux:self.boundary_aux + d] = aux
+                if roll:
+                    self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)
+
+                self.boundary_aux += d
+                self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
 
     # ----------------------------------------------------------------------
     def resample(self, x, num, axis=-1):
         """"""
         ndim = x.shape[axis] // num
-        return (
-            x[:, : ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
-        )
+        logging.warning([ndim, num, x.shape[axis] % num])
+        return (x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1))
 
     # ----------------------------------------------------------------------
     def centralize(self, x, axis=0):
@@ -414,3 +479,10 @@ class FigureStream(Figure):
             self.buffer_eeg, self.get_info(), 0, comment=comment, nave=0
         )
         return evoked
+
+    # ----------------------------------------------------------------------
+    def get_factor_near_to(self, x, n=1000):
+        a = np.array(
+            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
+        a[a % 1 != 0] = 0
+        return int(a[np.argmin(np.abs(a - n))])
