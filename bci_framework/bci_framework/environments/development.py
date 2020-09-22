@@ -122,7 +122,7 @@ class Development:
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
 
         self.sub.load_visualization(self.get_visualization(), debugger=self)
-        # self.timer.singleShot(100, self.update_log)
+        self.timer.singleShot(100, self.update_log)
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
