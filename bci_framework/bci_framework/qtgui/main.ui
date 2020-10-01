@@ -34,7 +34,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -78,6 +78,19 @@
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QLineEdit" name="lineEdit_stimuli_ip">
             <property name="enabled">
              <bool>false</bool>
@@ -101,19 +114,6 @@
              <bool>true</bool>
             </property>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_13">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_stimuli_browser">
@@ -883,7 +883,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -988,7 +988,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>399</width>
+                  <width>400</width>
                   <height>401</height>
                  </rect>
                 </property>
@@ -1024,7 +1024,7 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>387</width>
+                      <width>388</width>
                       <height>389</height>
                      </rect>
                     </property>
@@ -1311,7 +1311,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>411</width>
+                 <width>412</width>
                  <height>611</height>
                 </rect>
                </property>
@@ -1933,7 +1933,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
@@ -1949,41 +1949,60 @@ p, li { white-space: pre-wrap; }
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="2" column="0">
-              <widget class="QListWidget" name="listWidget_projects">
-               <property name="editTriggers">
-                <set>QAbstractItemView::SelectedClicked</set>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_projects_path">
+               <property name="text">
+                <string>...</string>
                </property>
-               <property name="alternatingRowColors">
-                <bool>false</bool>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
-               <property name="iconSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QGroupBox" name="groupBox">
+               <property name="title">
+                <string>Visualizations</string>
                </property>
-               <property name="verticalScrollMode">
-                <enum>QAbstractItemView::ScrollPerPixel</enum>
-               </property>
-               <property name="flow">
-                <enum>QListView::TopToBottom</enum>
-               </property>
-               <property name="isWrapping" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="layoutMode">
-                <enum>QListView::Batched</enum>
-               </property>
-               <property name="viewMode">
-                <enum>QListView::ListMode</enum>
-               </property>
-               <property name="currentRow">
-                <number>-1</number>
-               </property>
+               <layout class="QGridLayout" name="gridLayout_22">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QListWidget" name="listWidget_projects_visualizations">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::SelectedClicked</set>
+                  </property>
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectRows</enum>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>56</width>
+                    <height>56</height>
+                   </size>
+                  </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="layoutMode">
+                   <enum>QListView::Batched</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item row="0" column="0">
@@ -2027,8 +2046,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <iconset theme="edit-delete"/>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -2043,17 +2061,57 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_projects_path">
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="checkBox_projects_show_tutorials">
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
                <property name="text">
-                <string>...</string>
+                <string>Show tutorials</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="wordWrap">
+               <property name="checked">
                 <bool>true</bool>
                </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QGroupBox" name="groupBox_2">
+               <property name="title">
+                <string>Stimuli Delivery</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_39">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QListWidget" name="listWidget_projects_delivery">
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectRows</enum>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>56</width>
+                    <height>56</height>
+                   </size>
+                  </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="layoutMode">
+                   <enum>QListView::Batched</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -2312,119 +2370,6 @@ p, li { white-space: pre-wrap; }
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="0" column="0" colspan="2">
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
-              <item>
-               <widget class="QPushButton" name="pushButton_record">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Record</string>
-                </property>
-                <property name="icon">
-                 <iconset theme="media-record">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_21">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_remove_record">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset theme="edit-delete">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>22</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="autoDefault">
-                 <bool>false</bool>
-                </property>
-                <property name="flat">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QTableWidget" name="tableWidget_records">
-              <property name="alternatingRowColors">
-               <bool>true</bool>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>60</number>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>120</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>false</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Duration</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Datetime</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Name</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QLabel" name="label_records_path">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="4" column="0" colspan="2">
              <widget class="QWidget" name="widget_record" native="true">
               <layout class="QGridLayout" name="gridLayout_15">
@@ -2580,8 +2525,328 @@ p, li { white-space: pre-wrap; }
               </layout>
              </widget>
             </item>
+            <item row="0" column="0" colspan="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QPushButton" name="pushButton_record">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Record</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="media-record">
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_21">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_remove_record">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset theme="edit-delete">
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>22</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QLabel" name="label_records_path">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="2">
+             <widget class="QTableWidget" name="tableWidget_records">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>60</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>120</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Duration</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Datetime</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Name</string>
+               </property>
+              </column>
+             </widget>
+            </item>
            </layout>
           </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="widget">
+        <attribute name="title">
+         <string>Annotations</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_11">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="2" column="0" colspan="2">
+          <widget class="QGroupBox" name="groupBox_5">
+           <property name="title">
+            <string>Annotation</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_41">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QStackedWidget" name="stackedWidget_annotations">
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+              <widget class="QWidget" name="page">
+               <layout class="QGridLayout" name="gridLayout_40">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_new_annotation">
+                  <item row="1" column="2">
+                   <spacer name="horizontalSpacer_30">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="0">
+                   <spacer name="horizontalSpacer_29">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="pushButton_new_annotation">
+                    <property name="text">
+                     <string>New annotation</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <spacer name="verticalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="verticalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_2">
+               <layout class="QGridLayout" name="gridLayout_42">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QPlainTextEdit" name="plainTextEdit_annotations"/>
+                </item>
+                <item row="1" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_save_annotation">
+                  <item>
+                   <spacer name="horizontalSpacer_28">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_save_annotation">
+                    <property name="text">
+                     <string>Save annotation</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QTableWidget" name="tableWidget_annotations">
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Datetime</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Annotation</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_23">
+           <item>
+            <spacer name="horizontalSpacer_31">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_remove_annotation">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset theme="edit-delete"/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>22</width>
+               <height>22</height>
+              </size>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -2710,7 +2975,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>checkBox_test_signal</tabstop>
   <tabstop>comboBox_test_signal</tabstop>
   <tabstop>tabWidget_project</tabstop>
-  <tabstop>lineEdit_stimuli_ip</tabstop>
   <tabstop>pushButton_load_visualizarion</tabstop>
   <tabstop>comboBox_montages</tabstop>
   <tabstop>scrollArea</tabstop>
