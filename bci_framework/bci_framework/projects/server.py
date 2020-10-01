@@ -1,6 +1,7 @@
 from tornado.web import Application, url, RequestHandler, StaticFileHandler
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
+from functools import wraps
 
 import random
 import sys
@@ -18,14 +19,45 @@ else:
 # port = '5000'
 
 
-# ----------------------------------------------------------------------
-def stimulus(method):
-    def wrap(*args, **kwargs):
-        try:
-            method(*args, **kwargs)
-        except:
-            method()
-    return wrap
+########################################################################
+class DeliveryInstance_:
+    """"""
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def both(cls, method):
+        def wrap(*args, **kwargs):
+            try:
+                return method(*args, **kwargs)
+            except:
+                return method()
+        return wrap
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def remote(cls, method):
+        def wrap(*args, **kwargs):
+            try:
+                return method(*args, **kwargs)
+            except:
+                return method()
+        return wrap
+
+    # # ----------------------------------------------------------------------
+    # @classmethod
+    # def propagate(cls, *arguments):
+        # def inner_function(method):
+            # @wraps(method)
+            # def wrap(*args, **kwargs):
+                # try:
+                    # return method(*args, **kwargs)
+                # except:
+                    # return method()
+            # return wrap
+        # return inner_function
+
+
+DeliveryInstance = DeliveryInstance_()
 
 
 ########################################################################

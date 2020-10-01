@@ -115,3 +115,13 @@ def fake_loop_consumer(fn):
                 time.sleep(0.01)
 
     return wrap
+
+
+def timeit(fn):
+    def wrap(self, *args, **kwargs):
+        t0 = time.time()
+        r = fn(self, *args, **kwargs)
+        t1 = time.time()
+        print(f"[timeit] {fn.__name__}: {(t1-t0)*1000:.2f} ms")
+        return r
+    return wrap
