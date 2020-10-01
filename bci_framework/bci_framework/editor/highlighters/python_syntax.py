@@ -56,7 +56,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 
     keywords = [
         '__name__', 'format', 'int', 'float', 'str', 'list', 'tuple', 'dict',
-        'set', 'len', 'super', 'range',
+        'set', 'len', 'super', 'range', 'enumerate', 'hasattr', 'getattr',
     ]
 
     # Python operators
