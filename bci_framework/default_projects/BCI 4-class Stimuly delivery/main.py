@@ -1,10 +1,24 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, stimulus
+from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
 from bci_framework.projects import properties as prop
+
+from bci_framework.projects.sound import Tone
+from bci_framework.projects.widgets import Widgets
+from bci_framework.projects.utils import timeit
+
 from browser import document, timer, html
 from mdc import MDCButton, MDCCheckbox, MDCFormField, MDCForm, MDCComponent, MDCLinearProgress
 
 import random
 random.seed(8511)
+
+
+UNICODE_HINTS = {
+    'Right': '&#x1f86a;',
+    'Left': '&#x1f868;',
+    'Up': '&#x1f869;',
+    'Bottom': '&#x1f86b;',
+}
+
 
 ########################################################################
 class Arrows(StimuliAPI):
@@ -12,187 +26,128 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def __init__(self):
         """"""
-        document.select('head')[0] <= html.LINK(
-            href='/root/styles.css', type='text/css', rel='stylesheet')
+        self.add_stylesheet('styles.css')
 
         self.stimuli_area
         self.dashboard
 
-        self.hint = html.SPAN('', id='hint')
-        self.stimuli_area.clear()
-        self.stimuli_area <= self.hint
+        self.tone = Tone()
 
-        # self.caption = html.SPAN('1/78', Class='caption')
-        # self.stimuli_area <= self.caption
-
-        self.progressbar = MDCLinearProgress()
-        self.progressbar.style = {'position': 'relative', 'bottom': '4px', }
-        self.stimuli_area <= self.progressbar
-
-        self.stimuli_area <= html.DIV(Class='cross')
+        self.widgets = Widgets()
+        self.widgets.add_run_progressbar()
 
         self.build_dashboard()
+        self.add_cross()
+
+    # ----------------------------------------------------------------------
+    def add_cross(self):
+        """"""
+        self.stimuli_area <= html.DIV(Class='cross_contrast')
+        self.stimuli_area <= html.DIV(Class='cross')
 
     # ----------------------------------------------------------------------
     def build_dashboard(self):
         """"""
-        # Stimuli set
-        label = MDCComponent(html.SPAN('Stimuli set'))
-        label.mdc.typography('subtitle1')
-        # self.dashboard <= label
-        self.checkboxes = []
-        form = MDCForm(formfield_style={'width': '100px'})
-        form <= label
+        self.dashboard <= self.widgets.title('BCI 4-Class motor imagery', 'headline3', style={'margin-bottom': '15px', 'display': 'flex', })
+        self.dashboard <= html.BR()
 
-        self.checkboxes.append(form.mdc.Checkbox(
-            'Right', value='&#x1f83a;', checked=True))
-        self.checkboxes.append(form.mdc.Checkbox(
-            'Left', value='&#x1f838;', checked=True))
-        self.checkboxes.append(form.mdc.Checkbox(
-            'Up', value='&#x1f839;', checked=False))
-        self.checkboxes.append(form.mdc.Checkbox(
-            'Down', value='&#x1f83b;', checked=False))
-        self.dashboard <= form
+        self.dashboard <= self.widgets.checkbox('Classes', (['Right', True], ['Left', True], ['Up', True], ['Bottom', True], ), on_change=self.update_observations, id='classes')
+        self.dashboard <= self.widgets.slider(label='Repetitions by class:', min=1, max=40, valuenow=10, discrete=True, markers=True, on_change=self.update_observations, id='repetitions')
+        self.dashboard <= self.widgets.slider('Stimulus duration', min=1000, max=8000, step=100, valuenow=4000, unit='ms', on_change=self.update_observations, id='duration')
 
-        # Repetitions
-        label = MDCComponent(html.SPAN('Repetitions'))
-        label.mdc.typography('subtitle1')
-        # self.dashboard <= label
-        form = MDCForm(formfield_style={'width': '100px'})
-        form <= label
+        self.dashboard <= self.widgets.switch('Dark background', False, id='dark', on_change=self.change_theme)
 
-        self.repetitions = form.mdc.TextField('', value=40, type='number')
-        self.dashboard <= form
+        self.dashboard <= self.widgets.title('Observations', 'headline4')
+        self.dashboard <= html.BR()
+        self.observations = self.widgets.title('', 'body1')
+        self.dashboard <= self.observations
+        self.dashboard <= html.BR()
 
-        # Stimulus duration
-        form = MDCForm()
-        label = MDCComponent(html.SPAN('Stimulus duration: '))
-        label.mdc.typography('subtitle1')
-        form <= label
-        form <= MDCComponent(
-            html.SPAN('4000 ms', id='stimulus_duration')).mdc.typography('caption')
-        # form <=
-        self.stimulus_duration = form.mdc.Slider(
-            'Slider', min=0, max=6000, step=100, valuenow=4000, continuous=True)
-        self.dashboard <= form
-        self.stimulus_duration.mdc.listen(
-            'MDCSlider:input', self.update_times_from_sliders)
+        button_box = html.DIV(style={'margin-top': '50px', 'margin-bottom': '50px', })
+        self.dashboard <= button_box
 
-        # Stimulus rest
-        form = MDCForm()
-        label = MDCComponent(html.SPAN('Stimulus rest: '))
-        label.mdc.typography('subtitle1')
-        form <= label
-        form <= MDCComponent(
-            html.SPAN('1000 ms', id='stimulus_rest')).mdc.typography('caption')
-        self.stimulus_rest = form.mdc.Slider(
-            'Slider', min=0, max=6000, step=100, valuenow=1200, continuous=True)
-        self.dashboard <= form
-        self.stimulus_rest.mdc.listen(
-            'MDCSlider:input', self.update_times_from_sliders)
+        button_box <= self.widgets.button('Test single trial', connect=self.single_trial, style={'margin': '0 15px'})
+        button_box <= self.widgets.button('Start run', connect=self.start_run, style={'margin': '0 15px'})
+        button_box <= self.widgets.button('Stop run', connect=lambda: setattr(self, 'trials', []), style={'margin': '0 15px'})
 
-        # Aditional stimulus aleatory rest
-        form = MDCForm()
-        label = MDCComponent(html.SPAN('Aditional stimulus aleatory rest: '))
-        label.mdc.typography('subtitle1')
-        form <= label
-        form <= MDCComponent(
-            html.SPAN('800 ms', id='stimulus_random_rest')).mdc.typography('caption')
-        self.stimulus_random_rest = form.mdc.Slider(
-            'Slider', min=0, max=1000, step=100, valuenow=800, continuous=True)
-        self.dashboard <= form
-        self.stimulus_random_rest.mdc.listen(
-            'MDCSlider:input', self.update_times_from_sliders)
-
-         # Theme
-        form = MDCForm(formfield_style={'width': '100%', 'height': '40px'})
-        self.theme = form.mdc.Switch('Dark Theme')
-        self.theme.bind('change', lambda evt: self.change_theme(
-            self.theme.mdc.checked))
-        self.dashboard <= form
-
-        # Start - Stop
-        self.button_start = MDCButton(
-            'Start', raised=True, style={'margin': '0 15px'})
-        self.button_stop = MDCButton(
-            'Stop', raised=True, style={'margin': '0 15px'})
-        self.button_start.bind('click', self.start)
-        self.button_stop.bind('click', self.stop)
-        self.dashboard <= self.button_start
-        self.dashboard <= self.button_stop
-
-        # progressbar.mdc.set_progress(0.5, buffer=0.6)  #50%
+        self.update_observations()
 
     # ----------------------------------------------------------------------
-    def update_times_from_sliders(self, evt=None):
+    def update_observations(self, *args, **kwargs):
         """"""
-        document.select_one(
-            '#stimulus_duration').text = f'{self.stimulus_duration.attrs["aria-valuenow"]} ms'
-        document.select_one(
-            '#stimulus_rest').text = f'{self.stimulus_rest.attrs["aria-valuenow"]} ms'
-        document.select_one(
-            '#stimulus_random_rest').text = f'0 - {self.stimulus_random_rest.attrs["aria-valuenow"]} ms'
+        duration = self.widgets.get_value('duration') + 1400
+        repetitions = self.widgets.get_value('repetitions')
+        classes = len(self.widgets.get_value('classes'))
+
+        trials = classes * repetitions
+        duration *= trials
+        duration = (duration / 1000) / 60
+
+        self.observations.html = f"There will performed <b>{trials}</b> trials per run and will lasts <b>{duration:.1f}</b> minutes."
 
     # ----------------------------------------------------------------------
-    def start(self, evt=None):
+    def start_run(self):
         """"""
-        # Start timer
-        self.prepare()
-        self.interval = timer.set_timeout(self.random_stimulus, 100)
+        self.configure()
+        self.tone("C#6", 200)
+        timer.set_timeout(lambda: self.start_trial(single=False), 1000)
 
     # ----------------------------------------------------------------------
-    def stop(self, evt=None):
+    def single_trial(self):
         """"""
-        # Kill all timers
-        if hasattr(self, 'interval'):
-            timer.clear_timeout(self.interval)
+        self.configure()
+        self.start_trial()
 
     # ----------------------------------------------------------------------
-    def random_stimulus(self):
+    @DeliveryInstance.both
+    def configure(self):
         """"""
-        stimuli_list = [
-            chb.mdc.value for chb in self.checkboxes if chb.mdc.checked]
+        repetitions = self.widgets.get_value('repetitions')
+        classes = self.widgets.get_value('classes')
+        self.trials = classes * repetitions
 
-        # calculate the aleatory rest time
-        aleatory_pause = int(self.stimulus_rest.attrs["aria-valuenow"])
-        aleatory_pause += random.randint(
-            0, int(self.stimulus_random_rest.attrs["aria-valuenow"]))
-
-        self.show_stimulus(random.choice(stimuli_list), aleatory_pause)
+        self.total_trials = len(self.trials)
+        random.shuffle(self.trials)
 
     # ----------------------------------------------------------------------
-    @stimulus
-    def prepare(self):
+    def start_trial(self, single=True):
         """"""
-        self.total_repetition = int(self.repetitions.mdc.value)
-        self.actual_repetition = 0
+        self.widgets.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
+        duration = self.widgets.get_value('duration')
+
+        self.show_hint(self.trials.pop(0))
+        timer.set_timeout(self.hide_hint, duration)
+
+        if not single and self.trials:
+            random_trial_interval = random.randint(1000, 1800)
+            print(f'Random trial interval: {random_trial_interval}')
+            timer.set_timeout(lambda: self.start_trial(False), duration + random_trial_interval)
+
+        if not single and not self.trials:
+            timer.set_timeout(lambda: self.tone("C#6", 200), duration + 1000)
 
     # ----------------------------------------------------------------------
-    @stimulus
-    def show_stimulus(self, direction, aleatory_pause):
+    @DeliveryInstance.both
+    def show_hint(self, trial):
         """"""
-        self.actual_repetition += 1
-        self.hint.html = direction  # update stimulus in window
-        self.interval = timer.set_timeout(lambda: self.hide_stimulus(
-            aleatory_pause), int(self.stimulus_duration.attrs["aria-valuenow"]))  # rest
-        self.progressbar.mdc.set_progress(
-            self.actual_repetition / self.total_repetition)
-        print(f"Progress: {self.actual_repetition / self.total_repetition}")
+        if not hasattr(self, 'hint'):
+            self.hint = html.SPAN('', id='hint')
+            self.stimuli_area <= self.hint
+
+        self.hint.html = UNICODE_HINTS[trial]
+        self.hint.style = {'display': 'flex'}
 
     # ----------------------------------------------------------------------
-    @stimulus
-    def hide_stimulus(self, aleatory_pause):
+    @DeliveryInstance.both
+    def hide_hint(self):
         """"""
-        self.hint.html = ''  # clear the stimulusClosed WS
-        # show new stimuli after a delay
-        self.interval = timer.set_timeout(
-            self.random_stimulus, aleatory_pause)
-        print(f"Aleatory pause: {aleatory_pause}")
+        self.hint.style = {'display': 'none'}
 
     # ----------------------------------------------------------------------
-    @stimulus
+    @DeliveryInstance.both
     def change_theme(self, dark):
         """"""
+        print(self._bci_mode, dark)
         if dark:
             self.stimuli_area.style = {'background-color': '#000a12', }
         else:

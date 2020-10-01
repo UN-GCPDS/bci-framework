@@ -1,7 +1,7 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, stimulus
+from bci_framework.projects.server import StimuliServer, StimuliAPI, stimulus, delivery
 from browser import document, timer, html
 from mdc import MDCForm, MDCComponent, MDCButton
-from datetime import datetime
+# from datetime import datetime
 
 
 ########################################################################
@@ -71,17 +71,16 @@ class DigitalInput(StimuliAPI):
     # ----------------------------------------------------------------------
     def set_level(self, level):
         """"""
-        self.send_marker({'marker': {'#ffffff': 'HIGH-PRE',
-                                     '#000000': 'LOW-PRE', }[level],
-                          'datetime': datetime.now().timestamp()})
+        self.send_marker({'#ffffff': 'HIGH-PRE',
+                          '#000000': 'LOW-PRE', }[level])
 
         self.stimuli_area.style = {'background-color': level, }
 
-        self.send_marker({'marker': {'#ffffff': 'HIGH-POST',
-                                     '#000000': 'LOW-POST', }[level],
-                          'datetime': datetime.now().timestamp()})
+        self.send_marker({'#ffffff': 'HIGH-POST',
+                          '#000000': 'LOW-POST', }[level])
 
     # ----------------------------------------------------------------------
+    # @delivery
     def toggle(self):
         """"""
         self.set_level('#ffffff')
