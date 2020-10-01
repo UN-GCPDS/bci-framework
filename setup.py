@@ -35,7 +35,7 @@ setup(
     python_requires='>=3.6',
 
     entry_points={
-        'console_scripts': ['bci_stream=bci_stream.__main__:main'],
+        'console_scripts': ['bci_framework=bci_stream.__main__:main'],
     },
 
     classifiers=[
