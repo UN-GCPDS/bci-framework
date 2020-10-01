@@ -53,13 +53,16 @@ def kill_subprocess():
         return
 
     with open(file, 'r') as file_:
-        subs = json.load(file_)
-        for sub in subs:
-            try:
-                os.kill(int(sub), signal.SIGKILL)
-                logging.info(f'killing {sub}')
-            except ProcessLookupError:
-                pass
+        try:
+            subs = json.load(file_)
+            for sub in subs:
+                try:
+                    os.kill(int(sub), signal.SIGKILL)
+                    logging.info(f'killing {sub}')
+                except ProcessLookupError:
+                    pass
+        except:
+            pass
 
     os.remove(file)
 
