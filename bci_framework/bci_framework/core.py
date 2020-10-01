@@ -5,7 +5,7 @@ from PySide2.QtCore import Qt, QTimer
 from PySide2.QtWidgets import QDialogButtonBox
 
 from .qtgui.icons import resource_rc
-from .widgets import Montage, Projects, Connection, Records
+from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 
@@ -53,6 +53,7 @@ class BCIFramework:
         self.montage = Montage(self)
         self.connection = Connection(self)
         self.projects = Projects(self.main, self)
+        self.annotations = Annotations(self.main, self)
         self.records = Records(self.main, self)
 
         self.development = Development(self)
@@ -86,9 +87,12 @@ class BCIFramework:
         current_process = psutil.Process()
         children = current_process.children(recursive=True)
         file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
-        with open(file, 'w') as file_:
-            json.dump({ch.pid: ch.name()
-                       for ch in children}, file_, indent=2)
+        try:
+            with open(file, 'w') as file_:
+                json.dump({ch.pid: ch.name()
+                           for ch in children}, file_, indent=2)
+        except:  # psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists
+            pass
 
     # ----------------------------------------------------------------------
     def build_collapse_button(self):
@@ -132,6 +136,10 @@ class BCIFramework:
         self.pushButton_collapse_dock.setIcon(icon)
         self.main.dockWidget_global.setMaximumWidth(w)
         self.main.dockWidget_global.setMinimumWidth(w)
+
+        if not collapsed:
+            self.main.dockWidget_global.setMaximumWidth(9999)
+            self.main.dockWidget_global.setMinimumWidth(100)
 
     # ----------------------------------------------------------------------
     def connect(self):
