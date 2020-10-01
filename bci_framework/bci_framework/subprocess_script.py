@@ -101,6 +101,7 @@ class StimuliSubprocess:
         self.main.web_engine.setPage(page)
         self.stdout = console
         page.profile().clearHttpCache()
+        self.stm_start()
 
     # ----------------------------------------------------------------------
     def stm_start(self):
@@ -140,6 +141,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
 
         # self.timer.singleShot(500, self.prepare)
         self.prepare()
+        # self.start_debug()
 
     # ----------------------------------------------------------------------
     def prepare(self):
@@ -163,7 +165,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.is_stimuli = True
             endpoint = 'delivery'
 
-        self.main.widget_development_webview.show()
+        # self.main.widget_development_webview.show()
         self.url = f'http://localhost:{self.port}/{endpoint}'
         self.load_webview()
 
@@ -206,10 +208,14 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     # ----------------------------------------------------------------------
     def start_debug(self):
         """"""
-        if self.is_stimuli:
-            self.stm_debug()
-        elif self.is_visualization:
-            self.viz_debug()
+        try:
+            if self.is_stimuli:
+                self.stm_debug()
+            elif self.is_visualization:
+                self.viz_debug()
+            return True
+        except:
+            return False
 
     # ----------------------------------------------------------------------
     def reload(self):

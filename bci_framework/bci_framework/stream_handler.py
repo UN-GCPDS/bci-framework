@@ -208,14 +208,17 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.stream_subprocess = LoadSubprocess(self.main, module)
         self.update_menu_bar(visualization, debugger)
 
-        if self.is_stimuli and not debugger:
-            # self.widgets_set_enabled(True)
-            self.update_ip(self.stream_subprocess.port)
+        self.update_ip(self.stream_subprocess.port)
 
         self.loaded()
 
     # ----------------------------------------------------------------------
-    def loaded(self):
+    def loaded(self, *args, **kwargs):
+        """"""
+        # overwriteme
+
+    # ----------------------------------------------------------------------
+    def update_ip(self, *args, **kwargs):
         """"""
         # overwriteme
 
