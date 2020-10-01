@@ -109,3 +109,7 @@
 }
 
 
+
+.mdc-button--outlined:not(:disabled) {
+    border-color: rgba(var(--var-theme-primary), 1);
+}

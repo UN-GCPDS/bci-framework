@@ -2,7 +2,7 @@ import json
 import pickle
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer
-
+import logging
 from bci_framework.projects import properties as prop
 
 clients = []
@@ -15,11 +15,14 @@ class WSHandler(WebSocketHandler):
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
-        self.marker_producer = KafkaProducer(
-            bootstrap_servers=[f'{prop.HOST}:9092'],
-            compression_type='gzip',
-            value_serializer=pickle.dumps
-        )
+        try:
+            self.marker_producer = KafkaProducer(
+                bootstrap_servers=[f'{prop.HOST}:9092'],
+                compression_type='gzip',
+                value_serializer=pickle.dumps
+            )
+        except:
+            logging.warning('Kafka not available!')
         super().__init__(*args, **kwargs)
 
     # ----------------------------------------------------------------------

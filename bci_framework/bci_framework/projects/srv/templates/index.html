@@ -8,11 +8,25 @@
     <link rel="stylesheet" type="text/css" href="/static/material-components-web/material-components-web.min.css">
     <link rel="stylesheet" type="text/css" href="/static/material-components-web/theme.css">
 
+    <!--Fonts-->
+    <link type="text/css" rel="stylesheet" href="/static/fonts/fontawesome-free-5.5.0-web/css/all.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/roboto-android/roboto.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/roboto-android/roboto-mono.css">
+
+    <!--Material Icons-->
+    <link type="text/css" rel="stylesheet" href="/static/fonts/material-design-icons-3.0.1/iconfont/material-icons.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/mdi/css/materialdesignicons.min.css">
+
+
     <style type="text/css">
       body {
           margin: 0px;
           padding: 0px;
-          overflow:hidden;
+          overflow: hidden;
+      }
+
+      .bci_dashboard {
+          overflow: auto;
       }
 
       .bci_dashboard,
@@ -20,6 +34,45 @@
           border: 0px solid;
           border-radius: 0;
       }
+
+
+    .cross {
+        background: black;
+        height: 40px;
+        width: 1px;
+        position: absolute;
+        left: 50%;
+        top: calc(50% - 20px);
+    }
+
+    .cross::after {
+        background: black;
+        content: '';
+        height: 1px;
+        left: -20px;
+        position: absolute;
+        top: 20px;
+        width: 40px;
+    }
+
+    .cross_contrast {
+        background: white;
+        height: 42px;
+        width: 3px;
+        position: absolute;
+        left: calc(50% - 1px);
+        top: calc(50% - 21px);
+    }
+
+    .cross_contrast::after {
+        background: white;
+        content: '';
+        height: 3px;
+        left: -21px;
+        position: absolute;
+        top: 20px;
+        width: 42px;
+    }
 
       {% if mode == 'stimuli' %}
 
@@ -33,44 +86,9 @@
             height: 100vh;
         }
 
-        .cross {
-            background: black;
-            height: 40px;
-            width: 1px;
-            position: absolute;
-            left: 50%;
-            top: calc(50% - 20px);
+        .run_progressbar {
+            width: 100vw;
         }
-
-        .cross::after {
-            background: black;
-            content: '';
-            height: 1px;
-            left: -20px;
-            position: absolute;
-            top: 20px;
-            width: 40px;
-        }
-
-        .cross_contrast {
-            background: white;
-            height: 42px;
-            width: 3px;
-            position: absolute;
-            left: calc(50% - 1px);
-            top: calc(50% - 21px);
-        }
-
-        .cross_contrast::after {
-            background: white;
-            content: '';
-            height: 3px;
-            left: -21px;
-            position: absolute;
-            top: 20px;
-            width: 42px;
-        }
-
 
       {% elif mode == 'dashboard' %}
 
@@ -87,12 +105,14 @@
 
         .bci_stimuli {
             background-color: #f5f5f5;
-            border: 1px solid #cccccc;
-            border-radius: 2px;
             width: calc(50vw - 15px);
             height: calc(100vh - 4px);
         }
 
+        .run_progressbar {
+            width: calc(50vw - 16px);
+            margin-left: 1px;
+        }
 
       {% end %}
 
@@ -118,8 +138,7 @@ autoinit()
 
     </script>
 
-  <div class='cross'></div>
-  <div class='cross_contrast'></div>
+
   </body>
 
 </html>
