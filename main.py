@@ -6,5 +6,3 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'local'))
 
 from bci_framework.__main__ import main
 main()
-
-
