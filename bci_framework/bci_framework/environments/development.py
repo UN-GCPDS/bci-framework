@@ -117,12 +117,14 @@ class Development:
     def reload(self):
         """"""
         self.show_preview()
+        self.parent_frame.mdiArea_development.tileSubWindows()
 
         self.save_all_files()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
 
         self.sub.load_visualization(self.get_visualization(), debugger=self)
         self.timer.singleShot(100, self.update_log)
+        # # self.timer.singleShot(1.00, self.update_log)
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
@@ -155,6 +157,8 @@ class Development:
         self.sub.show()
         self.parent_frame.mdiArea_development.tileSubWindows()
 
+        # self.sub.update_menu_bar()
+
         # sub.widgets_set_enabled = self.widgets_set_enabled
         # sub.update_ip = self.update_ip
         # self.sub.update_menu_bar(self.get_visualization(), debugger=self)
@@ -172,13 +176,14 @@ class Development:
     # ----------------------------------------------------------------------
     def update_log(self):
         """"""
+
+        if not hasattr(self.sub, 'stream_subprocess'):
+            self.timer.singleShot(50, self.update_log)
+            return
+
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
-            try:
-                self.sub.stream_subprocess.start_debug()
-            except:
-                pass
-            finally:
-                self.timer.singleShot(1000 / 60, self.update_log)
+            self.sub.stream_subprocess.start_debug()
+            self.timer.singleShot(50, self.update_log)
             return
 
         if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
