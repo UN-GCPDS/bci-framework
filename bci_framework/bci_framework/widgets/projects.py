@@ -56,31 +56,32 @@ class Projects:
         self.parent_frame.pushButton_projects.clicked.connect(lambda evt:
                                                               self.core.development.stop_preview())
 
-        self.parent_frame.listWidget_projects.itemDoubleClicked.connect(
+        # self.parent_frame.listWidget_projects.itemDoubleClicked.connect(
+            # lambda evt: self.open_project(evt.text()))
+
+        self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.text()))
+        self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
-        # self.parent.listWidget_projects_visualizations.itemDoubleClicked.connect(
-        # lambda evt: self.open_project(evt.text()))
-        # self.parent.listWidget_projects_delivery.itemDoubleClicked.connect(
-        # lambda evt: self.open_project(evt.text()))
         # self.parent.listWidget_projects_others.itemDoubleClicked.connect(
         # lambda evt: self.open_project(evt.text()))
 
         # self.parent.listWidget_projects.itemClicked.connect(
         # self.there_can_only_be_one)
-        # self.parent.listWidget_projects_visualizations.itemClicked.connect(
-        # self.there_can_only_be_one)
-        # self.parent.listWidget_projects_delivery.itemClicked.connect(
-        # self.there_can_only_be_one)
+        self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
+            self.there_can_only_be_one)
+        self.parent_frame.listWidget_projects_delivery.itemClicked.connect(
+            self.there_can_only_be_one)
         # self.parent.listWidget_projects_others.itemClicked.connect(
         # self.there_can_only_be_one)
 
-        self.parent_frame.listWidget_projects.itemChanged.connect(
+        # self.parent_frame.listWidget_projects.itemChanged.connect(
+            # self.project_renamed)
+        self.parent_frame.listWidget_projects_visualizations.itemChanged.connect(
             self.project_renamed)
-        # self.parent.listWidget_projects_visualizations.itemChanged.connect(
-        # self.project_renamed)
-        # self.parent.listWidget_projects_delivery.itemChanged.connect(
-        # self.project_renamed)
+        self.parent_frame.listWidget_projects_delivery.itemChanged.connect(
+            self.project_renamed)
         # self.parent.listWidget_projects_others.itemChanged.connect(
         # self.project_renamed)
 
@@ -105,14 +106,14 @@ class Projects:
         self.parent_frame.tabWidget_project.currentChanged.connect(
             self.tab_changed)
 
-    # # ----------------------------------------------------------------------
-    # def there_can_only_be_one(self, event):
-        # """"""
+    # ----------------------------------------------------------------------
+    def there_can_only_be_one(self, event):
+        """"""
         # self.parent.listWidget_projects.clearSelection()
-        # # self.parent.listWidget_projects_delivery.clearSelection()
-        # # self.parent.listWidget_projects_others.clearSelection()
-        # # self.parent.listWidget_projects_visualizations.clearSelection()
-        # event.setSelected(True)
+        self.parent_frame.listWidget_projects_delivery.clearSelection()
+        # self.parent.listWidget_projects_others.clearSelection()
+        self.parent_frame.listWidget_projects_visualizations.clearSelection()
+        event.setSelected(True)
 
     # ----------------------------------------------------------------------
     def tab_changed(self, index):
@@ -133,9 +134,9 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_projects(self):
         """"""
-        self.parent_frame.listWidget_projects.clear()
-        # self.parent.listWidget_projects_visualizations.clear()
-        # self.parent.listWidget_projects_delivery.clear()
+        # self.parent_frame.listWidget_projects.clear()
+        self.parent_frame.listWidget_projects_visualizations.clear()
+        self.parent_frame.listWidget_projects_delivery.clear()
         # self.parent.listWidget_projects_others.clear()
 
         projects = os.listdir(self.projects_dir)
@@ -149,11 +150,11 @@ class Projects:
             with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
-                modules = {'FigureStream': (self.parent_frame.listWidget_projects, 'icon_viz'),
-                           'StimuliServer': (self.parent_frame.listWidget_projects, 'icon_sti'),
+                modules = {'FigureStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
+                           'StimuliServer': (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
                            }
-                widget, icon_name = (
-                    self.parent_frame.listWidget_projects, 'icon_dev')
+                # widget, icon_name = (
+                    # self.parent_frame.listWidget_projects, 'icon_dev')
                 for module in modules:
                     if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
@@ -188,9 +189,9 @@ class Projects:
         """"""
         global files_count, dir_count, project_name_
 
-        if self.parent_frame.listWidget_projects.currentItem().icon_name == 'icon_viz':
+        if self.parent_frame.listWidget_projects_visualizations.currentItem():
             self.mode = 'visualization'
-        else:
+        elif self.parent_frame.listWidget_projects_delivery.currentItem():
             self.mode = 'stimuli'
 
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
