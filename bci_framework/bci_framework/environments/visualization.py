@@ -47,10 +47,10 @@ class Visualization:
         self.parent_frame.mdiArea.tileSubWindows()
 
         self.visualizations_list = []
-        for i in range(self.parent_frame.listWidget_projects.count()):
-            item = self.parent_frame.listWidget_projects.item(i)
-            if item.icon_name == 'icon_viz':
-                self.visualizations_list.append(item.text())
+        for i in range(self.parent_frame.listWidget_projects_visualizations.count()):
+            item = self.parent_frame.listWidget_projects_visualizations.item(i)
+            self.visualizations_list.append(item.text())
+            # if item.icon_name == 'icon_viz':
                 # self.parent.comboBox_load_visualization.addItem(item.text())
 
     # ----------------------------------------------------------------------

@@ -65,10 +65,10 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def update_experiments_list(self):
         """"""
-        for i in range(self.parent_frame.listWidget_projects.count()):
-            item = self.parent_frame.listWidget_projects.item(i)
-            if item.icon_name == 'icon_sti':
-                self.stimuli_list.append(item.text())
+        for i in range(self.parent_frame.listWidget_projects_delivery.count()):
+            item = self.parent_frame.listWidget_projects_delivery.item(i)
+            self.stimuli_list.append(item.text())
+            # if item.icon_name == 'icon_sti':
 
     # ----------------------------------------------------------------------
     def connect(self):
