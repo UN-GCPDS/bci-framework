@@ -137,16 +137,17 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, path: Optional[PATH] = None, use_webview: Optional[bool] = True):
+    def __init__(self, parent, path: Optional[PATH] = None, use_webview: Optional[bool] = True, debugger: Optional[bool] = False):
         """"""
         self.main = parent
         self.web_view = self.main.gridLayout_webview
         self.plot_size = QSize(0, 0)
         self.plot_dpi = 0
         self.stopped = False
-        self.is_analysis = not use_webview
-        self.is_visualization = use_webview
-        self.is_stimuli = use_webview
+        # self.is_analysis = not use_webview
+        # self.is_visualization = use_webview
+        # self.is_stimuli = use_webview
+        self.debugger = debugger
 
         if path:
             self.load_path(path)
@@ -156,11 +157,12 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         """Load Python scipt."""
         self.timer = QTimer()
 
+        self.is_analysis = self.file_is_analysis(path)
+
         if not self.is_analysis:
             self.port = self.get_free_port()
         else:
             self.port = ''
-
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
 
@@ -169,6 +171,12 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             # self.start_debug()
         else:
             self.prepare_webview()
+
+    # ----------------------------------------------------------------------
+    def file_is_analysis(self, path):
+        """"""
+        with open(path, 'r') as file:
+            return 'data_analysis import DataAnalysis' in file.read()
 
     # ----------------------------------------------------------------------
     def prepare_webview(self) -> None:
@@ -245,13 +253,14 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     # ----------------------------------------------------------------------
     def start_debug(self) -> None:
         """Try to start the debugger."""
-        try:
-            if self.is_stimuli:
-                self.stm_debug()
-            elif self.is_visualization or self.is_analysis:
-                self.viz_debug()
-        except:
-            pass
+        if self.debugger:
+            try:
+                if self.is_stimuli:
+                    self.stm_debug()
+                elif self.is_visualization or self.is_analysis:
+                    self.viz_debug()
+            except:
+                pass
 
     # ----------------------------------------------------------------------
     def reload(self) -> None:

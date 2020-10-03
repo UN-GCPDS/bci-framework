@@ -226,7 +226,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         self.current_viz = extension
         module = os.path.join(self.projects_dir, extension, 'main.py')
         self.stream_subprocess = LoadSubprocess(
-            self.main, module, use_webview=not self.is_analysis)
+            self.main, module, use_webview=not self.is_analysis, debugger=debugger)
         self.update_menu_bar(extension, debugger)
         self.update_ip(self.stream_subprocess.port)
         self.loaded()
