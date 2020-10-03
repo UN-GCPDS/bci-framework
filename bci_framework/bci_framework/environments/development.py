@@ -62,7 +62,7 @@ class Development:
         """Constructor"""
 
         self.parent_frame.pushButton_script_preview.clicked.connect(
-            self.reload)
+            self.start_preview)
         self.parent_frame.pushButton_stop_preview.clicked.connect(
             self.stop_preview)
         self.parent_frame.tabWidget_project.currentChanged.connect(
@@ -114,7 +114,7 @@ class Development:
         return os.path.split(self.parent_frame.treeWidget_project.path)[1]
 
     # ----------------------------------------------------------------------
-    def reload(self):
+    def start_preview(self):
         """"""
         self.show_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
@@ -134,6 +134,11 @@ class Development:
         # for child in children:
             # print('Child pid is {}'.format(child.pid))
 
+    # # ----------------------------------------------------------------------
+    # def reset(self):
+        # """"""
+        # self.start_preview()
+
     # ----------------------------------------------------------------------
     def on_focus(self):
         """"""
@@ -143,7 +148,11 @@ class Development:
 
     # ----------------------------------------------------------------------
     def build_preview(self):
-        """"""
+        """
+
+        Called on open project
+        """
+
         self.stop_preview()
         for sub in self.parent_frame.mdiArea_development.subWindowList():
             sub.remove()
