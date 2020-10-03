@@ -22,8 +22,8 @@ class StimuliDelivery(StimuliAPI):
         
         self.dashboard <= self.widgets.label('Latency measurement<br><br>', typo='headline4')
         
-        self.dashboard <= self.widgets.slider('Delay', min=300, max=2000, step=100, value=500, unit='ms', on_change=self.run, id='delay')
-        self.dashboard <= self.widgets.slider('Pulse duration', min=100, max=1000, step=10, value=100, unit='ms', on_change=self.run, id='pulse')
+        self.dashboard <= self.widgets.slider('Delay', min=1000, max=10000, step=100, value=1000, on_change=self.run, unit='ms', id='delay')
+        self.dashboard <= self.widgets.slider('Pulse duration', min=100, max=5000, step=100, value=100, on_change=self.run, unit='ms', id='pulse')
         self.dashboard <= self.widgets.switch('Record EEG', checked=False, on_change=None, id='record')
         self.dashboard <= self.widgets.button('Start run', on_click=self.start, style={'margin': '0 15px'})
         self.dashboard <= self.widgets.button('Stop run', on_click=self.stop, style={'margin': '0 15px'})
@@ -59,7 +59,7 @@ class StimuliDelivery(StimuliAPI):
         self.timer_cue = timer.set_interval(lambda :self.trial(pulse), delay)
         
 
-    if __name__ == '__main__':
-        StimuliServer('StimuliDelivery')
+if __name__ == '__main__':
+    StimuliServer('StimuliDelivery')
 
 
