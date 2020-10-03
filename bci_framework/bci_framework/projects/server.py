@@ -43,6 +43,17 @@ class DeliveryInstance_:
                 return method()
         return wrap
 
+    # ----------------------------------------------------------------------
+
+    @classmethod
+    def local(cls, method):
+        def wrap(*args, **kwargs):
+            try:
+                return method(*args, **kwargs)
+            except:
+                return method()
+        return wrap
+
     # # ----------------------------------------------------------------------
     # @classmethod
     # def propagate(cls, *arguments):
