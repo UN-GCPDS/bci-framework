@@ -275,7 +275,7 @@ class Connection:
         nchan = self.parent_frame.comboBox_nchan.currentText()
         nchan = getattr(CytonBase, nchan.replace(' ', '_'))
 
-        channels = self.core.montage.get_mne_montage()
+        # channels = self.core.montage.get_mne_montage().ch_names
 
         # self.openbci = OpenBCIThread()
         self.openbci.connection_ok.connect(self.connection_ok)
@@ -285,7 +285,7 @@ class Connection:
         self.openbci.mode = mode
         self.openbci.endpoint = endpoint
         self.openbci.host = host
-        self.openbci.montage = channels
+        self.openbci.montage = prop.CHANNELS
         self.openbci.streaming_package_size = int(streaming_sample_rate)
         self.openbci.sample_rate = sample_rate
         self.openbci.boardmode = boardmode
