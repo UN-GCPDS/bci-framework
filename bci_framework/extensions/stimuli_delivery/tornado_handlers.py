@@ -141,7 +141,7 @@ class WSHandler(WebSocketHandler):
         marker = kwargs['marker']
         # marker['datetime'] = datetime.now().timestamp()
 
-        if hasattr(self, 'marker_producer'):
+        if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('marker', marker)
         else:
             print("No Kafka produser available!")
@@ -153,7 +153,7 @@ class WSHandler(WebSocketHandler):
         annotation = kwargs['annotation']
         # annotation['onset'] = datetime.now().timestamp()
 
-        if hasattr(self, 'marker_producer'):
+        if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('annotation', annotation)
         else:
             print("No Kafka produser available!")
