@@ -15,8 +15,11 @@ from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from .nbstreamreader import NonBlockingStreamReader as NBSR
 from .projects import properties as prop
 
+import psutil
 
 # ----------------------------------------------------------------------
+
+
 def run_subprocess(call):
     """"""
     my_env = os.environ.copy()
@@ -96,11 +99,11 @@ class StimuliSubprocess:
     def stm_debug(self):
         """"""
         console = JavaScriptConsole()
-        page = QWebEnginePage(self.main.web_engine)
-        page.javaScriptConsoleMessage = console.feed
-        self.main.web_engine.setPage(page)
+        self.web_engine_page = QWebEnginePage(self.main.web_engine)
+        self.web_engine_page .javaScriptConsoleMessage = console.feed
+        self.main.web_engine.setPage(self.web_engine_page)
         self.stdout = console
-        page.profile().clearHttpCache()
+        self.web_engine_page .profile().clearHttpCache()
         self.stm_start()
 
     # ----------------------------------------------------------------------
@@ -176,13 +179,13 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.stopped = True
         if hasattr(self, 'subprocess_script'):
             self.subprocess_script.terminate()
+            self.timer.singleShot(300, lambda: self.__delattr__('subprocess_script'))
+
+        if hasattr(self, 'web_engine_page'):
             try:
-                os.kill(self.subprocess_script.pid, signal.SIGKILL)
-                logging.info(
-                    f'killing subprocess with PID {self.subprocess_script.pid}')
-            except ProcessLookupError:
-                logging.info(
-                    f'error when try to kill subprocess with PID {self.subprocess_script.pid}')
+                self.web_engine_page.deleteLater()
+            except:  # already deleted.
+                pass
 
         # TODO: A wait page could be a nice idea
         self.main.widget_development_webview.hide()
@@ -221,6 +224,11 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     def reload(self):
         """"""
         self.main.web_engine.setUrl(self.url)
+
+    # ----------------------------------------------------------------------
+    def blank(self):
+        """"""
+        self.main.web_engine.setUrl('about:blank')
 
     # ----------------------------------------------------------------------
     def get_free_port(self):

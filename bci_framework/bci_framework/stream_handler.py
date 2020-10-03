@@ -61,12 +61,12 @@ class VisualizationsMenu:
         # View
         menu_view = QMenu("View")
         if visualization:
-            if debugger:
-                menu_view.addAction(
-                    QAction('Reload', menu_view, triggered=debugger.reload))
-            else:
-                menu_view.addAction(
-                    QAction('Reload', menu_view, triggered=self.reload))
+            # if debugger:
+                # menu_view.addAction(
+                    # QAction('Reload', menu_view, triggered=debugger.reload))
+            # else:
+            menu_view.addAction(QAction('Reload', menu_view, triggered=self.reload))
+            # menu_view.addAction(QAction('Reset', menu_view, triggered=self.reset))
 
             menu_view.addAction(
                 QAction('Save capture', menu_view, triggered=self.save_img))
@@ -129,12 +129,15 @@ class VisualizationsMenu:
         # View
         menu_view = QMenu("View")
         if visualization:
-            if debugger:
-                menu_view.addAction(
-                    QAction('Reload', menu_view, triggered=debugger.reload))
-            else:
-                menu_view.addAction(
-                    QAction('Reload', menu_view, triggered=self.reload))
+            # if debugger:
+                # menu_view.addAction(
+                    # QAction('Reload', menu_view, triggered=debugger.reload))
+            # else:
+                # menu_view.addAction(
+                    # QAction('Reload', menu_view, triggered=self.reload))
+
+            menu_view.addAction(QAction('Reload', menu_view, triggered=self.reload))
+            # menu_view.addAction(QAction('Reset', menu_view, triggered=self.reset))
 
             # menu_view.addAction(
                 # QAction('Save capture', menu_view, triggered=self.save_img))
@@ -189,13 +192,13 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """)
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_visualization(self):
         """"""
         return self.mode == 'visualization'
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_stimuli(self):
         """"""
         return self.mode == 'stimuli'
@@ -250,16 +253,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
             self.loaded()
 
     # ----------------------------------------------------------------------
-    def reload(self):
-        """"""
-        if self.is_visualization:
-            self.stop_preview()
-            if self.current_viz:
-                self.load_visualization(self.current_viz)
-        elif self.is_stimuli:
-            self.stream_subprocess.reload()
 
-    # ----------------------------------------------------------------------
     def save_img(self):
         """"""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
@@ -297,8 +291,27 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """"""
         if hasattr(self, 'stream_subprocess'):
             self.stream_subprocess.stop_preview()
+            # self.stream_subprocess.blank()
 
     # ----------------------------------------------------------------------
+    def reset(self):
+        """"""
+        # if self.is_visualization:
+            # self.stop_preview()
+            # if self.current_viz:
+                # self.load_visualization(self.current_viz)
+        # elif self.is_stimuli:
+            # self.stream_subprocess.reload()
+
+        self.stream_subprocess.reload()
+
+    # ----------------------------------------------------------------------
+    def reload(self):
+        """"""
+        self.stream_subprocess.reload()
+
+    # ----------------------------------------------------------------------
+
     def set_dpi(self, menu_dpi, text, dpi):
         """"""
         def wrap():
