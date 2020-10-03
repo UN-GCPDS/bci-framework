@@ -67,20 +67,22 @@ def loop_consumer(*topics) -> Callable:
 
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
 
-        def wrap(cls, topics=['eeg', 'marker'], **kwargs):
+        def wrap(cls):
             with OpenBCIConsumer(host=prop.HOST, topics=topics) as stream:
                 frame = 0
                 for data in stream:
                     if data.topic == 'eeg':
                         frame += 1
                         if hasattr(cls, 'buffer_eeg'):
-                            cls.update_buffer(*data.value['data'])
+                            cls.update_buffer(
+                                *data.value['data'], data.value['context']['binary_created'])
 
                     kwargs = {'data': data,
                               'topic': data.topic,
                               'frame': frame, }
+
                     fn(*[cls] + [kwargs[v] for v in arguments])
-            return wrap
+        return wrap
     return wrap_wrap
 
 
@@ -113,20 +115,26 @@ def fake_loop_consumer(*topics) -> Callable:
                     aux = np.random.normal(0, 0.2, size=(
                         3, num_data))
                 elif prop.BOARDMODE == 'analog':
-                    aux = np.random.normal(0, 0.2, size=(
+                    aux = np.random.normal(0, 0.07, size=(
                         3, num_data))
+
+                    if (time.time() // 10) % 2:
+                        aux += 1
+
                 elif prop.BOARDMODE == 'digital':
                     aux = np.random.normal(0, 0.2, size=(
                         5, num_data))
                 else:
                     aux = None
 
+                data.timestamp = datetime.now().timestamp() * 1000
                 data.value['timestamp'] = datetime.now()
                 data.value['data'] = eeg, aux
 
                 if 'eeg' in topics:
                     if hasattr(cls, 'buffer_eeg'):
-                        cls.update_buffer(*data.value['data'])
+                        cls.update_buffer(
+                            *data.value['data'], data.value['timestamp'].timestamp())
 
                     kwargs = {'data': data,
                               'topic': 'eeg',
