@@ -148,8 +148,8 @@ class BCIWebSocket(WebSocket):
     def on_close(self, evt):
         """"""
         getattr(self.main, 'stop', lambda: None)()
-        timer.set_timeout(lambda: self.__init__(
-            f'ws://localhost:{self.ip_}/ws'), 1000)
+        # print('on_close', self.ip_)
+        timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
 
 
 ########################################################################
@@ -158,9 +158,9 @@ class StimuliAPI:
     listen_commands_ = False
 
     # ----------------------------------------------------------------------
-    def connect(self, ip=5000):
+    def connect(self, port=5000):
         """"""
-        self.ws = BCIWebSocket(f'ws://localhost:{ip}/ws')
+        self.ws = BCIWebSocket(f'ws://localhost:{port}/ws')
         self.ws.main = self
 
         if self.listen_commands_:
