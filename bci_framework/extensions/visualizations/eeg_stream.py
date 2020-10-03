@@ -111,7 +111,7 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
     # ----------------------------------------------------------------------
     def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
                      time: Optional[int] = -15,
-                     window: Optional[str] = 'auto',
+                     window: Optional[int] = 1000,
                      cmap: Optional[str] = 'cool',
                      fill: Optional[np.ndarray] = np.nan,
                      subplot: Optional[list] = [1, 1, 1],) -> Tuple[matplotlib.axes.Axes, np.ndarray, list[matplotlib.lines]]:
@@ -207,8 +207,8 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
             time = np.linspace(time, 0, window)
         axis.set_ylim(*ylim)
 
-        if mode != 'eeg':
-            axis.legend()
+        # if mode != 'eeg':
+            # axis.legend()
 
         axis.grid(True, color='#ffffff', alpha=0.25, zorder=0)
         lines = np.array(lines)
