@@ -4,6 +4,7 @@ from typing import Optional
 
 import numpy as np
 from kafka import KafkaProducer
+from openbci_stream.utils import interpolate_datetime
 
 from ...extensions import properties as prop
 from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this
@@ -100,9 +101,8 @@ class DataAnalysis:
             else:
                 self.kafka_producer.send('annotation', {
                     'action': 'annotation',
-                    'annotation': {'duration': duration,
-                                   # 'onset': datetime.now().timestamp(),
-                                   'description': description},
+                    'duration': duration,
+                    'description': description,
                 })
         else:
             logging.error(
@@ -122,7 +122,7 @@ class DataAnalysis:
                 "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
 
     # ----------------------------------------------------------------------
-    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray) -> None:
+    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray, timestamp: float) -> None:
         """Uppdate the buffers.
 
         Parameters
@@ -138,6 +138,10 @@ class DataAnalysis:
         if self.boundary is False:
             self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
             self.buffer_eeg[:, -c:] = eeg
+
+            self.buffer_timestamp_ = np.roll(self.buffer_timestamp_, -c, axis=0)
+            self.buffer_eeg[:, -c:] = np.zeros(eeg.shape)
+            self.buffer_timestamp_[-1] = timestamp
 
             if hasattr(self, 'buffer_eeg_split'):
                 self.buffer_eeg_split = np.roll(self.buffer_eeg_split, -c)
@@ -247,8 +251,10 @@ class DataAnalysis:
         self.buffer_eeg.fill(fill)
         self.buffer_aux = np.empty((aux_shape, time))
         self.buffer_aux.fill(fill)
+        self.buffer_timestamp_ = np.zeros(time)
 
     # ----------------------------------------------------------------------
+
     @property
     def buffer_eeg_resampled(self):
         """"""
@@ -260,6 +266,22 @@ class DataAnalysis:
         """"""
         return self.buffer_aux[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
 
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_timestamp_resampled(self):
+        """"""
+        t = self.buffer_timestamp
+        if t.shape[0]:
+            return t[np.argwhere(self.buffer_eeg_split == 1)][:, 0]
+        else:
+            return np.array([])
 
-
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_timestamp(self):
+        """"""
+        try:
+            return interpolate_datetime(self.buffer_timestamp_)
+        except:
+            return self.buffer_timestamp_
 
