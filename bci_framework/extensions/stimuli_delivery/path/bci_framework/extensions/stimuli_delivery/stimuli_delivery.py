@@ -3,7 +3,7 @@ import json
 import random
 import logging
 from browser import timer, html, document
-# from datetime import datetimes
+from datetime import datetime
 
 from radiant.utils import WebSocket
 
@@ -176,14 +176,14 @@ class StimuliAPI:
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def send_marker(self, marker, blink=100):
+    def send_marker(self, marker, blink=100, force=False):
         """"""
         marker = {
             'marker': marker,
-            # 'datetime': datetime.now().timestamp(),
+            'datetime': datetime.now().timestamp(),
         }
 
-        if self.mode == 'stimuli':
+        if self.mode == 'stimuli' or force:
             self.ws.send({
                 'action': 'marker',
                 'marker': marker,
@@ -210,7 +210,7 @@ class StimuliAPI:
         self.ws.send({
             'action': 'annotation',
             'annotation': {'duration': duration,
-                           # 'onset': datetime.now().timestamp(),
+                           'onset': datetime.now().timestamp(),
                            'description': description},
         })
 
@@ -341,3 +341,8 @@ class StimuliAPI:
             self.stimuli_area
         if dashboard:
             self.dashboard
+
+    # ----------------------------------------------------------------------
+    def _last_init(self):
+        """"""
+

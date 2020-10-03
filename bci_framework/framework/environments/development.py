@@ -140,7 +140,7 @@ class Development:
             sub.deleteLater()
 
         self.sub = ExtensionWidget(
-            self.parent_frame.mdiArea_development, [], mode=self.mode)
+            self.parent_frame.mdiArea_development, extensions_list=[], mode=self.mode)
         self.parent_frame.mdiArea_development.addSubWindow(self.sub)
         self.sub.show()
         self.parent_frame.mdiArea_development.tileSubWindows()
@@ -264,7 +264,10 @@ class Development:
                         if 'bci_framework.extensions.stimuli_delivery' in content:
                             completer = Autocompleter(mode='stimuli')
                             editor.set_completer(completer)
-                        elif 'bci_framework.projects.figure' in content:
+                        elif 'bci_framework.extensions.data_analysis' in content:
+                            completer = Autocompleter(mode='visualization')
+                            editor.set_completer(completer)
+                        elif 'bci_framework.extensions.visualizations' in content:
                             completer = Autocompleter(mode='visualization')
                             editor.set_completer(completer)
 

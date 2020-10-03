@@ -96,7 +96,6 @@ class DataAnalysis:
     def send_annotation(self, description: str, duration: Optional[int] = 0) -> None:
         """"""
         if hasattr(self, 'kafka_producer'):
-
             if self.kafka_producer is None:
                 logging.error('Kafka not available!')
             else:
@@ -105,6 +104,18 @@ class DataAnalysis:
                     'duration': duration,
                     'description': description,
                 })
+        else:
+            logging.error(
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+
+    # ----------------------------------------------------------------------
+    def send_feedback(self, kwargs) -> None:
+        """"""
+        if hasattr(self, 'kafka_producer'):
+            if self.kafka_producer is None:
+                logging.error('Kafka not available!')
+            else:
+                self.kafka_producer.send('feedback', kwargs)
         else:
             logging.error(
                 "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")

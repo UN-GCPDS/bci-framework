@@ -125,7 +125,7 @@ def fake_loop_consumer(*topics) -> Callable:
                     aux = np.random.normal(0, 0.07, size=(
                         3, num_data))
 
-                    if (time.time() // 10) % 2:
+                    if (time.time() // 1) % 2:
                         aux += 1
 
                 elif prop.BOARDMODE == 'digital':

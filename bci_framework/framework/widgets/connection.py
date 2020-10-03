@@ -23,7 +23,7 @@ class OpenBCIThread(QThread):
     """Handle the OpenBCI connection."""
 
     connection_ok = Signal()
-    connection_fail = Signal()
+    connection_fail = Signal(object)
     disconnected_ok = Signal()
     connected = False
 
@@ -36,20 +36,26 @@ class OpenBCIThread(QThread):
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
 
+        # try:
+        self.openbci = Cyton(self.mode,
+                             self.endpoint,
+                             host=self.host,
+                             capture_stream=False,
+                             daisy=prop.DAISY,
+                             montage=self.montage,
+                             streaming_package_size=self.streaming_package_size)
+
+        # except:
+            # self.connection_fail.emit([])
+            # return
+
         try:
-            self.openbci = Cyton(self.mode,
-                                 self.endpoint,
-                                 host=self.host,
-                                 capture_stream=False,
-                                 daisy=prop.DAISY,
-                                 montage=self.montage,
-                                 streaming_package_size=self.streaming_package_size)
-
-        except:
-            self.connection_fail.emit()
-
-        self.openbci.command(self.sample_rate)
-        self.openbci.command(self.boardmode)
+            self.openbci.command(self.sample_rate)
+            self.openbci.command(self.boardmode)
+        except TimeoutError:
+            self.connection_fail.emit(
+                ['* OpenBCI board could not be connected the same network.'])
+            return
 
         # Some time this command not take effect
         boardmode_setted = False
@@ -85,10 +91,15 @@ class OpenBCIThread(QThread):
             self.openbci.activate_channel(used_channels)
 
         if not self.streaming():
-            self.openbci.start_stream()
+            try:
+                self.openbci.start_stream()
+                self.connected = True
+                self.connection_ok.emit()
+            except Exception as e:
+                if 'NoBrokersAvailable' in str(e):
 
-        self.connected = True
-        self.connection_ok.emit()
+                    self.connection_fail.emit(
+                        ['* Kafka is not running on the remote acquisition system.'])
 
     # ----------------------------------------------------------------------
     def session_settings(self, *args) -> None:
@@ -135,6 +146,10 @@ class Connection:
         # self.parent.pushButton_disconnect.hide()
         self.openbci = OpenBCIThread()
         self.openbci.streaming = lambda: getattr(self.core, 'streaming', False)
+
+        self.openbci.connection_ok.connect(self.connection_ok)
+        self.openbci.connection_fail.connect(self.connection_fail)
+        self.openbci.disconnected_ok.connect(self.disconnected_ok)
 
         self.config = {
             'mode': self.parent_frame.comboBox_connection_mode,
@@ -278,9 +293,9 @@ class Connection:
         # channels = self.core.montage.get_mne_montage().ch_names
 
         # self.openbci = OpenBCIThread()
-        self.openbci.connection_ok.connect(self.connection_ok)
-        self.openbci.connection_fail.connect(self.connection_fail)
-        self.openbci.disconnected_ok.connect(self.disconnected_ok)
+        # self.openbci.connection_ok.connect(self.connection_ok)
+        # self.openbci.connection_fail.connect(self.connection_fail)
+        # self.openbci.disconnected_ok.connect(self.disconnected_ok)
 
         self.openbci.mode = mode
         self.openbci.endpoint = endpoint
@@ -335,28 +350,38 @@ class Connection:
 
     # ----------------------------------------------------------------------
     @Slot()
-    def connection_fail(self):
+    def connection_fail(self, reasons):
         """Event for OpenBCI failed connection."""
         QApplication.restoreOverrideCursor()
 
         checks = []
 
-        if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
-            checks.extend(['* Check that USB dongle were connected',
-                           '* Verify serial permissions',
-                           ])
+        if reasons:
+            checks.extend(reasons)
 
-        if self.parent_frame.comboBox_host.currentText() != 'localhost':
-            checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
-                           '* This machine must have access to the server or running on the same network.',
-                           ])
+        else:
+            if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
+                checks.extend(['* Check that USB dongle were connected.',
+                               '* Verify serial permissions.',
+                               ])
 
-        if hasattr(self.core, 'conection_message'):
-            checks.extend([self.core.conection_message])
-            self.core.conection_message = ""
+            if self.parent_frame.comboBox_host.currentText() != 'localhost':
+                checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
+                               '* This machine must have access to the server or running on the same network.',
+                               '* The daemons `stream_eeg` `stream_rpyc` could not be running',  # todo
+                               ])
+
+            if hasattr(self.core, 'conection_message'):
+                checks.extend([self.core.conection_message])
+                self.core.conection_message = ""
+
         checks = '\n'.join(checks)
         Dialogs.critical_message(
             self.parent_frame, 'Connection error', f"{checks}")
+
+        self.parent_frame.pushButton_connect.setText('Connect')
+        self.parent_frame.pushButton_connect.setEnabled(True)
+        self.parent_frame.pushButton_connect.setChecked(False)
 
     # ----------------------------------------------------------------------
     @Slot()
@@ -368,6 +393,7 @@ class Connection:
             self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
 
         self.parent_frame.pushButton_connect.setText('Connect')
+        self.parent_frame.pushButton_connect.setEnabled(True)
         self.parent_frame.pushButton_connect.setChecked(False)
         self.core.status_bar(right_message=('Disconnected', None))
         self.parent_frame.checkBox_view_impedances.setChecked(False)

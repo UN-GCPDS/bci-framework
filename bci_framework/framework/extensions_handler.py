@@ -167,7 +167,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
     """MDIArea with extension."""
 
     # ----------------------------------------------------------------------
-    def __init__(self, mdi_area, extensions_list: List[str], mode: str):
+    def __init__(self, mdi_area, mode: str, extensions_list: List[str] = [], autostart: Optional[str] = None, hide_menu: Optional[bool] = False):
         """"""
         super().__init__(None)
         ui = os.path.realpath(os.path.join(
@@ -178,7 +178,11 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         self.main.DPI = 60
         self.mode = mode
         self.current_viz = None
-        self.extensions_list = extensions_list
+
+        if autostart:
+            self.extensions_list = [autostart]
+        else:
+            self.extensions_list = extensions_list
 
         if '--local' in sys.argv:
             self.projects_dir = os.path.join(
@@ -201,6 +205,12 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         border-width: 0;
         }}
         """)
+
+        if autostart:
+            self.load_extension(autostart)
+
+        if hide_menu:
+            self.main.widget.hide()
 
     # ----------------------------------------------------------------------
     @property

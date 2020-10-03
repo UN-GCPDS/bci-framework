@@ -180,11 +180,10 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
 
         axis = self.add_subplot(*subplot)
 
-        if window == 'auto':
-            window = self._get_factor_near_to(
-                prop.SAMPLE_RATE * np.abs(time), n=window)
-            # self._create_resampled_buffer(
-                # prop.SAMPLE_RATE * np.abs(time), n=1000)
+        window = self._get_factor_near_to(
+            prop.SAMPLE_RATE * np.abs(time), n=window)
+        # self._create_resampled_buffer(
+            # prop.SAMPLE_RATE * np.abs(time), n=1000)
 
         a = np.empty(window)
         a.fill(fill)

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1008</width>
+    <width>1175</width>
     <height>784</height>
    </rect>
   </property>
@@ -33,105 +33,229 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
-       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
+       <layout class="QGridLayout" name="gridLayout_26">
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <item row="1" column="0" colspan="2">
-         <widget class="QWidget" name="widget_3" native="true">
-          <layout class="QGridLayout" name="gridLayout_26">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QMdiArea" name="mdiArea_stimuli">
-             <property name="background">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>0</red>
-                <green>0</green>
-                <blue>0</blue>
-               </color>
-              </brush>
-             </property>
-            </widget>
-           </item>
-          </layout>
+        <item row="0" column="0">
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="tabPosition">
+           <enum>QTabWidget::West</enum>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="tab_3">
+           <attribute name="title">
+            <string>Stimuli delivery</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="0">
+             <widget class="QMdiArea" name="mdiArea_stimuli">
+              <property name="background">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>0</red>
+                 <green>0</green>
+                 <blue>0</blue>
+                </color>
+               </brush>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLineEdit" name="lineEdit_stimuli_ip">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_13">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stimuli_browser">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Open in browser</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stimuli_subwindow">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Open in subwindow</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_4">
+           <attribute name="title">
+            <string>Latency correction</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <item>
+               <widget class="QLineEdit" name="lineEdit_stimuli_ip_lat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_22">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stimuli_browser_lat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Open in browser</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stimuli_subwindow_lat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Open in subwindow</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_28">
+              <item>
+               <widget class="QPushButton" name="pushButton_start_calibration">
+                <property name="text">
+                 <string>Start calibration</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stop_calibration">
+                <property name="text">
+                 <string>Stop calibration</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="doubleSpinBox_latency">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="prefix">
+                 <string>Latency: </string>
+                </property>
+                <property name="suffix">
+                 <string> ms</string>
+                </property>
+                <property name="decimals">
+                 <number>3</number>
+                </property>
+                <property name="minimum">
+                 <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>0.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="QMdiArea" name="mdiArea_latency"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
-        </item>
-        <item row="0" column="0" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLineEdit" name="lineEdit_stimuli_ip">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_13">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_stimuli_browser">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Open in browser</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_stimuli_subwindow">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Open in subwindow</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -211,7 +335,7 @@ p, li { white-space: pre-wrap; }
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1145,8 +1269,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>262</width>
-                  <height>145</height>
+                  <width>444</width>
+                  <height>489</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1404,8 +1528,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>419</width>
-                 <height>616</height>
+                 <width>456</width>
+                 <height>637</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -2389,8 +2513,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>273</width>
-              <height>236</height>
+              <width>269</width>
+              <height>234</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2484,8 +2608,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>163</width>
-              <height>143</height>
+              <width>456</width>
+              <height>565</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2545,8 +2669,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>179</width>
-              <height>143</height>
+              <width>175</width>
+              <height>141</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2737,7 +2861,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>351</width>
+                  <width>456</width>
                   <height>479</height>
                  </rect>
                 </property>

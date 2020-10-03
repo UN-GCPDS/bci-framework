@@ -9,12 +9,17 @@ Run an experiment in a dedicated space, without debugger or code editor.
 import os
 import socket
 import webbrowser
+import logging
+import sys
 
 from PySide2.QtCore import QTimer
 from PySide2.QtUiTools import QUiLoader
 
 from ..extensions_handler import ExtensionWidget
+from ..subprocess_handler import run_subprocess
 
+import socket
+from contextlib import closing
 
 DEFAULT_LOCAL_IP = 'localhost'
 
@@ -29,6 +34,9 @@ class StimuliDelivery:
 
         self.parent_frame = core.main
         self.core = core
+
+        self.parent_frame.pushButton_stop_calibration.setVisible(False)
+
         self.connect()
 
     # ----------------------------------------------------------------------
@@ -46,7 +54,7 @@ class StimuliDelivery:
     def build_dashboard(self) -> None:
         """Create the experiments selector."""
         sub = ExtensionWidget(
-            self.parent_frame.mdiArea_stimuli, self.stimuli_list, mode='stimuli')
+            self.parent_frame.mdiArea_stimuli, extensions_list=self.stimuli_list, mode='stimuli')
         self.parent_frame.mdiArea_stimuli.addSubWindow(sub)
         sub.show()
         self.parent_frame.mdiArea_stimuli.tileSubWindows()
@@ -79,6 +87,16 @@ class StimuliDelivery:
         self.parent_frame.pushButton_stimuli_subwindow.clicked.connect(
             self.open_subwindow)
 
+        self.parent_frame.pushButton_stimuli_browser_lat.clicked.connect(
+            self.open_browser)
+        self.parent_frame.pushButton_stimuli_subwindow_lat.clicked.connect(
+            self.open_subwindow)
+
+        self.parent_frame.pushButton_start_calibration.clicked.connect(
+            self.start_calibration)
+        self.parent_frame.pushButton_stop_calibration.clicked.connect(
+            self.stop_calibration)
+
     # ----------------------------------------------------------------------
     def get_local_ip_address(self) -> str:
         """Connect to internet for get the local IP."""
@@ -101,14 +119,21 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def open_browser(self) -> None:
         """Open delivery on browser."""
-        webbrowser.open_new_tab(
-            self.parent_frame.lineEdit_stimuli_ip.text())
+
+        if address := self.parent_frame.lineEdit_stimuli_ip.text():
+            webbrowser.open_new_tab(address)
+        elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
+            webbrowser.open_new_tab(address)
 
     # ----------------------------------------------------------------------
     def open_subwindow(self, url=None) -> None:
         """Open an auxiliar window for stimuli delivery."""
         if not url:
-            url = self.parent_frame.lineEdit_stimuli_ip.text()
+            # url = self.parent_frame.lineEdit_stimuli_ip.text()
+            if address := self.parent_frame.lineEdit_stimuli_ip.text():
+                url = address
+            elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
+                url = address
 
         if not url:
             return
@@ -134,6 +159,8 @@ class StimuliDelivery:
         else:
             enabled = False
 
+        if not enabled:
+            self.parent_frame.lineEdit_stimuli_ip.setText('')
         self.parent_frame.lineEdit_stimuli_ip.setEnabled(enabled)
         self.parent_frame.pushButton_stimuli_browser.setEnabled(enabled)
         self.parent_frame.pushButton_stimuli_subwindow.setEnabled(enabled)
@@ -143,3 +170,54 @@ class StimuliDelivery:
         """Update the QLineEdit with the current ip address."""
         self.parent_frame.lineEdit_stimuli_ip.setText(
             f'{self.get_local_ip_address()}:{port}')
+
+    # ----------------------------------------------------------------------
+    def start_calibration(self):
+        """"""
+        port_viz = self.get_free_port()
+        self.latency_calibration = run_subprocess([sys.executable, os.path.join(
+            self.core.projects.projects_dir, 'Latency measurement', 'main.py'), port_viz])
+
+        if not hasattr(self, 'latency_visualization'):
+            self.latency_visualization = ExtensionWidget(
+                self.parent_frame.mdiArea_latency, mode='visualization',
+                autostart='OpenBCI - Latency', hide_menu=False)
+            self.parent_frame.mdiArea_latency.addSubWindow(
+                self.latency_visualization)
+        else:
+            self.latency_visualization.load_extension('OpenBCI - Latency')
+
+        self.latency_visualization.show()
+        self.parent_frame.mdiArea_latency.tileSubWindows()
+        # self.latency_visualization.update_menu_bar()
+
+        self.parent_frame.lineEdit_stimuli_ip_lat.setText(
+            f'{self.get_local_ip_address()}:{port_viz}')
+        self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(True)
+        self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(True)
+        self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(True)
+        self.parent_frame.pushButton_start_calibration.setVisible(False)
+        self.parent_frame.pushButton_stop_calibration.setVisible(True)
+
+    # ----------------------------------------------------------------------
+    def stop_calibration(self):
+        """"""
+        self.latency_visualization.stop_preview()
+        self.latency_calibration.terminate()
+
+        self.parent_frame.lineEdit_stimuli_ip_lat.setText('')
+        self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(False)
+        self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(False)
+        self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(False)
+        self.parent_frame.pushButton_start_calibration.setVisible(True)
+        self.parent_frame.pushButton_stop_calibration.setVisible(False)
+
+    # ----------------------------------------------------------------------
+    def get_free_port(self) -> str:
+        """Get any free port available."""
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+            s.bind(('', 0))
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            port = str(s.getsockname()[1])
+            logging.info(f'Free port found in {port}')
+            return port

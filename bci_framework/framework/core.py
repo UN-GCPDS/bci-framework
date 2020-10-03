@@ -60,7 +60,7 @@ class Kafka(QThread):
     def create_consumer(self) -> None:
         """Basic consumer to check stream status and availability."""
         bootstrap_servers = [f'{self.host}:9092']
-        topics = ['annotation', 'marker', 'command', 'eeg']
+        topics = ['annotation', 'marker', 'command', 'eeg', 'feedback']
         self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
                                       value_deserializer=pickle.loads,
                                       auto_offset_reset='latest',
@@ -451,6 +451,9 @@ class BCIFramework(QMainWindow):
             self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
                                             value['value']['duration'],
                                             value['value']['description'])
+        elif value['topic'] == 'feedback':
+            self.handle_feedback(value['value'])
+
         elif value['topic'] == 'eeg':
             # self.status_bar('Incoming streaming detected')
             eeg, aux = value['value']['data']
@@ -537,3 +540,16 @@ class BCIFramework(QMainWindow):
         """Show configuration window."""
         configuration = ConfigurationFrame(self)
         configuration.show()
+
+    # ----------------------------------------------------------------------
+    def handle_feedback(self, data):
+        """"""
+        if fn := getattr(self, f"feedback_{data['command']}", False):
+            fn(data['value'])
+
+    # ----------------------------------------------------------------------
+    def feedback_set_latency(self, value):
+        """"""
+        self.main.doubleSpinBox_latency.setValue(value)
+        os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(value)
+

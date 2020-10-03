@@ -83,7 +83,7 @@ class Visualization:
     def add_subwindow(self) -> None:
         """Add new patition."""
         sub = ExtensionWidget(
-            self.parent_frame.mdiArea, self.visualizations_list, mode='visualization')
+            self.parent_frame.mdiArea, mode='visualization', extensions_list=self.visualizations_list)
         self.parent_frame.mdiArea.addSubWindow(sub)
         sub.show()
         self.parent_frame.mdiArea.tileSubWindows()

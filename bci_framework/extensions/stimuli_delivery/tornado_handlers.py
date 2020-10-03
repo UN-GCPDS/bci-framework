@@ -19,7 +19,7 @@ from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer, KafkaConsumer
 
-# from datetime import datetime
+from datetime import datetime
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
 

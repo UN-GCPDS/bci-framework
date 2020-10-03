@@ -23,7 +23,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from openbci_stream.acquisition import OpenBCIConsumer
-from gcpds.utils.filters import GenericButterBand
+from gcpds.utils import filters
 
 from ...extensions import properties as prop
 from ...extensions.data_analysis.utils import thread_this
@@ -163,13 +163,13 @@ class TopoplotImpedances(TopoplotBase):
         self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
         self.cmap = 'RdYlGn'
 
-        self.band_2737 = GenericButterBand(27, 37, fs=250)
+        self.band_2737 = filters.GenericButterBand(27, 37, fs=250)
         self.reset_plot()
 
     # ----------------------------------------------------------------------
     def raw_to_z(self, v: VOLTS) -> IMPEDANCE:
         """Convert voltage to impedance."""
-        v = notch60(v, fs=250)
+        v = filters.notch60(v, fs=250)
         v = self.band_2737(v, fs=250)
 
         rms = np.std(v)
@@ -263,7 +263,7 @@ class TopoplotImpedances(TopoplotBase):
         sm = cm.ScalarMappable(cmap=self.cmap, norm=norm)
         cbr = pyplot.colorbar(sm, cax=self.cax, orientation="horizontal")
         pyplot.setp(pyplot.getp(cbr.ax.axes, 'xticklabels'),
-                    color='#ffffff', size=10)
+                    color=os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR', '#000000'), size=10)
         ticks = [0, 5, 10, 15]
         cbr.set_ticks(ticks)
         cbr.set_ticklabels([f'{i} k$\Omega$' for i in ticks])
@@ -568,7 +568,7 @@ class Montage:
             if not hasattr(self.core.connection, 'openbci'):
                 self.core.connection.openbci_connect()
 
-            openbci = self.core.connection.openbci
+            openbci = self.core.connection.openbci.openbci
 
             openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
             openbci.leadoff_impedance(prop.CHANNELS,

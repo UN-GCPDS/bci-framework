@@ -26,7 +26,7 @@ class Analysis(DataAnalysis):
         logging.error('error')
         logging.critical('critical')    
          
-           
+
                                     
 if __name__ == '__main__':
     Analysis()
