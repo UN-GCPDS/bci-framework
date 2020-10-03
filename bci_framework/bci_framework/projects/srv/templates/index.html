@@ -122,11 +122,12 @@
 
   <body onload="brython(1)">
     <script type="text/python">
+import sys
+sys.path.append('/root/')
+sys.path.append('/static/brython/Lib/site-packages/')
 
 from bci_framework.api import autoinit
 
-import sys
-sys.path.append('/root/')
 from main import {{class_}}
 
 arr = {{class_}}()
