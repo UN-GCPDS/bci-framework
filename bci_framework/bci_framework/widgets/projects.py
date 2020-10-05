@@ -64,6 +64,8 @@ class Projects:
         self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
+        self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(self.load_projects)
+
         # self.parent.listWidget_projects_others.itemDoubleClicked.connect(
         # lambda evt: self.open_project(evt.text()))
 
@@ -145,7 +147,12 @@ class Projects:
             os.path.join(self.projects_dir, f)), projects)
         projects = filter(lambda f: not f.startswith('__'), projects)
 
+        projects = sorted(list(projects))
+
         for project in projects:
+
+            if project.startswith('Tutorial |') and not self.parent_frame.checkBox_projects_show_tutorials.isChecked():
+                continue
 
             with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
                 lines = file.readlines()
@@ -161,8 +168,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -244,8 +251,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -368,16 +375,18 @@ class Projects:
 
         if visualization:
             icon_name = 'icon_viz'
-            item = QListWidgetItem(self.parent_frame.listWidget_projects)
+            item = QListWidgetItem(self.parent_frame.listWidget_projects_visualizations)
+            default_project = '_stimuli_delivery'
         elif stimulus:
             icon_name = 'icon_sti'
-            item = QListWidgetItem(self.parent_frame.listWidget_projects)
-        else:
-            icon_name = 'icon_dev'
-            item = QListWidgetItem(self.parent_frame.listWidget_projects)
+            item = QListWidgetItem(self.parent_frame.listWidget_projects_delivery)
+            default_project = '_visualization'
+        # else:
+            # icon_name = 'icon_dev'
+            # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -386,9 +395,12 @@ class Projects:
         item.setIcon(icon)
         item.icon_name = icon_name
 
-        os.mkdir(os.path.join(self.projects_dir, project_name))
-        with open(os.path.join(self.projects_dir, project_name, f'main.py'), 'wb') as file:
-            file.write(b'')
+        source = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects', default_project)
+        target = os.path.join(self.projects_dir, project_name)
+        shutil.copytree(source, target)
+
+        # with open(os.path.join(self.projects_dir, project_name, f'main.py'), 'wb') as file:
+            # file.write(b'')
 
     # ----------------------------------------------------------------------
     def remove_project(self, evt):
