@@ -44,6 +44,7 @@ class Annotations:
         self.parent_frame.pushButton_save_annotation.clicked.connect(self.save_annotation)
         self.parent_frame.pushButton_new_annotation.clicked.connect(self.new_annotation)
         self.parent_frame.pushButton_remove_annotation.clicked.connect(self.remove_annotation)
+        self.parent_frame.pushButton_cancel_annotation.clicked.connect(lambda: self.editor_set_visible(visible=False))
 
     # ----------------------------------------------------------------------
     def save_annotation(self):
