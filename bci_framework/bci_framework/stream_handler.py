@@ -141,6 +141,9 @@ class VisualizationsMenu:
 
             # menu_view.addAction(
                 # QAction('Save capture', menu_view, triggered=self.save_img))
+
+            if debugger:
+                menu_view.addAction(QAction('Open subwindow delivery', menu_view, triggered=debugger.open_subwindow))
             if not debugger:
                 menu_view.addSeparator()
                 menu_view.addAction(
@@ -192,13 +195,13 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """)
 
     # ----------------------------------------------------------------------
-    @ property
+    @property
     def is_visualization(self):
         """"""
         return self.mode == 'visualization'
 
     # ----------------------------------------------------------------------
-    @ property
+    @property
     def is_stimuli(self):
         """"""
         return self.mode == 'stimuli'
