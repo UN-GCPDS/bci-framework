@@ -1,10 +1,19 @@
-.. include:: _notebooks/readme.rst
 
+.. include:: notebooks/readme.rst
 
 Navigation
-==========
-TODO
+^^^^^^^^^^
 
+.. toctree::
+   :maxdepth: 2
+   :name: mastertoc
+
+   notebooks/01-installation
+   notebooks/02-about
+   notebooks/03-prepare_acquistion
+   notebooks/04-develop_visualizations
+   notebooks/05-develop_stimuli_delivery
+   notebooks/99-troubleshoots
 
 
 Indices and tables
@@ -14,9 +23,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-
-
-
-----
-
-This project is licenced under the `Simplified BSD License <_notebooks/license.html>`_
+    
