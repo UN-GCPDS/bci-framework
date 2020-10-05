@@ -67,6 +67,13 @@ class StimuliDelivery:
         """"""
         for i in range(self.parent_frame.listWidget_projects_delivery.count()):
             item = self.parent_frame.listWidget_projects_delivery.item(i)
+
+            if item.text().startswith('_'):
+                continue
+
+            if item.text().startswith('Tutorial |'):
+                continue
+
             self.stimuli_list.append(item.text())
             # if item.icon_name == 'icon_sti':
 
@@ -117,9 +124,10 @@ class StimuliDelivery:
             self.parent_frame.lineEdit_stimuli_ip.text())
 
     # ----------------------------------------------------------------------
-    def open_subwindow(self):
+    def open_subwindow(self, url=None):
         """"""
-        url = self.parent_frame.lineEdit_stimuli_ip.text()
+        if url is None:
+            url = self.parent_frame.lineEdit_stimuli_ip.text()
 
         if not url:
             return
@@ -130,7 +138,11 @@ class StimuliDelivery:
             self.sub_window_delivery = QUiLoader().load(frame, self.parent_frame)
 
         self.sub_window_delivery.show()
-        self.sub_window_delivery.webEngineView.setUrl(f'http://{url}/')
+
+        if url.startswith('http://'):
+            self.sub_window_delivery.webEngineView.setUrl(url)
+        else:
+            self.sub_window_delivery.webEngineView.setUrl(f'http://{url}/')
 
     # ----------------------------------------------------------------------
     def widgets_set_enabled(self):
