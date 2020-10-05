@@ -145,7 +145,11 @@ class Projects:
 
         projects = filter(lambda f: os.path.isdir(
             os.path.join(self.projects_dir, f)), projects)
+
         projects = filter(lambda f: not f.startswith('__'), projects)
+
+        if (not self.parent_frame.checkBox_projects_show_tutorials.isChecked()) and ('--debug' in sys.argv):
+            projects = filter(lambda f: not f.startswith('_'), projects)
 
         projects = sorted(list(projects))
 
