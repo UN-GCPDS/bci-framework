@@ -140,6 +140,12 @@ class Development:
         # self.start_preview()
 
     # ----------------------------------------------------------------------
+    def open_subwindow(self):
+        """"""
+        url = self.sub.stream_subprocess.url
+        self.core.stimuli_delivery.open_subwindow(url.replace('/delivery', '/'))
+
+    # ----------------------------------------------------------------------
     def on_focus(self):
         """"""
         # if not self.parent_frame.mdiArea_development.subWindowList():
