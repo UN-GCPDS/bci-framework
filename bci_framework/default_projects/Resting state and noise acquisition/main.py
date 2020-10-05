@@ -1,7 +1,6 @@
 from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
 from bci_framework.projects import properties as prop
-from bci_framework.projects.sound import Tone
-from bci_framework.projects.widgets import Widgets
+from bci_framework.projects import Tone, Widgets
 from bci_framework.projects.utils import timeit
 
 from browser import document, timer, html, window

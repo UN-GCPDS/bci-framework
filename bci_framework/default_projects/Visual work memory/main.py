@@ -1,7 +1,6 @@
 from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
 from bci_framework.projects import properties as prop
-from bci_framework.projects.sound import Tone
-from bci_framework.projects.widgets import Widgets
+from bci_framework.projects import Tone, Widgets
 from bci_framework.projects.utils import timeit
 
 from browser import document, timer, html, window
@@ -47,7 +46,7 @@ class Memory(StimuliAPI):
         self.on_trial = False
 
         self.widgets = Widgets()
-        self.widgets.add_run_progressbar()
+        self.run_progressbar = self.add_run_progressbar()
 
         self.tone = Tone()
 
@@ -177,7 +176,7 @@ class Memory(StimuliAPI):
         self.build_trial()
         self.shuffled_colors = self.shuffle()
 
-        self.widgets.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
+        self.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
 
         soa_time = self.widgets.get_value('soa')
         ma_time = soa_time + self.widgets.get_value('memory_array')
