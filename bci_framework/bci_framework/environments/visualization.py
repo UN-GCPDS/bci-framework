@@ -23,9 +23,9 @@ class Visualization:
         self.core = core
         self.config = ConfigManager()
 
-        # self.visualizations_list = []
-        # self.update_visualizations_list()
         self.connect()
+        self.on_focus()
+        self.add_subwindow()
 
     # ----------------------------------------------------------------------
     def connect(self):
