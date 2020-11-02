@@ -32,7 +32,7 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
 
-    python_requires='>=3.6',
+    python_requires='>=3.8',
 
     entry_points={
         'console_scripts': ['bci_framework=bci_stream.__main__:main'],
@@ -45,7 +45,6 @@ setup(
         'Intended Audience :: Healthcare Industry',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',

@@ -6,8 +6,8 @@ bci\_framework.environments package
    :no-undoc-members:
    :no-show-inheritance:
 
-Subpackages
------------
+Submodules
+----------
 
 .. toctree::
    :maxdepth: 4

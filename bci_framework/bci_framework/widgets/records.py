@@ -1,6 +1,6 @@
 from PySide2.QtWidgets import QTableWidgetItem, QAction, QMenu
 from PySide2.QtCore import Qt, QTimer
-from openbci_stream.handlers import HDF5_Reader
+from openbci_stream.utils import HDF5Reader
 
 from kafka import KafkaProducer
 from kafka.errors import NoBrokersAvailable
@@ -158,7 +158,7 @@ class Records:
     # ----------------------------------------------------------------------
     def get_metadata(self, filename):
         """"""
-        file = HDF5_Reader(os.path.join(self.records_dir, filename))
+        file = HDF5Reader(os.path.join(self.records_dir, filename))
 
         header = file.header
         channels, samples = file.eeg.shape

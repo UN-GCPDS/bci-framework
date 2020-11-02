@@ -1,8 +1,9 @@
 
+
 .. include:: notebooks/readme.rst
 
 Navigation
-^^^^^^^^^^
+----------
 
 .. toctree::
    :maxdepth: 2
@@ -15,9 +16,8 @@ Navigation
    notebooks/05-develop_stimuli_delivery
    notebooks/99-troubleshoots
 
-
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

@@ -6,15 +6,6 @@ bci\_framework.qtgui.icons package
    :no-undoc-members:
    :no-show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   bci_framework.qtgui.icons.assets
-   bci_framework.qtgui.icons.pyside_material
-
 Submodules
 ----------
 

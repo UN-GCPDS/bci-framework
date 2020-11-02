@@ -17,7 +17,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from scipy.spatial.distance import pdist, squareform, cdist
 
-from openbci_stream.consumer import OpenBCIConsumer
+from openbci_stream.acquisition import OpenBCIConsumer
 
 
 from gcpds.utils.filters import GenericButterBand, notch60, FiltersChain

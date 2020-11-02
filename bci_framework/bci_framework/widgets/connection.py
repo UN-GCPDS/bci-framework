@@ -206,7 +206,7 @@ class Connection:
         channels = self.core.montage.get_montage()
 
         self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
-                             daisy=prop.DAISY, montage=channels, stream_samples=int(streaming_sample_rate))
+                             daisy=prop.DAISY, montage=channels, streaming_package_size=int(streaming_sample_rate))
 
         self.openbci.command(sample_rate)
 

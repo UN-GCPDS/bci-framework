@@ -29,4 +29,5 @@ Submodules
    bci_framework.dialogs
    bci_framework.doc_urls
    bci_framework.nbstreamreader
+   bci_framework.stream_handler
    bci_framework.subprocess_script
