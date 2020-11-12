@@ -1,5 +1,6 @@
 from threading import Thread
 from queue import Queue, Empty
+import time
 
 class NonBlockingStreamReader:
 
@@ -25,6 +26,7 @@ class NonBlockingStreamReader:
                 else:
                     pass
                     # raise UnexpectedEndOfStream
+                time.sleep(0.1)
 
         self._t = Thread(target=_populateQueue,
                          args=(self._s, self._q))

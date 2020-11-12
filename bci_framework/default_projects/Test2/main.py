@@ -34,14 +34,14 @@ class Stream(FigureStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer
+    @loop_consumer
     def stream(self, data, topic, frame):
         """"""
 
         if topic == "eeg":
 
-            eeg = self.resample(self.buffer_eeg, self.time.shape[0], axis=1)
-            eeg = self.centralize(eeg)
+            eeg = self.resample(self.buffer_eeg, self.time.shape[0])
+            eeg = self.centralize(eeg, normalize=True)
             
             self.plot_boundary()
 

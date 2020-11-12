@@ -11,6 +11,7 @@ from ..projects import properties as prop
 from io import BytesIO
 from queue import Queue
 
+from scipy.ndimage import zoom
 from flask import Flask, Response, request
 
 import sys
@@ -223,10 +224,10 @@ class FigureStream(Figure):
             width = request.values.get('width', None)
             height = request.values.get('height', None)
             if (
-                width and
-                height and
-                width.replace('.', '').isdigit() and
-                height.replace('.', '').isdigit()
+                width
+                and height
+                and width.replace('.', '').isdigit()
+                and height.replace('.', '').isdigit()
             ):
                 self.set_size_inches(float(width), float(height))
 
@@ -385,6 +386,8 @@ class FigureStream(Figure):
         self.buffer_eeg = np.empty((chs, time))
         self.buffer_eeg.fill(fill)
 
+        self.buffer_eeg_split = []
+
         self.buffer_aux = np.empty((aux_shape, time))
         self.buffer_aux.fill(fill)
 
@@ -410,8 +413,8 @@ class FigureStream(Figure):
             self.boundary_line.set_segments(segments)
         elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux
-                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux /
+                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
         else:
@@ -424,6 +427,11 @@ class FigureStream(Figure):
             c = eeg.shape[1]
             self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
             self.buffer_eeg[:, -c:] = eeg
+
+            self.buffer_eeg_split.append(c)
+
+            if sum(self.buffer_eeg_split) > self.buffer_eeg.shape[1]:
+                self.buffer_eeg_split.pop(0)
 
             if not aux is None:
                 d = aux.shape[1]
@@ -455,8 +463,15 @@ class FigureStream(Figure):
 
                 if roll:
                     self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
-                self.buffer_aux[:,
-                                self.boundary_aux:self.boundary_aux + d] = aux
+
+                if (self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d]).shape != aux.shape:
+                    l = self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d].shape[1]
+                    logging.warning([l, aux.shape[1]])
+
+                    self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d] = aux[:, :l]
+                else:
+                    self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d] = aux
+
                 if roll:
                     self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)
 
@@ -464,16 +479,25 @@ class FigureStream(Figure):
                 self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
 
     # ----------------------------------------------------------------------
-    def resample(self, x, num, axis=-1):
+    def resample(self, x, num):
         """"""
-        ndim = x.shape[axis] // num
-        logging.warning([ndim, num, x.shape[axis] % num])
-        return (x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1))
+        ndim = x.shape[1] // num
+        return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
+        # return zoom(x, (1, num / x.shape[1]))
+
+        # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
 
     # ----------------------------------------------------------------------
-    def centralize(self, x, axis=0):
+    def centralize(self, x, normalize=False, axis=0):
         """"""
-        return np.apply_along_axis(lambda x_: x_ - x_.mean(), axis, x)
+        cent = np.nan_to_num(np.apply_along_axis(lambda x_: x_ - x_.mean(), 1, x))
+
+        if normalize:
+            if normalize == True:
+                normalize = 1
+            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
+
+        return cent
 
     # ----------------------------------------------------------------------
     def get_evoked(self):

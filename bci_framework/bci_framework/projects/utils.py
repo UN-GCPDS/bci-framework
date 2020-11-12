@@ -1,4 +1,4 @@
-from openbci_stream.consumer import OpenBCIConsumer
+from openbci_stream.acquisition import OpenBCIConsumer
 from ..projects import properties as prop
 import numpy as np
 import time

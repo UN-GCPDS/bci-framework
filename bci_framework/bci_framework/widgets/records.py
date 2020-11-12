@@ -1,9 +1,11 @@
 from PySide2.QtWidgets import QTableWidgetItem, QAction, QMenu
 from PySide2.QtCore import Qt, QTimer
-from openbci_stream.utils import HDF5Reader
+from PySide2.QtWidgets import QApplication
+from PySide2.QtGui import QCursor
 
-from kafka import KafkaProducer
-from kafka.errors import NoBrokersAvailable
+from openbci_stream.utils import HDF5Reader
+# from kafka import KafkaProducer
+# from kafka.errors import NoBrokersAvailable
 
 from PySide2.QtGui import QIcon
 
@@ -11,18 +13,18 @@ import os
 from datetime import datetime, timedelta
 # import numpy as np
 
-import pickle
+# import pickle
 
 from datetime import datetime
 # import time
 import sys
 import os
 import shutil
-import time
+# import time
 
 from ..subprocess_script import run_subprocess
 from ..dialogs import Dialogs
-from .. import doc_urls
+# from .. import doc_urls
 
 
 ########################################################################
@@ -41,14 +43,23 @@ class Records:
             os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(self.records_dir, exist_ok=True)
 
-        self.load_records()
+        # self.load_records()
         self.connect()
 
         self.parent_frame.label_records_path.setText(self.records_dir)
         self.parent_frame.label_records_path.setStyleSheet(
             '*{font-family: "DejaVu Sans Mono";}')
 
+        self.parent_frame.plainTextEdit_annotations.setStyleSheet('*{ padding: 10px;}')
+        # self.parent_frame.pushButton_remove_annotation.setDisabled(True)
+        # self.editor_set_visible(False)
+
         self.parent_frame.widget_record.hide()
+
+    # ----------------------------------------------------------------------
+    def on_focus(self):
+        """"""
+        self.load_records()
 
     # ----------------------------------------------------------------------
     def connect(self):
@@ -67,18 +78,6 @@ class Records:
 
         self.parent_frame.pushButton_remove_record.clicked.connect(
             self.remove_record)
-
-        # self.parent.tableWidget_records.itemClicked.connect(lambda: None)
-        # self.parent.horizontalSlider_record.valueChanged.connect(self.update_record_time)
-
-        # self.parent.tableWidget_records.customContextMenuRequested.connect(self.table_contextMenuEvent)
-
-    # # ----------------------------------------------------------------------
-    # def table_contextMenuEvent(self, event):
-        # """"""
-        # menu = QMenu(self.parent.tableWidget_records)
-        # menu.addAction(QAction(QIcon.fromTheme('media-playback-start'), "Load record", self.parent.tableWidget_records, triggered=self.load_file))
-        # menu.exec_(event.globalPos())
 
     # ----------------------------------------------------------------------
     def remove_record(self):
@@ -131,23 +130,24 @@ class Records:
 
             self.parent_frame.tableWidget_records.insertRow(i)
 
-            try:
+            if '--debug' in sys.argv:
                 for j, value in enumerate(self.get_metadata(filename)[:3]):
                     item = QTableWidgetItem(value)
                     item.previous_name = value
                     if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
                         item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                     self.parent_frame.tableWidget_records.setItem(i, j, item)
-            except Exception as msg:
-                self.parent_frame.tableWidget_records.removeRow(i)
-                # print(msg)
-                # item = QTableWidgetItem(f"[Corrupted file]")
-                # self.parent.tableWidget_records.setItem(i, 0, item)
-                # item = QTableWidgetItem(f"[Corrupted file]")
-                # self.parent.tableWidget_records.setItem(i, 1, item)
-                # item = QTableWidgetItem(f"{filename}")
-                # self.parent.tableWidget_records.setItem(i, 2, item)
-                pass
+            else:
+                try:
+                    for j, value in enumerate(self.get_metadata(filename)[:3]):
+                        item = QTableWidgetItem(value)
+                        item.previous_name = value
+                        if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
+                            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                        self.parent_frame.tableWidget_records.setItem(i, j, item)
+                except Exception as msg:
+                    self.parent_frame.tableWidget_records.removeRow(i)
+                    pass
 
         self.parent_frame.tableWidget_records.sortByColumn(1)
 
@@ -156,31 +156,40 @@ class Records:
         # i).setText(text)
 
     # ----------------------------------------------------------------------
-    def get_metadata(self, filename):
+    def get_metadata(self, filename, light=True):
         """"""
         file = HDF5Reader(os.path.join(self.records_dir, filename))
 
-        header = file.header
-        channels, samples = file.eeg.shape
-        dtm = datetime.fromtimestamp(header['datetime']).strftime("%x %X")
-        sample_rate = header['sample_rate']
-
+        montage = file.header['montage']
+        channels = file.header['channels']
+        filename = filename.replace('.h5', '')
+        created = datetime.fromtimestamp(file.header['datetime']).strftime("%x %X")
+        _, samples = file.header['shape']
+        sample_rate = file.header['sample_rate']
         duration = str(timedelta(seconds=int(samples / sample_rate)))
-        file.close()
 
-        return [duration, dtm, filename.replace('.h5', ''), header['montage'], header['channels']]
+        if not light:
+            annotations = file.annotations
+            # file.eeg
+            # file.aux
+            # file.timestamp
+
+        else:
+            annotations = []
+
+        file.close()
+        return [duration, created, filename, montage, channels, annotations]
 
     # ----------------------------------------------------------------------
     def load_file(self, item):
         """"""
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
         self.current_signal = item.row()
         name = self.parent_frame.tableWidget_records.item(
             item.row(), 2).text()
 
-        duration, datetime, _, montage, electrodes = self.get_metadata(
-            f"{name}.h5")
-
-        # _, mtg, electrodes = montage.split('|')
+        duration, datetime, _, montage, electrodes, annotations = self.get_metadata(f"{name}.h5", light=False)
 
         electrodes = list(electrodes.values())
         electrodes = '\n'.join([', '.join(electrodes[n:n + 8])
@@ -203,12 +212,27 @@ class Records:
         self.parent_frame.label_record_montage.setStyleSheet(
             "*{font-family: 'mono'}")
 
+        self.parent_frame.tableWidget_annotations.clear()
+        self.parent_frame.tableWidget_annotations.setRowCount(0)
+        self.parent_frame.tableWidget_annotations.setColumnCount(3)
+
+        self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
+            ['Onset', 'Duration', 'Description'])
+
+        for row, annotation in enumerate(annotations):
+            self.parent_frame.tableWidget_annotations.insertRow(row)
+            onset, duration, description = annotation
+
+            item = QTableWidgetItem(f"{round(onset, 2)}")
+            self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
+            item = QTableWidgetItem(f"{duration}")
+            self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
+            item = QTableWidgetItem(description)
+            self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
+
         self.parent_frame.horizontalSlider_record.setValue(0)
         self.parent_frame.widget_record.show()
-        # self.core.show_interface('Visualizations')
-        # self.parent.tableWidget_records.setSelectionMode(QAbstractItemView.SelectRows)
-        # self.parent.tableWidget_records.selectRow(item.row())
-        # self.parent.tableWidget_records.setSelectionMode(QAbstractItemView.NoSelection)
+        QApplication.restoreOverrideCursor()
 
     # ----------------------------------------------------------------------
     def get_offset(self):
@@ -238,31 +262,14 @@ class Records:
 
         if toggled:
 
-            self.record_reader = HDF5_Reader(os.path.join(
-                self.records_dir, f'{self.parent.label_record_name.text()}.h5'))
-
-            try:
-                self.producer_eeg = KafkaProducer(bootstrap_servers=['localhost:9092'],
-                                                  compression_type='gzip',
-                                                  value_serializer=pickle.dumps,
-                                                  )
-            except NoBrokersAvailable:
-
-                Dialogs.critical_message(
-                    self.parent_frame, 'Kafka: Error!',
-                    f"""<p>Kafka: No Brokers Available!<br><br>
-
-                    Please, refer to the documentation for a complete guide about how to
-                    <a href='{doc_urls.CONFIGURE_KAFKA}'>configure Cafka</a>.
-                    </p>"""
-                )
-
-                self.parent_frame.pushButton_play_signal.setChecked(False)
-                return
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            self.record_reader = HDF5Reader(os.path.join(
+                self.records_dir, f'{self.parent_frame.label_record_name.text()}.h5'))
+            self.record_reader.eeg  # cached
+            self.record_reader.aux  # cached
+            QApplication.restoreOverrideCursor()
 
             self.start_streaming = 0
-
-            # self.record_reader
 
             self.start_play = datetime.now()
             self.timer = QTimer()
@@ -273,7 +280,7 @@ class Records:
                 QIcon.fromTheme('media-playback-pause'))
 
         else:
-
+            self.record_reader.close()
             self.timer.stop()
             self.parent_frame.pushButton_play_signal.setIcon(
                 QIcon.fromTheme('media-playback-start'))
@@ -292,14 +299,15 @@ class Records:
             ((seconds / delta.total_seconds()))
         self.parent_frame.horizontalSlider_record.setValue(int(value))
 
-        end_streaming = (self.record_reader.eeg.shape[1] * self.parent_frame.horizontalSlider_record.value(
-        )) / self.parent_frame.horizontalSlider_record.maximum()
+        end_streaming = int((self.record_reader.eeg.shape[1] * self.parent_frame.horizontalSlider_record.value(
+        )) / self.parent_frame.horizontalSlider_record.maximum())
 
         if samples := end_streaming - self.start_streaming:
             if samples < 0:
                 samples = (4 * self.record_reader.eeg.shape[1] / 1000)
 
             # print(samples, [max([end_streaming - samples, 0]), end_streaming])
+            samples = int(samples)
 
             data_ = {'context': 'context',
                      'data': (self.record_reader.eeg[:, max([end_streaming - samples, 0]): end_streaming],
@@ -308,8 +316,8 @@ class Records:
                      'created': datetime.now().timestamp(),
                      'samples': samples,
                      }
-
-            self.producer_eeg.send('eeg', data_)
+            if kafka_produser := getattr(self.core, 'kafka_produser', False):
+                self.core.kafka_produser.send('eeg', data_)
             self.start_streaming = end_streaming
 
     # ----------------------------------------------------------------------
@@ -338,9 +346,12 @@ class Records:
 
             # os.environ['BCI_RECORDING']
 
+            self.parent_frame.stackedWidget_annotations.setCurrentIndex(0)
+
         else:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
             # time.sleep(3)
             self.load_records()
+

@@ -294,6 +294,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """"""
         if hasattr(self, 'stream_subprocess'):
             self.stream_subprocess.stop_preview()
+
             # self.stream_subprocess.blank()
 
     # ----------------------------------------------------------------------

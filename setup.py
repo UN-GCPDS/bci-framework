@@ -26,7 +26,7 @@ setup(
     install_requires=requirements,
 
     include_package_data=True,
-    license='BSD 2-Clause "Simplified" License',
+    license='BSD-2-Clause',
     description="High level Python module for handle OpenBCI EEG acquisition boards",
 
     long_description=README,
@@ -35,7 +35,7 @@ setup(
     python_requires='>=3.8',
 
     entry_points={
-        'console_scripts': ['bci_framework=bci_stream.__main__:main'],
+        'console_scripts': ['bci-framework=bci_stream.__main__:main'],
     },
 
     classifiers=[

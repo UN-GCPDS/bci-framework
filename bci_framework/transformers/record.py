@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from openbci_stream.handlers import HDF5_Writer
+from openbci_stream.handlers import HDF5Writer
 from bci_framework.projects import properties as prop
 from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 
@@ -23,7 +23,7 @@ class RecordTransformer:
         records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(records_dir, exist_ok=True)
 
-        self.writer = HDF5_Writer(os.path.join(
+        self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
         # self.writer = HDF5_Writer(f'{filename}.h5')
 
@@ -56,9 +56,15 @@ class RecordTransformer:
 
         elif topic == 'marker':
             marker = data.value['marker']
-            dt = data.value['datetime']
-            # dt = data.timestamp / 1000
+            dt = data.timestamp / 1000
             self.writer.add_marker(marker, dt)
+
+        elif topic == 'annotation':
+            # onset = data.value['onset']
+            onset = data.timestamp / 1000
+            duration = data.value['duration']
+            description = data.value['description']
+            self.writer.add_annotation(onset, duration, description)
 
     # ----------------------------------------------------------------------
     def stop(self, *args, **kwargs):

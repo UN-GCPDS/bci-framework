@@ -1,6 +1,8 @@
 from PySide2.QtWidgets import QTableWidgetItem
 from datetime import datetime
 
+import os
+
 
 ########################################################################
 class Annotations:
@@ -13,70 +15,64 @@ class Annotations:
         self.parent_frame = parent
         self.core = core
 
-        self.parent_frame.stackedWidget_annotations.setStyleSheet("""
-        .QWidget {
-        background-color: '#232629';
-        }""")
+        style = f"""
+        *{{
+        border: 1px solid {os.getenv('PYSIDEMATERIAL_PRIMARYCOLOR', '#ffffff')};
+        background-color: {os.getenv('PYSIDEMATERIAL_SECONDARYCOLOR', '#ffffff')};
+        border-radius: 4px;
+        }}
+        """
 
-        self.parent_frame.plainTextEdit_annotations.setStyleSheet("""
-        * {
-        padding: 10px;
-        }
-        """)
+        self.parent_frame.doubleSpinBox_annotation_duration.setStyleSheet(style)
+        self.parent_frame.plainTextEdit_annotations.setStyleSheet(style)
+        self.parent_frame.lineEdit_marker.setStyleSheet(style)
 
-        self.parent_frame.pushButton_remove_annotation.setDisabled(True)
-
-        self.editor_set_visible(visible=False)
         self.connect()
-
-    # ----------------------------------------------------------------------
-    def editor_set_visible(self, visible=True):
-        """"""
-        if visible:
-            index = 1
-        else:
-            index = 0
-        self.parent_frame.stackedWidget_annotations.setCurrentIndex(index)
 
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
         self.parent_frame.pushButton_save_annotation.clicked.connect(self.save_annotation)
-        self.parent_frame.pushButton_new_annotation.clicked.connect(self.new_annotation)
-        self.parent_frame.pushButton_remove_annotation.clicked.connect(self.remove_annotation)
-        self.parent_frame.pushButton_cancel_annotation.clicked.connect(lambda: self.editor_set_visible(visible=False))
+        self.parent_frame.pushButton_save_marker.clicked.connect(self.save_marker)
 
     # ----------------------------------------------------------------------
     def save_annotation(self):
         """"""
         content = self.parent_frame.plainTextEdit_annotations.toPlainText()
-        self.editor_set_visible(visible=False)
+        duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
 
+        data_ = {'duration': duration,
+                 'description': content, }
+
+        self.core.thread_kafka.produser.send('annotation', data_)
+
+    # ----------------------------------------------------------------------
+    def save_marker(self):
+        """"""
+        marker = self.parent_frame.lineEdit_marker.text()
+        data_ = {'marker': marker, }
+        self.core.thread_kafka.produser.send('marker', data_)
+
+    # ----------------------------------------------------------------------
+    def add_annotation(self, onset, duration, content):
+        """"""
         row = self.parent_frame.tableWidget_annotations.rowCount()
         self.parent_frame.tableWidget_annotations.insertRow(row)
 
-        item = QTableWidgetItem(self.now_annotation.strftime("%x %X"))
+        item = QTableWidgetItem(onset.strftime("%x %X"))
         self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
-        item = QTableWidgetItem(content)
+        item = QTableWidgetItem(f"{duration}")
         self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
-
-        self.parent_frame.pushButton_remove_annotation.setEnabled(True)
-
-    # ----------------------------------------------------------------------
-    def new_annotation(self):
-        """"""
-        self.now_annotation = datetime.now()
-        self.editor_set_visible(True)
-        content = "<NEW ANNOTATION>"
-        self.parent_frame.plainTextEdit_annotations.setPlainText(content)
-        cursor = self.parent_frame.plainTextEdit_annotations.selectAll()
+        item = QTableWidgetItem(content)
+        self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
 
     # ----------------------------------------------------------------------
-    def remove_annotation(self):
+    def add_marker(self, onset, marker):
         """"""
-        row = self.parent_frame.tableWidget_annotations.currentRow()
-        if row >= 0:
-            self.parent_frame.tableWidget_annotations.removeRow(row)
+        row = self.parent_frame.tableWidget_markers.rowCount()
+        self.parent_frame.tableWidget_markers.insertRow(row)
 
-        if not self.parent_frame.tableWidget_annotations.rowCount():
-            self.parent_frame.pushButton_remove_annotation.setDisabled(True)
+        item = QTableWidgetItem(onset.strftime("%x %X"))
+        self.parent_frame.tableWidget_markers.setItem(row, 0, item)
+        item = QTableWidgetItem(f"{marker}")
+        self.parent_frame.tableWidget_markers.setItem(row, 1, item)

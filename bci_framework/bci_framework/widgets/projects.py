@@ -5,8 +5,9 @@ import pickle
 
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QSize
-from PySide2.QtWidgets import QStyle, QListWidgetItem, QTreeWidgetItem, QDialogButtonBox
+from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QTableWidgetItem
 # from bci_framework.highlighters import PythonHighlighter
+from datetime import datetime
 
 from PySide2.QtUiTools import QUiLoader
 import shutil
@@ -109,6 +110,7 @@ class Projects:
             self.tab_changed)
 
     # ----------------------------------------------------------------------
+
     def there_can_only_be_one(self, event):
         """"""
         # self.parent.listWidget_projects.clearSelection()
@@ -172,8 +174,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -255,8 +257,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -389,8 +391,8 @@ class Projects:
             # icon_name = 'icon_dev'
             # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -535,4 +537,3 @@ class Projects:
                     editor = self.parent_frame.tabWidget_project.widget(i)
                     if editor.path == evt:
                         return self.close_tab(i)
-

@@ -4,16 +4,74 @@ from PySide2.QtCore import Qt, QTimer
 
 from PySide2.QtWidgets import QDialogButtonBox
 
-from .qtgui.icons import resource_rc
+from .qtgui.icons import resource_rc  # Keep this
 from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
+from . import doc_urls
+from .dialogs import Dialogs
+
+from kafka import KafkaProducer, KafkaConsumer
+from kafka.errors import NoBrokersAvailable
+
+import pickle
+
+import threading
+
+from datetime import datetime
 
 import psutil
 import os
 import webbrowser
 import json
 
+
+########################################################################
+class Kafka(QtCore.QThread):
+    """"""
+    over = QtCore.Signal(object)
+
+    # ----------------------------------------------------------------------
+    def set_host(self, host):
+        """"""
+        self.host = host
+
+    # ----------------------------------------------------------------------
+    def stop(self):
+        """"""
+        self.terminate()
+
+    # ----------------------------------------------------------------------
+    def run(self):
+        """"""
+        self.create_produser()
+        self.create_consumer()
+
+    # ----------------------------------------------------------------------
+    def create_consumer(self):
+        """"""
+
+        bootstrap_servers = [f'{self.host}:9092']
+        topics = ['annotation', 'marker']
+        self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
+                                      value_deserializer=pickle.loads,
+                                      auto_offset_reset='latest',
+                                      )
+
+        self.consumer.subscribe(topics)
+        # now = datetime.now()
+
+        for message in self.consumer:
+            message.value['timestamp'] = message.timestamp / 1000
+            self.over.emit({'topic': message.topic, 'value': message.value})
+
+    # ----------------------------------------------------------------------
+    def create_produser(self):
+        """"""
+        self.produser = KafkaProducer(bootstrap_servers=[f'{self.host}:9092'],
+                                      compression_type='gzip',
+                                      value_serializer=pickle.dumps,
+                                      )
 
 ########################################################################
 class BCIFramework:
@@ -53,14 +111,14 @@ class BCIFramework:
         self.montage = Montage(self)
         self.connection = Connection(self)
         self.projects = Projects(self.main, self)
-        self.annotations = Annotations(self.main, self)
         self.records = Records(self.main, self)
+        self.annotations = Annotations(self.main, self)
 
         self.development = Development(self)
         self.visualizations = Visualization(self)
         self.stimuli_delivery = StimuliDelivery(self)
 
-        self.status_bar('OpenBCI no connected')
+        # self.status_bar('OpenBCI no connected')
 
         self.main.tabWidget_widgets.setCurrentIndex(0)
         self.style_welcome()
@@ -78,7 +136,7 @@ class BCIFramework:
         """"""
         self.subprocess_timer = QTimer()
         self.subprocess_timer.timeout.connect(self.save_subprocess)
-        self.subprocess_timer.setInterval(5)
+        self.subprocess_timer.setInterval(5000)
         self.subprocess_timer.start()
 
     # ----------------------------------------------------------------------
@@ -167,6 +225,8 @@ class BCIFramework:
 
         self.main.pushButton_show_about.clicked.connect(self.show_about)
 
+        self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
+
     # # ----------------------------------------------------------------------
     # def widget_update(self, index):
         # """"""
@@ -176,6 +236,7 @@ class BCIFramework:
             # self.impedances.update_impedance()
 
     # ----------------------------------------------------------------------
+
     def update_dock_tabs(self, event):
         """"""
         if b'Left' in event.name:
@@ -198,8 +259,16 @@ class BCIFramework:
             action.setChecked(True)
 
         if mod := getattr(self, f'{interface.lower().replace(" ", "_")}', False):
-            if mod and hasattr(mod, 'on_focus'):
-                mod.on_focus()
+            if on_focus := getattr(mod, 'on_focus'):
+                on_focus()
+
+    # ----------------------------------------------------------------------
+    def show_widget(self, index):
+        """"""
+        widget = self.main.tabWidget_widgets.tabText(index)
+        if wg := getattr(self, widget.lower(), False):
+            if on_focus := getattr(wg, 'on_focus', False):
+                on_focus()
 
     # ----------------------------------------------------------------------
     def set_editor(self):
@@ -220,7 +289,7 @@ class BCIFramework:
                 item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def status_bar(self, message):
+    def status_bar(self, message, append='', prepend=''):
         """"""
         statusbar = self.main.statusBar()
         if not hasattr(statusbar, 'label'):
@@ -290,5 +359,35 @@ class BCIFramework:
         """)
 
         about.show()
+
+    @QtCore.Slot(object)
+    # ----------------------------------------------------------------------
+    def on_kafka_event(self, value):
+        """"""
+        if value['topic'] == 'marker':
+            self.annotations.add_marker(datetime.fromtimestamp(value['value']['timestamp']), value['value']['marker'])
+        elif value['topic'] == 'annotation':
+            self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
+                                            value['value']['duration'],
+                                            value['value']['description'])
+        # elif value['topic'] == 'eeg':
+            # self.status_bar('Incoming streaming detected')
+
+    # ----------------------------------------------------------------------
+    def update_kafka(self, host):
+        """"""
+        if hasattr(self, 'thread_kafka'):
+            self.thread_kafka.stop()
+
+        self.thread_kafka = Kafka()
+        self.thread_kafka.over.connect(self.on_kafka_event)
+        self.thread_kafka.set_host(host)
+        self.thread_kafka.start()
+
+    # ----------------------------------------------------------------------
+    def stop_kafka(self):
+        """"""
+        if hasattr(self, 'thread_kafka'):
+            self.thread_kafka.stop()
 
 

@@ -191,10 +191,16 @@ class Development:
     # ----------------------------------------------------------------------
     def update_log(self):
         """"""
-
         if not hasattr(self.sub, 'stream_subprocess'):
             self.timer.singleShot(50, self.update_log)
             return
+
+        if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
+            if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
+                self.parent_frame.plainTextEdit_preview_log.moveCursor(
+                    QTextCursor.End)
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
+                    line.decode())
 
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
             self.sub.stream_subprocess.start_debug()

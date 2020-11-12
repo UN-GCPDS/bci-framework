@@ -35,24 +35,24 @@ class FigureTopo(FigureCanvas):
     def __init__(self):
         """Constructor"""
         super().__init__(Figure(figsize=(1, 1), dpi=90))
-        self.resize_timer = QTimer()
-        self.resize_timer.timeout.connect(self.do_resize_now)
+        # self.resize_timer = QTimer()
+        # self.resize_timer.timeout.connect(self.do_resize_now)
 
-    # ----------------------------------------------------------------------
-    def resizeEvent(self, event):
-        """"""
-        self.lastEvent = (event.size().width(), event.size().height())
-        self.resize_timer.stop()
-        self.resize_timer.start(200)
+    # # ----------------------------------------------------------------------
+    # def resizeEvent(self, event):
+        # """"""
+        # self.lastEvent = (event.size().width(), event.size().height())
+        # self.resize_timer.stop()
+        # self.resize_timer.start(200)
 
-    # ----------------------------------------------------------------------
-    def do_resize_now(self):
-        newsize = QtCore.QSize(*self.lastEvent)
-        # create new event from the stored size
-        event = QtGui.QResizeEvent(newsize, QtCore.QSize(1, 1))
-        # print "Now I let you resize."
-        # and propagate the event to let the canvas resize.
-        super().resizeEvent(event)
+    # # ----------------------------------------------------------------------
+    # def do_resize_now(self):
+        # newsize = QtCore.QSize(*self.lastEvent)
+        # # create new event from the stored size
+        # event = QtGui.QResizeEvent(newsize, QtCore.QSize(1, 1))
+        # # print "Now I let you resize."
+        # # and propagate the event to let the canvas resize.
+        # super().resizeEvent(event)
 
 
 ########################################################################
@@ -169,7 +169,7 @@ class TopoplotImpedances(FigureTopo):
         matplotlib.rcParams['text.color'] = "#000000"
         matplotlib.rcParams['font.size'] = 16
 
-        self.ax.clear()
+        # self.ax.clear()
 
         channels_names = montage.ch_names.copy()
         info = mne.create_info(montage.ch_names, sfreq=1000, ch_types="eeg")
@@ -178,8 +178,6 @@ class TopoplotImpedances(FigureTopo):
         channels_names = self.remove_overlaping(info, channels_names)
         info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
-
-        # cmap = 'RdYlGn'
 
         channels_mask = np.array(
             [ch in electrodes for ch in channels_names])
@@ -208,6 +206,7 @@ class TopoplotImpedances(FigureTopo):
         colors = ['#3d7a84', '#3d7a84']
         cmap_ = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
+        self.ax.clear()
         mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0,
                              cmap=cmap_, outlines='skirt', axes=self.ax,
                              names=channels_labels, show_names=True,
@@ -221,7 +220,6 @@ class TopoplotImpedances(FigureTopo):
         index = [l.get_marker() for l in self.ax.axes.lines].index('')
         line = self.ax.axes.lines[index]
 
-        # if self.ax.axes.lines[0].get_data()[0].shape[0] == len(impedances):
         channels = np.array(channels_names)[channels_mask]
         for i, (x, y) in enumerate(zip(*line.get_data())):
             try:
@@ -231,11 +229,8 @@ class TopoplotImpedances(FigureTopo):
                     color = q(impedances[channels[i]] / 20)
                 self.ax.plot([x], [y], marker='o', markerfacecolor=color,
                              markeredgecolor=color, markersize=35, linewidth=0)
-                # self.draw()
             except IndexError:
                 return
-        # else:
-            # self.reset_plot()
         self.draw()
 
     # ----------------------------------------------------------------------
@@ -640,18 +635,19 @@ class Montage:
             # self.topoplot_impedance.configure_filters()
 
             openbci = self.core.connection.openbci
-            openbci.stop_stream()
+            # openbci.stop_stream()
 
-            # openbci.command(openbci.SAMPLE_RATE_250SPS)
+            openbci.command(openbci.SAMPLE_RATE_250SPS)
 
             openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
             openbci.leadoff_impedance(prop.CHANNELS,
                                       pchan=openbci.TEST_SIGNAL_NOT_APPLIED,
                                       nchan=openbci.TEST_SIGNAL_APPLIED)
-            openbci.start_stream()
+            # openbci.start_stream()
 
             self.measuring_impedance = True
             with OpenBCIConsumer(host=prop.HOST) as stream:
+
                 for data in stream:
                     if data.topic == 'eeg':
 
@@ -659,10 +655,10 @@ class Montage:
                         self.update_impedance(z)
 
                         if not self.measuring_impedance:
-                            openbci.stop_stream()
+                            # openbci.stop_stream()
                             self.core.connection.session_settings()
                             # openbci.command(openbci.SAMPLE_RATE_250SPS)
-                            openbci.start_stream()
+                            # openbci.start_stream()
                             break
 
         else:

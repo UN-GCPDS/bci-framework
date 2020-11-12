@@ -4,6 +4,10 @@ from openbci_stream.acquisition import Cyton, CytonBase
 import json
 import time
 import logging
+import sys
+
+
+import pickle
 
 from ..projects import properties as prop
 
@@ -16,9 +20,47 @@ from ..projects import properties as prop
 # from PyQt4 import QtCore
 # from PyQt4.QtGui import QApplication, QCursor
 
+from PySide2 import QtCore
+
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication
 from PySide2.QtGui import QCursor
+
+
+from kafka import KafkaConsumer, KafkaProducer
+from datetime import datetime
+
+# ########################################################################
+# class KafkaConsumerThread(QtCore.QThread):
+    # """"""
+    # over = QtCore.Signal(object)
+
+    # # ----------------------------------------------------------------------
+    # def set_host(self, host):
+        # """"""
+        # self.host = host
+
+    # # ----------------------------------------------------------------------
+    # def stop(self):
+        # """"""
+        # self.terminate()
+
+    # # ----------------------------------------------------------------------
+    # def run(self):
+        # """"""
+        # bootstrap_servers = [f'{self.host}:9092']
+        # topics = ['annotation', 'marker']
+        # self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
+                                      # value_deserializer=pickle.loads,
+                                      # auto_offset_reset='latest',
+                                      # )
+
+        # self.consumer.subscribe(topics)
+        # now = datetime.now()
+
+        # for message in self.consumer:
+            # message.value[self.host] = now
+            # self.over.emit({'topic': message.topic, 'value': message.value})
 
 
 ########################################################################
@@ -127,37 +169,43 @@ class Connection:
         if toggled:
             # self.openbci_connect()
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            try:
+
+            if '--debug' in sys.argv:
                 self.openbci_connect()
-            except:
                 QApplication.restoreOverrideCursor()
-                checks = []
+            else:
+                try:
+                    self.openbci_connect()
+                except:
+                    QApplication.restoreOverrideCursor()
+                    checks = []
 
-                if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
-                    checks.extend(['* Check that USB dongle were connected',
-                                   '* Verify serial permissions',
-                                   ])
+                    if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
+                        checks.extend(['* Check that USB dongle were connected',
+                                       '* Verify serial permissions',
+                                       ])
 
-                if self.parent_frame.comboBox_host.currentText() != 'localhost':
-                    checks.extend([f'* The server may not running, or running on a different IP that {self.parent.comboBox_host.currentText()}',
-                                   '* This machine must have access to the server or running in the same network.',
-                                   ])
-                else:
-                    checks.extend([f'* Verify that Kafka is running on this machine',
-                                   ])
+                    if self.parent_frame.comboBox_host.currentText() != 'localhost':
+                        checks.extend([f'* The server may not running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
+                                       '* This machine must have access to the server or running in the same network.',
+                                       ])
+                    else:
+                        checks.extend([f'* Verify that Kafka is running on this machine',
+                                       ])
 
-                checks = '\n'.join(checks)
-                Dialogs.critical_message(
-                    self.parent_frame, 'Connection error', f"{checks}")
+                    checks = '\n'.join(checks)
+                    Dialogs.critical_message(
+                        self.parent_frame, 'Connection error', f"{checks}")
 
-                self.parent_frame.pushButton_connect.setChecked(False)
+                    self.parent_frame.pushButton_connect.setChecked(False)
 
-                self.openbci_disconnect()
+                    self.openbci_disconnect()
 
-            finally:
-                QApplication.restoreOverrideCursor()
+                finally:
+                    QApplication.restoreOverrideCursor()
 
         else:
+            self.core.stop_kafka()
             self.openbci_disconnect()
 
     # ----------------------------------------------------------------------
@@ -209,11 +257,15 @@ class Connection:
                              daisy=prop.DAISY, montage=channels, streaming_package_size=int(streaming_sample_rate))
 
         self.openbci.command(sample_rate)
+        self.core.update_kafka(host)
+
+        self.openbci.command(boardmode)
 
         # Some time this command not take effect
         boardmode_setted = False
         for _ in range(10):
-            if b'Success' in self.openbci.command(boardmode):
+            response = self.openbci.command(boardmode)
+            if response and b'Success' in response:
                 logging.info(f'Bardmode setted in {boardmode} mode')
                 boardmode_setted = True
                 break

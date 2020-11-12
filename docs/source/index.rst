@@ -9,11 +9,12 @@ Navigation
    :maxdepth: 2
    :name: mastertoc
 
-   notebooks/01-installation
-   notebooks/02-about
+   notebooks/00-installation
+   notebooks/01-configuration
+   notebooks/02-interface
    notebooks/03-prepare_acquistion
-   notebooks/04-develop_visualizations
-   notebooks/05-develop_stimuli_delivery
+   notebooks/70-develop_visualizations
+   notebooks/80-develop_stimuli_delivery
    notebooks/99-troubleshoots
 
 Indices and tables

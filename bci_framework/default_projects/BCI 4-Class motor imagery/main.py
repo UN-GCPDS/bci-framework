@@ -1,8 +1,7 @@
 from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
 from bci_framework.projects import properties as prop
 
-from bci_framework.projects.sound import Tone
-from bci_framework.projects.widgets import Widgets
+from bci_framework.projects import Tone, Widgets
 from bci_framework.projects.utils import timeit
 
 from browser import document, timer, html
@@ -33,7 +32,7 @@ class Arrows(StimuliAPI):
         self.tone = Tone()
 
         self.widgets = Widgets()
-        self.widgets.add_run_progressbar()
+        self.run_progressbar = self.add_run_progressbar()
 
         self.build_dashboard()
         self.add_cross()
@@ -106,7 +105,7 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def start_trial(self, single=True):
         """"""
-        self.widgets.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
+        self.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
         duration = self.widgets.get_value('duration')
 
         self.show_hint(self.trials.pop(0))

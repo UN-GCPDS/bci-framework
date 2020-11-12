@@ -17,20 +17,25 @@ from .projects import properties as prop
 
 import psutil
 
+
 # ----------------------------------------------------------------------
-
-
 def run_subprocess(call):
     """"""
     my_env = os.environ.copy()
     my_env['PYTHONPATH'] = ":".join(
         sys.path + [os.path.join(os.path.dirname(sys.argv[0]), 'bci_framework')])
 
-    return subprocess.Popen(call,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            env=my_env,
-                            )
+    sub = subprocess.Popen(call,
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.STDOUT,
+                           env=my_env,
+                           preexec_fn=os.setsid,
+                           # shell=True,
+                           )
+
+    sub.nb_stdout = NBSR(sub.stdout)
+
+    return sub
 
 
 ########################################################################
@@ -83,7 +88,8 @@ class VisualizationSubprocess:
     # ----------------------------------------------------------------------
     def viz_debug(self):
         """"""
-        self.stdout = NBSR(self.subprocess_script.stdout)
+        # self.stdout = NBSR(self.subprocess_script.stdout)
+        self.stdout = self.subprocess_script.nb_stdout
 
     # ----------------------------------------------------------------------
     def viz_start(self):
@@ -178,6 +184,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.timer.stop()
         self.stopped = True
         if hasattr(self, 'subprocess_script'):
+            self.subprocess_script.nb_stdout.stop()
             self.subprocess_script.terminate()
             self.timer.singleShot(300, lambda: self.__delattr__('subprocess_script'))
 
