@@ -47,7 +47,7 @@ class Stream(FigureStream):
             for i, line in enumerate(self.lines):
                 line.set_data(w, EEG[i])
             
-            logging.warning(f'feed! {EEG.max():.5f}, {w.shape}, {EEG.shape}, {self.buffer_eeg.shape}')
+            # logging.warning(f'feed! {EEG.max():.5f}, {w.shape}, {EEG.shape}, {self.buffer_eeg.shape}')
             self.feed()
             
             # self.max_f = max(EEG.max(), self.max_f)

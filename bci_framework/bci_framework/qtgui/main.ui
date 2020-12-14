@@ -883,7 +883,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -967,7 +967,7 @@ p, li { white-space: pre-wrap; }
               </widget>
               <widget class="QToolBox" name="toolBox">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page_5">
                 <property name="geometry">
@@ -1060,8 +1060,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>215</width>
-                  <height>145</height>
+                  <width>400</width>
+                  <height>439</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3027,8 +3027,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1014</x>
-     <y>675</y>
+     <x>988</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
      <x>1022</x>
@@ -3075,12 +3075,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1359</x>
-     <y>186</y>
+     <x>1366</x>
+     <y>163</y>
     </hint>
    </hints>
   </connection>
@@ -3091,12 +3091,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1014</x>
-     <y>675</y>
+     <x>988</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1045</x>
-     <y>138</y>
+     <x>998</x>
+     <y>102</y>
     </hint>
    </hints>
   </connection>
@@ -3123,8 +3123,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1092</x>
@@ -3139,8 +3139,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1014</x>
-     <y>675</y>
+     <x>988</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
      <x>1091</x>
@@ -3155,8 +3155,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1178</x>
@@ -3219,8 +3219,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -3251,8 +3251,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3267,12 +3267,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1125</x>
-     <y>407</y>
+     <x>1072</x>
+     <y>727</y>
     </hint>
    </hints>
   </connection>
@@ -3283,8 +3283,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1059</x>
@@ -3315,8 +3315,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3331,8 +3331,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1365</x>
@@ -3347,12 +3347,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1014</x>
-     <y>675</y>
+     <x>988</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1103</x>
-     <y>195</y>
+     <x>1048</x>
+     <y>107</y>
     </hint>
    </hints>
   </connection>
@@ -3363,8 +3363,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3395,12 +3395,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>432</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1045</x>
-     <y>138</y>
+     <x>998</x>
+     <y>102</y>
     </hint>
    </hints>
   </connection>
@@ -3427,12 +3427,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1369</x>
-     <y>739</y>
+     <x>1044</x>
+     <y>151</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1370</x>
-     <y>612</y>
+     <x>1046</x>
+     <y>157</y>
     </hint>
    </hints>
   </connection>
@@ -3571,12 +3571,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>910</x>
-     <y>435</y>
+     <x>915</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1300</x>
-     <y>725</y>
+     <x>1060</x>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
@@ -3587,12 +3587,28 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>880</x>
+     <x>915</x>
      <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1326</x>
-     <y>693</y>
+     <x>1208</x>
+     <y>332</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_connect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tableWidget_montages</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>421</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1114</x>
+     <y>518</y>
     </hint>
    </hints>
   </connection>

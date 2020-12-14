@@ -1,30 +1,21 @@
-from threading import Thread
-from multiprocessing import Process
-
+import sys
 import time
 import threading
 import logging
-from matplotlib.figure import Figure
-
-from ..projects import properties as prop
-
 from io import BytesIO
 from queue import Queue
-
-from scipy.ndimage import zoom
-from flask import Flask, Response, request
-
-import sys
+from cycler import cycler
+from threading import Thread
+from multiprocessing import Process
 
 import mne
-
 import matplotlib
-from matplotlib import pyplot
-
-from cycler import cycler
 import numpy as np
+from matplotlib import pyplot
+from matplotlib.figure import Figure
+from flask import Flask, Response, request
 
-# matplotlib.use('agg')
+from ..projects import properties as prop
 
 pyplot.style.use('dark_background')
 q = matplotlib.cm.get_cmap('rainbow')
@@ -36,31 +27,24 @@ matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
 matplotlib.rcParams['font.size'] = 15
 
-
 logger = logging.getLogger("mne")
 logger.setLevel(logging.CRITICAL)
 
 
 # ----------------------------------------------------------------------
 def subprocess_this(fn):
-    """"""
-
-    def wra(self, *args, **kwargs):
+    def wraper(self, *args, **kwargs):
         c = Process(target=fn, args=(self, *args))
         c.start()
-
-    return wra
+    return wraper
 
 
 # ----------------------------------------------------------------------
 def thread_this(fn):
-    """"""
-
-    def wra(self, *args, **kwargs):
+    def wraper(self, *args, **kwargs):
         c = Thread(target=fn, args=(self, *args))
         c.start()
-
-    return wra
+    return wraper
 
 
 ########################################################################
@@ -119,7 +103,64 @@ class StreamEvent:
 
 
 ########################################################################
-class FigureStream(Figure):
+class Transformers:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def resample(self, x, num):
+        """"""
+        ndim = x.shape[1] // num
+        return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
+        # return zoom(x, (1, num / x.shape[1]))
+
+        # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
+
+    # ----------------------------------------------------------------------
+    def centralize(self, x, normalize=False, axis=0):
+        """"""
+        cent = np.nan_to_num(np.apply_along_axis(lambda x_: x_ - x_.mean(), 1, x))
+
+        if normalize:
+            if normalize == True:
+                normalize = 1
+            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
+
+        return cent
+
+
+########################################################################
+class MNEObjects:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def get_mne_info(self):
+        """"""
+        info = mne.create_info(
+            list(prop.CHANNELS.values()),
+            sfreq=prop.SAMPLE_RATE,
+            ch_types="eeg",
+        )
+        info.set_montage(prop.MONTAGE_NAME)
+        return info
+
+    # ----------------------------------------------------------------------
+    def get_mne_montage(self):
+        """"""
+        montage = mne.channels.make_standard_montage(prop.MONTAGE_NAME)
+        return montage
+
+    # ----------------------------------------------------------------------
+    def get_mne_evoked(self):
+        """"""
+        comment = "bcistream"
+        evoked = mne.EvokedArray(
+            self.buffer_eeg, self.get_mne_info(), 0, comment=comment, nave=0
+        )
+        return evoked
+
+
+########################################################################
+class FigureStream(Figure, Transformers, MNEObjects):
 
     __class_attr = {
         'thread': None,  # background thread that reads frames from stream
@@ -143,9 +184,9 @@ class FigureStream(Figure):
         # self.tight_layout(rect=[0, 0.03, 1, 0.95])
 
         self.app = Flask(__name__)
-        self.app.add_url_rule('/', view_func=self.__video_feed)
-        self.app.add_url_rule('/mode', view_func=self.__mode)
-        self.app.add_url_rule('/feed', view_func=self.__feed)
+        self.app.add_url_rule('/', view_func=self._video_feed)
+        self.app.add_url_rule('/mode', view_func=self._mode)
+        self.app.add_url_rule('/feed', view_func=self._feed)
 
         if len(sys.argv) > 1:
             port = sys.argv[1]
@@ -158,18 +199,18 @@ class FigureStream(Figure):
         ).start()
 
     # ----------------------------------------------------------------------
-    def __feed(self):
+    def _feed(self):
         """"""
         self.feed()
         return 'true'
 
     # ----------------------------------------------------------------------
-    def __mode(self):
+    def _mode(self):
         """"""
         return 'visualization'
 
     # ----------------------------------------------------------------------
-    def __get_frames(self):
+    def _get_frames(self):
         """Return the current stream frame."""
 
         while True:
@@ -182,15 +223,7 @@ class FigureStream(Figure):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
             )
 
-    # #----------------------------------------------------------------------
-    # @staticmethod
-    # def frames():
-    # """"Generator that returns frames from the stream."""
-    # raise RuntimeError('Must be implemented by subclasses.')
-
     # ----------------------------------------------------------------------
-    # @classmethod
-
     def _thread(self):
         """stream background thread."""
         logging.info('Starting stream thread.')
@@ -209,25 +242,25 @@ class FigureStream(Figure):
             time.sleep(0)
 
             # # if there hasn't been any clients asking for frames in
-            # # the last 10 seconds then stop the thread
-            # if time.time() - self.__class_attr['last_access'] > 10:
-                # # frames_iterator.close()
+            # # the last 60 seconds then stop the thread
+            # if time.time() - self.__class_attr['last_access'] > 60:
+                # frames_iterator.close()
                 # logging.info('Stopping stream thread due to inactivity.')
                 # break
 
         self.__class_attr['thread'] = None
 
     # ----------------------------------------------------------------------
-    def __video_feed(self):
+    def _video_feed(self):
         """"""
         if self.size == 'auto':
             width = request.values.get('width', None)
             height = request.values.get('height', None)
             if (
-                width
-                and height
-                and width.replace('.', '').isdigit()
-                and height.replace('.', '').isdigit()
+                width and
+                height and
+                width.replace('.', '').isdigit() and
+                height.replace('.', '').isdigit()
             ):
                 self.set_size_inches(float(width), float(height))
 
@@ -250,30 +283,24 @@ class FigureStream(Figure):
             self.__class_attr['thread'].start()
 
             # wait until frames are available
-            while self.__get_frames() is None:
-                time.sleep(10)
+            while self._get_frames() is None:
+                time.sleep(1)
 
-        # stream = Stream()
-
-        # time.sleep(10)
-        # self.feed()
-        # self.feed()
-        # time.sleep(10)
         self.feed()
         return Response(
-            self.__get_frames(),
+            self._get_frames(),
             mimetype='multipart/x-mixed-replace; boundary=frame',
         )
 
-    # ----------------------------------------------------------------------
-    def clients(self):
-        """"""
-        return len(self.__class_attr['event'].events)
+    # # ----------------------------------------------------------------------
+    # def clients(self):
+        # """"""
+        # return len(self.__class_attr['event'].events)
 
-    # ----------------------------------------------------------------------
-    def buffer_size(self):
-        """"""
-        return self.__buffer.qsize()
+    # # ----------------------------------------------------------------------
+    # def buffer_size(self):
+        # """"""
+        # return self.__buffer.qsize()
 
     # ----------------------------------------------------------------------
     def feed(self):
@@ -285,23 +312,6 @@ class FigureStream(Figure):
         )
 
         return self.__buffer.put(self.__output.getvalue())
-
-    # ----------------------------------------------------------------------
-    def get_info(self):
-        """"""
-        info = mne.create_info(
-            list(prop.CHANNELS.values()),
-            sfreq=prop.SAMPLE_RATE,
-            ch_types="eeg",
-        )
-        info.set_montage(prop.MONTAGE_NAME)
-        return info
-
-    # ----------------------------------------------------------------------
-    def get_montage(self):
-        """"""
-        montage = mne.channels.make_standard_montage(prop.MONTAGE_NAME)
-        return montage
 
     # ----------------------------------------------------------------------
     def create_lines(self, mode='eeg', time=-15, window='auto', cmap='cool', fill=np.nan, subplot=[1, 1, 1],):
@@ -413,8 +423,8 @@ class FigureStream(Figure):
             self.boundary_line.set_segments(segments)
         elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux /
-                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux
+                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
         else:
@@ -479,38 +489,9 @@ class FigureStream(Figure):
                 self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
 
     # ----------------------------------------------------------------------
-    def resample(self, x, num):
-        """"""
-        ndim = x.shape[1] // num
-        return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
-        # return zoom(x, (1, num / x.shape[1]))
-
-        # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
-
-    # ----------------------------------------------------------------------
-    def centralize(self, x, normalize=False, axis=0):
-        """"""
-        cent = np.nan_to_num(np.apply_along_axis(lambda x_: x_ - x_.mean(), 1, x))
-
-        if normalize:
-            if normalize == True:
-                normalize = 1
-            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
-
-        return cent
-
-    # ----------------------------------------------------------------------
-    def get_evoked(self):
-        """"""
-        comment = "bcistream"
-        evoked = mne.EvokedArray(
-            self.buffer_eeg, self.get_info(), 0, comment=comment, nave=0
-        )
-        return evoked
-
-    # ----------------------------------------------------------------------
     def get_factor_near_to(self, x, n=1000):
         a = np.array(
             [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
         a[a % 1 != 0] = 0
         return int(a[np.argmin(np.abs(a - n))])
+

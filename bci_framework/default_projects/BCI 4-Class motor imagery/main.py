@@ -32,10 +32,11 @@ class Arrows(StimuliAPI):
         self.tone = Tone()
 
         self.widgets = Widgets()
-        self.run_progressbar = self.add_run_progressbar()
+        # self.add_run_progressbar()
 
         self.build_dashboard()
         self.add_cross()
+        self.add_blink_area()
 
     # ----------------------------------------------------------------------
     def build_dashboard(self):
@@ -80,9 +81,10 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def start_run(self):
         """"""
+        self.start_record()
         self.configure()
         self.tone("C#6", 200)
-        timer.set_timeout(lambda: self.start_trial(single=False), 1000)
+        timer.set_timeout(lambda: self.start_trial(single=False), 3000)
 
     # ----------------------------------------------------------------------
     def single_trial(self):
@@ -105,33 +107,39 @@ class Arrows(StimuliAPI):
     # ----------------------------------------------------------------------
     def start_trial(self, single=True):
         """"""
-        self.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
+        self.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
         duration = self.widgets.get_value('duration')
 
-        self.show_hint(self.trials.pop(0))
-        timer.set_timeout(self.hide_hint, duration)
+        trial = self.trials.pop(0)
+        self.show_hint(trial, duration)
+        # self.send_marker(trial)
 
         if not single and self.trials:
-            random_trial_interval = random.randint(1000, 1800)
+            # random_trial_interval = random.randint(1000, 1800)
+            random_trial_interval = 500
             print(f'Random trial interval: {random_trial_interval}')
             timer.set_timeout(lambda: self.start_trial(False), duration + random_trial_interval)
 
         if not single and not self.trials:
             timer.set_timeout(lambda: self.tone("C#6", 200), duration + 1000)
+            timer.set_timeout(self.stop_record, duration + 1000 + 3000)
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def show_hint(self, trial):
+    def show_hint(self, trial, duration):
         """"""
         if not hasattr(self, 'hint'):
             self.hint = html.SPAN('', id='hint')
             self.stimuli_area <= self.hint
 
         self.hint.html = UNICODE_HINTS[trial]
+
         self.hint.style = {'display': 'flex'}
+        self.send_marker(trial)
+        timer.set_timeout(self.hide_hint, duration)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+    # @DeliveryInstance.both
     def hide_hint(self):
         """"""
         self.hint.style = {'display': 'none'}
@@ -140,7 +148,6 @@ class Arrows(StimuliAPI):
     @DeliveryInstance.both
     def change_theme(self, dark):
         """"""
-        print(self._bci_mode, dark)
         if dark:
             self.stimuli_area.style = {'background-color': '#000a12', }
         else:

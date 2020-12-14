@@ -20,8 +20,8 @@ class Stream(FigureStream):
         
         # self.tight_layout(rect=[0.03, 0.03, 1, 0.95])
 
-        self.axis, self.lines = self.create_lines(prop.BOARDMODE, t) 
-        self.time = np.linspace(-t, 0, self.lines[0].get_ydata().shape[0])
+        self.axis, self.time, self.lines = self.create_lines(prop.BOARDMODE, t) 
+        # self.time = np.linspace(-t, 0, self.lines[0].get_ydata().shape[0])
         
         self.axis.set_title('External inputs')
         self.axis.set_xlabel('Time [s]')   
@@ -31,7 +31,7 @@ class Stream(FigureStream):
 
     # ----------------------------------------------------------------------
     @loop_consumer
-    def stream(self, data, topic):
+    def stream(self, data, topic, frame):
         """"""
         if topic != 'eeg':
             return
@@ -40,9 +40,14 @@ class Stream(FigureStream):
             logging.warning(f"The 'boardmode' configuration must be 'ANALOG' or 'DIGITAL' for this visualization")
             return
 
-        _, aux = data.value['data']  
+        _, aux = data.value['data'] 
+        
+        if len(aux)==0:
+            logging.warning(f"NONEN")
+            return 
+    
         N = aux.shape[1]
-        logging.warning(f"Shape: {N}, resampled from {data.value['samples']} samples")
+        logging.warning(f"Shape: {N}")
 
         for i, line in enumerate(self.lines):
             y_data = line.get_ydata()

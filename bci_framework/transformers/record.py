@@ -1,12 +1,15 @@
-from datetime import datetime
-
-from openbci_stream.handlers import HDF5Writer
-from bci_framework.projects import properties as prop
-from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
-
 import signal
 import atexit
 import os
+import sys
+
+sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'), 'records', 'log.stderr'), 'w')
+sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'), 'records', 'log.stdout'), 'w')
+
+from datetime import datetime
+from openbci_stream.utils import HDF5Writer
+from bci_framework.projects import properties as prop
+from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 
 
 ########################################################################
@@ -23,6 +26,8 @@ class RecordTransformer:
         records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(records_dir, exist_ok=True)
 
+        # if '--debug' in sys.argv:
+
         self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
         # self.writer = HDF5_Writer(f'{filename}.h5')
@@ -33,7 +38,7 @@ class RecordTransformer:
                   'montage': prop.MONTAGE_NAME,
                   'channels': prop.CHANNELS,
                   }
-        self.writer.add_header(header)
+        self.writer.add_header(header, prop.HOST)
 
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
@@ -47,16 +52,21 @@ class RecordTransformer:
         """"""
         # os.environ['BCI_RECORDING'] = 'True'
 
+        if not self.writer.f.isopen:
+            return
+
         if topic == 'eeg':
-            dt = data.value['binary_created']
+            dt = data.value['context']['binary_created']
             # dt = data.timestamp / 1000
             eeg, aux = data.value['data']
             self.writer.add_eeg(eeg, dt)
             self.writer.add_aux(aux)
+            # print(dt)
 
         elif topic == 'marker':
             marker = data.value['marker']
             dt = data.timestamp / 1000
+            # dt = data.value['datetime']
             self.writer.add_marker(marker, dt)
 
         elif topic == 'annotation':

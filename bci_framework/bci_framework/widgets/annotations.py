@@ -54,7 +54,7 @@ class Annotations:
         self.core.thread_kafka.produser.send('marker', data_)
 
     # ----------------------------------------------------------------------
-    def add_annotation(self, onset, duration, content):
+    def add_annotation(self, onset, duration, description):
         """"""
         row = self.parent_frame.tableWidget_annotations.rowCount()
         self.parent_frame.tableWidget_annotations.insertRow(row)
@@ -63,8 +63,13 @@ class Annotations:
         self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
         item = QTableWidgetItem(f"{duration}")
         self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
-        item = QTableWidgetItem(content)
+        item = QTableWidgetItem(description)
         self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
+
+        if description == 'start_record':
+            self.core.records.record_signal(True)
+        elif description == 'stop_record':
+            self.core.records.record_signal(False)
 
     # ----------------------------------------------------------------------
     def add_marker(self, onset, marker):

@@ -1,13 +1,12 @@
 import os
 import json
-from PySide2 import QtCore, QtGui, QtWidgets
 
 from PySide2.QtCore import QTimer
-from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QLineEdit
+from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem
 
 import mne
 import numpy as np
-import time
+# import time
 
 import matplotlib
 from matplotlib import cm, pyplot
@@ -15,16 +14,16 @@ from matplotlib.figure import Figure
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
-from scipy.spatial.distance import pdist, squareform, cdist
+from scipy.spatial.distance import pdist, squareform
 
 from openbci_stream.acquisition import OpenBCIConsumer
 
 
-from gcpds.utils.filters import GenericButterBand, notch60, FiltersChain
+from gcpds.utils.filters import GenericButterBand, notch60
 
 # from ..config_manager import ConfigManager
 from ..projects import properties as prop
-from ..projects.figure import thread_this, subprocess_this
+from ..projects.figure import thread_this
 
 
 ########################################################################
@@ -152,9 +151,20 @@ class TopoplotImpedances(FigureTopo):
         self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
         self.cmap = 'RdYlGn'
 
-        f = GenericButterBand(27, 37, fs=250)
-        self.impedance_filter = FiltersChain(notch60, f)
+        self.band_2737 = GenericButterBand(27, 37, fs=250)
         self.reset_plot()
+
+    # ----------------------------------------------------------------------
+    def raw_to_z(self, v):
+        """"""
+        v = notch60(v, fs=250)
+        v = self.band_2737(v, fs=250)
+
+        rms = np.std(v)
+        z = (1e-6 * rms * np.sqrt(2) / 6e-9) - 2200
+        if z < 0:
+            return 0
+        return z
 
     # ----------------------------------------------------------------------
     def reset_plot(self):
@@ -370,6 +380,15 @@ class Montage:
             self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
         self.start_impedance_measurement()
+
+    # # ----------------------------------------------------------------------
+    # def set_impedances(self, mode):
+        # """"""
+        # self.parent_frame.checkBox_view_impedances.setChecked(mode)
+        # if mode:
+            # self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
+        # else:
+            # self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
     # # ----------------------------------------------------------------------
     # def update_montage(self):
@@ -632,18 +651,12 @@ class Montage:
             if not hasattr(self.core.connection, 'openbci'):
                 self.core.connection.openbci_connect()
 
-            # self.topoplot_impedance.configure_filters()
-
             openbci = self.core.connection.openbci
-            # openbci.stop_stream()
-
-            openbci.command(openbci.SAMPLE_RATE_250SPS)
 
             openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
             openbci.leadoff_impedance(prop.CHANNELS,
                                       pchan=openbci.TEST_SIGNAL_NOT_APPLIED,
                                       nchan=openbci.TEST_SIGNAL_APPLIED)
-            # openbci.start_stream()
 
             self.measuring_impedance = True
             with OpenBCIConsumer(host=prop.HOST) as stream:
@@ -655,10 +668,7 @@ class Montage:
                         self.update_impedance(z)
 
                         if not self.measuring_impedance:
-                            # openbci.stop_stream()
                             self.core.connection.session_settings()
-                            # openbci.command(openbci.SAMPLE_RATE_250SPS)
-                            # openbci.start_stream()
                             break
 
         else:
@@ -666,11 +676,5 @@ class Montage:
 
     # ----------------------------------------------------------------------
     def get_impedance(self, data):
-        """"""
-        data = self.topoplot_impedance.impedance_filter(data, axis=1)
-        rms = (data.max(axis=1) - data.min(axis=1)) / (2 * np.sqrt(2))
-
-        z = (rms * 1e-6 * np.sqrt(2) / 6e-9) - 2200
-        z[z < 0] = 0
-
+        z = np.array([self.topoplot_impedance.raw_to_z(v) for v in data])
         return z / 1000

@@ -1,4 +1,4 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, stimulus, delivery
+from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
 from browser import document, timer, html
 from mdc import MDCForm, MDCComponent, MDCButton
 # from datetime import datetime
@@ -90,7 +90,7 @@ class DigitalInput(StimuliAPI):
             self.toggle, self.duty_cycle_value * 2)
 
    # ----------------------------------------------------------------------
-    @stimulus
+    @DeliveryInstance.both
     def set_duty_cycle(self, value):
         """"""
         # Propagate global variable to all clients

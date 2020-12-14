@@ -19,7 +19,6 @@ matplotlib.rcParams['text.color'] = "#ffffff"
 matplotlib.rcParams['font.size'] = 16
 
 
-
 ########################################################################
 class Stream(FigureStream):
     """"""
@@ -28,47 +27,43 @@ class Stream(FigureStream):
     def __init__(self):
         """"""
         super().__init__()
-        
+
         self.size = 8, 8
-        
+
         # self.create_buffer(5)
-        
+
         self.axis = self.add_subplot(1, 1, 1)
         # self.tight_layout()
         self.cmap = 'RdYlGn'
-        
-        
+
         self.add_colorbar()
         self.stream()
-        
 
     # ----------------------------------------------------------------------
+
     @fake_loop_consumer
     def stream(self, data, topic, frame):
-        """"""        
+        """"""
         if topic != 'eeg':
-            return 
-            
-            
+            return
+
         data, _ = data.value['data']
         z = data.mean(axis=1) * 15
 
         electrodes = list(prop.CHANNELS.values())
-        
+
         impedances = {ch: z for ch, z in zip(electrodes, z)}
-        
-        montage = self.get_montage()
+
+        montage = self.get_mne_montage()
         # info = self.get_info()
-            
-            
+
         info = mne.create_info(montage.ch_names, sfreq=1000, ch_types="eeg")
         info.set_montage(prop.MONTAGE_NAME)
-            
+
         channel_names = montage.ch_names.copy()
         channels_names = self.remove_overlaping(info, channel_names)
         info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
-            
 
         channels_mask = np.array(
             [ch in electrodes for ch in channels_names])
@@ -94,7 +89,6 @@ class Stream(FigureStream):
                              mask=channels_mask,
                              )
 
-
         q = matplotlib.cm.get_cmap(self.cmap)
         line = self.axis.axes.lines[0]
 
@@ -102,10 +96,10 @@ class Stream(FigureStream):
         for i, (x, y) in enumerate(zip(*line.get_data())):
             color = q(impedances[channels[i]] / 20)
             self.axis.plot([x], [y], marker='o', markerfacecolor=color,
-                         markeredgecolor=color, markersize=35, linewidth=0)
-        
+                           markeredgecolor=color, markersize=35, linewidth=0)
+
         self.feed()
-        
+
         logging.warning('feed')
 
     # ----------------------------------------------------------------------
@@ -149,9 +143,6 @@ class Stream(FigureStream):
                             ch_i['ch_name']))
 
         return channels_names
-
-
-
 
 
 if __name__ == '__main__':

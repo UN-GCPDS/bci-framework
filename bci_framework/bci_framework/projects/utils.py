@@ -4,35 +4,30 @@ import numpy as np
 import time
 from datetime import datetime
 
-# from scipy.signal import resample
 
-import logging
-
-# ----------------------------------------------------------------------
-
-
-def loop(fn):
-    """"""
-    def wrap(*args, **kwargs):
-        while True:
-            fn(*args, **kwargs)
-    return wrap
+# # ----------------------------------------------------------------------
+# def loop(fn):
+    # """"""
+    # def wrap(*args, **kwargs):
+        # while True:
+            # fn(*args, **kwargs)
+    # return wrap
 
 
-# ----------------------------------------------------------------------
-def feed(fn):
-    """"""
-    def wrap(cls, *args, **kwargs):
-        fn(cls, *args, **kwargs)
-        cls.feed()
-    return wrap
+# # ----------------------------------------------------------------------
+# def feed(fn):
+    # """"""
+    # def wrap(cls, *args, **kwargs):
+        # fn(cls, *args, **kwargs)
+        # cls.feed()
+    # return wrap
 
 
-# ----------------------------------------------------------------------
-def fast_resample(x, num, axis=-1):
-    """"""
-    ndim = x.shape[axis] // num
-    return x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
+# # ----------------------------------------------------------------------
+# def fast_resample(x, num, axis=-1):
+    # """"""
+    # ndim = x.shape[axis] // num
+    # return x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
 
 
 # ----------------------------------------------------------------------
@@ -52,18 +47,6 @@ def loop_consumer(fn):
 
                 fn(cls, data, data.topic, **kwargs)
     return wrap
-
-
-# # ----------------------------------------------------------------------
-# def loop_buffer(fn):
-    # """"""
-    # def wrap(cls, *args, **kwargs):
-    # with OpenBCIConsumer(host=prop.HOST) as stream:
-    # for data in stream:
-    # if data.topic == 'eeg':
-    # cls.update_buffer(*data.value['data'])
-    # fn(cls, *args, **kwargs)
-    # return wrap
 
 
 # ----------------------------------------------------------------------
@@ -117,6 +100,7 @@ def fake_loop_consumer(fn):
     return wrap
 
 
+# ----------------------------------------------------------------------
 def timeit(fn):
     def wrap(self, *args, **kwargs):
         t0 = time.time()

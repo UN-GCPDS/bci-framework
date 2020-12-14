@@ -1,11 +1,10 @@
+import os
+import sys
+import random
+
 from tornado.web import Application, url, RequestHandler, StaticFileHandler
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
-from functools import wraps
-
-import random
-import sys
-import os
 
 from .srv.ws_handler import WSHandler
 
@@ -16,7 +15,6 @@ if len(sys.argv) > 1:
     port = sys.argv[1]
 else:
     port = '5000'
-# port = '5000'
 
 
 ########################################################################
@@ -44,7 +42,6 @@ class DeliveryInstance_:
         return wrap
 
     # ----------------------------------------------------------------------
-
     @classmethod
     def local(cls, method):
         def wrap(*args, **kwargs):
@@ -53,19 +50,6 @@ class DeliveryInstance_:
             except:
                 return method()
         return wrap
-
-    # # ----------------------------------------------------------------------
-    # @classmethod
-    # def propagate(cls, *arguments):
-        # def inner_function(method):
-            # @wraps(method)
-            # def wrap(*args, **kwargs):
-                # try:
-                    # return method(*args, **kwargs)
-                # except:
-                    # return method()
-            # return wrap
-        # return inner_function
 
 
 DeliveryInstance = DeliveryInstance_()
@@ -83,20 +67,6 @@ class DashboardHandler(RequestHandler):
         variables = locals().copy()
         variables.pop('self')
         self.render("srv/templates/index.html", **variables)
-
-
-# ########################################################################
-# class DevelopmentHandler(RequestHandler):
-    # def get(self):
-        # class_ = self.settings['class']
-        # module = self.settings['module']
-        # port = self.settings['port']
-        # seed = self.settings['seed']
-        # mode = 'development'
-
-        # variables = locals().copy()
-        # variables.pop('self')
-        # self.render("srv/templates/index.html", **variables)
 
 
 ########################################################################
@@ -135,14 +105,11 @@ def make_app(class_):
     }
 
     return Application([
-
         url(r'^/$', StimuliHandler),
-        url(r'^/delivery', DashboardHandler),  # GUI
-        # url(r'^/development', DevelopmentHandler),
+        url(r'^/delivery', DashboardHandler),
         url(r'^/mode', ModeHandler),
         url(r'^/root/(.*)', StaticFileHandler, {'path': sys.path[0]}),
         url(r'^/ws', WSHandler),
-
     ], **settings)
 
 

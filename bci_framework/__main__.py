@@ -1,8 +1,8 @@
 from multiprocessing import freeze_support
-from pyside_material import apply_stylesheet  # , set_icons_theme
 from PySide2.QtWidgets import QApplication, QSplashScreen
 from PySide2.QtGui import QPixmap, QBitmap, QImage, QBrush, QPainter, QColor, QIcon
 from PySide2.QtCore import Qt, QRect, QCoreApplication, SIGNAL
+from qt_material import apply_stylesheet  # , set_icons_theme
 from .bci_framework import BCIFramework
 import sys
 import os

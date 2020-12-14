@@ -5,9 +5,8 @@ Properties
 import json
 import os
 
+
 ########################################################################
-
-
 class Properties:
     """Simple access to environ values.
 
@@ -26,21 +25,14 @@ class Properties:
     ```
     """
 
-    # CHANNELS = {f'{ch}': ch for ch in range(8)}
-    # SAMPLE_RATE = 1000
-    # HOST = 'localhost'
-
     # ----------------------------------------------------------------------
     def __getattr__(self, attr):
         """Add the prefix to environ variable and try to get it."""
         if prop := os.environ.get(f"BCISTREAM_{attr}", None):
             p = json.loads(prop)
-
             if attr == 'CHANNELS':
                 p = {int(k): p[k] for k in p}
-
             return p
-
         else:
             return None
 

@@ -207,6 +207,8 @@ class Connection:
         else:
             self.core.stop_kafka()
             self.openbci_disconnect()
+            self.parent_frame.checkBox_view_impedances.setChecked(False)
+            self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
     # ----------------------------------------------------------------------
     def openbci_connect(self):
@@ -259,7 +261,7 @@ class Connection:
         self.openbci.command(sample_rate)
         self.core.update_kafka(host)
 
-        self.openbci.command(boardmode)
+        # self.openbci.command(boardmode)
 
         # Some time this command not take effect
         boardmode_setted = False

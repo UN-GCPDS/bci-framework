@@ -4,6 +4,7 @@ from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer
 import logging
 from bci_framework.projects import properties as prop
+# from datetime import datetime
 
 clients = []
 
@@ -97,7 +98,19 @@ class WSHandler(WebSocketHandler):
     def bci_marker(self, **kwargs):
         """"""
         marker = kwargs['marker']
-        # marker['datetime'] = str(marker['datetime'])
-        self.marker_producer.send('marker', marker)
+        # marker['datetime'] = datetime.now().timestamp()
 
+        if hasattr(self, 'marker_producer'):
+            self.marker_producer.send('marker', marker)
+        else:
+            print("No Kafka produser available!")
 
+    # ----------------------------------------------------------------------
+    def bci_annotation(self, **kwargs):
+        """"""
+        annotation = kwargs['annotation']
+
+        if hasattr(self, 'marker_producer'):
+            self.marker_producer.send('annotation', annotation)
+        else:
+            print("No Kafka produser available!")

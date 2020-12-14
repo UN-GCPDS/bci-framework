@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QTableWidgetItem, QAction, QMenu
+from PySide2.QtWidgets import QTableWidgetItem, QMenu
 from PySide2.QtCore import Qt, QTimer
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QAction
 from PySide2.QtGui import QCursor
 
 from openbci_stream.utils import HDF5Reader
@@ -123,20 +123,23 @@ class Records:
         # i).setText(text)
 
         # row = self.parent.tableWidget_records.rowCount()
-        records = os.listdir(self.records_dir)
-        for i, filename in enumerate(records):
-            if not filename.endswith('h5'):
-                continue
+        records = filter(lambda s: s.endswith('h5'), os.listdir(self.records_dir))
 
+        for i, filename in enumerate(records):
             self.parent_frame.tableWidget_records.insertRow(i)
 
             if '--debug' in sys.argv:
-                for j, value in enumerate(self.get_metadata(filename)[:3]):
-                    item = QTableWidgetItem(value)
-                    item.previous_name = value
-                    if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
-                        item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-                    self.parent_frame.tableWidget_records.setItem(i, j, item)
+                try:
+                    for j, value in enumerate(self.get_metadata(filename)[:3]):
+                        item = QTableWidgetItem(value)
+                        item.previous_name = value
+                        if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
+                            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                        self.parent_frame.tableWidget_records.setItem(i, j, item)
+                except (TypeError, IndexError):
+                    self.parent_frame.tableWidget_records.removeRow(i)
+                    pass
+
             else:
                 try:
                     for j, value in enumerate(self.get_metadata(filename)[:3]):
@@ -158,7 +161,16 @@ class Records:
     # ----------------------------------------------------------------------
     def get_metadata(self, filename, light=True):
         """"""
-        file = HDF5Reader(os.path.join(self.records_dir, filename))
+        file = None
+        for _ in range(10):
+            try:
+                file = HDF5Reader(os.path.join(self.records_dir, filename))
+                break
+            except:
+                continue
+
+        if file is None:
+            return False
 
         montage = file.header['montage']
         channels = file.header['channels']
@@ -316,8 +328,8 @@ class Records:
                      'created': datetime.now().timestamp(),
                      'samples': samples,
                      }
-            if kafka_produser := getattr(self.core, 'kafka_produser', False):
-                self.core.kafka_produser.send('eeg', data_)
+            # if kafka_produser := getattr(self.core, 'kafka_produser', False):
+                # self.core.kafka_produser.send('eeg', data_)
             self.start_streaming = end_streaming
 
     # ----------------------------------------------------------------------
@@ -341,12 +353,11 @@ class Records:
             self.timer.timeout.connect(self.update_timer_record)
             self.timer.start()
             # os.environ['BCI_RECORDING'] ------------------= 'False'
-            self.subprocess_script = run_subprocess(
-                [sys.executable, os.path.join('transformers', 'record.py')])
+            self.subprocess_script = run_subprocess([sys.executable, os.path.join(os.environ['BCISTREAM_ROOT'], 'transformers', 'record.py')])
 
             # os.environ['BCI_RECORDING']
 
-            self.parent_frame.stackedWidget_annotations.setCurrentIndex(0)
+            # self.parent_frame.stackedWidget_annotations.setCurrentIndex(0)
 
         else:
             self.timer.stop()
@@ -354,4 +365,14 @@ class Records:
             self.subprocess_script.terminate()
             # time.sleep(3)
             self.load_records()
+
+    # # ----------------------------------------------------------------------
+    # def start_record(self):
+        # """"""
+        # self.record_signal(True)
+
+    # # ----------------------------------------------------------------------
+    # def stop_record(self):
+        # """"""
+        # self.record_signal(False)
 

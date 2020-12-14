@@ -126,7 +126,7 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def open_subwindow(self, url=None):
         """"""
-        if url is None:
+        if not url:
             url = self.parent_frame.lineEdit_stimuli_ip.text()
 
         if not url:
