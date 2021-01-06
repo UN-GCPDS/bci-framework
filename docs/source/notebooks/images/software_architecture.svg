@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="36cm" height="39cm" viewBox="338 -2 704 765" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="541" y="80" width="238" height="140"/>
+    <path style="fill: #ffffff" d="M 541,80 A 1,1 0 0 0 540,81 L 541,81 z"/>
+    <path style="fill: #ffffff" d="M 780,81 A 1,1 0 0 0 779,80 L 779,81 z"/>
+    <rect style="fill: #ffffff" x="540" y="81" width="240" height="138"/>
+    <path style="fill: #ffffff" d="M 540,219 A 1,1 0 0 0 541,220 L 541,219 z"/>
+    <path style="fill: #ffffff" d="M 779,220 A 1,1 0 0 0 780,219 L 779,219 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="541" y1="80" x2="779" y2="80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="541" y1="220" x2="779" y2="220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 541,80 A 1,1 0 0 0 540,81"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 780,81 A 1,1 0 0 0 779,80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="540" y1="81" x2="540" y2="219"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="780" y1="81" x2="780" y2="219"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 540,219 A 1,1 0 0 0 541,220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 779,220 A 1,1 0 0 0 780,219"/>
+    <text font-size="12.8016" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="548.5" y="137.88">
+      <tspan x="548.5" y="137.88">-Realtime plots maded with </tspan>
+      <tspan x="548.5" y="153.882">Matplotlib or MNE</tspan>
+      <tspan x="548.5" y="169.884"></tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="341" y="260" width="178" height="160"/>
+    <path style="fill: #ffffff" d="M 341,260 A 1,1 0 0 0 340,261 L 341,261 z"/>
+    <path style="fill: #ffffff" d="M 520,261 A 1,1 0 0 0 519,260 L 519,261 z"/>
+    <rect style="fill: #ffffff" x="340" y="261" width="180" height="158"/>
+    <path style="fill: #ffffff" d="M 340,419 A 1,1 0 0 0 341,420 L 341,419 z"/>
+    <path style="fill: #ffffff" d="M 519,420 A 1,1 0 0 0 520,419 L 519,419 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="260" x2="519" y2="260"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="420" x2="519" y2="420"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 341,260 A 1,1 0 0 0 340,261"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 520,261 A 1,1 0 0 0 519,260"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="340" y1="261" x2="340" y2="419"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="520" y1="261" x2="520" y2="419"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 340,419 A 1,1 0 0 0 341,420"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 519,420 A 1,1 0 0 0 520,419"/>
+    <text font-size="12.8016" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="348.5" y="311.878">
+      <tspan x="348.5" y="311.878"></tspan>
+      <tspan x="348.5" y="327.88">- Serial (250 Hz)</tspan>
+      <tspan x="348.5" y="343.882">- WiFi (250 Hz - 16 KHz)</tspan>
+      <tspan x="348.5" y="359.884">- 8 Channels (default)</tspan>
+      <tspan x="348.5" y="375.886">- Daisy (+8 Channels)</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="801" y="80" width="238" height="140"/>
+    <path style="fill: #ffffff" d="M 801,80 A 1,1 0 0 0 800,81 L 801,81 z"/>
+    <path style="fill: #ffffff" d="M 1040,81 A 1,1 0 0 0 1039,80 L 1039,81 z"/>
+    <rect style="fill: #ffffff" x="800" y="81" width="240" height="138"/>
+    <path style="fill: #ffffff" d="M 800,219 A 1,1 0 0 0 801,220 L 801,219 z"/>
+    <path style="fill: #ffffff" d="M 1039,220 A 1,1 0 0 0 1040,219 L 1039,219 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="801" y1="80" x2="1039" y2="80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="801" y1="220" x2="1039" y2="220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 801,80 A 1,1 0 0 0 800,81"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1040,81 A 1,1 0 0 0 1039,80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="800" y1="81" x2="800" y2="219"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="1040" y1="81" x2="1040" y2="219"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 800,219 A 1,1 0 0 0 801,220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1039,220 A 1,1 0 0 0 1040,219"/>
+    <text font-size="12.8016" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="808.5" y="121.878">
+      <tspan x="808.5" y="121.878"></tspan>
+      <tspan x="808.5" y="137.88">-Neurophysiological experiments</tspan>
+      <tspan x="808.5" y="153.882">with audio-visual stimulaion</tspan>
+      <tspan x="808.5" y="169.884">-Interactive dashboard with </tspan>
+      <tspan x="808.5" y="185.886">real-time test modification</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="341" y="0" width="698" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 341,0 A 1,1 0 0 0 340,1 L 341,1 z"/>
+    <path style="fill: #ffffff" d="M 1040,1 A 1,1 0 0 0 1039,0 L 1039,1 z"/>
+    <rect style="fill: #ffffff" x="340" y="1" width="700" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 340,40.3444 A 1,1 0 0 0 341,41.3444 L 341,40.3444 z"/>
+    <path style="fill: #ffffff" d="M 1039,41.3444 A 1,1 0 0 0 1040,40.3444 L 1039,40.3444 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="0" x2="1039" y2="0"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="41.3444" x2="1039" y2="41.3444"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 341,0 A 1,1 0 0 0 340,1"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1040,1 A 1,1 0 0 0 1039,0"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="340" y1="1" x2="340" y2="40.3444"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="1040" y1="1" x2="1040" y2="40.3444"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 340,40.3444 A 1,1 0 0 0 341,41.3444"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1039,41.3444 A 1,1 0 0 0 1040,40.3444"/>
+    <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="690" y="25.1222">
+      <tspan x="690" y="25.1222">Distributed Streaming Platform</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="341" y="80" width="178" height="140"/>
+    <path style="fill: #ffffff" d="M 341,80 A 1,1 0 0 0 340,81 L 341,81 z"/>
+    <path style="fill: #ffffff" d="M 520,81 A 1,1 0 0 0 519,80 L 519,81 z"/>
+    <rect style="fill: #ffffff" x="340" y="81" width="180" height="138"/>
+    <path style="fill: #ffffff" d="M 340,219 A 1,1 0 0 0 341,220 L 341,219 z"/>
+    <path style="fill: #ffffff" d="M 519,220 A 1,1 0 0 0 520,219 L 519,219 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="80" x2="519" y2="80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="220" x2="519" y2="220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 341,80 A 1,1 0 0 0 340,81"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 520,81 A 1,1 0 0 0 519,80"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="340" y1="81" x2="340" y2="219"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="520" y1="81" x2="520" y2="219"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 340,219 A 1,1 0 0 0 341,220"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 519,220 A 1,1 0 0 0 520,219"/>
+    <text font-size="12.8016" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="348.5" y="121.878">
+      <tspan x="348.5" y="121.878"></tspan>
+      <tspan x="348.5" y="137.88">-Board connexion</tspan>
+      <tspan x="348.5" y="153.882">-Data acquisition</tspan>
+      <tspan x="348.5" y="169.884">-Async transmissión</tspan>
+      <tspan x="348.5" y="185.886">-Protocole handler</tspan>
+    </text>
+  </g>
+  <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="360" y="105.081">
+    <tspan x="360" y="105.081">Drivers</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="541" y="260" width="498" height="160"/>
+    <path style="fill: #ffffff" d="M 541,260 A 1,1 0 0 0 540,261 L 541,261 z"/>
+    <path style="fill: #ffffff" d="M 1040,261 A 1,1 0 0 0 1039,260 L 1039,261 z"/>
+    <rect style="fill: #ffffff" x="540" y="261" width="500" height="158"/>
+    <path style="fill: #ffffff" d="M 540,419 A 1,1 0 0 0 541,420 L 541,419 z"/>
+    <path style="fill: #ffffff" d="M 1039,420 A 1,1 0 0 0 1040,419 L 1039,419 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="541" y1="260" x2="1039" y2="260"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="541" y1="420" x2="1039" y2="420"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 541,260 A 1,1 0 0 0 540,261"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1040,261 A 1,1 0 0 0 1039,260"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="540" y1="261" x2="540" y2="419"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="1040" y1="261" x2="1040" y2="419"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 540,419 A 1,1 0 0 0 541,420"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1039,420 A 1,1 0 0 0 1040,419"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="790" y="343.881">
+      <tspan x="790" y="343.881"></tspan>
+    </text>
+  </g>
+  <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="560" y="285.081">
+    <tspan x="560" y="285.081">GUI</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1240" y="340">
+    <tspan x="1240" y="340"></tspan>
+  </text>
+  <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="560" y="105.081">
+    <tspan x="560" y="105.081">VIsualizations</tspan>
+  </text>
+  <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="820" y="105.081">
+    <tspan x="820" y="105.081">Stimuli Delivery</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="341" y="540" width="278" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 341,540 A 1,1 0 0 0 340,541 L 341,541 z"/>
+    <path style="fill: #ffffff" d="M 620,541 A 1,1 0 0 0 619,540 L 619,541 z"/>
+    <rect style="fill: #ffffff" x="340" y="541" width="280" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 340,580.344 A 1,1 0 0 0 341,581.344 L 341,580.344 z"/>
+    <path style="fill: #ffffff" d="M 619,581.344 A 1,1 0 0 0 620,580.344 L 619,580.344 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="341" y1="540" x2="619" y2="540"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="341" y1="581.344" x2="619" y2="581.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 341,540 A 1,1 0 0 0 340,541"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 620,541 A 1,1 0 0 0 619,540"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="340" y1="541" x2="340" y2="580.344"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="620" y1="541" x2="620" y2="580.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 340,580.344 A 1,1 0 0 0 341,581.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 619,581.344 A 1,1 0 0 0 620,580.344"/>
+    <text font-size="14.6756" style="fill: #2daefd;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="480" y="565.122">
+      <tspan x="480" y="565.122"></tspan>
+    </text>
+  </g>
+  <text font-size="12.8016" style="fill: #525252;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="360" y="564.246">
+    <tspan x="360" y="564.246">cComputationally expensive process</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="720" y1="511.5" x2="720" y2="600"/>
+    <polygon style="fill: #5aa8b1" points="725,511.5 720,501.5 715,511.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="725,511.5 720,501.5 715,511.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="820" y1="500" x2="820" y2="648.5"/>
+    <polygon style="fill: #5aa8b1" points="815,648.5 820,658.5 825,648.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="815,648.5 820,658.5 825,648.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="860" y1="511.5" x2="860" y2="660"/>
+    <polygon style="fill: #5aa8b1" points="865,511.5 860,501.5 855,511.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="865,511.5 860,501.5 855,511.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="640" y1="40" x2="640" y2="68.5"/>
+    <polygon style="fill: #5aa8b1" points="635,68.5 640,78.5 645,68.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="635,68.5 640,78.5 645,68.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="680" y1="51.5" x2="680" y2="80"/>
+    <polygon style="fill: #5aa8b1" points="685,51.5 680,41.5 675,51.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="685,51.5 680,41.5 675,51.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="640" y1="220" x2="640" y2="248.5"/>
+    <polygon style="fill: #5aa8b1" points="635,248.5 640,258.5 645,248.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="635,248.5 640,258.5 645,248.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="680" y1="231.5" x2="680" y2="260"/>
+    <polygon style="fill: #5aa8b1" points="685,231.5 680,221.5 675,231.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="685,231.5 680,221.5 675,231.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="900" y1="220" x2="900" y2="248.5"/>
+    <polygon style="fill: #5aa8b1" points="895,248.5 900,258.5 905,248.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="895,248.5 900,258.5 905,248.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="940" y1="231.5" x2="940" y2="260"/>
+    <polygon style="fill: #5aa8b1" points="945,231.5 940,221.5 935,231.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="945,231.5 940,221.5 935,231.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="420" y1="40" x2="420" y2="68.5"/>
+    <polygon style="fill: #5aa8b1" points="415,68.5 420,78.5 425,68.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="415,68.5 420,78.5 425,68.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="460" y1="51.5" x2="460" y2="80"/>
+    <polygon style="fill: #5aa8b1" points="465,51.5 460,41.5 455,51.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="465,51.5 460,41.5 455,51.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="900" y1="40" x2="900" y2="68.5"/>
+    <polygon style="fill: #5aa8b1" points="895,68.5 900,78.5 905,68.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="895,68.5 900,78.5 905,68.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="940" y1="51.5" x2="940" y2="80"/>
+    <polygon style="fill: #5aa8b1" points="945,51.5 940,41.5 935,51.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="945,51.5 940,41.5 935,51.5 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="341" y="460" width="698" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 341,460 A 1,1 0 0 0 340,461 L 341,461 z"/>
+    <path style="fill: #ffffff" d="M 1040,461 A 1,1 0 0 0 1039,460 L 1039,461 z"/>
+    <rect style="fill: #ffffff" x="340" y="461" width="700" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 340,500.344 A 1,1 0 0 0 341,501.344 L 341,500.344 z"/>
+    <path style="fill: #ffffff" d="M 1039,501.344 A 1,1 0 0 0 1040,500.344 L 1039,500.344 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="460" x2="1039" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="341" y1="501.344" x2="1039" y2="501.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 341,460 A 1,1 0 0 0 340,461"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1040,461 A 1,1 0 0 0 1039,460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="340" y1="461" x2="340" y2="500.344"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" x1="1040" y1="461" x2="1040" y2="500.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 340,500.344 A 1,1 0 0 0 341,501.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #4dd0e1" d="M 1039,501.344 A 1,1 0 0 0 1040,500.344"/>
+    <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="690" y="485.122">
+      <tspan x="690" y="485.122">Distributed Streaming Platform</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="481" y="600" width="278" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 481,600 A 1,1 0 0 0 480,601 L 481,601 z"/>
+    <path style="fill: #ffffff" d="M 760,601 A 1,1 0 0 0 759,600 L 759,601 z"/>
+    <rect style="fill: #ffffff" x="480" y="601" width="280" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 480,640.344 A 1,1 0 0 0 481,641.344 L 481,640.344 z"/>
+    <path style="fill: #ffffff" d="M 759,641.344 A 1,1 0 0 0 760,640.344 L 759,640.344 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="481" y1="600" x2="759" y2="600"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="481" y1="641.344" x2="759" y2="641.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 481,600 A 1,1 0 0 0 480,601"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 760,601 A 1,1 0 0 0 759,600"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="480" y1="601" x2="480" y2="640.344"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="760" y1="601" x2="760" y2="640.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 480,640.344 A 1,1 0 0 0 481,641.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 759,641.344 A 1,1 0 0 0 760,640.344"/>
+    <text font-size="14.6756" style="fill: #2daefd;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="620" y="625.122">
+      <tspan x="620" y="625.122"></tspan>
+    </text>
+  </g>
+  <text font-size="12.8016" style="fill: #525252;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="500" y="624.432">
+    <tspan x="500" y="624.432">Distributed visualizatión</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="621" y="660" width="278" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 621,660 A 1,1 0 0 0 620,661 L 621,661 z"/>
+    <path style="fill: #ffffff" d="M 900,661 A 1,1 0 0 0 899,660 L 899,661 z"/>
+    <rect style="fill: #ffffff" x="620" y="661" width="280" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 620,700.344 A 1,1 0 0 0 621,701.344 L 621,700.344 z"/>
+    <path style="fill: #ffffff" d="M 899,701.344 A 1,1 0 0 0 900,700.344 L 899,700.344 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="621" y1="660" x2="899" y2="660"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="621" y1="701.344" x2="899" y2="701.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 621,660 A 1,1 0 0 0 620,661"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 900,661 A 1,1 0 0 0 899,660"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="620" y1="661" x2="620" y2="700.344"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="900" y1="661" x2="900" y2="700.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 620,700.344 A 1,1 0 0 0 621,701.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 899,701.344 A 1,1 0 0 0 900,700.344"/>
+    <text font-size="14.6756" style="fill: #2daefd;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="760" y="685.122">
+      <tspan x="760" y="685.122"></tspan>
+    </text>
+  </g>
+  <text font-size="12.8016" style="fill: #525252;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="640" y="684.432">
+    <tspan x="640" y="684.432">External event markers</tspan>
+  </text>
+  <text font-size="14.6756" style="fill: #5aa8b1;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="360" y="305.081">
+    <tspan x="360" y="305.081">OpenBCI - Cyton</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="420" y1="220" x2="420" y2="248.5"/>
+    <polygon style="fill: #5aa8b1" points="415,248.5 420,258.5 425,248.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="415,248.5 420,258.5 425,248.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" x1="460" y1="231.5" x2="460" y2="260"/>
+    <polygon style="fill: #5aa8b1" points="465,231.5 460,221.5 455,231.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="465,231.5 460,221.5 455,231.5 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="920" y="150">
+    <tspan x="920" y="150"></tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="550" y="311.881">
+    <tspan x="550" y="311.881">-Graphical EEG montage configuration</tspan>
+    <tspan x="550" y="327.881">-Real-time visualizations</tspan>
+    <tspan x="550" y="343.881">-Stimuli delivery</tspan>
+    <tspan x="550" y="359.881">-Development environment for extensibility</tspan>
+    <tspan x="550" y="375.881">-Recording and multiple formats export (hdf5,</tspan>
+    <tspan x="550" y="391.881">csv, edf...)</tspan>
+    <tspan x="550" y="407.881">-Offline analysis</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="680" y1="500" x2="680" y2="588.5"/>
+    <polygon style="fill: #5aa8b1" points="675,588.5 680,598.5 685,588.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="675,588.5 680,598.5 685,588.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="580" y1="511.5" x2="580" y2="540"/>
+    <polygon style="fill: #5aa8b1" points="585,511.5 580,501.5 575,511.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="585,511.5 580,501.5 575,511.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="540" y1="500" x2="540" y2="528.5"/>
+    <polygon style="fill: #5aa8b1" points="535,528.5 540,538.5 545,528.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="535,528.5 540,538.5 545,528.5 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="761" y="720" width="278" height="41.3444"/>
+    <path style="fill: #ffffff" d="M 761,720 A 1,1 0 0 0 760,721 L 761,721 z"/>
+    <path style="fill: #ffffff" d="M 1040,721 A 1,1 0 0 0 1039,720 L 1039,721 z"/>
+    <rect style="fill: #ffffff" x="760" y="721" width="280" height="39.3444"/>
+    <path style="fill: #ffffff" d="M 760,760.344 A 1,1 0 0 0 761,761.344 L 761,760.344 z"/>
+    <path style="fill: #ffffff" d="M 1039,761.344 A 1,1 0 0 0 1040,760.344 L 1039,760.344 z"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="761" y1="720" x2="1039" y2="720"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="761" y1="761.344" x2="1039" y2="761.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 761,720 A 1,1 0 0 0 760,721"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 1040,721 A 1,1 0 0 0 1039,720"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="760" y1="721" x2="760" y2="760.344"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" x1="1040" y1="721" x2="1040" y2="760.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 760,760.344 A 1,1 0 0 0 761,761.344"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #4dd0e1" d="M 1039,761.344 A 1,1 0 0 0 1040,760.344"/>
+    <text font-size="14.6756" style="fill: #2daefd;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="745.122">
+      <tspan x="900" y="745.122"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="960" y1="500" x2="960" y2="708.5"/>
+    <polygon style="fill: #5aa8b1" points="955,708.5 960,718.5 965,708.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="955,708.5 960,718.5 965,708.5 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 3; stroke-dasharray: 10; stroke: #5aa8b1" x1="1000" y1="511.5" x2="1000" y2="720"/>
+    <polygon style="fill: #5aa8b1" points="1005,511.5 1000,501.5 995,511.5 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 3; stroke: #5aa8b1" points="1005,511.5 1000,501.5 995,511.5 "/>
+  </g>
+</svg>

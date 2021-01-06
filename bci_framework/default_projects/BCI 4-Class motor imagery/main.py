@@ -62,10 +62,18 @@ class Arrows(StimuliAPI):
         button_box <= self.widgets.button('Test single trial', connect=self.single_trial, style={'margin': '0 15px'})
         button_box <= self.widgets.button('Start run', connect=self.start_run, style={'margin': '0 15px'})
         button_box <= self.widgets.button('Stop run', connect=lambda: setattr(self, 'trials', []), style={'margin': '0 15px'})
+        button_box <= self.widgets.button('Simple trial', connect=self.test_marker, style={'margin': '0 15px'})
 
         self.update_observations()
 
     # ----------------------------------------------------------------------
+    def test_marker(self):
+        """"""
+        self.send_marker('Right', 500)
+        # self.show_hint('Right', 1000)
+
+    # ----------------------------------------------------------------------
+
     def update_observations(self, *args, **kwargs):
         """"""
         duration = self.widgets.get_value('duration') + 1400
@@ -125,7 +133,7 @@ class Arrows(StimuliAPI):
             timer.set_timeout(self.stop_record, duration + 1000 + 3000)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+    # @DeliveryInstance.both
     def show_hint(self, trial, duration):
         """"""
         if not hasattr(self, 'hint'):
@@ -135,8 +143,8 @@ class Arrows(StimuliAPI):
         self.hint.html = UNICODE_HINTS[trial]
 
         self.hint.style = {'display': 'flex'}
-        self.send_marker(trial)
-        timer.set_timeout(self.hide_hint, duration)
+        # self.send_marker(trial)
+        # timer.set_timeout(self.hide_hint, duration)
 
     # ----------------------------------------------------------------------
     # @DeliveryInstance.both

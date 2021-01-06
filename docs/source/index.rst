@@ -16,6 +16,7 @@ Navigation
    notebooks/70-develop_visualizations
    notebooks/80-develop_stimuli_delivery
    notebooks/99-troubleshoots
+   notebooks/Untitled
 
 Indices and tables
 ------------------

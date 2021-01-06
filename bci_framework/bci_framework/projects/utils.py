@@ -5,31 +5,6 @@ import time
 from datetime import datetime
 
 
-# # ----------------------------------------------------------------------
-# def loop(fn):
-    # """"""
-    # def wrap(*args, **kwargs):
-        # while True:
-            # fn(*args, **kwargs)
-    # return wrap
-
-
-# # ----------------------------------------------------------------------
-# def feed(fn):
-    # """"""
-    # def wrap(cls, *args, **kwargs):
-        # fn(cls, *args, **kwargs)
-        # cls.feed()
-    # return wrap
-
-
-# # ----------------------------------------------------------------------
-# def fast_resample(x, num, axis=-1):
-    # """"""
-    # ndim = x.shape[axis] // num
-    # return x[:, :ndim * num].reshape(x.shape[0], num, ndim).mean(axis=-1)
-
-
 # ----------------------------------------------------------------------
 def loop_consumer(fn):
     """"""

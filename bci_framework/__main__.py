@@ -1,7 +1,7 @@
 from multiprocessing import freeze_support
 from PySide2.QtWidgets import QApplication, QSplashScreen
-from PySide2.QtGui import QPixmap, QBitmap, QImage, QBrush, QPainter, QColor, QIcon
-from PySide2.QtCore import Qt, QRect, QCoreApplication, SIGNAL
+from PySide2.QtGui import QPixmap, QIcon
+from PySide2.QtCore import Qt, QCoreApplication
 from qt_material import apply_stylesheet  # , set_icons_theme
 from .bci_framework import BCIFramework
 import sys
@@ -98,31 +98,28 @@ def main():
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
-    if '--no_splash' in sys.argv:
-        pixmap = QPixmap(os.path.join("assets", "splash_curves.svg"))
-        splash = QSplashScreen(
-            pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+    if not '--debug' in sys.argv:
+        pixmap = QPixmap(os.path.join("assets", "splash.svg"))
+        splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         splash.setMask(pixmap.mask())
         splash.show()
-        splash.setStyleSheet("""
-            font-family: mono;
-            font-weight: normal;
-            font-size: 11pt;
-            """)
-
+        # splash.setStyleSheet("""
+            # font-family: mono;
+            # font-weight: normal;
+            # font-size: 11pt;
+            # """)
     extra = {'danger': '#dc3545',
              'warning': '#ffc107',
              'success': '#17a2b8',
              }
     apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
-
     QIcon.setThemeName("icons-dark")
 
     frame = BCIFramework()
     frame.main.showMaximized()
 
-    if '--no_splash' in sys.argv:
-        splash.finish(frame)
+    if not '--debug' in sys.argv:
+        splash.finish(frame.main)
 
     app.exec_()
 
