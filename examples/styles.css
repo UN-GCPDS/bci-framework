@@ -1,0 +1,53 @@
+
+body {
+    background-color: '#31363b' !important;
+}
+
+.bci_dashboard {
+    background-color: '#31363b' !important;
+}
+
+.bci_stimuli {
+    background-color: '#31363b' !important;
+    position: relative;
+
+}
+
+.progress {
+
+    margin: 15px;
+    position: absolute;
+    bottom: 0px;
+
+}
+
+
+.caption {
+
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+
+}
+
+
+#hint {
+
+    font-size: 60vh;
+    color: #4dd0e1;
+    justify-content: center;
+    padding-top: 18vh;
+    line-height: 60vh;
+}
+
+
+form {
+    margin: 0px;
+    }
+
+
+.mdc-typography--headline4 {
+    padding-bottom: 30px;
+    display: inline-flex;
+    }
+

@@ -50,8 +50,8 @@ class VisualizationsMenu:
         # Menu with accent color
         self.accent_menubar.setStyleSheet(f"""
         QMenuBar::item {{
-            background-color: {os.getenv('PYSIDEMATERIAL_PRIMARYCOLOR', '#ffffff')};
-            color: {os.getenv('PYSIDEMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
+            background-color: {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
+            color: {os.getenv('QTMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
             }}""")
 
         # Set the menu in first position
@@ -116,8 +116,8 @@ class VisualizationsMenu:
 
         self.right_menubar.setStyleSheet(f"""
         QMenuBar::item {{
-            background-color: {os.getenv('PYSIDEMATERIAL_PRIMARYCOLOR', '#ffffff')};
-            color: {os.getenv('PYSIDEMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
+            background-color: {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
+            color: {os.getenv('QTMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
         }}
 
         """)
@@ -186,7 +186,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
 
         self.setStyleSheet(f"""
         * {{
-        border: 2px solid {os.getenv('PYSIDEMATERIAL_SECONDARYCOLOR', '#000000')};
+        border: 2px solid {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
         border-width: 0px 2px 2px 2px;
         }}
         QMenuBar {{

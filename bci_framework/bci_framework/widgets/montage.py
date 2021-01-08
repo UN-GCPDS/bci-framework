@@ -296,10 +296,10 @@ class Montage:
         self.parent_frame = core.main
         self.core = core
 
-        if os.getenv('PYSIDEMATERIAL_SECONDARYDARKCOLOR', ''):
-            pyplot.rcParams['axes.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
-            pyplot.rcParams['figure.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
-            pyplot.rcParams['savefig.facecolor'] = os.environ['PYSIDEMATERIAL_SECONDARYDARKCOLOR']
+        if color := os.getenv('QTMATERIAL_SECONDARYDARKCOLOR', False):
+            pyplot.rcParams['axes.facecolor'] = color
+            pyplot.rcParams['figure.facecolor'] = color
+            pyplot.rcParams['savefig.facecolor'] = color
 
         self.channels_names_widgets = []
 
@@ -625,7 +625,7 @@ class Montage:
                     "QLabel{color: #ff1744;}QLabel:disabled{color: rgba(255, 23, 68, 0.2)};")
             else:
                 label.setStyleSheet(
-                    f"QLabel{{color: {os.environ.get('PYSIDEMATERIAL_SECONDARYTEXTCOLOR', '')};}}"
+                    f"QLabel{{color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR', '')};}}"
                     f"QLabel:disabled{{color: rgba(255, 255, 255, 0.2) }}")
 
     # ----------------------------------------------------------------------

@@ -17,8 +17,8 @@ class Annotations:
 
         style = f"""
         *{{
-        border: 1px solid {os.getenv('PYSIDEMATERIAL_PRIMARYCOLOR', '#ffffff')};
-        background-color: {os.getenv('PYSIDEMATERIAL_SECONDARYCOLOR', '#ffffff')};
+        border: 1px solid {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
+        background-color: {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#ffffff')};
         border-radius: 4px;
         }}
         """

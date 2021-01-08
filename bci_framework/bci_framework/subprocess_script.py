@@ -23,7 +23,7 @@ def run_subprocess(call):
     """"""
     my_env = os.environ.copy()
     my_env['PYTHONPATH'] = ":".join(
-        sys.path + [os.path.join(os.path.dirname(sys.argv[0]), 'bci_framework')])
+        sys.path + [os.path.join(os.path.dirname(sys.argv[0]))])
 
     sub = subprocess.Popen(call,
                            stdout=subprocess.PIPE,
@@ -172,7 +172,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         elif self.mode == 'stimuli':
             self.is_visualization = False
             self.is_stimuli = True
-            endpoint = 'delivery'
+            endpoint = 'dashboard'
 
         # self.main.widget_development_webview.show()
         self.url = f'http://localhost:{self.port}/{endpoint}'

@@ -1,4 +1,4 @@
-from PySide2.QtCore import QRegularExpression
+from PySide2.QtCore import QRegExp as QRegularExpression
 from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 

@@ -166,6 +166,8 @@ class ExampleDelivery(StimuliAPI):
 
 
 if __name__ == '__main__':
-    StimuliServer('ExampleDelivery',)
+    StimuliServer('ExampleDelivery',
+                  # mock_imports=['bci_framework.extensions.widgets'],
+                  )
 
 
