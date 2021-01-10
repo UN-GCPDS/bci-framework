@@ -9,7 +9,7 @@ import sys
 
 import pickle
 
-from ..projects import properties as prop
+from ...extensions import properties as prop
 
 # from ..config_manager import C
 # from PySide2.QtUiTools import QUiLoader
@@ -347,7 +347,6 @@ class Connection:
         self.core.status_bar(f'Disconnect')
 
     # ----------------------------------------------------------------------
-
     def update_environ(self):
         """"""
         os.environ['BCISTREAM_HOST'] = json.dumps(

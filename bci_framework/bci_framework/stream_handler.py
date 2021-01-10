@@ -13,7 +13,7 @@ from PySide2.QtCore import QTimer, Qt
 from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidget
 
 from .subprocess_script import LoadSubprocess
-from .projects import properties as prop
+from ..extensions import properties as prop
 from .dialogs import Dialogs
 from .config_manager import ConfigManager
 

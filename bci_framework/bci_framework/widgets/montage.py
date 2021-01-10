@@ -22,8 +22,12 @@ from openbci_stream.acquisition import OpenBCIConsumer
 from gcpds.utils.filters import GenericButterBand, notch60
 
 # from ..config_manager import ConfigManager
-from ..projects import properties as prop
-from ..projects.figure import thread_this
+from ...extensions import properties as prop
+from ...extensions.visualizations.utils import thread_this
+
+
+# from ..projects import properties as prop
+# from ..projects.figure import thread_this
 
 
 ########################################################################

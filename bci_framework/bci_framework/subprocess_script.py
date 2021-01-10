@@ -13,7 +13,8 @@ from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 from .nbstreamreader import NonBlockingStreamReader as NBSR
-from .projects import properties as prop
+from ..extensions import properties as prop
+
 
 import psutil
 

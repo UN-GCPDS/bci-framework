@@ -1,1 +1,1 @@
- 
+from .properties import properties

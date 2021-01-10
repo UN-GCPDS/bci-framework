@@ -1,11 +1,19 @@
-from bci_framework.extensions.stumuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.extensions import Widgets, Tone
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
 
 # from radiant.sound import Tone
 
 import random
 
 from browser import document, html, timer
+
+
+import os
+for key in os.environ.keys():
+    if key.startswith('BCISTREAM_'):
+        print(f'{key}: {os.environ[key]}')
+
+
 
 UNICODE_HINTS = {
     'Right': '&#x1f86a;',

@@ -1,5 +1,6 @@
-from bci_framework.extensions.stumuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.extensions import Widgets, Tone
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
+
 
 # from radiant.sound import Tone
 

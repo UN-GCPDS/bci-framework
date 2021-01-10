@@ -4,9 +4,8 @@ from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 import numpy as np
 import mne
 
+
 ########################################################################
-
-
 class Stream(FigureStream):
     """"""
 

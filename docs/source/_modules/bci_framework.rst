@@ -14,7 +14,6 @@ Subpackages
 
    bci_framework.editor
    bci_framework.environments
-   bci_framework.projects
    bci_framework.qtgui
    bci_framework.widgets
 

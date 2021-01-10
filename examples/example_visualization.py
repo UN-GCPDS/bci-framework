@@ -2,6 +2,13 @@ from bci_framework.extensions.visualizations import EEGStream
 from bci_framework.extensions.visualizations.utils import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 
+
+import os
+for key in os.environ.keys():
+    if key.startswith('BCISTREAM_'):
+        print(f'{key}: {os.environ[key]}')
+
+
 import logging
 
 
