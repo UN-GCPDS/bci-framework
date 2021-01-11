@@ -28,6 +28,7 @@ from ...extensions.visualizations.utils import thread_this
 
 # from ..projects import properties as prop
 # from ..projects.figure import thread_this
+matplotlib.rcParams['axes.edgecolor'] = 'k'
 
 
 ########################################################################
