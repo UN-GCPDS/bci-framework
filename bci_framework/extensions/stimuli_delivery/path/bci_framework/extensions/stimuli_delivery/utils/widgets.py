@@ -38,10 +38,10 @@ class Widgets:
             return self.fix_value(v)
 
     # ----------------------------------------------------------------------
-    def title(self, text, mode='body1', style={}, *args, **kwargs):
+    def label(self, text, typo='body1', style={}, *args, **kwargs):
         """"""
         label = MDCComponent(html.SPAN(f'{text}'), style=style, *args, **kwargs)
-        label.mdc.typography(mode)
+        label.mdc.typography(typo)
         return label
 
     # ----------------------------------------------------------------------
@@ -69,14 +69,14 @@ class Widgets:
         return form
 
     # ----------------------------------------------------------------------
-    def range_slider(self, label, min_lower, max_lower, value_lower, min_upper, max_upper, value_upper, step, unit='', on_change=None, id=None, *args, **kwargs):
+    def range_slider(self, label, min, max, value_lower, value_upper, step, unit='', on_change=None, id=None, *args, **kwargs):
         """"""
         form = MDCForm()
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
         form <= label_
         form <= MDCComponent(html.SPAN(f' {float(value_lower):.1f}-{float(value_upper):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
-        slider_ = form.mdc.RangeSlider('Slider', min_lower, max_lower, value_lower, min_upper, max_upper, value_upper, step, *args, **kwargs)
+        slider_ = form.mdc.RangeSlider('Slider', min, max, value_lower, value_upper, step, *args, **kwargs)
 
         if on_change:
             slider_.mdc.listen('MDCSlider:change', lambda evt: on_change(self.widgets[id]))
@@ -104,10 +104,6 @@ class Widgets:
         for i, (radio, value) in enumerate(radios):
             radios_.append([form.mdc.Radio(radio, name=id, checked=(i == 0)), value])
 
-        if on_change:
-            for radio, _ in radios_:
-                radio.bind('change', on_change)
-
         if id:
             self.widgets[id] = radios[0][1]
 
@@ -118,6 +114,10 @@ class Widgets:
 
             for radio, value in radios_:
                 radio.bind('change', set_value(value))
+
+        if on_change:
+            for radio, _ in radios_:
+                radio.bind('change', lambda evt: on_change())
 
         return form
 
@@ -133,10 +133,6 @@ class Widgets:
         for checkbox, checked in checkboxes:
             checkbox_.append([form.mdc.Checkbox(checkbox, name=id, checked=checked), checkbox])
 
-        if on_change:
-            for checkbox, _ in checkbox_:
-                checkbox.bind('change', on_change)
-
         if id:
             self.widgets[id] = [ch[0] for ch in checkboxes if ch[1]]
 
@@ -148,22 +144,23 @@ class Widgets:
             for checkbox, _ in checkbox_:
                 checkbox.bind('change', set_value())
 
+        if on_change:
+            for checkbox, _ in checkbox_:
+                checkbox.bind('change', lambda evt: on_change())
+
         return form
 
     # ----------------------------------------------------------------------
-    def combobox(self, label, options, valuenow, on_change=None, id=None):
+    def select(self, label, options, value=None, on_change=None, id=None):
         """"""
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
         form = MDCForm(formfield_style={'width': '100px', 'min-height': '90px', 'margin-left': '15px'})
         form <= label_
-        select_ = form.mdc.Select('', options=options, selected=valuenow)
-
-        if on_change:
-            select_.mdc.listen('MDCSelect:change', lambda evt: on_change(select_.mdc['value']))
+        select_ = form.mdc.Select('', options=options, selected=value)
 
         if id:
-            self.widgets[id] = valuenow
+            self.widgets[id] = value
 
             def set_value():
                 def wrap(evt):
@@ -172,13 +169,17 @@ class Widgets:
 
             select_.mdc.listen('MDCSelect:change', set_value())
 
+        if on_change:
+            select_.mdc.listen('MDCSelect:change', lambda evt: on_change(select_.mdc['value']))
+
         return form
 
     # ----------------------------------------------------------------------
-    def button(self, label, unelevated=True, connect=None, style={}, *args, **kwargs):
+    def button(self, label, unelevated=True, on_click=None, style={}, *args, **kwargs):
         """"""
         btn = MDCButton(label, unelevated=unelevated, style=style, *args, **kwargs)
-        btn.bind('click', lambda evt: connect())
+        if on_click:
+            btn.bind('click', lambda evt: on_click())
         return btn
 
     # ----------------------------------------------------------------------

@@ -298,3 +298,12 @@ class StimuliAPI:
         self._blink_area.color_off = color_off
 
         return self._blink_area
+
+    # ----------------------------------------------------------------------
+    def build_areas(self, stimuli=True, dashboard=True):
+        """"""
+        if stimuli:
+            self.stimuli_area
+        if dashboard:
+            self.dashboard
+
