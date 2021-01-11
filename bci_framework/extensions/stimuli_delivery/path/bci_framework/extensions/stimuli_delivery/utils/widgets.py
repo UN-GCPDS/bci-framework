@@ -52,7 +52,7 @@ class Widgets:
         label_ .mdc.typography('subtitle1')
         form <= label_
         form <= MDCComponent(html.SPAN(f' {float(value):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
-        slider_ = form.mdc.Slider('Slider', min=1, max=max, value=value, step=step, marks=marks, *args, **kwargs)
+        slider_ = form.mdc.Slider('Slider', min=min, max=max, value=value, step=step, marks=marks, *args, **kwargs)
 
         if on_change:
             slider_.mdc.listen('MDCSlider:change', lambda evt: on_change(self.widgets[id]))
