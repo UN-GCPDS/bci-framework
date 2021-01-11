@@ -269,4 +269,3 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
             [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
         a[a % 1 != 0] = 0
         return int(a[np.argmin(np.abs(a - n))])
-

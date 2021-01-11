@@ -1,6 +1,12 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+# from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
+
+
 from browser import document, timer, html
-from mdc import MDCForm, MDCComponent, MDCButton
+
+from mdc.MDCComponent import MDCComponent
+from mdc.MDCButton import MDCButton    
+from mdc.MDCFormField import MDCForm
 # from datetime import datetime
 
 
@@ -8,7 +14,9 @@ from mdc import MDCForm, MDCComponent, MDCButton
 class DigitalInput(StimuliAPI):
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        """"""
+        super().__init__(*args, **kwargs)
         """"""
         self.add_stylesheet('styles.css')
 
@@ -59,13 +67,13 @@ class DigitalInput(StimuliAPI):
     # ----------------------------------------------------------------------
     def change_duty_cycle(self, evt=None):
         """"""
-        duty_cycle_value = int(self.duty_cycle.attrs["aria-valuenow"])
+        duty_cycle_value = int(self.duty_cycle.mdc.getValue())
         self.set_duty_cycle(duty_cycle_value)
 
     # ----------------------------------------------------------------------
     def input_duty_cycle(self, evt=None):
         """"""
-        duty_cycle_value = int(self.duty_cycle.attrs["aria-valuenow"])
+        duty_cycle_value = int(self.duty_cycle.mdc.getValue())
         document.select_one('#duty_cycle').text = f'{duty_cycle_value} ms'
 
     # ----------------------------------------------------------------------

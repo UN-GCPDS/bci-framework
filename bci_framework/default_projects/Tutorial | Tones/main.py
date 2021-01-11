@@ -1,7 +1,5 @@
-from bci_framework.projects.server import StimuliAPI, StimuliServer
-from bci_framework.projects import Tone, Widgets
-# from bci_framework.projects import properties as prop
-# from bci_framework.projects.utils import timeit
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI
+from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
 
 from browser import html, timer
 
@@ -28,12 +26,14 @@ NOTES = ['C',
 
 
 ########################################################################
-class Tones(StimuliAPI):
+class TonesExample(StimuliAPI):
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """"""
+        super().__init__(*args, **kwargs)
+        
         self.add_stylesheet('styles.css')
 
         self.stimuli_area
@@ -54,8 +54,8 @@ class Tones(StimuliAPI):
         self.dashboard <= self.widgets.title('Tones', 'headline4', style={'margin-bottom': '15px', 'display': 'flex', })
         self.dashboard <= html.BR()
 
-        self.dashboard <= self.widgets.slider('Frequency', min=10, max=22e3, step=1, valuenow=447, id='f', on_change=self.tone.set_note)
-        self.dashboard <= self.widgets.slider('Gain', min=0, max=1, step=0.1, valuenow=0.5, id='gain', on_change=self.tone.set_gain)
+        self.dashboard <= self.widgets.slider('Frequency', min=10, max=22e3, step=1, value=447, id='f', on_change=self.tone.set_note)
+        self.dashboard <= self.widgets.slider('Gain', min=0, max=1, step=0.1, value=0.5, id='gain', on_change=self.tone.set_gain)
         
         self.dashboard <= self.widgets.button('Start', connect=lambda: self.tone.start(self.widgets.get_value('f'), self.widgets.get_value('gain')), style={'margin': '0 15px'})
         self.dashboard <= self.widgets.button('Stop', connect=self.tone.stop, style={'margin': '0 15px'})
@@ -89,6 +89,6 @@ class Tones(StimuliAPI):
 
 
     if __name__ == '__main__':
-        StimuliServer('Tones')
+        StimuliServer('TonesExample')
 
 

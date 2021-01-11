@@ -1,7 +1,10 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.projects import properties as prop
-from bci_framework.projects import Tone, Widgets
-from bci_framework.projects.utils import timeit
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
+
+# from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
+# from bci_framework.extensions import properties as prop
+# from bci_framework.projects import Tone, Widgets
+# from bci_framework.projects.utils import timeit
 
 from browser import document, timer, html, window
 
@@ -13,8 +16,11 @@ import random
 class Resting(StimuliAPI):
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """"""
+        super().__init__(*args, **kwargs)
+
+
         self.add_stylesheet('styles.css')
 
         self.stimuli_area
@@ -45,31 +51,31 @@ class Resting(StimuliAPI):
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Resting with open eyes', True, id='resting_open_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='resting_open')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='resting_open')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Resting with close eyes', True, id='resting_close_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='resting_close')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='resting_close')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Eye blinking', True, id='eye_blinking_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='eye_blinking')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='eye_blinking')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Eyeball movement up/down', True, id='eyeball_up_down_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='eyeball_up_down')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='eyeball_up_down')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Eyeball movement left/right', True, id='eyeball_left_right_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='eyeball_left_right')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='eyeball_left_right')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Head movement left/right', True, id='head_left_right_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='head_left_right')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='head_left_right')
         self.dashboard <= html.BR()
 
         self.dashboard <= self.widgets.switch('Jaw clenching', True, id='jaw_clenching_switch')
-        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, valuenow=valuenow, unit='minutes', id='jaw_clenching')
+        self.dashboard <= self.widgets.slider('Duration', min=min_, max=max_, step=0.1, value=valuenow, unit='minutes', id='jaw_clenching')
         self.dashboard <= html.BR()
 
         button_box = html.DIV(style={'margin-top': '50px', 'margin-bottom': '50px', })
@@ -175,7 +181,6 @@ class Resting(StimuliAPI):
         timer.set_timeout(self.prepare, duration + 2250 + 2000)
 
     # ----------------------------------------------------------------------
-
     @DeliveryInstance.both
     def show_hint(self):
         """"""
