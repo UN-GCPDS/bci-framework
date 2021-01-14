@@ -143,7 +143,7 @@ class Development:
     def open_subwindow(self):
         """"""
         url = self.sub.stream_subprocess.url
-        self.core.stimuli_delivery.open_subwindow(url.replace('/delivery', '/'))
+        self.core.stimuli_delivery.open_subwindow(url.replace('/dashboard', '/'))
 
     # ----------------------------------------------------------------------
     def on_focus(self):
