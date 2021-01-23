@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>BCI Framework</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons/resource.qrc">
-    <normaloff>:/bci/icons/bci/logo.svg</normaloff>:/bci/icons/bci/logo.svg</iconset>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_23">
     <property name="leftMargin">
@@ -34,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -249,17 +245,7 @@ p, li { white-space: pre-wrap; }
          <number>0</number>
         </property>
         <item row="1" column="0">
-         <widget class="QMdiArea" name="mdiArea">
-          <property name="background">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>0</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-         </widget>
+         <widget class="QMdiArea" name="mdiArea"/>
         </item>
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -356,13 +342,9 @@ p, li { white-space: pre-wrap; }
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <widget class="QPushButton" name="pushButton_6">
+                <widget class="QPushButton" name="pushButton_file">
                  <property name="text">
                   <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="icons/resource.qrc">
-                   <normaloff>:/bci/icons/bci/file.svg</normaloff>:/bci/icons/bci/file.svg</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -490,13 +472,9 @@ p, li { white-space: pre-wrap; }
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_17">
                <item>
-                <widget class="QPushButton" name="pushButton_8">
+                <widget class="QPushButton" name="pushButton_imagery">
                  <property name="text">
                   <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="icons/resource.qrc">
-                   <normaloff>:/bci/icons/bci/imagery.svg</normaloff>:/bci/icons/bci/imagery.svg</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -583,13 +561,9 @@ p, li { white-space: pre-wrap; }
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_15">
                <item>
-                <widget class="QPushButton" name="pushButton_4">
+                <widget class="QPushButton" name="pushButton_brain">
                  <property name="text">
                   <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="icons/resource.qrc">
-                   <normaloff>:/bci/icons/bci/brain.svg</normaloff>:/bci/icons/bci/brain.svg</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -883,7 +857,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -967,7 +941,7 @@ p, li { white-space: pre-wrap; }
               </widget>
               <widget class="QToolBox" name="toolBox">
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="page_5">
                 <property name="geometry">
@@ -975,7 +949,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>400</width>
-                  <height>439</height>
+                  <height>459</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1011,7 +985,7 @@ p, li { white-space: pre-wrap; }
                       <x>0</x>
                       <y>0</y>
                       <width>388</width>
-                      <height>427</height>
+                      <height>447</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1060,8 +1034,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>400</width>
-                  <height>439</height>
+                  <width>270</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1127,7 +1101,7 @@ p, li { white-space: pre-wrap; }
                    <item>
                     <widget class="QPushButton" name="pushButton_remove_montage">
                      <property name="text">
-                      <string/>
+                      <string>Remove</string>
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
@@ -1141,6 +1115,9 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="flat">
                       <bool>true</bool>
+                     </property>
+                     <property name="class" stdset="0">
+                      <string>danger icon_button</string>
                      </property>
                     </widget>
                    </item>
@@ -1314,7 +1291,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>412</width>
-                 <height>618</height>
+                 <height>640</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -2247,7 +2224,7 @@ p, li { white-space: pre-wrap; }
                  <item>
                   <widget class="QPushButton" name="pushButton_remove_record">
                    <property name="text">
-                    <string/>
+                    <string>Remove</string>
                    </property>
                    <property name="icon">
                     <iconset theme="edit-delete">
@@ -2264,6 +2241,9 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="flat">
                     <bool>true</bool>
+                   </property>
+                   <property name="class" stdset="0">
+                    <string>danger icon_button</string>
                    </property>
                   </widget>
                  </item>
@@ -2285,61 +2265,27 @@ p, li { white-space: pre-wrap; }
          <item row="1" column="0">
           <widget class="QToolBox" name="toolBox_2">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_10">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>412</width>
-              <height>578</height>
+              <width>269</width>
+              <height>234</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Annotations</string>
             </attribute>
-            <layout class="QGridLayout" name="gridLayout_41" rowstretch="5,1,0">
+            <layout class="QGridLayout" name="gridLayout_41" rowstretch="5,0,0">
              <property name="leftMargin">
               <number>0</number>
              </property>
              <property name="rightMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QTableWidget" name="tableWidget_annotations">
-               <property name="editTriggers">
-                <set>QAbstractItemView::NoEditTriggers</set>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Onset</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Duration</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Description</string>
-                </property>
-               </column>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPlainTextEdit" name="plainTextEdit_annotations"/>
-             </item>
              <item row="2" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_21">
                <item>
@@ -2377,6 +2323,40 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
+             <item row="1" column="0">
+              <widget class="QTextEdit" name="textEdit_annotations"/>
+             </item>
+             <item row="0" column="0">
+              <widget class="QTableWidget" name="tableWidget_annotations">
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>Onset</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Duration</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Description</string>
+                </property>
+               </column>
+              </widget>
+             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="page_11">
@@ -2384,8 +2364,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>159</width>
-              <height>141</height>
+              <width>412</width>
+              <height>600</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2551,7 +2531,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_add_project">
                  <property name="text">
-                  <string/>
+                  <string>New Project</string>
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
@@ -2566,12 +2546,15 @@ p, li { white-space: pre-wrap; }
                  <property name="flat">
                   <bool>true</bool>
                  </property>
+                 <property name="class" stdset="0">
+                  <string>icon_button</string>
+                 </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_remove_project">
                  <property name="text">
-                  <string/>
+                  <string>Remove</string>
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
@@ -2585,6 +2568,9 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="flat">
                   <bool>true</bool>
+                 </property>
+                 <property name="class" stdset="0">
+                  <string>danger icon_button</string>
                  </property>
                 </widget>
                </item>
@@ -2709,7 +2695,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_projects_add_file">
                  <property name="text">
-                  <string/>
+                  <string>New file</string>
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
@@ -2724,12 +2710,15 @@ p, li { white-space: pre-wrap; }
                  <property name="flat">
                   <bool>true</bool>
                  </property>
+                 <property name="class" stdset="0">
+                  <string>icon_button</string>
+                 </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_projects_add_folder">
                  <property name="text">
-                  <string/>
+                  <string>New folder</string>
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
@@ -2747,12 +2736,15 @@ p, li { white-space: pre-wrap; }
                  <property name="flat">
                   <bool>true</bool>
                  </property>
+                 <property name="class" stdset="0">
+                  <string>icon_button</string>
+                 </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_projects_remove">
                  <property name="text">
-                  <string/>
+                  <string>Remove</string>
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
@@ -2769,6 +2761,9 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="flat">
                   <bool>true</bool>
+                 </property>
+                 <property name="class" stdset="0">
+                  <string>danger icon_button</string>
                  </property>
                 </widget>
                </item>
@@ -2836,9 +2831,9 @@ p, li { white-space: pre-wrap; }
                    </spacer>
                   </item>
                   <item row="0" column="4">
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="pushButton_clear_debug">
                     <property name="text">
-                     <string/>
+                     <string>Remove</string>
                     </property>
                     <property name="icon">
                      <iconset theme="edit-delete">
@@ -2852,6 +2847,9 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="flat">
                      <bool>true</bool>
+                    </property>
+                    <property name="class" stdset="0">
+                     <string>danger icon_button</string>
                     </property>
                    </widget>
                   </item>
@@ -2914,10 +2912,6 @@ p, li { white-space: pre-wrap; }
    <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset resource="icons/resource.qrc">
-     <normaloff>:/bci/icons/bci/file.svg</normaloff>:/bci/icons/bci/file.svg</iconset>
-   </property>
    <property name="text">
     <string>Development</string>
    </property>
@@ -2929,10 +2923,6 @@ p, li { white-space: pre-wrap; }
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset resource="icons/resource.qrc">
-     <normaloff>:/bci/icons/bci/brain.svg</normaloff>:/bci/icons/bci/brain.svg</iconset>
-   </property>
    <property name="text">
     <string>Visualizations</string>
    </property>
@@ -2940,10 +2930,6 @@ p, li { white-space: pre-wrap; }
   <action name="actionStimuli_delivery">
    <property name="checkable">
     <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons/resource.qrc">
-     <normaloff>:/bci/icons/bci/imagery.svg</normaloff>:/bci/icons/bci/imagery.svg</iconset>
    </property>
    <property name="text">
     <string>Stimuli delivery</string>
@@ -2956,10 +2942,6 @@ p, li { white-space: pre-wrap; }
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset resource="icons/resource.qrc">
-     <normaloff>:/bci/icons/bci/home.svg</normaloff>:/bci/icons/bci/home.svg</iconset>
-   </property>
    <property name="text">
     <string>Home</string>
    </property>
@@ -2967,10 +2949,6 @@ p, li { white-space: pre-wrap; }
   <action name="actionDocumentation">
    <property name="checkable">
     <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons/resource.qrc">
-     <normaloff>:/bci/icons/bci/documentation.svg</normaloff>:/bci/icons/bci/documentation.svg</iconset>
    </property>
    <property name="text">
     <string>Docs</string>
@@ -3016,9 +2994,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>horizontalSlider_record</tabstop>
   <tabstop>pushButton_play_signal</tabstop>
  </tabstops>
- <resources>
-  <include location="icons/resource.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>pushButton_play_signal</sender>
@@ -3027,8 +3003,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>988</x>
-     <y>135</y>
+     <x>962</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
      <x>1022</x>
@@ -3047,8 +3023,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1092</x>
-     <y>464</y>
+     <x>1040</x>
+     <y>472</y>
     </hint>
    </hints>
   </connection>
@@ -3075,8 +3051,8 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1366</x>
@@ -3091,12 +3067,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>988</x>
-     <y>135</y>
+     <x>962</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
-     <x>998</x>
-     <y>102</y>
+     <x>993</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -3111,8 +3087,8 @@ p, li { white-space: pre-wrap; }
      <y>423</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1209</x>
-     <y>501</y>
+     <x>1183</x>
+     <y>509</y>
     </hint>
    </hints>
   </connection>
@@ -3123,8 +3099,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1092</x>
@@ -3139,8 +3115,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>988</x>
-     <y>135</y>
+     <x>962</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
      <x>1091</x>
@@ -3155,12 +3131,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1178</x>
-     <y>740</y>
+     <x>1126</x>
+     <y>747</y>
     </hint>
    </hints>
   </connection>
@@ -3175,8 +3151,8 @@ p, li { white-space: pre-wrap; }
      <y>420</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1209</x>
-     <y>463</y>
+     <x>1183</x>
+     <y>471</y>
     </hint>
    </hints>
   </connection>
@@ -3191,8 +3167,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1333</x>
-     <y>502</y>
+     <x>1307</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>
@@ -3203,8 +3179,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1059</x>
-     <y>735</y>
+     <x>1007</x>
+     <y>742</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3219,8 +3195,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -3235,12 +3211,12 @@ p, li { white-space: pre-wrap; }
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>50</x>
-     <y>68</y>
+     <x>254</x>
+     <y>205</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1016</x>
-     <y>96</y>
+     <x>1008</x>
+     <y>133</y>
     </hint>
    </hints>
   </connection>
@@ -3251,8 +3227,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3267,8 +3243,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1072</x>
@@ -3283,12 +3259,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1059</x>
-     <y>735</y>
+     <x>1007</x>
+     <y>742</y>
     </hint>
    </hints>
   </connection>
@@ -3303,8 +3279,8 @@ p, li { white-space: pre-wrap; }
      <y>423</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1033</x>
-     <y>501</y>
+     <x>981</x>
+     <y>509</y>
     </hint>
    </hints>
   </connection>
@@ -3315,8 +3291,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3331,8 +3307,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1365</x>
@@ -3347,12 +3323,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>988</x>
-     <y>135</y>
+     <x>962</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1048</x>
-     <y>107</y>
+     <x>1372</x>
+     <y>237</y>
     </hint>
    </hints>
   </connection>
@@ -3363,8 +3339,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3383,8 +3359,8 @@ p, li { white-space: pre-wrap; }
      <y>611</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1184</x>
-     <y>632</y>
+     <x>1167</x>
+     <y>658</y>
     </hint>
    </hints>
   </connection>
@@ -3395,12 +3371,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>998</x>
-     <y>102</y>
+     <x>993</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -3415,24 +3391,24 @@ p, li { white-space: pre-wrap; }
      <y>420</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1140</x>
-     <y>502</y>
+     <x>1088</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>pushButton_clear_debug</sender>
    <signal>clicked()</signal>
    <receiver>plainTextEdit_preview_log</receiver>
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1044</x>
-     <y>151</y>
+     <x>1369</x>
+     <y>746</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1046</x>
-     <y>157</y>
+     <x>1370</x>
+     <y>582</y>
     </hint>
    </hints>
   </connection>
@@ -3447,8 +3423,8 @@ p, li { white-space: pre-wrap; }
      <y>611</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1015</x>
-     <y>687</y>
+     <x>963</x>
+     <y>695</y>
     </hint>
    </hints>
   </connection>
@@ -3463,8 +3439,8 @@ p, li { white-space: pre-wrap; }
      <y>424</y>
     </hint>
     <hint type="destinationlabel">
-     <x>998</x>
-     <y>463</y>
+     <x>946</x>
+     <y>471</y>
     </hint>
    </hints>
   </connection>
@@ -3479,8 +3455,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1132</x>
-     <y>540</y>
+     <x>1080</x>
+     <y>548</y>
     </hint>
    </hints>
   </connection>
@@ -3491,12 +3467,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1059</x>
-     <y>735</y>
+     <x>1007</x>
+     <y>742</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1178</x>
-     <y>740</y>
+     <x>1126</x>
+     <y>747</y>
     </hint>
    </hints>
   </connection>
@@ -3511,8 +3487,8 @@ p, li { white-space: pre-wrap; }
      <y>602</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1013</x>
-     <y>649</y>
+     <x>961</x>
+     <y>657</y>
     </hint>
    </hints>
   </connection>
@@ -3527,8 +3503,8 @@ p, li { white-space: pre-wrap; }
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1302</x>
-     <y>435</y>
+     <x>1307</x>
+     <y>472</y>
     </hint>
    </hints>
   </connection>
@@ -3543,8 +3519,8 @@ p, li { white-space: pre-wrap; }
      <y>414</y>
     </hint>
     <hint type="destinationlabel">
-     <x>995</x>
-     <y>539</y>
+     <x>943</x>
+     <y>547</y>
     </hint>
    </hints>
   </connection>
@@ -3555,8 +3531,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1059</x>
-     <y>735</y>
+     <x>1007</x>
+     <y>742</y>
     </hint>
     <hint type="destinationlabel">
      <x>1070</x>
@@ -3571,12 +3547,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1060</x>
-     <y>230</y>
+     <x>1008</x>
+     <y>238</y>
     </hint>
    </hints>
   </connection>
@@ -3587,12 +3563,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>915</x>
-     <y>439</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1208</x>
-     <y>332</y>
+     <x>1371</x>
+     <y>671</y>
     </hint>
    </hints>
   </connection>
@@ -3603,8 +3579,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>888</x>
-     <y>421</y>
+     <x>1366</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1114</x>

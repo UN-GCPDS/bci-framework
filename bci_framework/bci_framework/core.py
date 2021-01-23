@@ -2,9 +2,8 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2 import QtWidgets, QtGui, QtCore
 from PySide2.QtCore import Qt, QTimer
 
-from PySide2.QtWidgets import QDialogButtonBox
 
-from .qtgui.icons import resource_rc  # Keep this
+from PySide2.QtWidgets import QDialogButtonBox
 from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
@@ -81,6 +80,7 @@ class BCIFramework:
 
         self.main = QUiLoader().load(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'qtgui', 'main.ui'))
+        self.set_icons()
 
         self.main.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
         self.main.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
@@ -132,6 +132,40 @@ class BCIFramework:
         self.register_subprocess()
 
     # ----------------------------------------------------------------------
+    def set_icons(self):
+
+        def icon(name):
+            return QtGui.QIcon(f"bci:/primary/{name}.svg")
+
+        self.main.actionDevelopment.setIcon(icon("file"))
+        self.main.actionVisualizations.setIcon(icon("brain"))
+        self.main.actionStimuli_delivery.setIcon(icon("imagery"))
+        self.main.actionHome.setIcon(icon("home"))
+        self.main.actionDocumentation.setIcon(icon("documentation"))
+
+        self.main.pushButton_file.setIcon(icon("file"))
+        self.main.pushButton_brain.setIcon(icon("brain"))
+        self.main.pushButton_imagery.setIcon(icon("imagery"))
+
+        self.main.pushButton_stop_preview.setIcon(icon('media-playback-stop'))
+        self.main.pushButton_script_preview.setIcon(icon('media-playback-start'))
+        self.main.pushButton_play_signal.setIcon(icon('media-playback-start'))
+        self.main.pushButton_clear_debug.setIcon(icon('edit-delete'))
+        self.main.pushButton_record.setIcon(icon('media-record'))
+
+        self.main.pushButton_projects_add_file.setIcon(icon('document-new'))
+        self.main.pushButton_projects_add_folder.setIcon(icon('folder-add'))
+        self.main.pushButton_add_project.setIcon(icon('folder-add'))
+        self.main.pushButton_projects_remove.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_project.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_montage.setIcon(icon('edit-delete'))
+
+        self.main.pushButton_projects.setIcon(icon('go-up'))
+        self.main.pushButton_load_visualizarion.setIcon(icon('list-add'))
+
+        self.main.setWindowIcon(icon("logo"))
+
+    # ----------------------------------------------------------------------
     def register_subprocess(self):
         """"""
         self.subprocess_timer = QTimer()
@@ -168,7 +202,7 @@ class BCIFramework:
         self.pushButton_collapse_dock.clicked.connect(
             self.set_dock_collapsed)
 
-        icon = QtGui.QIcon.fromTheme('arrow-right-double')
+        icon = QtGui.QIcon('bci:/primary/arrow-right-double.svg')
         self.pushButton_collapse_dock.setIcon(icon)
         self.pushButton_collapse_dock.setCheckable(True)
         self.pushButton_collapse_dock.setFlat(True)
@@ -183,12 +217,12 @@ class BCIFramework:
         """"""
         if collapsed:
             w = self.main.tabWidget_widgets.tabBar().width() + 10
-            icon = QtGui.QIcon.fromTheme('arrow-left-double')
+            icon = QtGui.QIcon('bci:/primary/arrow-left-double.svg')
             self.previous_width = self.main.dockWidget_global.width()
         else:
             if self.main.dockWidget_global.width() > 50:
                 return
-            icon = QtGui.QIcon.fromTheme('arrow-right-double')
+            icon = QtGui.QIcon('bci:/primary/arrow-right-double.svg')
             w = self.previous_width
 
         self.pushButton_collapse_dock.setIcon(icon)
@@ -281,6 +315,12 @@ class BCIFramework:
         }
         """)
 
+        self.main.mdiArea.setStyleSheet(f"""
+        *{{
+        background: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+        }}
+        """)
+
     # ----------------------------------------------------------------------
     def remove_widgets_from_layout(self, layout):
         """"""
@@ -309,9 +349,9 @@ class BCIFramework:
         min-height: 50px;
         }
         """
-        self.main.pushButton_4.setStyleSheet(style)
-        self.main.pushButton_6.setStyleSheet(style)
-        self.main.pushButton_8.setStyleSheet(style)
+        self.main.pushButton_file.setStyleSheet(style)
+        self.main.pushButton_brain.setStyleSheet(style)
+        self.main.pushButton_imagery.setStyleSheet(style)
 
         style = """
         *{

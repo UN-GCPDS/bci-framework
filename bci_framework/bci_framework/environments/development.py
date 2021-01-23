@@ -38,21 +38,21 @@ class Development:
     def build_linenumber(self):
         """"""
 
-        self.parent_frame.textEdit_linenumber.setStyleSheet("""
-        QTextEdit {
-        background-color: #263238;
-        color: white;
+        self.parent_frame.textEdit_linenumber.setStyleSheet(f"""
+        QTextEdit {{
+        background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
         font-size: 15px;
         line-height: 15px;
-        border: 0px solid #4f5b62;
-        border-right: 10px solid #4f5b62;
+        border: 0px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+        border-right: 10px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
         border-radius: 0px;
         padding: 8px 0px ;
         padding-top: 41px;
 
-        }
+        }}
         """)
 
         # self.parent.textEdit_linenumber.setAlignment(Qt.AlignRight)

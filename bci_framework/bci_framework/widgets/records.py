@@ -50,7 +50,7 @@ class Records:
         self.parent_frame.label_records_path.setStyleSheet(
             '*{font-family: "DejaVu Sans Mono";}')
 
-        self.parent_frame.plainTextEdit_annotations.setStyleSheet('*{ padding: 10px;}')
+        # self.parent_frame.textEdit_annotations.setStyleSheet('*{ padding: 10px;}')
         # self.parent_frame.pushButton_remove_annotation.setDisabled(True)
         # self.editor_set_visible(False)
 

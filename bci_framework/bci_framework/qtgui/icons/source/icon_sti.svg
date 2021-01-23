@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -14,7 +12,7 @@
    viewBox="0 0 135.46667 135.46667"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07, custom)"
    sodipodi:docname="icon_sti.svg"
    inkscape:export-filename="/home/yeison/Development/gcpds/bci-unscented/assets/logo.png"
    inkscape:export-xdpi="96"
@@ -77,9 +75,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.030081386"
-     inkscape:cx="7461.5741"
-     inkscape:cy="-1111.311"
+     inkscape:zoom="1.044342"
+     inkscape:cx="231.32663"
+     inkscape:cy="266.39154"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -105,7 +103,8 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -155,7 +154,7 @@
        style="opacity:0.67299996;fill:none;fill-opacity:0.30136988;stroke:#000000;stroke-width:0.79374999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
        sodipodi:type="star"
-       style="opacity:1;fill:#4f5b62;fill-opacity:1;stroke:none;stroke-width:1.16275263;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.1415525"
+       style="opacity:1;fill:#0000ff;fill-opacity:0.34999999;stroke:none;stroke-width:1.16275263;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.1415525"
        id="path1017"
        sodipodi:sides="4"
        sodipodi:cx="388.17206"

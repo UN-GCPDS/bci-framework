@@ -38,7 +38,9 @@ if not os.path.exists(os.getenv('BCISTREAM_TMP')):
     os.mkdir(os.getenv('BCISTREAM_TMP'))
 
 
+from .bci_framework.qtgui.icons import generate_icons
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 
 # ----------------------------------------------------------------------
 def kill_subprocess():
@@ -112,8 +114,17 @@ def main():
              'warning': '#ffc107',
              'success': '#17a2b8',
              }
-    apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
-    QIcon.setThemeName("icons-dark")
+
+    if '--light' in sys.argv:
+        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True, extra=extra)
+    else:
+        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
+
+    stylesheet = app.styleSheet()
+    with open(os.path.join(os.path.dirname(__file__), 'custom.css')) as file:
+        app.setStyleSheet(stylesheet + file.read().format(**os.environ))
+
+    generate_icons()
 
     frame = BCIFramework()
     frame.main.showMaximized()

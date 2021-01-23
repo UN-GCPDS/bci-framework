@@ -23,9 +23,9 @@ class Annotations:
         }}
         """
 
-        self.parent_frame.doubleSpinBox_annotation_duration.setStyleSheet(style)
-        self.parent_frame.plainTextEdit_annotations.setStyleSheet(style)
-        self.parent_frame.lineEdit_marker.setStyleSheet(style)
+        # self.parent_frame.doubleSpinBox_annotation_duration.setStyleSheet(style)
+        # self.parent_frame.plainTextEdit_annotations.setStyleSheet(style)
+        # self.parent_frame.lineEdit_marker.setStyleSheet(style)
 
         self.connect()
 
@@ -38,7 +38,7 @@ class Annotations:
     # ----------------------------------------------------------------------
     def save_annotation(self):
         """"""
-        content = self.parent_frame.plainTextEdit_annotations.toPlainText()
+        content = self.parent_frame.textEdit_annotations.toPlainText()
         duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
 
         data_ = {'duration': duration,

@@ -132,7 +132,8 @@ class TopoplotMontage(FigureTopo):
             else:
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
-        colors = ['#3d7a84', '#3d7a84']
+        # colors = ['#3d7a84', '#3d7a84']
+        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
         cm = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0, cmap=cm, outlines='skirt', names=channels_labels, show_names=True, axes=self.ax, sensors=True, show=False,
@@ -218,7 +219,7 @@ class TopoplotImpedances(FigureTopo):
             else:
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
-        colors = ['#3d7a84', '#3d7a84']
+        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
         cmap_ = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         self.ax.clear()

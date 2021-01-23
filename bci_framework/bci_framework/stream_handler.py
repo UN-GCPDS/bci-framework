@@ -256,23 +256,20 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
             self.loaded()
 
     # ----------------------------------------------------------------------
-
     def save_img(self):
         """"""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
         filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
         self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
 
-        path = self.config.get(
-            'directories', 'screenshots', str(Path.home()))
-        dst = Dialogs.save_filename(self.mdi_area, 'Save\
-        capture', os.path.join(path, name), filter="Images (*.jpg)")
+        captures_dir = os.path.join(self.projects_dir, self.current_viz, 'captures')
+        if not os.path.exists(captures_dir):
+            os.makedirs(captures_dir, exist_ok=True)
+
+        dst = os.path.join(captures_dir, name)
 
         if dst:
             shutil.move(filename, dst)
-            self.config.set('directories', 'screenshots',
-                            str(os.path.dirname(dst)))
-            self.config.save()
         else:
             os.remove(filename)
 

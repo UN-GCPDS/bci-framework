@@ -1,5 +1,6 @@
 from PySide2.QtCore import QRegExp as QRegularExpression
 from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+import sys
 
 
 def format(color, style='', fontsize=None):
@@ -22,21 +23,23 @@ def format(color, style='', fontsize=None):
 
 
 # Syntax styles that can be shared by all languages
-STYLES = {
-    'selector': format('#8080FF', 'bold'),
-    'key': format('#63A3FF'),
-    'value': format('#FF7ED8'),
-    'keyword': format('#ff7c00', 'bold'),
-    'numbers': format('#72e4e4'),
-    # 'string': format('#ff80ff'),
+if '--light' in sys.argv:
+    STYLES = {
+        'selector': format('#00007f', 'bold'),
+        'keyword': format('#ff7c00', 'bold'),
+        'numbers': format('#007f7f'),
+        'key': format('#0040e0'),  # .
+        'value': format('#7f007f'),  # .
 
-    # 'keyword': format('#8080ff', 'bold'),
-    # 'comment': format('#7efb7e'),
-    # 'operator': format('white', 'bold'),
-    # 'brace': format('white'),
-    # 'class': format('#4444ff', 'bold'),
-    # 'string2': format('#ac5656'),
-}
+    }
+else:
+    STYLES = {
+        'selector': format('#8080ff', 'bold'),
+        'key': format('#63a3ff'),
+        'value': format('#ff7ed8'),
+        'keyword': format('#ff7c00', 'bold'),
+        'numbers': format('#72e4e4'),
+    }
 
 
 class CSSHighlighter(QSyntaxHighlighter):

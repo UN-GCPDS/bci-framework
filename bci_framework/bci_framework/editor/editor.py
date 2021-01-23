@@ -4,6 +4,8 @@ from PySide2.QtCore import Qt, QPoint
 # from PySide2 import QtGui, QtCore
 from .highlighters import PythonHighlighter, CSSHighlighter
 
+import os
+
 
 ########################################################################
 class BCIEditor(QTextEdit):
@@ -20,21 +22,21 @@ class BCIEditor(QTextEdit):
         self.linenumber = linenumber
 
         # editor = QTextEdit()
-        self.setStyleSheet("""
-        QTextEdit {
-        background-color: #000a12;
-        color: white;
+        self.setStyleSheet(f"""
+        QTextEdit {{
+        background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
         height: 18px;
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
         font-size: 15px;
         line-height: 15px;
-        border: 1px solid #263238;
+        border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
         border-radius: 4px;
         height: 18px;
         padding: 0px;
         padding-top: 8px;
-        }
+        }}
         """)
 
         if extension == '.py':

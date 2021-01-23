@@ -181,7 +181,7 @@ class Projects:
 
             icon = QIcon()
             icon.addFile(
-                f":/bci/icons/bci/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
+                f"bci:/primary/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
             item.setIcon(icon)
             item.icon_name = icon_name
 
@@ -396,7 +396,7 @@ class Projects:
         item.setText(project_name)
         item.previous_name = project_name
 
-        icon.addFile(f":/bci/icons/bci/{icon_name}.svg",
+        icon.addFile(f"bci:primary/{icon_name}.svg",
                      QSize(), QIcon.Normal, QIcon.Off)
         item.setIcon(icon)
         item.icon_name = icon_name

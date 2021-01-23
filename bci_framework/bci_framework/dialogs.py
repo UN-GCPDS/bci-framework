@@ -55,12 +55,16 @@ class Dialogs:
     @staticmethod
     def save_filename(parent, title, start_dir, filter):
         """"""
-
         path = QtWidgets.QFileDialog.getSaveFileName(parent,
-
                                                      title,
-
-
                                                      start_dir, filter)
+
+        # dial = QtWidgets.QFileDialog(parent)
+        # dial.setStyleSheet("")
+        # dial.setWindowTitle(title)
+        # dial.getSaveFileName()
+
+        # if dial.exec_() == QtWidgets.QFileDialog.Accepted:
+            # path = dial.selectedFiles()[0]
 
         return path[0]

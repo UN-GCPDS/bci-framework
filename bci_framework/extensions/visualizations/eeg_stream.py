@@ -7,8 +7,14 @@ from matplotlib import pyplot
 from cycler import cycler
 import logging
 
+import os
+import sys
 
-pyplot.style.use('dark_background')
+if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
+    pass
+else:
+    pyplot.style.use('dark_background')
+
 q = matplotlib.cm.get_cmap('rainbow')
 matplotlib.rcParams['axes.prop_cycle'] = cycler(
     color=[q(m) for m in np.linspace(0, 1, 16)]
@@ -198,8 +204,8 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
             self.boundary_line.set_segments(segments)
         elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux /
-                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux
+                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
         else:

@@ -1,6 +1,7 @@
 # syntax.py
 
 import sys
+import os
 
 from PySide2.QtCore import QRegExp as QRegularExpression
 from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
@@ -26,19 +27,35 @@ def format(color, style='', fontsize=None):
 
 
 # Syntax styles that can be shared by all languages
-STYLES = {
-    'keyword': format('#8080ff', 'bold'),
-    'keyword2': format('#afdfff'),
-    'comment': format('#7efb7e'),
-    'operator': format('white', 'bold'),
-    'decorator': format('#ffcf7f'),
-    'brace': format('white'),
-    'def': format('#7cf7f7', 'bold'),
-    'class': format('#4444ff', 'bold'),
-    'string': format('#ff80ff'),
-    'string2': format('#ac5656'),
-    'numbers': format('#72e4e4'),
-}
+if '--light' in sys.argv:
+    STYLES = {
+        'operator': format('black', 'bold'),
+        'brace': format('black'),
+        'numbers': format('#007f7f'),
+        'decorator': format('#805000'),
+        'comment': format('#007f00'),
+        'def': format('#007f7f', 'bold'),
+        'keyword': format('#00007f', 'bold'),
+        'class': format('#0000ff', 'bold'),
+        'keyword2': format('#407090'),
+        'string': format('#7f007f'),
+        'string2': format('#7f0000'),
+
+    }
+else:
+    STYLES = {
+        'keyword': format('#8080ff', 'bold'),
+        'keyword2': format('#afdfff'),
+        'comment': format('#7efb7e'),
+        'operator': format('white', 'bold'),
+        'decorator': format('#ffcf7f'),
+        'brace': format('white'),
+        'def': format('#7cf7f7', 'bold'),
+        'class': format('#4444ff', 'bold'),
+        'string': format('#ff80ff'),
+        'string2': format('#ac5656'),
+        'numbers': format('#72e4e4'),
+    }
 
 
 class PythonHighlighter(QSyntaxHighlighter):
@@ -98,7 +115,7 @@ class PythonHighlighter(QSyntaxHighlighter):
         rules += [(r'\b%s\b' % b, 0, STYLES['brace'])
                   for b in PythonHighlighter.braces]
 
-        rules += [(r'( )', 0, format('#4f5b62'))]
+        rules += [(r'( )', 0, format(os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')))]
 
         # All other rules
         rules += [
