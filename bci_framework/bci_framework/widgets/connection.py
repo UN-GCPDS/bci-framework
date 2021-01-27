@@ -30,37 +30,20 @@ from PySide2.QtGui import QCursor
 from kafka import KafkaConsumer, KafkaProducer
 from datetime import datetime
 
-# ########################################################################
-# class KafkaConsumerThread(QtCore.QThread):
-    # """"""
-    # over = QtCore.Signal(object)
 
-    # # ----------------------------------------------------------------------
-    # def set_host(self, host):
-        # """"""
-        # self.host = host
+########################################################################
+class OpenBCIThread(QtCore.QThread):
+    """"""
+    over = QtCore.Signal(object)
 
-    # # ----------------------------------------------------------------------
-    # def stop(self):
-        # """"""
-        # self.terminate()
+    # ----------------------------------------------------------------------
+    def stop(self):
+        """"""
+        self.terminate()
 
-    # # ----------------------------------------------------------------------
-    # def run(self):
-        # """"""
-        # bootstrap_servers = [f'{self.host}:9092']
-        # topics = ['annotation', 'marker']
-        # self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
-                                      # value_deserializer=pickle.loads,
-                                      # auto_offset_reset='latest',
-                                      # )
-
-        # self.consumer.subscribe(topics)
-        # now = datetime.now()
-
-        # for message in self.consumer:
-            # message.value[self.host] = now
-            # self.over.emit({'topic': message.topic, 'value': message.value})
+    # ----------------------------------------------------------------------
+    def run(self):
+        """"""
 
 
 ########################################################################
@@ -105,6 +88,7 @@ class Connection:
     def load_config(self):
         """"""
         self.core.config.load_widgets('connection', self.config)
+        self.core.update_kafka(self.parent_frame.comboBox_host.currentText())
 
     # ----------------------------------------------------------------------
     def update_config(self, *args, **kwargs):
@@ -164,53 +148,71 @@ class Connection:
         # self.dialog_conection.show()
 
     # ----------------------------------------------------------------------
+    def handle_exception(self):
+        """"""
+        checks = []
+
+        if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
+            checks.extend(['* Check that USB dongle were connected',
+                           '* Verify serial permissions',
+                           ])
+
+        if self.parent_frame.comboBox_host.currentText() != 'localhost':
+            checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
+                           '* This machine must have access to the server or running on the same network.',
+                           ])
+        # else:
+            # checks.extend([f'* Verify that Kafka is running on this machine',
+                           # ])
+
+        if hasattr(self.core, 'conection_message'):
+            checks.extend([self.core.conection_message])
+            self.core.conection_message = ""
+        checks = '\n'.join(checks)
+        Dialogs.critical_message(self.parent_frame, 'Connection error', f"{checks}")
+
+    # ----------------------------------------------------------------------
     def on_connect(self, toggled):
         """"""
-        if toggled:
-            # self.openbci_connect()
+        if toggled:  # Connect
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
+            self.core.update_kafka(self.parent_frame.comboBox_host.currentText())
             if '--debug' in sys.argv:
                 self.openbci_connect()
-                QApplication.restoreOverrideCursor()
             else:
                 try:
                     self.openbci_connect()
+                    QApplication.restoreOverrideCursor()
                 except:
                     QApplication.restoreOverrideCursor()
-                    checks = []
+                    self.core.status_bar(message='')
+                    self.handle_exception()
+                    self.on_connect(False)
 
-                    if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
-                        checks.extend(['* Check that USB dongle were connected',
-                                       '* Verify serial permissions',
-                                       ])
+        else:   # Disconnect
 
-                    if self.parent_frame.comboBox_host.currentText() != 'localhost':
-                        checks.extend([f'* The server may not running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
-                                       '* This machine must have access to the server or running in the same network.',
-                                       ])
-                    else:
-                        checks.extend([f'* Verify that Kafka is running on this machine',
-                                       ])
-
-                    checks = '\n'.join(checks)
-                    Dialogs.critical_message(
-                        self.parent_frame, 'Connection error', f"{checks}")
-
-                    self.parent_frame.pushButton_connect.setChecked(False)
-
-                    self.openbci_disconnect()
-
-                finally:
-                    QApplication.restoreOverrideCursor()
-
-        else:
+            try:
+                self.openbci.stop_stream()
+            except:
+                pass
+            try:
+                del self.openbci
+            except:
+                pass
             self.core.stop_kafka()
-            self.openbci_disconnect()
+
+            if self.parent_frame.checkBox_test_signal.isChecked():
+                self.parent_frame.groupBox_settings.setEnabled(False)
+                self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
+
+            self.parent_frame.pushButton_connect.setText('Connect')
+            self.parent_frame.pushButton_connect.setChecked(False)
+            self.core.status_bar(right_message=('Disconnected', None))
             self.parent_frame.checkBox_view_impedances.setChecked(False)
             self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
     # ----------------------------------------------------------------------
+
     def openbci_connect(self):
         """"""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
@@ -255,13 +257,10 @@ class Connection:
 
         channels = self.core.montage.get_montage()
 
+        # Connect
         self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
                              daisy=prop.DAISY, montage=channels, streaming_package_size=int(streaming_sample_rate))
-
         self.openbci.command(sample_rate)
-        self.core.update_kafka(host)
-
-        # self.openbci.command(boardmode)
 
         # Some time this command not take effect
         boardmode_setted = False
@@ -276,8 +275,8 @@ class Connection:
         self.boardmode = self.openbci.boardmode
         if not boardmode_setted:
             logging.warning('Boardmode not setted!')
-            Dialogs.warning_message(
-                self.parent_frame, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
+            # Dialogs.warning_message(
+                # self.parent_frame, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
             self.parent_frame.comboBox_boardmode.setCurrentText(
                 self.boardmode.capitalize())
 
@@ -293,8 +292,7 @@ class Connection:
                 CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
             self.openbci.command(test_signal)
 
-            self.core.status_bar(
-                f'OpenBCI connected on test mode ({test_signal}) to <b>{endpoint}</b> running in <b>{host}</b>')
+            self.core.status_bar(message=f'OpenBCI connected on test mode ({test_signal}) to {endpoint} running in {host}')
 
         else:
             all_channels = set(range(16 if prop.DAISY else 8))
@@ -303,8 +301,7 @@ class Connection:
             self.openbci.deactivate_channel(deactivated)
             self.openbci.activate_channel(used_channels)
 
-            self.core.status_bar(
-                f'OpenBCI connected and streaming in <b>{self.boardmode}</b> mode to <b>{endpoint}</b> running in <b>{host}</b>')
+            self.core.status_bar(message=f'OpenBCI connected and streaming in {self.boardmode} mode to {endpoint} running in {host}')
 
         self.openbci.start_stream()
 
@@ -332,19 +329,20 @@ class Connection:
                                           srb2=srb2,
                                           srb1=srb1)
 
-    # ----------------------------------------------------------------------
-    def openbci_disconnect(self):
-        """"""
-        # self.openbci.
-        if self.parent_frame.checkBox_test_signal.isChecked():
-            self.parent_frame.groupBox_settings.setEnabled(False)
-            self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
-        try:
-            self.openbci.stop_stream()
-        except:
-            pass
-        self.parent_frame.pushButton_connect.setText('Connect')
-        self.core.status_bar(f'Disconnect')
+    # # ----------------------------------------------------------------------
+    # def openbci_disconnect(self):
+        # """"""
+        # # self.openbci.
+        # if self.parent_frame.checkBox_test_signal.isChecked():
+            # self.parent_frame.groupBox_settings.setEnabled(False)
+            # self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
+        # try:
+            # self.openbci.stop_stream()
+        # except:
+            # pass
+        # self.parent_frame.pushButton_connect.setText('Connect')
+        # self.parent_frame.pushButton_connect.setChecked(False)
+        # self.core.status_bar(right_message=('Disconnect', None))
 
     # ----------------------------------------------------------------------
     def update_environ(self):
