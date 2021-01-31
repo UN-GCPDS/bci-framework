@@ -4,18 +4,23 @@
 from PySide2 import QtGui, QtCore
 from PySide2.QtWidgets import QCompleter
 
-from .snippets import KEYWORDS, snippets
+from .snippets import STIMULI_KEYWORDS, ANALISYS_KEYWORDS, analisys_snippets, stimuli_snippets, snippets
 
 
 ########################################################################
 class MyDictionaryCompleter(QCompleter):
     """"""
     insertText = QtCore.Signal(str)
-    snippets = snippets
 
-    def __init__(self, myKeywords=None, parent=None):
+    def __init__(self, mode, parent=None):
 
-        QCompleter.__init__(self, KEYWORDS, parent)
+        if mode == 'stimuli':
+            QCompleter.__init__(self, STIMULI_KEYWORDS, parent)
+            self.snippets = {**snippets, **stimuli_snippets}
+        elif mode == 'visualization':
+            QCompleter.__init__(self, ANALISYS_KEYWORDS, parent)
+            self.snippets = {**analisys_snippets, **snippets}
+
         self.connect(self, QtCore.SIGNAL("activated(const QString&)"), self.changeCompletion)
         self.connect(self, QtCore.SIGNAL("highlighted(const QString&)"), self.changeHighlighted)
 

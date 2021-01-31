@@ -170,8 +170,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -253,8 +253,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -318,8 +318,8 @@ class Projects:
         """"""
         editor = BCIEditor(linenumber=self.parent_frame.textEdit_linenumber,
                            extension=os.path.splitext(module)[1])
-        completer = MyDictionaryCompleter()
-        editor.setCompleter(completer)
+        # completer = MyDictionaryCompleter()
+        # editor.setCompleter(completer)
 
         tab = self.parent_frame.tabWidget_project.addTab(
             editor, os.path.split(module)[1])
@@ -327,9 +327,17 @@ class Projects:
             tab).setContentsMargins(0, 0, 0, 0)
         self.parent_frame.tabWidget_project.widget(tab).editor = editor
         with open(module, 'r') as file:
-            editor.setPlainText(file.read())
+            content = file.read()
+            editor.setPlainText(content)
             editor.path = module
             editor.module = module
+
+            if 'bci_framework.extensions.stimuli_delivery' in content:
+                completer = MyDictionaryCompleter(mode='stimuli')
+                editor.setCompleter(completer)
+            elif 'bci_framework.projects.figure' in content:
+                completer = MyDictionaryCompleter(mode='visualization')
+                editor.setCompleter(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
                 tab, f"{self.parent_frame.tabWidget_project.tabText(tab).strip('*')}*"))
@@ -394,8 +402,8 @@ class Projects:
             # icon_name = 'icon_dev'
             # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 

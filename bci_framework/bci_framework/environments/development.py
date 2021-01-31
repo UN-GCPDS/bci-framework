@@ -8,6 +8,7 @@ from PySide2.QtGui import QTextCursor
 
 # from ..subprocess_script import LoadSubprocess
 from ..stream_handler import VisualizationWidget
+from ..editor import MyDictionaryCompleter
 
 
 ########################################################################
@@ -231,7 +232,15 @@ class Development:
                 editor = self.parent_frame.tabWidget_project.widget(i)
 
                 with open(editor.path, 'w') as file:
-                    file.write(editor.toPlainText())
+                    content = editor.toPlainText()
+                    file.write(content)
+
+                    if 'bci_framework.extensions.stimuli_delivery' in content:
+                        completer = MyDictionaryCompleter(mode='stimuli')
+                        editor.setCompleter(completer)
+                    elif 'bci_framework.projects.figure' in content:
+                        completer = MyDictionaryCompleter(mode='visualization')
+                        editor.setCompleter(completer)
 
                     self.parent_frame.tabWidget_project.setTabText(
                         i, tab_text.strip('*'))

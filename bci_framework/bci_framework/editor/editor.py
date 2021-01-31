@@ -338,7 +338,7 @@ class BCIEditor(QTextEdit):
 
     def setCompleter(self, completer):
         if self.completer:
-            self.disconnect(self.completer, 0, self, 0)
+            self.disconnect(self.completer)
         if not completer:
             return
 
