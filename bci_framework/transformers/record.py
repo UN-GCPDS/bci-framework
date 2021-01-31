@@ -29,9 +29,6 @@ class RecordTransformer:
         filename = now.strftime('%x-%X').replace('/', '_').replace(':', '_')
         records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(records_dir, exist_ok=True)
-
-        # if '--debug' in sys.argv:
-
         self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
         # self.writer = HDF5_Writer(f'{filename}.h5')

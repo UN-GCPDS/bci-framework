@@ -129,8 +129,8 @@ def main():
     frame = BCIFramework()
     frame.main.showMaximized()
 
-    if not '--debug' in sys.argv:
-        splash.finish(frame.main)
+    # if not '--debug' in sys.argv:
+        # splash.finish(frame.main)
 
     app.exec_()
 

@@ -9,7 +9,7 @@ from PySide2.QtWidgets import QDialogButtonBox
 from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
-from . import doc_urls
+# from . import doc_urls
 from .dialogs import Dialogs
 from .configuration import ConfigurationFrame
 

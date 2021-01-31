@@ -57,13 +57,15 @@ class ConfigurationFrame(QMainWindow):
     # ----------------------------------------------------------------------
     def restore_projects(self, *args, **kwargs):
         """"""
-        shutil.move(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
-                    os.path.join(os.environ['BCISTREAM_HOME'], 'default_projects'))
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'projects'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
     def reset_projects(self, *args, **kwargs):
         """"""
         shutil.rmtree(os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
 
     # ----------------------------------------------------------------------
     def remove_records(self, *args, **kwargs):

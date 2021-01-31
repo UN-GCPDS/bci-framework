@@ -29,12 +29,8 @@ class Projects:
         self.parent_frame = parent
         self.core = core
 
-        if '--debug' in sys.argv:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_ROOT'), 'default_projects')
-        else:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_HOME'), 'projects')
+        self.projects_dir = os.path.join(
+            os.getenv('BCISTREAM_HOME'), 'projects')
 
         os.makedirs(self.projects_dir, exist_ok=True)
         self.parent_frame.label_projects_path.setText(self.projects_dir)
@@ -174,8 +170,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -257,8 +253,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -398,8 +394,8 @@ class Projects:
             # icon_name = 'icon_dev'
             # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 

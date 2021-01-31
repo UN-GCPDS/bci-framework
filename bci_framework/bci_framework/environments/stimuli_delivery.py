@@ -23,12 +23,12 @@ class StimuliDelivery:
         self.parent_frame = core.main
         self.core = core
 
-        if '--debug' in sys.argv:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_ROOT'), 'default_projects')
-        else:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_HOME'), 'projects')
+        # if '--debug' in sys.argv:
+            # self.projects_dir = os.path.join(
+                # os.getenv('BCISTREAM_ROOT'), 'default_projects')
+        # else:
+            # self.projects_dir = os.path.join(
+                # os.getenv('BCISTREAM_HOME'), 'projects')
 
         self.connect()
 

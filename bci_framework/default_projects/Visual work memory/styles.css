@@ -1,0 +1,30 @@
+form {
+    margin: 0px;
+    }
+
+
+.mdc-typography--headline4 {
+    padding-bottom: 30px;
+    display: inline-flex;
+    }
+
+
+.bci_stimuli {
+
+    position: relative;
+
+}
+
+
+
+
+#hint {
+
+    font-size: 400px;
+    color: #4dd0e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+
+}
