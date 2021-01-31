@@ -6,6 +6,7 @@ from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer
 import logging
 
+from datetime import datetime
 from bci_framework.extensions import properties as prop
 
 clients = []
@@ -117,6 +118,7 @@ class WSHandler(WebSocketHandler):
     def bci_annotation(self, **kwargs):
         """"""
         annotation = kwargs['annotation']
+        # annotation['onset'] = datetime.now().timestamp()
 
         if hasattr(self, 'marker_producer'):
             self.marker_producer.send('annotation', annotation)

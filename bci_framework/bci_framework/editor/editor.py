@@ -1,7 +1,8 @@
-from PySide2.QtWidgets import QTextEdit
-from PySide2.QtGui import QTextOption, QWheelEvent, QKeySequence
+from PySide2.QtWidgets import QTextEdit, QCompleter
+from PySide2.QtGui import QTextOption, QWheelEvent, QKeySequence, QTextCursor
 from PySide2.QtCore import Qt, QPoint
-# from PySide2 import QtGui, QtCore
+# from PySide2 import QtGui
+
 from .highlighters import PythonHighlighter, CSSHighlighter
 
 import os
@@ -21,11 +22,16 @@ class BCIEditor(QTextEdit):
 
         self.linenumber = linenumber
 
+        if 'light' in os.environ.get('QTMATERIAL_THEME'):
+            font_color = 'black'
+        else:
+            font_color = 'white'
+
         # editor = QTextEdit()
         self.setStyleSheet(f"""
         QTextEdit {{
         background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
-        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
+        color: {font_color};
         height: 18px;
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
@@ -46,7 +52,10 @@ class BCIEditor(QTextEdit):
 
         self.connect_()
 
+        self.completer = None
+
     # ----------------------------------------------------------------------
+
     def connect_(self):
         """"""
         if self.linenumber:
@@ -79,6 +88,8 @@ class BCIEditor(QTextEdit):
         document = self.document()
         option = QTextOption()
 
+        # option.setFlags(QTextOption.ShowTabsAndSpaces)
+
         document.setDefaultTextOption(option)
         self.setAcceptRichText(False)
         self.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
@@ -86,13 +97,31 @@ class BCIEditor(QTextEdit):
     # ----------------------------------------------------------------------
     def keyPressEvent(self, event):
         """"""
+        completionPrefix = self.textUnderCursor()
+        if len(completionPrefix) < 3 and self.completer.popup().isVisible():
+            self.completer.popup().hide()
+
         # Replace Tabs with Spaces
+        # if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
+
+            # if self.completer and self.completer.popup().isVisible():
+                # self.completer.insertText.emit(self.completer.last_highlighted)
+                # self.completer.popup().hide()
+            # else:
+                # tc = self.textCursor()
+                # tc.insertText(" " * 4)
+            # return
+
+        if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
+            if self.completer and self.completer.popup().isVisible():
+                self.completer.insertText.emit(self.completer.last_highlighted)
+                self.completer.popup().hide()
+                return
+
         if event.key() == Qt.Key_Tab:
             tc = self.textCursor()
             tc.insertText(" " * 4)
             return
-
-        print(event.key())
 
         # Toggle comment
         if (event.key() == Qt.Key_Period) and bool(event.modifiers() & Qt.ControlModifier):
@@ -131,6 +160,21 @@ class BCIEditor(QTextEdit):
             return self._on_back_space(event)
 
         super().keyPressEvent(event)
+
+        # if event.key() in (
+                # Qt.Key_Enter,
+                # Qt.Key_Return,
+                # Qt.Key_Escape,
+                # Qt.Key_Tab,
+                # Qt.Key_Backtab, ) or event.modifiers() in (Qt.ControlModifier, ):
+
+                # return
+        if event.text():
+            completionPrefix = self.textUnderCursor()
+            if len(completionPrefix) >= 3:
+                self.show_completer(completionPrefix)
+            elif self.completer.popup().isVisible():
+                self.completer.popup().hide()
 
     # ----------------------------------------------------------------------
     def _on_back_space(self, event):
@@ -285,3 +329,110 @@ class BCIEditor(QTextEdit):
                 start = line.find(line.replace(' ', '')[0])
                 tc.insertText(" " * start + f'{char}' + line[start:])
 
+
+# |--------------------------End of __init__------------------------------------|
+# |-----------------------------------------------------------------------------|
+# setCompleter
+# |-----------------------------------------------------------------------------|
+
+
+    def setCompleter(self, completer):
+        if self.completer:
+            self.disconnect(self.completer, 0, self, 0)
+        if not completer:
+            return
+
+        completer.setWidget(self)
+        completer.setCompletionMode(QCompleter.PopupCompletion)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer = completer
+#        self.connect(self.completer,
+#            QtCore.SIGNAL("activated(const QString&)"), self.insertCompletion)
+        self.completer.insertText.connect(self.insertCompletion)
+# |-----------------------End of setCompleter-------------------------------------|
+# |-----------------------------------------------------------------------------|
+# insertCompletion
+# |-----------------------------------------------------------------------------|
+
+    def insertCompletion(self, completion):
+        tc = self.textCursor()
+
+        self.textUnderCursor(tc)
+        tc.removeSelectedText()
+
+        pos = tc.position()  # len(self.completer.completionPrefix())
+
+        if completion in self.completer.snippets:
+            completion = self.completer.snippets[completion]
+
+        # extra = (len(completion) - len(self.completer.completionPrefix()))
+        extra = completion  # [-extra:]
+
+        text_position = extra.find("[!]")
+        extra = extra.replace("[!]", "")
+
+        position_in_line = tc.positionInBlock()
+        extra = extra.replace("\n", "\n" + " " * position_in_line)
+
+        # tc.movePosition(QTextCursor.Left)
+        # tc.movePosition(QTextCursor.EndOfWord)
+        tc.insertText(extra)
+
+        if text_position > 0:
+            tc.setPosition(pos + text_position + (4 * extra[:text_position].count('\n')))
+
+        self.setTextCursor(tc)
+
+
+# |-----------------------End of insertCompletion-------------------------------|
+# |-----------------------------------------------------------------------------|
+# textUnderCursor
+# |-----------------------------------------------------------------------------|
+
+    def textUnderCursor(self, tc=None):
+
+        if tc is None:
+            tc = self.textCursor()
+
+        # word like: cdc|
+        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+
+        # word like: cdc.|
+        if tc.selectedText().startswith("."):
+            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+
+        # word like: cdc.pri|
+        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        if tc.selectedText().startswith("."):
+            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        else:
+            tc.movePosition(tc.WordRight, tc.KeepAnchor)
+
+        # tc.select(QTextCursor.WordUnderCursor)
+        return tc.selectedText()
+
+
+# |-----------------------End of textUnderCursor--------------------------------|
+# |-----------------------------------------------------------------------------|
+# focusInEvent
+# |-----------------------------------------------------------------------------|
+    # ---override
+
+    def focusInEvent(self, event):
+        if self.completer:
+            self.completer.setWidget(self)
+        QTextEdit.focusInEvent(self, event)
+# |-----------------------End of focusInEvent-------------------------------------|
+# |-----------------------------------------------------------------------------|
+
+    # ----------------------------------------------------------------------
+    def show_completer(self, completionPrefix):
+        """"""
+        self.completer.setCompletionPrefix(completionPrefix)
+        popup = self.completer.popup()
+        popup.setCurrentIndex(self.completer.completionModel().index(0, 0))
+        cr = self.cursorRect()
+        cr.setWidth(self.completer.popup().sizeHintForColumn(0) + self.completer.popup().verticalScrollBar().sizeHint().width() + 15)
+        cr.setHeight(30)
+
+        self.completer.complete(cr)

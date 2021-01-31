@@ -117,46 +117,24 @@ class Records:
 
         self.parent_frame.tableWidget_records.setHorizontalHeaderLabels(
             ['Duration', 'Datetime', 'Name'])
-
-        # for i, text in enumerate():
-        # self.parent.tableWidget_records.horizontalHeaderItem(
-        # i).setText(text)
-
-        # row = self.parent.tableWidget_records.rowCount()
         records = filter(lambda s: s.endswith('h5'), os.listdir(self.records_dir))
 
-        for i, filename in enumerate(records):
+        i = 0
+        for filename in records:
+            try:
+                metadata = self.get_metadata(filename)[:3]
+            except:
+                continue
+
             self.parent_frame.tableWidget_records.insertRow(i)
-
-            if '--debug' in sys.argv:
-                try:
-                    for j, value in enumerate(self.get_metadata(filename)[:3]):
-                        item = QTableWidgetItem(value)
-                        item.previous_name = value
-                        if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
-                            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-                        self.parent_frame.tableWidget_records.setItem(i, j, item)
-                except (TypeError, IndexError):
-                    self.parent_frame.tableWidget_records.removeRow(i)
-                    pass
-
-            else:
-                try:
-                    for j, value in enumerate(self.get_metadata(filename)[:3]):
-                        item = QTableWidgetItem(value)
-                        item.previous_name = value
-                        if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
-                            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-                        self.parent_frame.tableWidget_records.setItem(i, j, item)
-                except Exception as msg:
-                    self.parent_frame.tableWidget_records.removeRow(i)
-                    pass
+            for j, value in enumerate(metadata):
+                item = QTableWidgetItem(value)
+                item.previous_name = value
+                if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
+                    item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                self.parent_frame.tableWidget_records.setItem(i, j, item)
 
         self.parent_frame.tableWidget_records.sortByColumn(1)
-
-        # for i, text in enumerate(['Duration', 'Datetime', 'Name']):
-        # self.parent.tableWidget_records.horizontalHeaderItem(
-        # i).setText(text)
 
     # ----------------------------------------------------------------------
     def get_metadata(self, filename, light=True):

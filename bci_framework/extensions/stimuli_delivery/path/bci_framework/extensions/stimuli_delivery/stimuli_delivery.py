@@ -193,8 +193,8 @@ class StimuliAPI:
         """"""
         self.ws.send({
             'action': 'annotation',
-            'annotation': {'onset': datetime.now().timestamp(),
-                           'duration': 0,
+            'annotation': {'duration': 0,
+                           # 'onset': datetime.now().timestamp(),
                            'description': description},
         })
 

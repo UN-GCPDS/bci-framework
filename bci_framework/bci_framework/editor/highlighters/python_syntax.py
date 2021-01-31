@@ -94,6 +94,11 @@ class PythonHighlighter(QSyntaxHighlighter):
         '\{', '\}', '\(', '\)', '\[', '\]',
     ]
 
+    # space_format = QTextCharFormat()
+    # space_format.setFontPointSize(2)
+    # space_format.setFontStretch(500)
+    # space_format.setVerticalAlignment(QTextCharFormat.AlignTop)
+
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
 
@@ -115,10 +120,15 @@ class PythonHighlighter(QSyntaxHighlighter):
         rules += [(r'\b%s\b' % b, 0, STYLES['brace'])
                   for b in PythonHighlighter.braces]
 
-        rules += [(r'( )', 0, format(os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')))]
+        # rules += [(r'( )', 0, format(os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')))]
 
         # All other rules
         rules += [
+
+
+            # (r'( )\1*', 1, self.space_format),
+            # (r'([^ ]){1}[ ]', 0, self.space_format2),
+
             # 'self'
             # (r'\bself\b', 0, STYLES['self']),
 
@@ -157,8 +167,6 @@ class PythonHighlighter(QSyntaxHighlighter):
 
             # Decorators
             (r'^[\s]*(@[^(]*)', 1, STYLES['decorator']),
-
-
 
 
 

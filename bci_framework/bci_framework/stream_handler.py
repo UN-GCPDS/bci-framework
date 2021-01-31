@@ -26,26 +26,27 @@ class VisualizationsMenu:
     def build_menu_visualization(self, visualization, debugger=False):
         """"""
         self.menubar = QMenuBar(self)
+        self.menubar.clear()
         self.menubar.setMinimumWidth(1e4)
 
         self.accent_menubar = QMenuBar(self)
 
         # Title
         if debugger:
-            menu_visualization = QMenu(f"Debugging: {visualization}")
+            menu_stimuli = QMenu(f"Debugging: {visualization}")
         else:
             if visualization:
-                menu_visualization = QMenu(f'{visualization } 🞃')
+                menu_stimuli = QMenu(f'{visualization } 🞃')
             else:
-                menu_visualization = QMenu('Visualization 🞃')
+                menu_stimuli = QMenu('Data analysis 🞃')
 
         # Add visualizations
         for viz in self.visualizations_list:
             if viz != visualization:
-                menu_visualization.addAction(QAction(viz, menu_visualization,
-                                                     triggered=self.set_visualization(viz)))
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_visualization(viz)))
 
-        self.accent_menubar.addMenu(menu_visualization)
+        self.accent_menubar.addMenu(menu_stimuli)
 
         # Menu with accent color
         self.accent_menubar.setStyleSheet(f"""
@@ -94,27 +95,29 @@ class VisualizationsMenu:
     def build_menu_stimuli(self, visualization, debugger):
         """"""
         self.menubar = QMenuBar(self)
+        self.menubar.clear()
 
-        self.right_menubar = QMenuBar(self)
+        self.accent_menubar = QMenuBar(self)
+        self.accent_menubar.clear()
         self.menubar.setMinimumWidth(1e4)
 
         # Title
         if debugger:
-            menu_visualization = QMenu(f"Debugging: {visualization}")
+            menu_stimuli = QMenu(f"Debugging: {visualization}")
         else:
             if visualization:
-                menu_visualization = QMenu(visualization + ' 🞃')
+                menu_stimuli = QMenu(visualization + ' 🞃')
             else:
-                menu_visualization = QMenu('Stimuli' + ' 🞃')
+                menu_stimuli = QMenu('Stimuli' + ' 🞃')
 
         for viz in self.visualizations_list:
             if viz != visualization:
-                menu_visualization.addAction(QAction(viz, menu_visualization,
-                                                     triggered=self.set_visualization(viz)))
-        # self.menubar.addMenu(menu_visualization)
-        self.right_menubar.addMenu(menu_visualization)
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_visualization(viz)))
+        # self.menubar.addMenu(menu_stimuli)
+        self.accent_menubar.addMenu(menu_stimuli)
 
-        self.right_menubar.setStyleSheet(f"""
+        self.accent_menubar.setStyleSheet(f"""
         QMenuBar::item {{
             background-color: {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
             color: {os.getenv('QTMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
@@ -122,9 +125,9 @@ class VisualizationsMenu:
 
         """)
 
-        # self.menubar.addMenu(menu_visualization)
+        # self.menubar.addMenu(menu_stimuli)
         self.menubar.setCornerWidget(
-            self.right_menubar, corner=Qt.TopLeftCorner)
+            self.accent_menubar, corner=Qt.TopLeftCorner)
 
         # View
         menu_view = QMenu("View")
@@ -259,21 +262,15 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
     def save_img(self):
         """"""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
-        filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
-        self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
-
+        # filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
         captures_dir = os.path.join(self.projects_dir, self.current_viz, 'captures')
+        filename = os.path.join(captures_dir, name)
         if not os.path.exists(captures_dir):
             os.makedirs(captures_dir, exist_ok=True)
-
-        dst = os.path.join(captures_dir, name)
-
-        if dst:
-            shutil.move(filename, dst)
-        else:
-            os.remove(filename)
+        self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
 
     # ----------------------------------------------------------------------
+
     def update_menu_bar(self, visualization=None, debugger=False):
         """"""
         if self.is_visualization:

@@ -10,6 +10,9 @@ from pathlib import Path
 import psutil
 import logging
 import json
+import shutil
+
+from .bci_framework.config_manager import ConfigManager
 
 import signal
 
@@ -22,20 +25,21 @@ logging.getLogger('matplotlib').setLevel(logging.ERROR)
 """A distributed processing tool, stimuli delivery, psychophysiological
 experiments, and real-time visualizations for OpenBCI."""
 
-
 os.environ.setdefault('APP_NAME', 'BCI Framework')
-os.environ.setdefault(
-    'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
-os.environ.setdefault('BCISTREAM_HOME', os.path.join(
-    Path.home(), '.bciframework'))
-# os.environ.setdefault('BCISTREAM_PIDS', os.path.join(
-    # os.getenv('BCISTREAM_HOME'), '.pids'))
-os.environ.setdefault('BCISTREAM_TMP', os.path.join(
-    os.getenv('BCISTREAM_HOME'), 'tmp'))
+os.environ.setdefault('BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
+os.environ.setdefault('BCISTREAM_HOME', os.path.join(Path.home(), '.bciframework'))
+# os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
 
 
-if not os.path.exists(os.getenv('BCISTREAM_TMP')):
-    os.mkdir(os.getenv('BCISTREAM_TMP'))
+# Create configuration if not exists
+if not os.path.exists(os.path.join(os.getenv('BCISTREAM_HOME', '.bciframework'))):
+    shutil.copy(os.path.join(os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'),
+                os.path.join(os.getenv('BCISTREAM_HOME', '.bciframework')))
+
+# Copy default_projects if not exists
+if not os.path.exists(os.path.join(os.getenv('BCISTREAM_HOME', 'default_projects'))):
+    shutil.copy(os.path.join(os.environ['BCISTREAM_HOME'], 'default_projects'),
+                os.path.join(os.getenv('BCISTREAM_ROOT', 'default_projects')))
 
 
 from .bci_framework.qtgui.icons import generate_icons
@@ -100,25 +104,21 @@ def main():
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
-    if not '--debug' in sys.argv:
-        pixmap = QPixmap(os.path.join("assets", "splash.svg"))
-        splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-        splash.setMask(pixmap.mask())
-        splash.show()
-        # splash.setStyleSheet("""
-            # font-family: mono;
-            # font-weight: normal;
-            # font-size: 11pt;
-            # """)
+    # if not '--debug' in sys.argv:
+        # pixmap = QPixmap(os.path.join("assets", "splash_dark.svg"))
+        # splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+        # splash.setMask(pixmap.mask())
+        # splash.show()
+
     extra = {'danger': '#dc3545',
-             'warning': '#ffc107',
+             'warning': '#e2a963',
              'success': '#17a2b8',
              }
 
-    if '--light' in sys.argv:
-        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True, extra=extra)
+    if ConfigManager().get('framework', 'theme') == 'light':
+        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True, extra=extra, parent='bci_framework_qt_material')
     else:
-        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
+        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra, parent='bci_framework_qt_material')
 
     stylesheet = app.styleSheet()
     with open(os.path.join(os.path.dirname(__file__), 'custom.css')) as file:

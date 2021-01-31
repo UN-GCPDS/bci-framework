@@ -1,6 +1,8 @@
 from PySide2.QtUiTools import QUiLoader
 from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtCore import Qt, QTimer
+from PySide2.QtCore import Qt, QTimer, QSize
+from PySide2.QtGui import QPixmap
+from PySide2.QtWidgets import QDesktopWidget, QMainWindow
 
 
 from PySide2.QtWidgets import QDialogButtonBox
@@ -9,9 +11,11 @@ from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 from . import doc_urls
 from .dialogs import Dialogs
+from .configuration import ConfigurationFrame
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import NoBrokersAvailable
+
 
 import pickle
 
@@ -29,6 +33,8 @@ import json
 class Kafka(QtCore.QThread):
     """"""
     over = QtCore.Signal(object)
+    message = QtCore.Signal()
+    continue_ = True
 
     # ----------------------------------------------------------------------
     def set_host(self, host):
@@ -38,31 +44,38 @@ class Kafka(QtCore.QThread):
     # ----------------------------------------------------------------------
     def stop(self):
         """"""
+        self.continue_ = False
         self.terminate()
 
     # ----------------------------------------------------------------------
     def run(self):
         """"""
-        self.create_produser()
-        self.create_consumer()
+        try:
+            self.create_produser()
+            self.create_consumer()
+        except:
+            self.message.emit()
+            self.stop()
 
     # ----------------------------------------------------------------------
     def create_consumer(self):
         """"""
-
         bootstrap_servers = [f'{self.host}:9092']
-        topics = ['annotation', 'marker']
+        topics = ['annotation', 'marker', 'eeg']
         self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
                                       value_deserializer=pickle.loads,
                                       auto_offset_reset='latest',
                                       )
 
         self.consumer.subscribe(topics)
-        # now = datetime.now()
 
         for message in self.consumer:
+            self.last_message = datetime.now()
             message.value['timestamp'] = message.timestamp / 1000
             self.over.emit({'topic': message.topic, 'value': message.value})
+
+            if not self.continue_:
+                return
 
     # ----------------------------------------------------------------------
     def create_produser(self):
@@ -73,10 +86,11 @@ class Kafka(QtCore.QThread):
                                       )
 
 ########################################################################
-class BCIFramework:
+class BCIFramework(QMainWindow):
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.main = QUiLoader().load(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'qtgui', 'main.ui'))
@@ -130,6 +144,8 @@ class BCIFramework:
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
         self.register_subprocess()
+
+        self.status_bar(message='', right_message=('Diconected', None))
 
     # ----------------------------------------------------------------------
     def set_icons(self):
@@ -258,6 +274,7 @@ class BCIFramework:
             lambda evt: webbrowser.open_new_tab('https://github.com/UN-GCPDS/bci-framework'))
 
         self.main.pushButton_show_about.clicked.connect(self.show_about)
+        self.main.pushButton_show_configurations.clicked.connect(self.show_configurations)
 
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
@@ -329,35 +346,56 @@ class BCIFramework:
                 item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def status_bar(self, message, append='', prepend=''):
+    def status_bar(self, message=None, right_message=None):
         """"""
         statusbar = self.main.statusBar()
-        if not hasattr(statusbar, 'label'):
-            statusbar.label = QtWidgets.QLabel(statusbar)
-            statusbar.label.mousePressEvent = lambda evt: self.main.tabWidget_widgets.setCurrentWidget(
-                self.main.tab_connection)
-            statusbar.addWidget(statusbar.label)
 
-        statusbar.label.setText(message)
+        if not hasattr(statusbar, 'right_label'):
+            statusbar.right_label = QtWidgets.QLabel(statusbar)
+            statusbar.right_label.setAlignment(Qt.AlignRight)
+            statusbar.right_label.mousePressEvent = lambda evt: self.main.tabWidget_widgets.setCurrentWidget(
+                self.main.tab_connection)
+            statusbar.addPermanentWidget(statusbar.right_label)
+
+            statusbar.btn = QtWidgets.QPushButton()
+            statusbar.btn.setProperty('class', 'connection')
+            statusbar.btn.setCheckable(True)
+            statusbar.addPermanentWidget(statusbar.btn)
+
+        if message:
+            statusbar.showMessage(message)
+
+        if right_message:
+            message, status = right_message
+            statusbar.right_label.setText(message)
+            if status is None:
+                statusbar.btn.setDisabled(True)
+            else:
+                statusbar.btn.setDisabled(False)
+                statusbar.btn.setChecked(not status)
 
     # ----------------------------------------------------------------------
+
     def style_welcome(self):
         """"""
         style = """
         *{
-        max-height: 50px;
-        min-height: 50px;
+        width:      80px;
+        height:     80px;
+        max-width:  80px;
+        min-width:  80px;
+        max-height: 80px;
+        min-height: 80px;
         }
         """
         self.main.pushButton_file.setStyleSheet(style)
         self.main.pushButton_brain.setStyleSheet(style)
         self.main.pushButton_imagery.setStyleSheet(style)
 
-        style = """
-        *{
-        border-color: #4dd0e1;
-
-        }
+        style = f"""
+        *{{
+        background-color: {os.environ.get('secondaryColor')}
+        }}
         """
         self.main.frame_3.setStyleSheet(style)
         self.main.frame_2.setStyleSheet(style)
@@ -366,11 +404,10 @@ class BCIFramework:
         style = """
         *{
         font-family: "Roboto Light";
-        font-weight: 400;
+        font-weight: 300;
         font-size: 18px;
         }
         """
-        # color: #4dd0e1;
 
         self.main.label_15.setStyleSheet(style)
         self.main.label_16.setStyleSheet(style)
@@ -385,8 +422,11 @@ class BCIFramework:
         about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 
-        about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(
-            lambda evt: about.destroy())
+        about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(lambda evt: about.destroy())
+
+        about.label.setMinimumSize(QSize(720, 200))
+        about.label.setMaximumSize(QSize(720, 200))
+        about.label.setPixmap(QPixmap(os.path.join('assets', 'banner.png')))
 
         about.tabWidget.setCurrentIndex(0)
 
@@ -398,36 +438,103 @@ class BCIFramework:
         }
         """)
 
+        center = QDesktopWidget().availableGeometry().center()
+        geometry = about.frameGeometry()
+        geometry.moveCenter(center)
+        about.move(geometry.topLeft())
+
         about.show()
 
     @QtCore.Slot(object)
     # ----------------------------------------------------------------------
     def on_kafka_event(self, value):
         """"""
+        self.main.pushButton_connect.setChecked(True)
+        self.main.pushButton_connect.setText('Disconnect')
+        self.streaming = True
+
         if value['topic'] == 'marker':
             self.annotations.add_marker(datetime.fromtimestamp(value['value']['timestamp']), value['value']['marker'])
         elif value['topic'] == 'annotation':
             self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
                                             value['value']['duration'],
                                             value['value']['description'])
-        # elif value['topic'] == 'eeg':
+        elif value['topic'] == 'eeg':
             # self.status_bar('Incoming streaming detected')
+            eeg, aux = value['value']['data']
+            binary_created = datetime.fromtimestamp(value['value']['context']['binary_created'])
+            message_created = datetime.fromtimestamp(value['value']['timestamp'])
+            # since = (datetime.now() - binary_created).total_seconds()
+            since = (message_created - binary_created).total_seconds()
+            count = value['value']['context']['samples']
+            channels = eeg.shape[0]
+
+            if since * 1000 > 2000:
+                color = '#ffc107'  # old data
+            else:
+                color = '#3fc55e'  # recent data
+
+            message = f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG ({channels},{count})'
+
+            if aux.size:
+                message += f' | AUX ({aux.shape[0]},{aux.shape[1]})'
+
+            self.status_bar(right_message=(message, True))
 
     # ----------------------------------------------------------------------
     def update_kafka(self, host):
         """"""
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
-
+            self.status_bar(right_message=('No streaming', False))
+        # try:
         self.thread_kafka = Kafka()
         self.thread_kafka.over.connect(self.on_kafka_event)
+        self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
+
+        self.timer = QTimer()
+        self.timer.setInterval(5000)
+        self.timer.timeout.connect(self.keep_updated)
+        self.timer.start()
+
+            # return self.thread_kafka.kafking
+
+        # except:
+            # return False
 
     # ----------------------------------------------------------------------
     def stop_kafka(self):
         """"""
+        self.streaming = False
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
+            self.status_bar(right_message=('No streaming', False))
 
+    # ----------------------------------------------------------------------
+    def keep_updated(self):
+        """"""
+        if hasattr(self, 'thread_kafka') and hasattr(self.thread_kafka, 'last_message'):
+            last = datetime.now() - self.thread_kafka.last_message
+            if last.seconds > 3:
+                self.status_bar(right_message=('No streaming', False))
 
+    # ----------------------------------------------------------------------
+    @QtCore.Slot()
+    def kafka_message(self):
+        """"""
+        self.streaming = False
+        if self.main.comboBox_host.currentText() != 'localhost':
+            self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
+        else:
+            self.conection_message = '* Kafka is not running on this machine.'
+
+        # Dialogs.warning_message(self.main, 'Kafka not running', message)
+        # self.connection.openbci_disconnect()
+
+    # ----------------------------------------------------------------------
+    def show_configurations(self, event=None):
+        """"""
+        configuration = ConfigurationFrame(self)
+        configuration.show()

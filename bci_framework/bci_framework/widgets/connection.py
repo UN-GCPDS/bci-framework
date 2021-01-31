@@ -34,7 +34,10 @@ from datetime import datetime
 ########################################################################
 class OpenBCIThread(QtCore.QThread):
     """"""
-    over = QtCore.Signal(object)
+    connection_ok = QtCore.Signal()
+    connection_fail = QtCore.Signal()
+    disconnected_ok = QtCore.Signal()
+    connected = False
 
     # ----------------------------------------------------------------------
     def stop(self):
@@ -44,6 +47,96 @@ class OpenBCIThread(QtCore.QThread):
     # ----------------------------------------------------------------------
     def run(self):
         """"""
+
+        # if self.streaming():
+            # self.connection_ok.emit()
+
+        self.openbci = Cyton(self.mode,
+                             self.endpoint,
+                             host=self.host,
+                             capture_stream=False,
+                             daisy=prop.DAISY,
+                             montage=self.montage,
+                             streaming_package_size=self.streaming_package_size)
+
+        self.openbci.command(self.sample_rate)
+        self.openbci.command(self.boardmode)
+
+        # Some time this command not take effect
+        boardmode_setted = False
+        for _ in range(10):
+            response = self.openbci.command(self.boardmode)
+            if response and b'Success' in response:
+                logging.info(f'Bardmode setted in {self.boardmode} mode')
+                boardmode_setted = True
+                break
+            time.sleep(0.1)
+
+        boardmode = self.openbci.boardmode
+        if not boardmode_setted:
+            logging.warning('Boardmode not setted!')
+            # Dialogs.warning_message(
+                # self.parent_frame, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
+            # self.parent_frame.comboBox_boardmode.setCurrentText(boardmode.capitalize())
+
+        self.session_settings(self.montage, self.bias, self.gain, self.srb1, self.adsinput, self.srb2)
+
+        if not self.checkBox_send_leadoff:
+            self.openbci.leadoff_impedance(self.montage, pchan=pchan, nchan=nchan)
+
+        if self.checkBox_test_signal:
+            test_signal = self.comboBox_test_signal
+            test_signal = getattr(CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
+            self.openbci.command(test_signal)
+
+            # self.core.status_bar(message=f'OpenBCI connected on test mode ({test_signal}) to {self.endpoint} running in {self.host}')
+
+        else:
+            all_channels = set(range(16 if prop.DAISY else 8))
+            used_channels = set(self.montage.keys())
+            deactivated = all_channels.difference(used_channels)
+            self.openbci.deactivate_channel(deactivated)
+            self.openbci.activate_channel(used_channels)
+
+            # self.core.status_bar(message=f'OpenBCI connected and streaming in {boardmode} mode to {self.endpoint} running in {self.host}')
+
+        if not self.streaming():
+            self.openbci.start_stream()
+
+        self.connected = True
+        self.connection_ok.emit()
+
+    # ----------------------------------------------------------------------
+    def session_settings(self, *args):
+        """"""
+        if hasattr(self, 'last_settings'):
+            channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
+        elif args:
+            self.last_settings = args
+            channels, bias, gain, srb1, adsinput, srb2 = args
+        else:
+            return
+
+        if self.checkBox_default_settings:
+            self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
+        else:
+            self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
+                                          gain=gain,
+                                          input_type=adsinput,
+                                          bias=bias,
+                                          srb2=srb2,
+                                          srb1=srb1)
+    # ----------------------------------------------------------------------
+
+    def disconnect(self):
+        """"""
+        try:
+            self.openbci.stop_stream()
+            self.openbci
+        except:
+            pass
+        self.disconnected_ok.emit()
+        self.connected = False
 
 
 ########################################################################
@@ -57,6 +150,8 @@ class Connection:
         self.core = core
 
         # self.parent.pushButton_disconnect.hide()
+        self.openbci = OpenBCIThread()
+        self.openbci.streaming = lambda: getattr(self.core, 'streaming', False)
 
         self.config = {
             'mode': self.parent_frame.comboBox_connection_mode,
@@ -83,6 +178,13 @@ class Connection:
         self.update_environ()
         self.connect()
         self.core.config.connect_widgets(self.update_config, self.config)
+
+    # ----------------------------------------------------------------------
+    def on_focus(self):
+        """"""
+        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            self.parent_frame.pushButton_connect.setEnabled(False)
+            self.openbci_connect()
 
     # ----------------------------------------------------------------------
     def load_config(self):
@@ -148,71 +250,17 @@ class Connection:
         # self.dialog_conection.show()
 
     # ----------------------------------------------------------------------
-    def handle_exception(self):
-        """"""
-        checks = []
-
-        if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
-            checks.extend(['* Check that USB dongle were connected',
-                           '* Verify serial permissions',
-                           ])
-
-        if self.parent_frame.comboBox_host.currentText() != 'localhost':
-            checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
-                           '* This machine must have access to the server or running on the same network.',
-                           ])
-        # else:
-            # checks.extend([f'* Verify that Kafka is running on this machine',
-                           # ])
-
-        if hasattr(self.core, 'conection_message'):
-            checks.extend([self.core.conection_message])
-            self.core.conection_message = ""
-        checks = '\n'.join(checks)
-        Dialogs.critical_message(self.parent_frame, 'Connection error', f"{checks}")
-
-    # ----------------------------------------------------------------------
     def on_connect(self, toggled):
         """"""
         if toggled:  # Connect
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.core.update_kafka(self.parent_frame.comboBox_host.currentText())
-            if '--debug' in sys.argv:
-                self.openbci_connect()
-            else:
-                try:
-                    self.openbci_connect()
-                    QApplication.restoreOverrideCursor()
-                except:
-                    QApplication.restoreOverrideCursor()
-                    self.core.status_bar(message='')
-                    self.handle_exception()
-                    self.on_connect(False)
+            self.openbci_connect()
 
         else:   # Disconnect
-
-            try:
-                self.openbci.stop_stream()
-            except:
-                pass
-            try:
-                del self.openbci
-            except:
-                pass
-            self.core.stop_kafka()
-
-            if self.parent_frame.checkBox_test_signal.isChecked():
-                self.parent_frame.groupBox_settings.setEnabled(False)
-                self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
-
-            self.parent_frame.pushButton_connect.setText('Connect')
-            self.parent_frame.pushButton_connect.setChecked(False)
-            self.core.status_bar(right_message=('Disconnected', None))
-            self.parent_frame.checkBox_view_impedances.setChecked(False)
-            self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
+            self.openbci.disconnect()
 
     # ----------------------------------------------------------------------
-
     def openbci_connect(self):
         """"""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
@@ -257,77 +305,56 @@ class Connection:
 
         channels = self.core.montage.get_montage()
 
-        # Connect
-        self.openbci = Cyton(mode, endpoint, host=host, capture_stream=False,
-                             daisy=prop.DAISY, montage=channels, streaming_package_size=int(streaming_sample_rate))
-        self.openbci.command(sample_rate)
+        # self.openbci = OpenBCIThread()
+        self.openbci.connection_ok.connect(self.connection_ok)
+        self.openbci.connection_fail.connect(self.connection_fail)
+        self.openbci.disconnected_ok.connect(self.disconnected_ok)
 
-        # Some time this command not take effect
-        boardmode_setted = False
-        for _ in range(10):
-            response = self.openbci.command(boardmode)
-            if response and b'Success' in response:
-                logging.info(f'Bardmode setted in {boardmode} mode')
-                boardmode_setted = True
-                break
-            time.sleep(0.1)
+        self.openbci.mode = mode
+        self.openbci.endpoint = endpoint
+        self.openbci.host = host
+        self.openbci.montage = channels
+        self.openbci.streaming_package_size = int(streaming_sample_rate)
+        self.openbci.sample_rate = sample_rate
+        self.openbci.boardmode = boardmode
+        self.openbci.adsinput = adsinput
+        self.openbci.bias = bias
+        self.openbci.srb1 = srb1
+        self.openbci.srb2 = srb2
+        self.openbci.pchan = pchan
+        self.openbci.nchan = nchan
+        self.openbci.gain = gain
 
-        self.boardmode = self.openbci.boardmode
-        if not boardmode_setted:
-            logging.warning('Boardmode not setted!')
-            # Dialogs.warning_message(
-                # self.parent_frame, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
-            self.parent_frame.comboBox_boardmode.setCurrentText(
-                self.boardmode.capitalize())
+        self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
+        self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()
+        self.openbci.comboBox_test_signal = self.parent_frame.comboBox_test_signal.currentText()
+        self.openbci.checkBox_default_settings = self.parent_frame.checkBox_default_settings.isChecked()
 
-        self.session_settings(channels, bias, gain, srb1, adsinput, srb2)
-
-        if not self.parent_frame.checkBox_send_leadoff.isChecked():
-            self.openbci.leadoff_impedance(
-                channels, pchan=pchan, nchan=nchan)
-
-        if self.parent_frame.checkBox_test_signal.isChecked():
-            test_signal = self.parent_frame.comboBox_test_signal.currentText()
-            test_signal = getattr(
-                CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
-            self.openbci.command(test_signal)
-
-            self.core.status_bar(message=f'OpenBCI connected on test mode ({test_signal}) to {endpoint} running in {host}')
-
-        else:
-            all_channels = set(range(16 if prop.DAISY else 8))
-            used_channels = set(channels.keys())
-            deactivated = all_channels.difference(used_channels)
-            self.openbci.deactivate_channel(deactivated)
-            self.openbci.activate_channel(used_channels)
-
-            self.core.status_bar(message=f'OpenBCI connected and streaming in {self.boardmode} mode to {endpoint} running in {host}')
-
-        self.openbci.start_stream()
-
-        self.parent_frame.pushButton_connect.setText('Disconnect')
+        self.openbci.start()
+        self.parent_frame.pushButton_connect.setText('Connecting...')
+        self.parent_frame.pushButton_connect.setEnabled(False)
         self.update_environ()
 
-    # ----------------------------------------------------------------------
-    def session_settings(self, *args):
-        """"""
-        if hasattr(self, 'last_settings'):
-            channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
-        elif args:
-            self.last_settings = args
-            channels, bias, gain, srb1, adsinput, srb2 = args
-        else:
-            return
+    # # ----------------------------------------------------------------------
+    # def session_settings(self, *args):
+        # """"""
+        # if hasattr(self, 'last_settings'):
+            # channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
+        # elif args:
+            # self.last_settings = args
+            # channels, bias, gain, srb1, adsinput, srb2 = args
+        # else:
+            # return
 
-        if self.parent_frame.checkBox_default_settings.isChecked():
-            self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
-        else:
-            self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
-                                          gain=gain,
-                                          input_type=adsinput,
-                                          bias=bias,
-                                          srb2=srb2,
-                                          srb1=srb1)
+        # if self.parent_frame.checkBox_default_settings.isChecked():
+            # self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
+        # else:
+            # self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
+                                          # gain=gain,
+                                          # input_type=adsinput,
+                                          # bias=bias,
+                                          # srb2=srb2,
+                                          # srb1=srb1)
 
     # # ----------------------------------------------------------------------
     # def openbci_disconnect(self):
@@ -361,3 +388,53 @@ class Connection:
 
         os.environ['BCISTREAM_BOARDMODE'] = json.dumps(
             self.parent_frame.comboBox_boardmode.currentText().lower())
+
+    # ----------------------------------------------------------------------
+    @QtCore.Slot()
+    def connection_ok(self):
+        """"""
+        QApplication.restoreOverrideCursor()
+        self.parent_frame.pushButton_connect.setText('Disconnect')
+        self.parent_frame.pushButton_connect.setEnabled(True)
+
+    # ----------------------------------------------------------------------
+    @QtCore.Slot()
+    def connection_fail(self):
+        """"""
+        QApplication.restoreOverrideCursor()
+
+        checks = []
+
+        if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
+            checks.extend(['* Check that USB dongle were connected',
+                           '* Verify serial permissions',
+                           ])
+
+        if self.parent_frame.comboBox_host.currentText() != 'localhost':
+            checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
+                           '* This machine must have access to the server or running on the same network.',
+                           ])
+        # else:
+            # checks.extend([f'* Verify that Kafka is running on this machine',
+                           # ])
+
+        if hasattr(self.core, 'conection_message'):
+            checks.extend([self.core.conection_message])
+            self.core.conection_message = ""
+        checks = '\n'.join(checks)
+        Dialogs.critical_message(self.parent_frame, 'Connection error', f"{checks}")
+
+    # ----------------------------------------------------------------------
+    @QtCore.Slot()
+    def disconnected_ok(self):
+        """"""
+        self.core.stop_kafka()
+        if self.parent_frame.checkBox_test_signal.isChecked():
+            self.parent_frame.groupBox_settings.setEnabled(False)
+            self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
+
+        self.parent_frame.pushButton_connect.setText('Connect')
+        self.parent_frame.pushButton_connect.setChecked(False)
+        self.core.status_bar(right_message=('Disconnected', None))
+        self.parent_frame.checkBox_view_impedances.setChecked(False)
+        self.parent_frame.stackedWidget_montage.setCurrentIndex(0)

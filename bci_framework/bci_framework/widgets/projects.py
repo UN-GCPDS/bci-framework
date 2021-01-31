@@ -5,14 +5,14 @@ import pickle
 
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QSize
-from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QTableWidgetItem
+from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QTableWidgetItem, QDesktopWidget
 # from bci_framework.highlighters import PythonHighlighter
 from datetime import datetime
 
 from PySide2.QtUiTools import QUiLoader
 import shutil
 
-from ..editor import BCIEditor
+from ..editor import BCIEditor, MyDictionaryCompleter
 
 ########################################################################
 
@@ -174,8 +174,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -202,9 +202,9 @@ class Projects:
         """"""
         global files_count, dir_count, project_name_
 
-        if self.parent_frame.listWidget_projects_visualizations.currentItem():
+        if self.parent_frame.listWidget_projects_visualizations.selectedItems():
             self.mode = 'visualization'
-        elif self.parent_frame.listWidget_projects_delivery.currentItem():
+        elif self.parent_frame.listWidget_projects_delivery.selectedItems():
             self.mode = 'stimuli'
 
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
@@ -257,8 +257,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -322,6 +322,8 @@ class Projects:
         """"""
         editor = BCIEditor(linenumber=self.parent_frame.textEdit_linenumber,
                            extension=os.path.splitext(module)[1])
+        completer = MyDictionaryCompleter()
+        editor.setCompleter(completer)
 
         tab = self.parent_frame.tabWidget_project.addTab(
             editor, os.path.split(module)[1])
@@ -371,6 +373,11 @@ class Projects:
                                                           project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
                                                               os.path.join(self.projects_dir, str_))))
 
+        center = QDesktopWidget().availableGeometry().center()
+        geometry = project.frameGeometry()
+        geometry.moveCenter(center)
+        project.move(geometry.topLeft())
+
         project.show()
 
     # ----------------------------------------------------------------------
@@ -382,17 +389,17 @@ class Projects:
         if visualization:
             icon_name = 'icon_viz'
             item = QListWidgetItem(self.parent_frame.listWidget_projects_visualizations)
-            default_project = '_stimuli_delivery'
+            default_project = '_default_stimuli_delivery'
         elif stimulus:
             icon_name = 'icon_sti'
             item = QListWidgetItem(self.parent_frame.listWidget_projects_delivery)
-            default_project = '_visualization'
+            default_project = '_default_visualization'
         # else:
             # icon_name = 'icon_dev'
             # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -527,8 +534,10 @@ class Projects:
         """"""
         if isinstance(evt, (int, float)):
             editor_closed = self.parent_frame.tabWidget_project.widget(evt)
-            self.project_files.pop(
-                self.project_files.index(editor_closed.path))
+            try:
+                self.project_files.pop(self.project_files.index(editor_closed.path))
+            except:
+                pass
             self.parent_frame.tabWidget_project.removeTab(evt)
 
         elif isinstance(evt, (str,)):

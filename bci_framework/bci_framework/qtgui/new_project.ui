@@ -14,7 +14,7 @@
    <string>BCI Framework - New Project</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icons/resource.qrc">
+   <iconset>
     <normaloff>:/bci/icons/bci/logo.svg</normaloff>:/bci/icons/bci/logo.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -41,7 +41,7 @@
       <item row="1" column="1">
        <widget class="QRadioButton" name="radioButton_visualization">
         <property name="text">
-         <string>Visualization</string>
+         <string>Visualization or Data analysis</string>
         </property>
        </widget>
       </item>
@@ -77,8 +77,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="icons/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

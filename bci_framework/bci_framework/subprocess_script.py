@@ -10,7 +10,7 @@ from urllib import request
 from contextlib import closing
 
 from PySide2.QtCore import QTimer, QSize
-from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineSettings
 
 from .nbstreamreader import NonBlockingStreamReader as NBSR
 from ..extensions import properties as prop
@@ -76,10 +76,15 @@ class VisualizationSubprocess:
         try:
             size = self.main.web_engine.size()
             if self.plot_size != size or self.plot_dpi != self.main.DPI:
+                if 'light' in os.environ.get('QTMATERIAL_THEME'):
+                    background = 'ffffff'
+                else:
+                    background = '000000'
+
                 self.main.web_engine.setUrl(
-                    self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}')
-                self.plot_size = size
+                    self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}&background={background}')
                 self.plot_dpi = self.main.DPI
+                self.plot_size = size
         except:
             pass
 
@@ -107,7 +112,7 @@ class StimuliSubprocess:
         """"""
         console = JavaScriptConsole()
         self.web_engine_page = QWebEnginePage(self.main.web_engine)
-        self.web_engine_page .javaScriptConsoleMessage = console.feed
+        self.web_engine_page.javaScriptConsoleMessage = console.feed
         self.main.web_engine.setPage(self.web_engine_page)
         self.stdout = console
         self.web_engine_page .profile().clearHttpCache()
@@ -210,6 +215,13 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.main.web_engine = QWebEngineView()
             self.web_view.addWidget(self.main.web_engine)
 
+        else:
+            self.main.web_engine.deleteLater()
+            self.main.web_engine = QWebEngineView()
+            self.web_view.addWidget(self.main.web_engine)
+
+        self.main.web_engine.page().profile().clearHttpCache()
+
         # Set URL and start interface
         if self.is_visualization:
             self.viz_start()
@@ -231,7 +243,11 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     # ----------------------------------------------------------------------
     def reload(self):
         """"""
+        self.main.web_engine.page().profile().clearHttpCache()
         self.main.web_engine.setUrl(self.url)
+
+        # self.web_engine_page = QWebEnginePage(self.main.web_engine)
+        # self.web_engine_page.profile().clearHttpCache()
 
     # ----------------------------------------------------------------------
     def blank(self):

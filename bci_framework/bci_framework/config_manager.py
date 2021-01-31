@@ -14,29 +14,31 @@ class ConfigManager(ConfigParser):
         """Constructor"""
         super().__init__()
 
-        user_dir = os.path.join(os.getenv('BCISTREAM_HOME'))
-        os.makedirs(user_dir, exist_ok=True)
-        self.filename = os.path.join(user_dir, filename)
+        if os.path.isabs(filename):
+            self.filename = filename
+        else:
+            user_dir = os.path.join(os.getenv('BCISTREAM_HOME'))
+            os.makedirs(user_dir, exist_ok=True)
+            self.filename = os.path.join(user_dir, filename)
+
         self.load()
 
     # ----------------------------------------------------------------------
     def load(self):
         """"""
-        if os.path.exists(self.filename):
-            self.read(self.filename)
-        else:
-            shutil.copyfile(os.path.join(
-                os.getenv('BCISTREAM_ROOT'), 'bciframework.default'), self.filename)
+        assert os.path.exists(self.filename), f'"{self.filename} does not exist!"'
+
         self.read(self.filename)
 
     # ----------------------------------------------------------------------
-    def set(self, section, option, value=''):
+    def set(self, section, option, value='', save=False):
         """"""
         if not self.has_section(section):
             self.add_section(section)
+        super().set(section, option, value)
+        if save:
+            self.save()
 
-        return super().set(section, option, value)
-    
     # ----------------------------------------------------------------------
     def get(self, section, option, default=None, *args, **kwargs):
         """"""

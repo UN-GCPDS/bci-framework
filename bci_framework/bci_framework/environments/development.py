@@ -3,10 +3,10 @@ import os
 # from importlib import reload
 import psutil
 
-from PySide2.QtCore import QTimer, Qt
+from PySide2.QtCore import QTimer
 from PySide2.QtGui import QTextCursor
 
-from ..subprocess_script import LoadSubprocess
+# from ..subprocess_script import LoadSubprocess
 from ..stream_handler import VisualizationWidget
 
 
@@ -23,7 +23,11 @@ class Development:
 
         self.parent_frame.pushButton_stop_preview.hide()
 
-        self.timer = QTimer()
+        self.log_timer = QTimer()
+        self.log_timer.timeout.connect(self.update_log)
+        self.log_timer.setInterval(500)
+        # self.log_timer.start()
+
         self.timer_autosave = QTimer()
 
         self.connect()
@@ -123,8 +127,11 @@ class Development:
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
 
         self.sub.load_visualization(self.get_visualization(), debugger=self)
-        self.timer.singleShot(100, self.update_log)
+
+        # self.timer.stop()
+        # self.timer.singleShot(100, self.update_log)
         # # self.timer.singleShot(1.00, self.update_log)
+        self.log_timer.start()
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
@@ -181,7 +188,9 @@ class Development:
     # ----------------------------------------------------------------------
     def stop_preview(self):
         """"""
+        self.log_timer.stop()
         if hasattr(self, 'sub'):
+            # self.sub.remove()
             self.sub.stop_preview()
 
         self.parent_frame.pushButton_stop_preview.hide()
@@ -192,7 +201,7 @@ class Development:
     def update_log(self):
         """"""
         if not hasattr(self.sub, 'stream_subprocess'):
-            self.timer.singleShot(50, self.update_log)
+            # self.timer.singleShot(50, self.update_log)
             return
 
         if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
@@ -204,7 +213,7 @@ class Development:
 
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
             self.sub.stream_subprocess.start_debug()
-            self.timer.singleShot(50, self.update_log)
+            # self.timer.singleShot(50, self.update_log)
             return
 
         if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
@@ -212,7 +221,7 @@ class Development:
                 QTextCursor.End)
             self.parent_frame.plainTextEdit_preview_log.insertPlainText(
                 line.decode())
-        self.timer.singleShot(1000 / 60, self.update_log)
+        # self.timer.singleShot(1000 / 60, self.update_log)
 
     # ----------------------------------------------------------------------
     def save_all_files(self):

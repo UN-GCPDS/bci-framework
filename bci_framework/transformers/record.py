@@ -8,8 +8,12 @@ sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'), 'records', 'log.stdo
 
 from datetime import datetime
 from openbci_stream.utils import HDF5Writer
-from bci_framework.projects import properties as prop
-from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
+
+from bci_framework.extensions import properties as prop
+from bci_framework.extensions.visualizations.utils import loop_consumer, fake_loop_consumer
+
+# from bci_framework.projects import properties as prop
+# from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
 
 
 ########################################################################
@@ -57,6 +61,7 @@ class RecordTransformer:
 
         if topic == 'eeg':
             dt = data.value['context']['binary_created']
+            # dt = data.value['context']['created']
             # dt = data.timestamp / 1000
             eeg, aux = data.value['data']
             self.writer.add_eeg(eeg, dt)
@@ -64,14 +69,14 @@ class RecordTransformer:
             # print(dt)
 
         elif topic == 'marker':
-            marker = data.value['marker']
             dt = data.timestamp / 1000
             # dt = data.value['datetime']
+            marker = data.value['marker']
             self.writer.add_marker(marker, dt)
 
         elif topic == 'annotation':
-            # onset = data.value['onset']
             onset = data.timestamp / 1000
+            # onset = data.value['onset']
             duration = data.value['duration']
             description = data.value['description']
             self.writer.add_annotation(onset, duration, description)
