@@ -20,25 +20,47 @@ class TwoClassMotorImagery(StimuliAPI):
 
         self.build_areas()
         self.add_cross()
+        self.add_blink_area()
+        
         self.widgets = Widgets()
 
-        self.dashboard <= self.widgets.label('BCI 2-Class motor imagery', 'headline4')
+        self.dashboard <= self.widgets.label('BCI 2-Class motor imagery<br><br>', 'headline4')
 
         self.dashboard <= self.widgets.slider(label='Repetitions by class:', min=1, max=40, value=10, step=1, discrete=True, marks=True, id='repetitions')
         self.dashboard <= self.widgets.slider(label='Stimulus duration', min=1000, max=8000, value=4000, step=100, unit='ms', id='duration')
         self.dashboard <= self.widgets.range_slider('Delay duration', min=500, max=2000, value_lower=700, value_upper=1500, step=100, unit='ms', id='pause')
+        self.dashboard <= self.widgets.switch('Record EEG', checked=False, on_change=None, id='record')
+        
 
-        self.dashboard <= self.widgets.button('Test Left', on_click=lambda: self.trial('Left', 1000), style={'margin': '0 15px'})
-        self.dashboard <= self.widgets.button('Test Right', on_click=lambda: self.trial('Right', 1000), style={'margin': '0 15px'})
-        self.dashboard <= self.widgets.button('Start run', on_click=self.run, style={'margin': '0 15px'})
-
+        # self.dashboard <= self.widgets.button('Test Left', on_click=lambda: self.trial('Left', 1000), style={'margin': '0 15px'})
+        # self.dashboard <= self.widgets.button('Test Right', on_click=lambda: self.trial('Right', 1000), style={'margin': '0 15px'})
+        self.dashboard <= self.widgets.button('Start run', on_click=self.start, style={'margin': '0 15px'})
+        self.dashboard <= self.widgets.button('Stop run', on_click=self.stop, style={'margin': '0 15px'})
+        
+        
+    # ----------------------------------------------------------------------
+    def start(self):
+        """"""
+        if self.widgets.get_value('record'): 
+            self.start_record()
+        timer.set_timeout(self.run, 2000)
+        
+    # ----------------------------------------------------------------------
+    def stop(self):
+        """"""
+        timer.clear_timeout(self.timer_cue)
+        self.hint.html = ''
+        if self.widgets.get_value('record'):
+            timer.set_timeout(self.stop_record, 2000)
+               
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
     def trial(self, hint, duration):
         if not hasattr(self, 'hint'):
             self.hint = html.SPAN('', id='hint')
             self.stimuli_area <= self.hint
-
+        
+        self.send_marker(hint)
         self.hint.html = UNICODE_HINTS[hint]
         self.hint.style = {'display': 'flex'}
         timer.set_timeout(lambda: setattr(self.hint, 'style', {'display': 'none'}), duration)
@@ -60,7 +82,7 @@ class TwoClassMotorImagery(StimuliAPI):
             hint = self.hints.pop(0)
             self.trial(hint, self.duration)
             pause = random.randint(*self.pause)
-            timer.set_timeout(self.show_hints, self.duration + pause)
+            self.timer_cue = timer.set_timeout(self.show_hints, self.duration + pause)
 
 
 if __name__ == '__main__':
