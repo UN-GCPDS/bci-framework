@@ -235,12 +235,13 @@ class Development:
                     content = editor.toPlainText()
                     file.write(content)
 
-                    if 'bci_framework.extensions.stimuli_delivery' in content:
-                        completer = MyDictionaryCompleter(mode='stimuli')
-                        editor.setCompleter(completer)
-                    elif 'bci_framework.projects.figure' in content:
-                        completer = MyDictionaryCompleter(mode='visualization')
-                        editor.setCompleter(completer)
+                    if not editor.completer:
+                        if 'bci_framework.extensions.stimuli_delivery' in content:
+                            completer = MyDictionaryCompleter(mode='stimuli')
+                            editor.setCompleter(completer)
+                        elif 'bci_framework.projects.figure' in content:
+                            completer = MyDictionaryCompleter(mode='visualization')
+                            editor.setCompleter(completer)
 
                     self.parent_frame.tabWidget_project.setTabText(
                         i, tab_text.strip('*'))

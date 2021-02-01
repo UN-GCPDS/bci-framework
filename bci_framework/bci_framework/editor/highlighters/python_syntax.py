@@ -25,37 +25,42 @@ def format(color, style='', fontsize=None):
 
     return _format
 
+# ----------------------------------------------------------------------
 
-# Syntax styles that can be shared by all languages
-if '--light' in sys.argv:
-    STYLES = {
-        'operator': format('black', 'bold'),
-        'brace': format('black'),
-        'numbers': format('#007f7f'),
-        'decorator': format('#805000'),
-        'comment': format('#007f00'),
-        'def': format('#007f7f', 'bold'),
-        'keyword': format('#00007f', 'bold'),
-        'class': format('#0000ff', 'bold'),
-        'keyword2': format('#407090'),
-        'string': format('#7f007f'),
-        'string2': format('#7f0000'),
 
-    }
-else:
-    STYLES = {
-        'keyword': format('#8080ff', 'bold'),
-        'keyword2': format('#afdfff'),
-        'comment': format('#7efb7e'),
-        'operator': format('white', 'bold'),
-        'decorator': format('#ffcf7f'),
-        'brace': format('white'),
-        'def': format('#7cf7f7', 'bold'),
-        'class': format('#4444ff', 'bold'),
-        'string': format('#ff80ff'),
-        'string2': format('#ac5656'),
-        'numbers': format('#72e4e4'),
-    }
+def get_styles():
+    """"""
+
+    # Syntax styles that can be shared by all languages
+    if 'light' in os.environ['QTMATERIAL_THEME']:
+        return {
+            'operator': format('black', 'bold'),
+            'brace': format('black'),
+            'numbers': format('#007f7f'),
+            'decorator': format('#805000'),
+            'comment': format('#007f00'),
+            'def': format('#007f7f', 'bold'),
+            'keyword': format('#00007f', 'bold'),
+            'class': format('#0000ff', 'bold'),
+            'keyword2': format('#407090'),
+            'string': format('#7f007f'),
+            'string2': format('#7f0000'),
+
+        }
+    else:
+        return {
+            'keyword': format('#8080ff', 'bold'),
+            'keyword2': format('#afdfff'),
+            'comment': format('#7efb7e'),
+            'operator': format('white', 'bold'),
+            'decorator': format('#ffcf7f'),
+            'brace': format('white'),
+            'def': format('#7cf7f7', 'bold'),
+            'class': format('#4444ff', 'bold'),
+            'string': format('#ff80ff'),
+            'string2': format('#ac5656'),
+            'numbers': format('#72e4e4'),
+        }
 
 
 class PythonHighlighter(QSyntaxHighlighter):
@@ -102,9 +107,11 @@ class PythonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
 
-        # Multi-line strings (expression, flag, style)
-        # FIXME: The triple-quotes in these two lines will mess up the
-        # syntax highlighting from this point onward
+        STYLES = get_styles()
+
+        # Multi-line strings (expression, flag, style) FIXME: The triple-quotes
+        # in these two lines will mess up the syntax highlighting from this
+        # point onward
         self.tri_single = (QRegularExpression("'''"), 1, STYLES['string2'])
         self.tri_double = (QRegularExpression('"""'), 2, STYLES['string2'])
 

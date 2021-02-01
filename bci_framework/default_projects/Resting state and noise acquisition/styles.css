@@ -1,35 +1,4 @@
 
-body {
-    background-color: '#31363b' !important;
-}
-
-.bci_dashboard {
-    background-color: '#31363b' !important;
-}
-
-.bci_stimuli {
-    background-color: '#31363b' !important;
-    position: relative;
-
-}
-
-.progress {
-
-    margin: 15px;
-    position: absolute;
-    bottom: 0px;
-
-}
-
-
-.caption {
-
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-
-}
-
 
 #hint {
 
@@ -59,13 +28,14 @@ top: 55vh;
 }
 
 
-form {
-    margin: 0px;
-    }
+#user-button{
 
+bottom: 15px;
+width: 50%;
+right: 25%;
+position: absolute;
+color: #2ca02c;
+border-color: #2ca02c;
+display: none;
 
-.mdc-typography--headline4 {
-    padding-bottom: 30px;
-    display: inline-flex;
-    }
-
+}

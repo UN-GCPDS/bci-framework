@@ -1,7 +1,7 @@
 # General snippets
 
 snippets = {
-    "def (snippet)": "# ----------------------------------------------------------------------\ndef [!](self):\n\t\"\"\"\"\"\"",
+    "def (snippet)": "# ----------------------------------------------------------------------\ndef [!](self):\n    \"\"\"\"\"\"",
 
 }
 
@@ -31,9 +31,9 @@ stimuli_snippets = {
     "widgets.checkbox (snippet)": "widgets.checkbox('[!]', [[str, bool], ...], on_change=None, id='')",
     "widgets.radios (snippet)": "widgets.radios('[!]', [[str, [str], ...]], on_change=None, id='')",
     "widgets.select (snippet)": "widgets.select('[!]', [[str, [str], ...]], on_change=None, id='')",
-    "widgets.slider (snippet)": "widgets.slider('[!]', min=1, max=10, step=0.1, value=5, on_change=None, id='')",
+    "widgets.slider (snippet)": "widgets.slider('[!]', min=1, max=10, step=0.1, value=5, unit='', on_change=None, id='')",
     "widgets.range_slider (snippet)": "widgets.range_slider('[!]', min=0, max=20, value_lower=5, value_upper=15, step=1, on_change=None, id='')",
-    "self.widgets.get_value()": "self.widgets.get_value('[!]')",
+    "widgets.get_value()": "self.widgets.get_value('[!]')",
 
 
 }
@@ -41,18 +41,23 @@ stimuli_snippets = {
 stimuli_snippets_ = [
 
     # API
-    'self.add_run_progressbar([!])', 'self.set_progress([!])' 'self.send_marker(\'[!]\')',
+    'self.set_progress([!])', 'self.send_marker(\'[!]\')', 'self.send_marker(\'[!]\', blink=100)',
 
     # Brython
-    'timer.set_timeout([!])',
-    'timer.clear_timeout([!])'
+    'timer.set_timeout([!], 1000)',
+    'timer.clear_timeout([!])',
+    'timer.set_interval([!], 1000)',
+    'timer.clear_interval([!])',
 ]
 
 
 stimuly_keywords = [
     '@DeliveryInstance.local', '@DeliveryInstance.remote', '@DeliveryInstance.both',
     'self.dashboard', 'self.stimuli_area',
-    'self.build_areas()', 'self.add_cross()',
+    'self.build_areas()', 'self.add_cross()', 'self.add_blink_area()', 'self.remove_blink_area()',
+    'self.start_record()', 'self.stop_record()', 'self.add_run_progressbar()',
+
+    'self.widgets',
 ]
 
 

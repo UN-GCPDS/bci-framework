@@ -1,6 +1,7 @@
 from PySide2.QtCore import QRegExp as QRegularExpression
 from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 import sys
+import os
 
 
 def format(color, style='', fontsize=None):
@@ -22,24 +23,28 @@ def format(color, style='', fontsize=None):
     return _format
 
 
-# Syntax styles that can be shared by all languages
-if '--light' in sys.argv:
-    STYLES = {
-        'selector': format('#00007f', 'bold'),
-        'keyword': format('#ff7c00', 'bold'),
-        'numbers': format('#007f7f'),
-        'key': format('#0040e0'),  # .
-        'value': format('#7f007f'),  # .
+# ----------------------------------------------------------------------
+def get_styles():
+    """"""
+    if 'light' in os.environ['QTMATERIAL_THEME']:
 
-    }
-else:
-    STYLES = {
-        'selector': format('#8080ff', 'bold'),
-        'key': format('#63a3ff'),
-        'value': format('#ff7ed8'),
-        'keyword': format('#ff7c00', 'bold'),
-        'numbers': format('#72e4e4'),
-    }
+        # Syntax styles that can be shared by all languages
+        return {
+            'selector': format('#00007f', 'bold'),
+            'keyword': format('#ff7c00', 'bold'),
+            'numbers': format('#007f7f'),
+            'key': format('#0040e0'),  # .
+            'value': format('#7f007f'),  # .
+
+        }
+    else:
+        return {
+            'selector': format('#8080ff', 'bold'),
+            'key': format('#63a3ff'),
+            'value': format('#ff7ed8'),
+            'keyword': format('#ff7c00', 'bold'),
+            'numbers': format('#72e4e4'),
+        }
 
 
 class CSSHighlighter(QSyntaxHighlighter):
@@ -80,11 +85,14 @@ class CSSHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
 
-        # Multi-line strings (expression, flag, style)
-        # FIXME: The triple-quotes in these two lines will mess up the
-        # syntax highlighting from this point onward
-        # self.tri_single = (QRegularExpression("'''"), 1, STYLES['string2'])
-        # self.tri_double = (QRegularExpression(r'\b([\w]*)\b\s\{[ \t\r\s\n\w:;\-\'"!]*\}'), 2, STYLES['string2'])
+        STYLES = get_styles()
+
+        # Multi-line strings (expression, flag, style) FIXME: The triple-quotes
+        # in these two lines will mess up the syntax highlighting from this
+        # point onward self.tri_single = (QRegularExpression("'''"), 1,
+        # STYLES['string2']) self.tri_double =
+        # (QRegularExpression(r'\b([\w]*)\b\s\{[\t\r\s\n\w:;\-\'"!]*\}'), 2,
+        # STYLES['string2'])
 
         rules = []
 

@@ -220,8 +220,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.main.web_engine = QWebEngineView()
             self.web_view.addWidget(self.main.web_engine)
 
-        self.main.web_engine.page().profile().clearHttpCache()
-
         # Set URL and start interface
         if self.is_visualization:
             self.viz_start()
@@ -243,7 +241,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     # ----------------------------------------------------------------------
     def reload(self):
         """"""
-        self.main.web_engine.page().profile().clearHttpCache()
         self.main.web_engine.setUrl(self.url)
 
         # self.web_engine_page = QWebEnginePage(self.main.web_engine)

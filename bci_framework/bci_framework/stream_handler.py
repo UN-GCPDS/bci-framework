@@ -176,7 +176,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
 
         # Dialogs.save_filename(self.main, '', '', '')
 
-        if '--debug' in sys.argv:
+        if '--local' in sys.argv:
             self.projects_dir = os.path.join(
                 os.getenv('BCISTREAM_ROOT'), 'default_projects')
         else:
@@ -291,17 +291,17 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
 
             # self.stream_subprocess.blank()
 
-    # ----------------------------------------------------------------------
-    def reset(self):
-        """"""
-        # if self.is_visualization:
-            # self.stop_preview()
-            # if self.current_viz:
-                # self.load_visualization(self.current_viz)
-        # elif self.is_stimuli:
-            # self.stream_subprocess.reload()
+    # # ----------------------------------------------------------------------
+    # def reset(self):
+        # """"""
+        # # if self.is_visualization:
+            # # self.stop_preview()
+            # # if self.current_viz:
+                # # self.load_visualization(self.current_viz)
+        # # elif self.is_stimuli:
+            # # self.stream_subprocess.reload()
 
-        self.stream_subprocess.reload()
+        # self.stream_subprocess.reload()
 
     # ----------------------------------------------------------------------
     def reload(self):

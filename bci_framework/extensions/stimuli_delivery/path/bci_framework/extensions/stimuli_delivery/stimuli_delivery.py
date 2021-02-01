@@ -300,6 +300,12 @@ class StimuliAPI:
         return self._blink_area
 
     # ----------------------------------------------------------------------
+    def remove_blink_area(self):
+        """"""
+        self._blink_area.remove()
+        del self._blink_area
+
+    # ----------------------------------------------------------------------
     def build_areas(self, stimuli=True, dashboard=True):
         """"""
         if stimuli:

@@ -98,7 +98,7 @@ class BCIEditor(QTextEdit):
     def keyPressEvent(self, event):
         """"""
         completionPrefix = self.textUnderCursor()
-        if len(completionPrefix) < 3 and self.completer.popup().isVisible():
+        if self.completer and len(completionPrefix) < 3 and self.completer.popup().isVisible():
             self.completer.popup().hide()
 
         # Replace Tabs with Spaces
@@ -169,7 +169,7 @@ class BCIEditor(QTextEdit):
                 # Qt.Key_Backtab, ) or event.modifiers() in (Qt.ControlModifier, ):
 
                 # return
-        if event.text():
+        if self.completer and event.text():
             completionPrefix = self.textUnderCursor()
             if len(completionPrefix) >= 3:
                 self.show_completer(completionPrefix)
@@ -329,14 +329,10 @@ class BCIEditor(QTextEdit):
                 start = line.find(line.replace(' ', '')[0])
                 tc.insertText(" " * start + f'{char}' + line[start:])
 
-
-# |--------------------------End of __init__------------------------------------|
-# |-----------------------------------------------------------------------------|
-# setCompleter
-# |-----------------------------------------------------------------------------|
-
+    # ----------------------------------------------------------------------
 
     def setCompleter(self, completer):
+        """"""
         if self.completer:
             self.disconnect(self.completer)
         if not completer:
@@ -346,15 +342,13 @@ class BCIEditor(QTextEdit):
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer = completer
-#        self.connect(self.completer,
-#            QtCore.SIGNAL("activated(const QString&)"), self.insertCompletion)
+       # self.connect(self.completer,
+           # QtCore.SIGNAL("activated(const QString&)"), self.insertCompletion)
         self.completer.insertText.connect(self.insertCompletion)
-# |-----------------------End of setCompleter-------------------------------------|
-# |-----------------------------------------------------------------------------|
-# insertCompletion
-# |-----------------------------------------------------------------------------|
 
+    # ----------------------------------------------------------------------
     def insertCompletion(self, completion):
+        """"""
         tc = self.textCursor()
 
         self.textUnderCursor(tc)
@@ -383,13 +377,10 @@ class BCIEditor(QTextEdit):
 
         self.setTextCursor(tc)
 
-
-# |-----------------------End of insertCompletion-------------------------------|
-# |-----------------------------------------------------------------------------|
-# textUnderCursor
-# |-----------------------------------------------------------------------------|
+    # ----------------------------------------------------------------------
 
     def textUnderCursor(self, tc=None):
+        """"""
 
         if tc is None:
             tc = self.textCursor()
@@ -409,21 +400,23 @@ class BCIEditor(QTextEdit):
             tc.movePosition(tc.WordRight, tc.KeepAnchor)
 
         # tc.select(QTextCursor.WordUnderCursor)
-        return tc.selectedText()
+        completionPrefix = tc.selectedText()
 
+        if completionPrefix.endswith('.') and completionPrefix.count('.') > 1:
+            index = completionPrefix.rfind('.', 0, completionPrefix.rfind('.'))
+            completionPrefix = completionPrefix[index + 1:]
+            for _ in range(tc.selectedText().count('.') - 1):
+                tc.movePosition(tc.WordRight, tc.KeepAnchor)
+                tc.movePosition(tc.WordRight, tc.KeepAnchor)
 
-# |-----------------------End of textUnderCursor--------------------------------|
-# |-----------------------------------------------------------------------------|
-# focusInEvent
-# |-----------------------------------------------------------------------------|
-    # ---override
+        return completionPrefix
 
+    # ----------------------------------------------------------------------
     def focusInEvent(self, event):
+        """"""
         if self.completer:
             self.completer.setWidget(self)
         QTextEdit.focusInEvent(self, event)
-# |-----------------------End of focusInEvent-------------------------------------|
-# |-----------------------------------------------------------------------------|
 
     # ----------------------------------------------------------------------
     def show_completer(self, completionPrefix):
