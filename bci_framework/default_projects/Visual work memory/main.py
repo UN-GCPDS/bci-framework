@@ -1,15 +1,11 @@
-from bci_framework.projects.server import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.projects import properties as prop
-from bci_framework.projects import Tone, Widgets
-from bci_framework.projects.utils import timeit
+from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
 
 from browser import document, timer, html, window
 from points import get_points
 
 import time
 import random
-random.seed(8511)
-
 
 COLORS = [
 
@@ -35,104 +31,54 @@ UNICODE_LEFT = '&#x1f850;'
 class Memory(StimuliAPI):
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """"""
-        document.select('head')[0] <= html.LINK(
-            href='/root/styles.css', type='text/css', rel='stylesheet')
+        super().__init__(*args, **kwargs)
+        self.add_stylesheet('styles.css')
 
-        self.stimuli_area
-        self.dashboard
+        self.build_areas()
+        self.add_run_progressbar()
+        self.add_cross()
 
         self.on_trial = False
 
         self.widgets = Widgets()
-        self.run_progressbar = self.add_run_progressbar()
-
         self.tone = Tone()
-
-        self.build_dashboard()
-        self.add_cross()
-
-    # ----------------------------------------------------------------------
-    def add_cross(self):
-        """"""
-        self.stimuli_area <= html.DIV(Class='cross_contrast')
-        self.stimuli_area <= html.DIV(Class='cross')
-
-    # ----------------------------------------------------------------------
-
-    def build_dashboard(self):
-        """"""
-        self.dashboard <= self.widgets.title('Visual working memory', 'headline3', style={'margin-bottom': '15px', 'display': 'flex', })
+        
+        self.dashboard <= self.widgets.label('Visual working memory', 'headline3', style={'margin-bottom': '15px', 'display': 'flex', })
         self.dashboard <= html.BR()
 
-        self.dashboard <= self.widgets.title('Markers', 'headline4')
+        self.dashboard <= self.widgets.label('Markers', 'headline4')
         self.dashboard <= self.widgets.radios('Shapes', [('square', '0%'), ('circles', '100%')], id='shapes')
-        self.dashboard <= self.widgets.slider(label='Number of markers by hemifield:', min=2, max=8, valuenow=4, discrete=True, markers=True, id='squares')
-        self.dashboard <= self.widgets.slider(label='Marker size:', min=2, max=10, step=0.1, valuenow=7, unit='% of screen height', id='size',)
-        self.dashboard <= self.widgets.slider(label='Minimum distance between markers:', min=100, max=1000, valuenow=200, unit='% of squares size', id='distance')
+        self.dashboard <= self.widgets.slider(label='Number of markers by hemifield:', min=2, max=8, value=4, discrete=True, markers=True, id='squares')
+        self.dashboard <= self.widgets.slider(label='Marker size:', min=2, max=10, step=0.1, value=7, unit='% of screen height', id='size',)
+        self.dashboard <= self.widgets.slider(label='Minimum distance between markers:', min=100, max=1000, value=200, unit='% of squares size', id='distance')
 
-        self.dashboard <= self.widgets.title('Intervals', 'headline4')
-        self.dashboard <= self.widgets.slider(label='Stimulus onset asynchrony:', min=100, max=1000, valuenow=200, unit='ms', id='soa')
-        self.dashboard <= self.widgets.slider(label='Memory array:', min=50, max=500, valuenow=100, unit='ms', id='memory_array')
-        self.dashboard <= self.widgets.slider(label='Retention interval:', min=500, max=1500, valuenow=900, unit='ms', id='retention')
-        self.dashboard <= self.widgets.slider(label='Test array:', min=500, max=5000, valuenow=2000, unit='ms', id='test_array')
+        self.dashboard <= self.widgets.label('Intervals', 'headline4')
+        self.dashboard <= self.widgets.slider(label='Stimulus onset asynchrony:', min=100, max=1000, value=200, unit='ms', id='soa')
+        self.dashboard <= self.widgets.slider(label='Memory array:', min=50, max=500, value=100, unit='ms', id='memory_array')
+        self.dashboard <= self.widgets.slider(label='Retention interval:', min=500, max=1500, value=900, unit='ms', id='retention')
+        self.dashboard <= self.widgets.slider(label='Test array:', min=500, max=5000, value=2000, unit='ms', id='test_array')
 
-        self.dashboard <= self.widgets.title('Trial', 'headline4')
+        self.dashboard <= self.widgets.label('Trial', 'headline4')
 
-        self.dashboard <= self.widgets.slider(label='Max differences:', min=1, max=8, valuenow=2, discrete=True, markers=True, on_change=self.update_observations, id='differences')
-        self.dashboard <= self.widgets.slider(label='Numbers of trials for each difference:', min=1, max=8, valuenow=4, discrete=True, markers=True, on_change=self.update_observations, id='trials')
+        self.dashboard <= self.widgets.slider(label='Max differences:', min=1, max=8, value=2, discrete=True, markers=True, id='differences')
+        self.dashboard <= self.widgets.slider(label='Numbers of trials for each difference:', min=1, max=8, value=4, discrete=True, markers=True, id='trials')
+        
+        self.dashboard <= self.widgets.switch('Wait for user response', checked=True, id='wait')
+        self.dashboard <= self.widgets.switch('Record EEG', checked=False, on_change=None, id='record')
 
-        self.dashboard <= self.widgets.title('Observations', 'headline4')
-        self.dashboard <= html.BR()
-        self.observations = self.widgets.title('', 'body1')
-        self.dashboard <= self.observations
-        self.dashboard <= html.BR()
+        self.dashboard <= self.widgets.button('Test single trial', on_click=self.single_trial, style={'margin': '0 30px'})
+        self.dashboard <= self.widgets.button('Start run', on_click=self.start, style={'margin': '0 15px'})
+        self.dashboard <= self.widgets.button('Stop run', on_click=self.stop, style={'margin': '0 15px'})
 
-        # self.dashboard <= html.DIV(sty)
-
-        button_box = html.DIV(style={'margin-top': '50px', 'margin-bottom': '50px', })
-        self.dashboard <= button_box
-
-        button_box <= self.widgets.button('Test single trial', connect=self.single_trial, style={'margin': '0 15px'})
-        button_box <= self.widgets.button('Start run', connect=self.start_run, style={'margin': '0 15px'})
-        # button_box <= self.widgets.button('Beep', connect=lambda: self.tone("C#6", 200), style={'margin': '0 15px'})
-
-        self.update_observations()
-
-    # ----------------------------------------------------------------------
-    def update_observations(self, *args, **kwargs):
-        """"""
-        differences = self.widgets.get_value('differences')
-        trial = self.widgets.get_value('trials')
-        trials = int(trial * (differences + 1))
-
-        duration = self.widgets.get_value('soa') + self.widgets.get_value('memory_array') + self.widgets.get_value('retention') + self.widgets.get_value('test_array') + 1400
-        duration *= trials
-        duration = (duration / 1000) / 60
-
-        self.observations.html = f"There will performed <b>{trials}</b> trials per run and will lasts <b>{duration:.1f}</b> minutes."
 
     # ----------------------------------------------------------------------
     def test_array(self):
         """"""
         if not hasattr(self, 'button_different'):
-            self.button_different = self.widgets.button('Different (q)', unelevated=False, outlined=True, style={
-                'bottom': '15px',
-                'width': '35%',
-                'right': '10%',
-                'position': 'absolute',
-                'color': '#d62728',
-                'border-color': '#d62728',
-            })
-            self.button_identical = self.widgets.button('Identical (p)', unelevated=False, outlined=True, style={
-                'bottom': '15px',
-                'width': '35%',
-                'left': '10%',
-                'position': 'absolute',
-                'color': '#2ca02c',
-                'border-color': '#2ca02c',
-            })
+            self.button_different = self.widgets.button('Different (q)', unelevated=False, outlined=True, on_click=lambda :self.manual_trial('DIFFERENT'), Class='test-button', id='different')
+            self.button_identical = self.widgets.button('Identical (p)', unelevated=False, outlined=True, on_click=lambda :self.manual_trial('IDENTICAL'), Class='test-button', id='identical')
 
             self.stimuli_area <= self.button_different
             self.stimuli_area <= self.button_identical
@@ -141,10 +87,25 @@ class Memory(StimuliAPI):
         self.button_different.style = {'display': 'block'}
 
     # ----------------------------------------------------------------------
-    def start_run(self):
+    def start(self):
         """"""
         self.configure()
-        self.start_trial(single=False)
+        if self.widgets.get_value('record'):
+            self.start_record()
+        timer.set_timeout(lambda :self.start_trial(single=False), 2000)        
+        
+        
+    # ----------------------------------------------------------------------
+    def stop(self):
+        """"""
+        self.clear()
+        self.set_progress(0)
+        if hasattr(self, 'auto_trials'):
+            timer.clear_timeout(self.auto_trials)
+            
+        if self.widgets.get_value('record'):
+            timer.set_timeout(self.stop_record, 2000)
+
 
     # ----------------------------------------------------------------------
     def single_trial(self):
@@ -176,7 +137,7 @@ class Memory(StimuliAPI):
         self.build_trial()
         self.shuffled_colors = self.shuffle()
 
-        self.run_progressbar.mdc.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
+        self.set_progress(1 - (len(self.trials) - 1) / self.total_trials)
 
         soa_time = self.widgets.get_value('soa')
         ma_time = soa_time + self.widgets.get_value('memory_array')
@@ -186,6 +147,7 @@ class Memory(StimuliAPI):
         if not single:
             self.tone("C#6", 200)
 
+        self.send_marker('START')
         self.start_arrow()
         timer.set_timeout(lambda: self.set_visible_markers(True), soa_time)
         timer.set_timeout(lambda: self.set_visible_markers(False), ma_time)
@@ -195,7 +157,17 @@ class Memory(StimuliAPI):
         if not single and self.trials:
             random_trial_interval = random.randint(1000, 1800)
             print(f'Random trial interval: {random_trial_interval}')
-            timer.set_timeout(lambda: self.start_trial(False), test_time + random_trial_interval)
+            if not self.widgets.get_value('wait'):
+                self.auto_trials = timer.set_timeout(lambda: self.start_trial(False), test_time + random_trial_interval)
+                
+
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.event
+    def manual_trial(self, marker):
+        """"""
+        self.send_marker(marker)
+        self.clear()
+        timer.set_timeout(lambda: self.start_trial(False), 2000)
 
     # ----------------------------------------------------------------------
     def start_arrow(self):
@@ -227,6 +199,11 @@ class Memory(StimuliAPI):
     # ----------------------------------------------------------------------
     def set_visible_markers(self, visible=False):
         """"""
+        if visible:
+            self.send_marker('SHOW')
+        else:
+            self.send_marker('HIDE')
+        
         if not hasattr(self, 'markers_r'):
             return
 
@@ -288,14 +265,13 @@ class Memory(StimuliAPI):
     def change_markers(self):
         """"""
         f = self.shuffled_colors
+        self.send_marker(f'{len(f)}')
 
         for i, color in enumerate(f):
             if self.trials[0][0]:
                 self.markers_r[i][0].style = {'background-color': color}
-                # self.markers_r[i][0].style = {'border': f'5px solid {color}'}
             else:
                 self.markers_l[i][0].style = {'background-color': color}
-                # self.markers_l[i][0].style = {'border': f'5px solid {color}'}
 
         self.set_visible_markers(True)
         self.trials.pop(0)

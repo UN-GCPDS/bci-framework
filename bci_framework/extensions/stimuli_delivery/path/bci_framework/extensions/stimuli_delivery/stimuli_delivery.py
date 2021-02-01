@@ -26,20 +26,36 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'dashboard':
-                # print('Calling', method.__name__, args, kwargs)
                 method(self, *args, **kwargs)
-
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
                               'kwargs': dict(kwargs),
                               })
-                # print('Called!!')
 
         wrap.no_decorator = method
         return wrap
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def rboth(cls, method):
+        """Decorator for execute method in both environs, dashboard and delivery."""
+
+        def wrap(self, *args, **kwargs):
+
+            if self._bci_mode == 'stimuli':
+                method(self, *args, **kwargs)
+                self.ws.send({'action': 'feed',
+                              'method': method.__name__,
+                              'args': list(args),  # prevent ellipsis objects
+                              'kwargs': dict(kwargs),
+                              })
+
+        wrap.no_decorator = method
+        return wrap
+
+    # ----------------------------------------------------------------------
+
     @classmethod
     def remote(cls, method):
         """Decorator for execute methon only in delivery environ."""
@@ -47,14 +63,11 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'dashboard':
-                # print('Calling', method.__name__, args, kwargs)
-                # method(self, *args, **kwargs)  # no local
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
                               'kwargs': dict(kwargs),
                               })
-                # print('Called!!')
 
         wrap.no_decorator = method
         return wrap
@@ -71,29 +84,26 @@ class DeliveryInstance_:
 
         wrap.no_decorator = method
         return wrap
-    # # ----------------------------------------------------------------------
-    # @classmethod
-    # def propagate(cls, argument):
-        # def inner_function(method):
-            # @wraps(method)
-            # def wrap(self, *args, **kwargs):
 
-                # if self._bci_mode in ['development', 'dashboard']:
-                    # print('Calling', method.__name__, args, kwargs)
-                    # method(self, *args, **kwargs)
+    # ----------------------------------------------------------------------
+    @classmethod
+    def event(cls, method):
+        """"""
 
-                    # print(argument, getattr(self, argument))
+        def wrap(self, *args, **kwargs):
 
-                    # self.ws.send({'action': 'feed',
-                                  # 'method': method.__name__,
-                                  # 'args': list(args),  # prevent ellipsis objects
-                                  # 'kwargs': dict(kwargs),
-                                  # })
-                    # print('Called!!')
+            if hasattr(method, 'no_decorator'):
+                method_ = method.no_decorator
+            else:
+                method_ = method
 
-            # wrap.no_decorator = method
-            # return wrap
-        # return inner_function
+            if self._bci_mode == 'dashboard':
+                cls.both(method_)(self, *args, **kwargs)
+            else:
+                cls.rboth(method_)(self, *args, **kwargs)
+
+        wrap.no_decorator = method
+        return wrap
 
 
 DeliveryInstance = DeliveryInstance_()

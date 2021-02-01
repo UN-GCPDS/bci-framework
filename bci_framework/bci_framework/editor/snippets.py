@@ -57,6 +57,7 @@ stimuly_keywords = [
     'self.build_areas()', 'self.add_cross()', 'self.add_blink_area()', 'self.remove_blink_area()',
     'self.start_record()', 'self.stop_record()', 'self.add_run_progressbar()',
 
+    'self.add_stylesheet()',
     'self.widgets',
 ]
 

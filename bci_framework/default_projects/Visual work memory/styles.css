@@ -1,22 +1,3 @@
-form {
-    margin: 0px;
-    }
-
-
-.mdc-typography--headline4 {
-    padding-bottom: 30px;
-    display: inline-flex;
-    }
-
-
-.bci_stimuli {
-
-    position: relative;
-
-}
-
-
-
 
 #hint {
 
@@ -27,4 +8,23 @@ form {
     justify-content: center;
     height: 70%;
 
+}
+
+
+.test-button {
+    bottom: 15px;
+    width: 35%;
+    position: absolute;
+}
+
+.test-button#different {
+    left: 10%;
+    color: #d62728;
+    border-color: #d62728;
+}
+
+.test-button#identical {
+    right: 10%;
+    color: #2ca02c;
+    border-color: #2ca02c;
 }

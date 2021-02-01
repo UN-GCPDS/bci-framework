@@ -25,6 +25,16 @@ class DeliveryInstance_:
 
     # ----------------------------------------------------------------------
     @classmethod
+    def rboth(cls, method):
+        def wrap(*args, **kwargs):
+            try:
+                return method(*args, **kwargs)
+            except:
+                return method()
+        return wrap
+
+    # ----------------------------------------------------------------------
+    @classmethod
     def remote(cls, method):
         def wrap(*args, **kwargs):
             try:
@@ -36,6 +46,16 @@ class DeliveryInstance_:
     # ----------------------------------------------------------------------
     @classmethod
     def local(cls, method):
+        def wrap(*args, **kwargs):
+            try:
+                return method(*args, **kwargs)
+            except:
+                return method()
+        return wrap
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def event(cls, method):
         def wrap(*args, **kwargs):
             try:
                 return method(*args, **kwargs)
