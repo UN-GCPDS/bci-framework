@@ -353,8 +353,8 @@ class Montage:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent_frame.comboBox_montages.activated.connect(
-            self.update_topoplot)
+        self.parent_frame.comboBox_montages.activated.connect(self.update_topoplot)
+
         # self.parent.comboBox_historical_montages.activated.connect(
         # lambda evt: self.load_montage(self.parent.comboBox_historical_montages.currentText()))
         # self.parent.comboBox_historical_montages.editTextChanged.connect(
@@ -370,7 +370,9 @@ class Montage:
         self.parent_frame.pushButton_remove_montage.clicked.connect(
             self.delete_montage)
 
-        self.parent_frame.tableWidget_montages.itemDoubleClicked.connect(
+        # self.parent_frame.tableWidget_montages.itemDoubleClicked.connect(
+            # self.load_montage)
+        self.parent_frame.tableWidget_montages.itemClicked.connect(
             self.load_montage)
 
         self.parent_frame.checkBox_view_impedances.clicked.connect(

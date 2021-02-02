@@ -173,8 +173,8 @@ class Projects:
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -256,8 +256,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -289,6 +289,7 @@ class Projects:
                 self.load_script_in_textedit(os.path.join(path, 'main.py'))
 
         self.core.development.build_preview()
+        self.core.show_interface('Development')
 
     # ----------------------------------------------------------------------
     def load_scripts(self):
@@ -402,17 +403,19 @@ class Projects:
         if visualization:
             icon_name = 'icon_viz'
             item = QListWidgetItem(self.parent_frame.listWidget_projects_visualizations)
-            default_project = '_default_stimuli_delivery'
+            default_project = '_default_visualization'
+            self.mode = 'visualization'
         elif stimulus:
             icon_name = 'icon_sti'
             item = QListWidgetItem(self.parent_frame.listWidget_projects_delivery)
-            default_project = '_default_visualization'
+            default_project = '_default_stimuli_delivery'
+            self.mode = 'delivery'
         # else:
             # icon_name = 'icon_dev'
             # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -425,18 +428,18 @@ class Projects:
         target = os.path.join(self.projects_dir, project_name)
         shutil.copytree(source, target)
 
+        self.open_project(project_name)
+
         # with open(os.path.join(self.projects_dir, project_name, f'main.py'), 'wb') as file:
             # file.write(b'')
 
     # ----------------------------------------------------------------------
     def remove_project(self, evt):
         """"""
-        # item = [self.parent.listWidget_projects_delivery.currentItem(),
-        # self.parent.listWidget_projects_visualizations.currentItem(),
-        # self.parent.listWidget_projects_others.currentItem(),
-        # ]
-        selected_project = self.parent_frame.listWidget_projects.currentItem()
-        # selected_project = list(filter(None, item))[0]
+        items = [self.parent_frame.listWidget_projects_delivery.currentItem(),
+                 self.parent_frame.listWidget_projects_visualizations.currentItem(),
+                 ]
+        selected_project = list(filter(None, items))[0]
         shutil.rmtree(os.path.join(
             self.projects_dir, selected_project.text()))
         self.load_projects()

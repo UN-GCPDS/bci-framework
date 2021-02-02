@@ -162,6 +162,7 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_file.setIcon(icon("file"))
         self.main.pushButton_brain.setIcon(icon("brain"))
         self.main.pushButton_imagery.setIcon(icon("imagery"))
+        self.main.pushButton_docs.setIcon(icon("documentation"))
 
         self.main.pushButton_stop_preview.setIcon(icon('media-playback-stop'))
         self.main.pushButton_script_preview.setIcon(icon('media-playback-start'))
@@ -270,8 +271,8 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_show_documentation.clicked.connect(
             lambda evt: self.show_interface('Documentation'))
 
-        self.main.pushButton_go_to_repository.clicked.connect(
-            lambda evt: webbrowser.open_new_tab('https://github.com/UN-GCPDS/bci-framework'))
+        # self.main.pushButton_go_to_repository.clicked.connect(
+            # lambda evt: webbrowser.open_new_tab('https://github.com/UN-GCPDS/bci-framework'))
 
         self.main.pushButton_show_about.clicked.connect(self.show_about)
         self.main.pushButton_show_configurations.clicked.connect(self.show_configurations)
@@ -391,6 +392,7 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_file.setStyleSheet(style)
         self.main.pushButton_brain.setStyleSheet(style)
         self.main.pushButton_imagery.setStyleSheet(style)
+        self.main.pushButton_docs.setStyleSheet(style)
 
         style = f"""
         *{{
@@ -399,6 +401,7 @@ class BCIFramework(QMainWindow):
         """
         self.main.frame_3.setStyleSheet(style)
         self.main.frame_2.setStyleSheet(style)
+        self.main.frame_5.setStyleSheet(style)
         self.main.frame.setStyleSheet(style)
 
         style = """
@@ -412,6 +415,7 @@ class BCIFramework(QMainWindow):
         self.main.label_15.setStyleSheet(style)
         self.main.label_16.setStyleSheet(style)
         self.main.label_17.setStyleSheet(style)
+        self.main.label_20.setStyleSheet(style)
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None):
@@ -426,7 +430,10 @@ class BCIFramework(QMainWindow):
 
         about.label.setMinimumSize(QSize(720, 200))
         about.label.setMaximumSize(QSize(720, 200))
-        about.label.setPixmap(QPixmap(os.path.join('assets', 'banner.png')))
+
+        banner = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png')
+        about.label.setPixmap(QPixmap(banner))
 
         about.tabWidget.setCurrentIndex(0)
 
