@@ -1,0 +1,22 @@
+.p300 {
+
+    font-family: 'monospace';
+    font-size: 5vh;
+    
+    height: 90vh;
+    width: 50%;
+    text-align: center;
+    
+    margin: 0 auto;
+    padding-top: 15vh;
+    
+    color: white;
+    
+
+}
+
+
+.p300-char {
+
+    opacity: 0.3;
+}
