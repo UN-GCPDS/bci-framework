@@ -186,6 +186,8 @@ class StimuliAPI:
             })
         self._blink(blink)
 
+        # print(f'MARKER: {marker["marker"]}')
+
     # ----------------------------------------------------------------------
     @DeliveryInstance.remote
     def start_record(self):

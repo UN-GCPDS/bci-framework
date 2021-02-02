@@ -192,7 +192,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         if hasattr(self, 'subprocess_script'):
             self.subprocess_script.nb_stdout.stop()
             self.subprocess_script.terminate()
-            self.timer.singleShot(300, lambda: self.__delattr__('subprocess_script'))
+            if hasattr(self, 'subprocess_script'):
+                self.timer.singleShot(300, lambda: self.__delattr__('subprocess_script'))
 
         if hasattr(self, 'web_engine_page'):
             try:
