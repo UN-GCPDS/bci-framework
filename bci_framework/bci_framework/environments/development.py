@@ -205,24 +205,61 @@ class Development:
             # self.timer.singleShot(50, self.update_log)
             return
 
-        if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
-            if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
-                self.parent_frame.plainTextEdit_preview_log.moveCursor(
-                    QTextCursor.End)
-                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
-                    line.decode())
-
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
             self.sub.stream_subprocess.start_debug()
-            # self.timer.singleShot(50, self.update_log)
             return
 
+        warning = self.parent_frame.checkBox_log_warning.isChecked()
+        error = self.parent_frame.checkBox_log_error.isChecked()
+        lines = []
+
+        if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
+            if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
+                lines.append(line.decode())
         if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+            lines.append(line.decode())
+
+        filter_ = [
+            'using indexedDB',
+            'Synchronous XMLHttpRequest',
+            'Error 404 means',
+            'The AudioContext',
+            'WARNING:tornado.access:404',
+            'upgrade needed',
+        ]
+
+        for line in lines:
+            if not line.strip():
+                continue
+
+            trace = 'Traceback (most recent call last):'
+            if trace in line:
+                line = line[line.find(trace):]
+
+            c = False
+            for f in filter_:
+                if f in line:
+                    c = True
+                    break
+            if c:
+                continue
+
             self.parent_frame.plainTextEdit_preview_log.moveCursor(
                 QTextCursor.End)
-            self.parent_frame.plainTextEdit_preview_log.insertPlainText(
-                line.decode())
-        # self.timer.singleShot(1000 / 60, self.update_log)
+            if line.startswith('WARNING') and warning:
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(line)
+            elif line.startswith('ERROR') and error:
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(line)
+            elif not line.startswith('WARNING') and not line.startswith('ERROR'):
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(line)
+
+            if not line.endswith('\n'):
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText('\n')
+
+        if lines:
+            self.log_timer.setInterval(10)
+        else:
+            self.log_timer.setInterval(500)
 
     # ----------------------------------------------------------------------
     def save_all_files(self):
