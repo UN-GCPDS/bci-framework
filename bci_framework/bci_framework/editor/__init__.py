@@ -1,2 +1,2 @@
 from .editor import BCIEditor
-from .completer import MyDictionaryCompleter
+from .completer import Autocompleter

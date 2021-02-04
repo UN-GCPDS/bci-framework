@@ -1,190 +1,96 @@
-# syntax.py
-
-import sys
 import os
 
 from PySide2.QtCore import QRegExp as QRegularExpression
 from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
-def format(color, style='', fontsize=None):
-    """Return a QTextCharFormat with the given attributes.
-    """
-    _color = QColor()
-    _color.setNamedColor(color)
-
-    _format = QTextCharFormat()
-    _format.setForeground(_color)
-    if 'bold' in style:
-        _format.setFontWeight(QFont.Bold)
-    if 'italic' in style:
-        _format.setFontItalic(True)
-
-    if fontsize:
-        _format.setFontPointSize(fontsize)
-
-    return _format
-
-# ----------------------------------------------------------------------
-
-
-def get_styles():
-    """"""
-
-    # Syntax styles that can be shared by all languages
-    if 'light' in os.environ['QTMATERIAL_THEME']:
-        return {
-            'operator': format('black', 'bold'),
-            'brace': format('black'),
-            'numbers': format('#007f7f'),
-            'decorator': format('#805000'),
-            'comment': format('#007f00'),
-            'def': format('#007f7f', 'bold'),
-            'keyword': format('#00007f', 'bold'),
-            'class': format('#0000ff', 'bold'),
-            'keyword2': format('#407090'),
-            'string': format('#7f007f'),
-            'string2': format('#7f0000'),
-
-        }
-    else:
-        return {
-            'keyword': format('#8080ff', 'bold'),
-            'keyword2': format('#afdfff'),
-            'comment': format('#7efb7e'),
-            'operator': format('white', 'bold'),
-            'decorator': format('#ffcf7f'),
-            'brace': format('white'),
-            'def': format('#7cf7f7', 'bold'),
-            'class': format('#4444ff', 'bold'),
-            'string': format('#ff80ff'),
-            'string2': format('#ac5656'),
-            'numbers': format('#72e4e4'),
-        }
-
-
+########################################################################
 class PythonHighlighter(QSyntaxHighlighter):
     """Syntax highlighter for the Python language.
     """
     # Python keywords
-    keywords_bold = [
-        'and', 'assert', 'break', 'class', 'continue', 'def',
-        'del', 'elif', 'else', 'except', 'exec', 'finally',
-        'for', 'from', 'global', 'if', 'import', 'in',
-        'is', 'lambda', 'not', 'or', 'pass', 'print',
-        'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False', 'as'
-    ]
+    keywords_bold = ['and', 'assert', 'break', 'class', 'continue', 'def',
+                     'del', 'elif', 'else', 'except', 'exec', 'finally',
+                     'for', 'from', 'global', 'if', 'import', 'in',
+                     'is', 'lambda', 'not', 'or', 'pass', 'print',
+                     'raise', 'return', 'try', 'while', 'yield',
+                     'None', 'True', 'False', 'as',
+                     ]
 
-    keywords = [
-        '__name__', 'format', 'int', 'float', 'str', 'list', 'tuple', 'dict',
-        'set', 'len', 'super', 'range', 'enumerate', 'hasattr', 'getattr', 'setattr',
-    ]
+    keywords = ['__name__', 'format', 'int', 'float', 'str', 'list', 'tuple',
+                'dict', 'set', 'len', 'super', 'range', 'enumerate', 'hasattr',
+                'getattr', 'setattr',
+                ]
 
     # Python operators
-    operators = [
-        '=', ':='
-        # Comparison
-        '==', '!=', '<', '<=', '>', '>=',
-        # Arithmetic
-        '\+', '-', '\*', '/', '//', '\%', '\*\*',
-        # In-place
-        '\+=', '-=', '\*=', '/=', '\%=',
-        # Bitwise
-        '\^', '\|', '\&', '\~', '>>', '<<',
-    ]
+    operators = ['=', ':='
+                 # Comparison
+                 '==', '!=', '<', '<=', '>', '>=',
+                 # Arithmetic
+                 '\+', '-', '\*', '/', '//', '\%', '\*\*',
+                 # In-place
+                 '\+=', '-=', '\*=', '/=', '\%=',
+                 # Bitwise
+                 '\^', '\|', '\&', '\~', '>>', '<<',
+                 ]
 
     # Python braces
-    braces = [
-        '\{', '\}', '\(', '\)', '\[', '\]',
-    ]
+    braces = ['\{', '\}', '\(', '\)', '\[', '\]', ]
 
-    # space_format = QTextCharFormat()
-    # space_format.setFontPointSize(2)
-    # space_format.setFontStretch(500)
-    # space_format.setVerticalAlignment(QTextCharFormat.AlignTop)
-
+    # ----------------------------------------------------------------------
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
-
-        STYLES = get_styles()
 
         # Multi-line strings (expression, flag, style) FIXME: The triple-quotes
         # in these two lines will mess up the syntax highlighting from this
         # point onward
-        self.tri_single = (QRegularExpression("'''"), 1, STYLES['string2'])
-        self.tri_double = (QRegularExpression('"""'), 2, STYLES['string2'])
+        self.tri_single = (QRegularExpression("'''"), 1, self.styles['string2'])
+        self.tri_double = (QRegularExpression('"""'), 2, self.styles['string2'])
 
         rules = []
 
         # Keyword, operator, and brace rules
-        rules += [(r'\b%s\b' % w, 0, STYLES['keyword'])
+        rules += [(r'\b%s\b' % w, 0, self.styles['keyword'])
                   for w in PythonHighlighter.keywords_bold]
-        rules += [(r'\b%s\b' % w, 0, STYLES['keyword2'])
+        rules += [(r'\b%s\b' % w, 0, self.styles['keyword2'])
                   for w in PythonHighlighter.keywords]
-        rules += [(r'\b%s\b' % o, 0, STYLES['operator'])
+        rules += [(r'\b%s\b' % o, 0, self.styles['operator'])
                   for o in PythonHighlighter.operators]
-        rules += [(r'\b%s\b' % b, 0, STYLES['brace'])
+        rules += [(r'\b%s\b' % b, 0, self.styles['brace'])
                   for b in PythonHighlighter.braces]
-
-        # rules += [(r'( )', 0, format(os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')))]
 
         # All other rules
         rules += [
-
-
-            # (r'( )\1*', 1, self.space_format),
-            # (r'([^ ]){1}[ ]', 0, self.space_format2),
-
-            # 'self'
-            # (r'\bself\b', 0, STYLES['self']),
-
-            # # Double-quoted string, possibly containing escape sequences
-            # (r'"[^"\\]*(\\.[^"\\]*)*"', 0, STYLES['string']),
-            # # Single-quoted string, possibly containing escape sequences
-            # (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
-
             # 'def' followed by an identifier
-            (r'\bdef\b\s*(\w+)', 1, STYLES['def']),
+            (r'\bdef\b\s*(\w+)', 1, self.styles['def']),
             # 'class' followed by an identifier
-            (r'\bclass\b\s*(\w+)', 1, STYLES['class']),
-
+            (r'\bclass\b\s*(\w+)', 1, self.styles['class']),
 
             # Numeric literals
-            (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
-            (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, STYLES['numbers']),
+            (r'\b[+-]?[0-9]+[lL]?\b', 0, self.styles['numbers']),
+            (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, self.styles['numbers']),
             (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b',
-             0, STYLES['numbers']),
+             0, self.styles['numbers']),
 
             # From '#' until a newline
-            # (r'(^"){1}(#\s*[^\n]*)(^"){1}', 1, STYLES['comment']),
-
-            # (r'#.*(".*")+', 1, STYLES['comment']),
-            # (r"#.*('.*')+", 1, STYLES['comment']),
-
-            # (r'#[^\n"{2}]*', 0, STYLES['comment']),
-            (r"""#[^\n'{2}"{2}]*""", 0, STYLES['comment']),
+            (r"""#[^\n'{2}"{2}]*""", 0, self.styles['comment']),
 
             # Double and Single-quoted string, possibly containing escape sequences
-            (r'"[^"\\]*(\\.[^"\\]*)*"', 0, STYLES['string']),
-            (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
+            (r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.styles['string']),
+            (r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.styles['string']),
 
             # Complete line commented
-            (r'^[\s]*(#[^\n]*)', 1, STYLES['comment']),
+            (r'^[\s]*(#[^\n]*)', 1, self.styles['comment']),
 
             # Decorators
-            (r'^[\s]*(@[^(]*)', 1, STYLES['decorator']),
-
-
-
-
-
+            (r'^[\s]*(@[^(]*)', 1, self.styles['decorator']),
         ]
 
         # Build a QRegularExpression for each pattern
         self.rules = [(QRegularExpression(pat), index, fmt)
                       for (pat, index, fmt) in rules]
 
+    # ----------------------------------------------------------------------
     def highlightBlock(self, text):
         """Apply syntax highlighting to the given block of text.
         """
@@ -206,6 +112,7 @@ class PythonHighlighter(QSyntaxHighlighter):
         if not in_multiline:
             in_multiline = self.match_multiline(text, *self.tri_double)
 
+    # ----------------------------------------------------------------------
     def match_multiline(self, text, delimiter, in_state, style):
         """Do highlighting of multi-line strings. ``delimiter`` should be a
         ``QRegularExpression`` for triple-single-quotes or triple-double-quotes, and
@@ -246,3 +153,57 @@ class PythonHighlighter(QSyntaxHighlighter):
         else:
             return False
 
+    # ----------------------------------------------------------------------
+    @classmethod
+    def get_format(cls, color, style='', fontsize=None):
+        """Return a QTextCharFormat with the given attributes.
+        """
+        _color = QColor()
+        _color.setNamedColor(color)
+
+        _format = QTextCharFormat()
+        _format.setForeground(_color)
+        if 'bold' in style:
+            _format.setFontWeight(QFont.Bold)
+        if 'italic' in style:
+            _format.setFontItalic(True)
+
+        if fontsize:
+            _format.setFontPointSize(fontsize)
+
+        return _format
+
+    # ----------------------------------------------------------------------
+    @property
+    def styles(self):
+        """"""
+        # Syntax styles that can be shared by all languages
+        if 'light' in os.environ['QTMATERIAL_THEME']:
+            return {
+                'operator': self.get_format('black', 'bold'),
+                'brace': self.get_format('black'),
+                'numbers': self.get_format('#007f7f'),
+                'decorator': self.get_format('#805000'),
+                'comment': self.get_format('#007f00'),
+                'def': self.get_format('#007f7f', 'bold'),
+                'keyword': self.get_format('#00007f', 'bold'),
+                'class': self.get_format('#0000ff', 'bold'),
+                'keyword2': self.get_format('#407090'),
+                'string': self.get_format('#7f007f'),
+                'string2': self.get_format('#7f0000'),
+
+            }
+        else:
+            return {
+                'keyword': self.get_format('#8080ff', 'bold'),
+                'keyword2': self.get_format('#afdfff'),
+                'comment': self.get_format('#7efb7e'),
+                'operator': self.get_format('white', 'bold'),
+                'decorator': self.get_format('#ffcf7f'),
+                'brace': self.get_format('white'),
+                'def': self.get_format('#7cf7f7', 'bold'),
+                'class': self.get_format('#4444ff', 'bold'),
+                'string': self.get_format('#ff80ff'),
+                'string2': self.get_format('#ac5656'),
+                'numbers': self.get_format('#72e4e4'),
+            }

@@ -1,146 +1,67 @@
-from PySide2.QtCore import QRegExp as QRegularExpression
-from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
-import sys
 import os
 
-
-def format(color, style='', fontsize=None):
-    """Return a QTextCharFormat with the given attributes.
-    """
-    _color = QColor()
-    _color.setNamedColor(color)
-
-    _format = QTextCharFormat()
-    _format.setForeground(_color)
-    if 'bold' in style:
-        _format.setFontWeight(QFont.Bold)
-    if 'italic' in style:
-        _format.setFontItalic(True)
-
-    if fontsize:
-        _format.setFontPointSize(fontsize)
-
-    return _format
+from PySide2.QtCore import QRegExp as QRegularExpression
+from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
-# ----------------------------------------------------------------------
-def get_styles():
-    """"""
-    if 'light' in os.environ['QTMATERIAL_THEME']:
-
-        # Syntax styles that can be shared by all languages
-        return {
-            'selector': format('#00007f', 'bold'),
-            'keyword': format('#ff7c00', 'bold'),
-            'numbers': format('#007f7f'),
-            'key': format('#0040e0'),  # .
-            'value': format('#7f007f'),  # .
-
-        }
-    else:
-        return {
-            'selector': format('#8080ff', 'bold'),
-            'key': format('#63a3ff'),
-            'value': format('#ff7ed8'),
-            'keyword': format('#ff7c00', 'bold'),
-            'numbers': format('#72e4e4'),
-        }
-
-
+########################################################################
 class CSSHighlighter(QSyntaxHighlighter):
-    """Syntax highlighter for the Python language.
-    """
-    # # Python keywords
-    # keywords_bold = [
-        # 'and', 'assert', 'break', 'class', 'continue', 'def',
-        # 'del', 'elif', 'else', 'except', 'exec', 'finally',
-        # 'for', 'from', 'global', 'if', 'import', 'in',
-        # 'is', 'lambda', 'not', 'or', 'pass', 'print',
-        # 'raise', 'return', 'try', 'while', 'yield',
-        # 'None', 'True', 'False',
-    # ]
+    """Syntax highlighter for the Python language."""
 
-    keywords = [
-        'important',
-    ]
+    keywords = ['important', ]
 
     # Python operators
-    operators = [
-        '=',
-        # Comparison
-        '==', '!=', '<', '<=', '>', '>=',
-        # Arithmetic
-        '\+', '-', '\*', '/', '//', '\%', '\*\*',
-        # In-place
-        '\+=', '-=', '\*=', '/=', '\%=',
-        # Bitwise
-        '\^', '\|', '\&', '\~', '>>', '<<',
-    ]
+    operators = ['=',
+                 # Comparison
+                 '==', '!=', '<', '<=', '>', '>=',
+                 # Arithmetic
+                 '\+', '-', '\*', '/', '//', '\%', '\*\*',
+                 # In-place
+                 '\+=', '-=', '\*=', '/=', '\%=',
+                 # Bitwise
+                 '\^', '\|', '\&', '\~', '>>', '<<',
+                 ]
 
     # Python braces
-    braces = [
-        '\{', '\}', '\(', '\)', '\[', '\]',
-    ]
+    braces = ['\{', '\}', '\(', '\)', '\[', '\]', ]
 
+    # ----------------------------------------------------------------------
     def __init__(self, document):
+        """"""
         QSyntaxHighlighter.__init__(self, document)
-
-        STYLES = get_styles()
-
-        # Multi-line strings (expression, flag, style) FIXME: The triple-quotes
-        # in these two lines will mess up the syntax highlighting from this
-        # point onward self.tri_single = (QRegularExpression("'''"), 1,
-        # STYLES['string2']) self.tri_double =
-        # (QRegularExpression(r'\b([\w]*)\b\s\{[\t\r\s\n\w:;\-\'"!]*\}'), 2,
-        # STYLES['string2'])
 
         rules = []
 
         # Keyword, operator, and brace rules
-        rules += [(r'\b%s\b' % w, 0, STYLES['keyword']) for w in CSSHighlighter.keywords]
-        # rules += [(r'%s' % w, 0, STYLES['keyword2']) for w in CSSHighlighter.keywords]
-        # rules += [(r'%s' % o, 0, STYLES['operator']) for o in CSSHighlighter.operators]
-        # rules += [(r'%s' % b, 0, STYLES['brace']) for b in CSSHighlighter.braces]
-
-        # rules += [(r'\b([\w]*)\b\s\{[ \t\r\s\n\w:;\-\'"!]*\}')]
+        rules += [(r'\b%s\b' % w, 0, self.styles['keyword'])
+                  for w in CSSHighlighter.keywords]
 
         rules += [(r'( )', 0, format('#4f5b62'))]
 
         # All other rules
-        rules += [
-            # 'self'
-            # (r'\bself\b', 0, STYLES['self']),
+        rules += [(r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.styles['value']),
+                  (r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.styles['value']),
 
-            # Double-quoted string, possibly containing escape sequences
-            (r'"[^"\\]*(\\.[^"\\]*)*"', 0, STYLES['value']),
-            (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['value']),
+                  (r'^([\w]+)[#\.\w\[\]=]*\s*\{', 1, self.styles['selector']),
+                  (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 1, self.styles['key']),
+                  (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 2, self.styles['value']),
 
-
-
-            (r'^([\w]+)[#\.\w\[\]=]*\s*\{', 1, STYLES['selector']),
-            # (r'^\s*([\w-]+)\s*:', 1, STYLES['key']),
-            (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 1, STYLES['key']),
-            (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 2, STYLES['value']),
-
-
-            # Numeric literals
-            (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
-            (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, STYLES['numbers']),
-            (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b', 0, STYLES['numbers']),
-
-        ]
+                  # Numeric literals
+                  (r'\b[+-]?[0-9]+[lL]?\b', 0, self.styles['numbers']),
+                  (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b',
+                   0, self.styles['numbers']),
+                  (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b',
+                   0, self.styles['numbers']),
+                  ]
 
         # Build a QRegularExpression for each pattern
         self.rules = [(QRegularExpression(pat), index, fmt)
                       for (pat, index, fmt) in rules]
 
+    # ----------------------------------------------------------------------
     def highlightBlock(self, text):
         """Apply syntax highlighting to the given block of text.
         """
-        # if not text:
-            # self.setCurrentBlockState(0)
-            # return
-
         # Do other syntax formatting
         for expression, nth, format in self.rules:
             index = expression.indexIn(text, 0)
@@ -154,48 +75,45 @@ class CSSHighlighter(QSyntaxHighlighter):
 
         self.setCurrentBlockState(0)
 
-        # # Do multi-line strings
-        # in_multiline = self.match_multiline(text, *self.tri_single)
-        # if not in_multiline:
-            # in_multiline = self.match_multiline(text, *self.tri_double)
+    # ----------------------------------------------------------------------
+    @classmethod
+    def get_format(cls, color, style='', fontsize=None):
+        """Return a QTextCharFormat with the given attributes."""
+        _color = QColor()
+        _color.setNamedColor(color)
 
-    # def match_multiline(self, text, delimiter, in_state, style):
-        # """Do highlighting of multi-line strings. ``delimiter`` should be a
-        # ``QRegularExpression`` for triple-single-quotes or triple-double-quotes, and
-        # ``in_state`` should be a unique integer to represent the corresponding
-        # state changes when inside those strings. Returns True if we're still
-        # inside a multi-line string when this function is finished.
-        # """
-        # # If inside triple-single quotes, start at 0
-        # if self.previousBlockState() == in_state:
-            # start = 0
-            # add = 0
-        # # Otherwise, look for the delimiter on this line
-        # else:
-            # start = delimiter.indexIn(text)
-            # # Move past this match
-            # add = delimiter.matchedLength()
+        _format = QTextCharFormat()
+        _format.setForeground(_color)
+        if 'bold' in style:
+            _format.setFontWeight(QFont.Bold)
+        if 'italic' in style:
+            _format.setFontItalic(True)
 
-        # # As long as there's a delimiter match on this line...
-        # while start >= 0:
-            # # Look for the ending delimiter
-            # end = delimiter.indexIn(text, start + add)
-            # # Ending delimiter on this line?
-            # if end >= add:
-                # length = end - start + add + delimiter.matchedLength()
-                # self.setCurrentBlockState(0)
-            # # No; multi-line string
-            # else:
-                # self.setCurrentBlockState(in_state)
-                # length = len(text) - start + add
-            # # Apply formatting
-            # self.setFormat(start, length, style)
-            # # Look for the next match
-            # start = delimiter.indexIn(text, start + length)
+        if fontsize:
+            _format.setFontPointSize(fontsize)
 
-        # # Return True if still inside a multi-line string, False otherwise
-        # if self.currentBlockState() == in_state:
-            # return True
-        # else:
-            # return False
+        return _format
 
+    # ----------------------------------------------------------------------
+    @property
+    def styles(self):
+        """"""
+        if 'light' in os.environ['QTMATERIAL_THEME']:
+
+            # Syntax self.styles that can be shared by all languages
+            return {
+                'selector': self.get_format('#00007f', 'bold'),
+                'keyword': self.get_format('#ff7c00', 'bold'),
+                'numbers': self.get_format('#007f7f'),
+                'key': self.get_format('#0040e0'),  # .
+                'value': self.get_format('#7f007f'),  # .
+
+            }
+        else:
+            return {
+                'selector': self.get_format('#8080ff', 'bold'),
+                'key': self.get_format('#63a3ff'),
+                'value': self.get_format('#ff7ed8'),
+                'keyword': self.get_format('#ff7c00', 'bold'),
+                'numbers': self.get_format('#72e4e4'),
+            }

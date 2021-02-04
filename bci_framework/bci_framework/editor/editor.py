@@ -1,11 +1,10 @@
 from PySide2.QtWidgets import QTextEdit, QCompleter
-from PySide2.QtGui import QTextOption, QWheelEvent, QKeySequence, QTextCursor
+from PySide2.QtGui import QTextOption
 from PySide2.QtCore import Qt, QPoint
-# from PySide2 import QtGui
-
-from .highlighters import PythonHighlighter, CSSHighlighter
 
 import os
+
+from .highlighters import PythonHighlighter, CSSHighlighter
 
 
 ########################################################################
@@ -14,12 +13,10 @@ class BCIEditor(QTextEdit):
 
     # ----------------------------------------------------------------------
     def __init__(self, linenumber=None, extension='.py', *args, **kwargs):
-        """Constructor"""
-
+        """"""
         super().__init__(*args, **kwargs)
 
         self.set_options()
-
         self.linenumber = linenumber
 
         if 'light' in os.environ.get('QTMATERIAL_THEME'):
@@ -51,11 +48,9 @@ class BCIEditor(QTextEdit):
             CSSHighlighter(self.document())
 
         self.connect_()
-
         self.completer = None
 
     # ----------------------------------------------------------------------
-
     def connect_(self):
         """"""
         if self.linenumber:
@@ -64,8 +59,6 @@ class BCIEditor(QTextEdit):
     # ----------------------------------------------------------------------
     def wheelEvent(self, evt):
         """"""
-        # self.last_wheel_evt = QWheelEvent(evt.pos(), evt.delta(), evt.buttons(), evt.modifiers())
-        # print(evt.pos(), evt.delta(), evt.buttons(), evt.modifiers())
         if self.linenumber:
             self.linenumber.wheelEvent(evt)
         return super().wheelEvent(evt)
@@ -88,8 +81,6 @@ class BCIEditor(QTextEdit):
         document = self.document()
         option = QTextOption()
 
-        # option.setFlags(QTextOption.ShowTabsAndSpaces)
-
         document.setDefaultTextOption(option)
         self.setAcceptRichText(False)
         self.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
@@ -100,17 +91,6 @@ class BCIEditor(QTextEdit):
         completionPrefix = self.textUnderCursor()
         if self.completer and len(completionPrefix) < 3 and self.completer.popup().isVisible():
             self.completer.popup().hide()
-
-        # Replace Tabs with Spaces
-        # if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
-
-            # if self.completer and self.completer.popup().isVisible():
-                # self.completer.insertText.emit(self.completer.last_highlighted)
-                # self.completer.popup().hide()
-            # else:
-                # tc = self.textCursor()
-                # tc.insertText(" " * 4)
-            # return
 
         if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
             if self.completer and self.completer.popup().isVisible():
@@ -161,14 +141,6 @@ class BCIEditor(QTextEdit):
 
         super().keyPressEvent(event)
 
-        # if event.key() in (
-                # Qt.Key_Enter,
-                # Qt.Key_Return,
-                # Qt.Key_Escape,
-                # Qt.Key_Tab,
-                # Qt.Key_Backtab, ) or event.modifiers() in (Qt.ControlModifier, ):
-
-                # return
         if self.completer and event.text():
             completionPrefix = self.textUnderCursor()
             if len(completionPrefix) >= 3:
@@ -195,14 +167,10 @@ class BCIEditor(QTextEdit):
                 previous = previous[:-4]
             tc.insertText(previous)
             return
-        # elif not previous:
-            # return super().keyPressEvent(event)
         else:
-            # tc.insertText(previous[:-1])
             return super().keyPressEvent(event)
 
     # ----------------------------------------------------------------------
-
     def _on_enter(self):
         """"""
         tc = self.textCursor()
@@ -342,25 +310,20 @@ class BCIEditor(QTextEdit):
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer = completer
-       # self.connect(self.completer,
-           # QtCore.SIGNAL("activated(const QString&)"), self.insertCompletion)
         self.completer.insertText.connect(self.insertCompletion)
 
     # ----------------------------------------------------------------------
     def insertCompletion(self, completion):
         """"""
         tc = self.textCursor()
-
         self.textUnderCursor(tc)
         tc.removeSelectedText()
-
-        pos = tc.position()  # len(self.completer.completionPrefix())
+        pos = tc.position()
 
         if completion in self.completer.snippets:
             completion = self.completer.snippets[completion]
 
-        # extra = (len(completion) - len(self.completer.completionPrefix()))
-        extra = completion  # [-extra:]
+        extra = completion
 
         text_position = extra.find("[!]")
         extra = extra.replace("[!]", "")
@@ -368,20 +331,17 @@ class BCIEditor(QTextEdit):
         position_in_line = tc.positionInBlock()
         extra = extra.replace("\n", "\n" + " " * position_in_line)
 
-        # tc.movePosition(QTextCursor.Left)
-        # tc.movePosition(QTextCursor.EndOfWord)
         tc.insertText(extra)
 
         if text_position > 0:
-            tc.setPosition(pos + text_position + (4 * extra[:text_position].count('\n')))
+            tc.setPosition(pos + text_position
+                           + (4 * extra[:text_position].count('\n')))
 
         self.setTextCursor(tc)
 
     # ----------------------------------------------------------------------
-
     def textUnderCursor(self, tc=None):
         """"""
-
         if tc is None:
             tc = self.textCursor()
 
@@ -425,7 +385,8 @@ class BCIEditor(QTextEdit):
         popup = self.completer.popup()
         popup.setCurrentIndex(self.completer.completionModel().index(0, 0))
         cr = self.cursorRect()
-        cr.setWidth(self.completer.popup().sizeHintForColumn(0) + self.completer.popup().verticalScrollBar().sizeHint().width() + 15)
+        cr.setWidth(self.completer.popup().sizeHintForColumn(
+            0) + self.completer.popup().verticalScrollBar().sizeHint().width() + 15)
         cr.setHeight(30)
 
         self.completer.complete(cr)
