@@ -27,7 +27,7 @@ setup(
 
     include_package_data=True,
     license='BSD-2-Clause',
-    description="High level Python module for handle OpenBCI EEG acquisition boards",
+    description="A real-time tool for acquisition, analysis and stimuli delivery for OpenBCI.",
 
     long_description=README,
     long_description_content_type='text/markdown',
@@ -35,7 +35,7 @@ setup(
     python_requires='>=3.8',
 
     entry_points={
-        'console_scripts': ['bci-framework=bci_stream.__main__:main'],
+        'console_scripts': ['bci-framework=bci_framework.__main__:main'],
     },
 
     classifiers=[
