@@ -1,6 +1,5 @@
-from configparser import ConfigParser
 import os
-import shutil
+from configparser import ConfigParser
 
 from PySide2 import QtWidgets
 
@@ -26,7 +25,8 @@ class ConfigManager(ConfigParser):
     # ----------------------------------------------------------------------
     def load(self):
         """"""
-        assert os.path.exists(self.filename), f'"{self.filename} does not exist!"'
+        assert os.path.exists(
+            self.filename), f'"{self.filename} does not exist!"'
 
         self.read(self.filename)
 

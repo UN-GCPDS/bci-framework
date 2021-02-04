@@ -1,9 +1,6 @@
 import os
 
-from PySide2 import QtWidgets, QtGui
-from PySide2.QtCore import Qt
-
-# .QDialog.QFileDialog import getExistingDirectory
+from PySide2.QtWidgets import QFileDialog, QMessageBox
 
 
 ########################################################################
@@ -18,7 +15,7 @@ class Dialogs:
         if dirpath is None:
             dirpath = parent.get_default_dir()
 
-        open_dir = QtWidgets.QFileDialog.getExistingDirectory(
+        open_dir = QFileDialog.getExistingDirectory(
             parent, "{APP_NAME} - Open project".format(**os.environ), dirpath
         )
 
@@ -31,40 +28,40 @@ class Dialogs:
     @classmethod
     def critical_message(self, parent, title, text):
         """"""
-        msgBox = QtWidgets.QMessageBox.critical(
-            parent, title, text, QtWidgets.QMessageBox.Ok)
+        msgBox = QMessageBox.critical(
+            parent, title, text, QMessageBox.Ok)
 
     # ----------------------------------------------------------------------
     @classmethod
     def question_message(self, parent, title, text):
         """"""
-        msgBox = QtWidgets.QMessageBox.question(
-            parent, title, text, QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        msgBox = QMessageBox.question(
+            parent, title, text, QMessageBox.Ok | QMessageBox.Cancel)
 
-        return msgBox == QtWidgets.QMessageBox.Ok
+        return msgBox == QMessageBox.Ok
 
     # ----------------------------------------------------------------------
     @classmethod
     def warning_message(self, parent, title, text):
         """"""
-        msgBox = QtWidgets.QMessageBox.warning(
-            parent, title, text, QtWidgets.QMessageBox.Ok
+        msgBox = QMessageBox.warning(
+            parent, title, text, QMessageBox.Ok
         )
 
     # ----------------------------------------------------------------------
     @staticmethod
     def save_filename(parent, title, start_dir, filter):
         """"""
-        path = QtWidgets.QFileDialog.getSaveFileName(parent,
-                                                     title,
-                                                     start_dir, filter)
+        path = QFileDialog.getSaveFileName(parent,
+                                           title,
+                                           start_dir, filter)
 
-        # dial = QtWidgets.QFileDialog(parent)
+        # dial = QFileDialog(parent)
         # dial.setStyleSheet("")
         # dial.setWindowTitle(title)
         # dial.getSaveFileName()
 
-        # if dial.exec_() == QtWidgets.QFileDialog.Accepted:
+        # if dial.exec_() == QFileDialog.Accepted:
             # path = dial.selectedFiles()[0]
 
         return path[0]

@@ -1,11 +1,10 @@
-from PySide2.QtWidgets import QWidget, QDesktopWidget, QMainWindow
-# from PySide2.QtGui import QLabel
+import os
+import shutil
+
+from PySide2.QtWidgets import QDesktopWidget, QMainWindow
 from PySide2.QtUiTools import QUiLoader
 
 from .config_manager import ConfigManager
-
-import os
-import shutil
 
 
 ########################################################################
@@ -16,12 +15,14 @@ class ConfigurationFrame(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        frame = os.path.join(os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'configurations.ui')
+        frame = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'configurations.ui')
         self.main = QUiLoader().load(frame)
         self.main.widget_restart.hide()
 
         self.config = ConfigManager()
-        self.original_config = ConfigManager(os.path.join(os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'))
+        self.original_config = ConfigManager(os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'))
 
         theme = self.config.get('framework', 'theme')
         self.main.radioButton_light.setChecked(theme == 'light')
@@ -42,17 +43,23 @@ class ConfigurationFrame(QMainWindow):
     def connect(self):
         """"""
         self.main.lineEdit_user_directory.setText(os.environ['BCISTREAM_HOME'])
-        self.main.lineEdit_projects_directory.setText(os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
-        self.main.lineEdit_records_directory.setText(os.path.join(os.environ['BCISTREAM_HOME'], 'records'))
+        self.main.lineEdit_projects_directory.setText(
+            os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
+        self.main.lineEdit_records_directory.setText(
+            os.path.join(os.environ['BCISTREAM_HOME'], 'records'))
 
-        self.main.radioButton_light.clicked.connect(lambda: self.config.set('framework', 'theme', 'light', save=True))
-        self.main.radioButton_dark.clicked.connect(lambda: self.config.set('framework', 'theme', 'dark', save=True))
+        self.main.radioButton_light.clicked.connect(
+            lambda: self.config.set('framework', 'theme', 'light', save=True))
+        self.main.radioButton_dark.clicked.connect(
+            lambda: self.config.set('framework', 'theme', 'dark', save=True))
 
-        self.main.pushButton_restore_projects.clicked.connect(self.restore_projects)
+        self.main.pushButton_restore_projects.clicked.connect(
+            self.restore_projects)
         self.main.pushButton_reset_projects.clicked.connect(self.reset_projects)
         self.main.pushButton_remove_records.clicked.connect(self.remove_records)
         self.main.pushButton_reset_montages.clicked.connect(self.reset_montages)
-        self.main.pushButton_reset_connections.clicked.connect(self.reset_connections)
+        self.main.pushButton_reset_connections.clicked.connect(
+            self.reset_connections)
 
     # ----------------------------------------------------------------------
     def restore_projects(self, *args, **kwargs):
@@ -87,6 +94,7 @@ class ConfigurationFrame(QMainWindow):
         """"""
         self.config.remove_section(section)
         for option in self.original_config.options(section):
-            self.config.set(section, option, self.original_config.get(section, option))
+            self.config.set(section, option,
+                            self.original_config.get(section, option))
         self.config.save()
 

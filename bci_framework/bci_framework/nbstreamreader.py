@@ -2,13 +2,13 @@ from threading import Thread
 from queue import Queue, Empty
 import time
 
+
+########################################################################
 class NonBlockingStreamReader:
 
+    # ----------------------------------------------------------------------
     def __init__(self, stream):
-        '''
-        stream: the stream to read from.
-                Usually a process' stdout or stderr.
-        '''
+        """stream: the stream to read from.Usually a process' stdout or stderr."""
 
         self._s = stream
         self._q = Queue()
@@ -33,7 +33,9 @@ class NonBlockingStreamReader:
         self._t.daemon = True
         self._t.start()  # start collecting lines from the stream
 
+    # ----------------------------------------------------------------------
     def readline(self, timeout=None):
+        """"""
         try:
             return self._q.get(block=timeout is not None,
                                timeout=timeout)
@@ -44,6 +46,3 @@ class NonBlockingStreamReader:
     def stop(self):
         """"""
         self.running = False
-
-
-# class UnexpectedEndOfStream(Exception): pass

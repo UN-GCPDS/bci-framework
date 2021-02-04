@@ -1,39 +1,27 @@
+import os
+import json
+import psutil
+import pickle
+from datetime import datetime
+
 from PySide2.QtUiTools import QUiLoader
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtCore import Qt, QTimer, QSize
-from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QDesktopWidget, QMainWindow
+from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
+from PySide2.QtGui import QPixmap, QIcon
+from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
 
+from kafka import KafkaProducer, KafkaConsumer
 
-from PySide2.QtWidgets import QDialogButtonBox
 from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
-# from . import doc_urls
-from .dialogs import Dialogs
 from .configuration import ConfigurationFrame
-
-from kafka import KafkaProducer, KafkaConsumer
-from kafka.errors import NoBrokersAvailable
-
-
-import pickle
-
-import threading
-
-from datetime import datetime
-
-import psutil
-import os
-import webbrowser
-import json
 
 
 ########################################################################
-class Kafka(QtCore.QThread):
+class Kafka(QThread):
     """"""
-    over = QtCore.Signal(object)
-    message = QtCore.Signal()
+    over = Signal(object)
+    message = Signal()
     continue_ = True
 
     # ----------------------------------------------------------------------
@@ -151,7 +139,7 @@ class BCIFramework(QMainWindow):
     def set_icons(self):
 
         def icon(name):
-            return QtGui.QIcon(f"bci:/primary/{name}.svg")
+            return QIcon(f"bci:/primary/{name}.svg")
 
         self.main.actionDevelopment.setIcon(icon("file"))
         self.main.actionVisualizations.setIcon(icon("brain"))
@@ -165,7 +153,8 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_docs.setIcon(icon("documentation"))
 
         self.main.pushButton_stop_preview.setIcon(icon('media-playback-stop'))
-        self.main.pushButton_script_preview.setIcon(icon('media-playback-start'))
+        self.main.pushButton_script_preview.setIcon(
+            icon('media-playback-start'))
         self.main.pushButton_play_signal.setIcon(icon('media-playback-start'))
         self.main.pushButton_clear_debug.setIcon(icon('edit-delete'))
         self.main.pushButton_record.setIcon(icon('media-record'))
@@ -206,20 +195,13 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def build_collapse_button(self):
         """"""
-        # # Corner widget not work on 'West' Tabs, but its make space
-        # container = QtWidgets.QWidget(self.main)
-        # layout = QtWidgets.QHBoxLayout(container)
-        # layout.addWidget(QtWidgets.QPushButton())
-        # self.main.tabWidget_widgets.setCornerWidget(
-            # container, Qt.TopLeftCorner)
-
         # And with the space is possible to add ad custom widget
-        self.pushButton_collapse_dock = QtWidgets.QPushButton(
+        self.pushButton_collapse_dock = QPushButton(
             self.main.dockWidget_global)
         self.pushButton_collapse_dock.clicked.connect(
             self.set_dock_collapsed)
 
-        icon = QtGui.QIcon('bci:/primary/arrow-right-double.svg')
+        icon = QIcon('bci:/primary/arrow-right-double.svg')
         self.pushButton_collapse_dock.setIcon(icon)
         self.pushButton_collapse_dock.setCheckable(True)
         self.pushButton_collapse_dock.setFlat(True)
@@ -234,12 +216,12 @@ class BCIFramework(QMainWindow):
         """"""
         if collapsed:
             w = self.main.tabWidget_widgets.tabBar().width() + 10
-            icon = QtGui.QIcon('bci:/primary/arrow-left-double.svg')
+            icon = QIcon('bci:/primary/arrow-left-double.svg')
             self.previous_width = self.main.dockWidget_global.width()
         else:
             if self.main.dockWidget_global.width() > 50:
                 return
-            icon = QtGui.QIcon('bci:/primary/arrow-right-double.svg')
+            icon = QIcon('bci:/primary/arrow-right-double.svg')
             w = self.previous_width
 
         self.pushButton_collapse_dock.setIcon(icon)
@@ -253,10 +235,6 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        # self.main.dockWidget_global.dockLocationChanged.connect(
-            # self.update_dock_tabs)
-        # self.main.tabWidget_widgets.currentChanged.connect(
-            # self.widget_update)
         self.main.tabWidget_widgets.currentChanged.connect(
             lambda: self.set_dock_collapsed(False))
 
@@ -271,24 +249,13 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_show_documentation.clicked.connect(
             lambda evt: self.show_interface('Documentation'))
 
-        # self.main.pushButton_go_to_repository.clicked.connect(
-            # lambda evt: webbrowser.open_new_tab('https://github.com/UN-GCPDS/bci-framework'))
-
         self.main.pushButton_show_about.clicked.connect(self.show_about)
-        self.main.pushButton_show_configurations.clicked.connect(self.show_configurations)
+        self.main.pushButton_show_configurations.clicked.connect(
+            self.show_configurations)
 
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
-    # # ----------------------------------------------------------------------
-    # def widget_update(self, index):
-        # """"""
-        # tab = self.main.tabWidget_widgets.tabText(index)
-
-        # if tab == 'Impedances':
-            # self.impedances.update_impedance()
-
     # ----------------------------------------------------------------------
-
     def update_dock_tabs(self, event):
         """"""
         if b'Left' in event.name:
@@ -352,13 +319,13 @@ class BCIFramework(QMainWindow):
         statusbar = self.main.statusBar()
 
         if not hasattr(statusbar, 'right_label'):
-            statusbar.right_label = QtWidgets.QLabel(statusbar)
+            statusbar.right_label = QLabel(statusbar)
             statusbar.right_label.setAlignment(Qt.AlignRight)
             statusbar.right_label.mousePressEvent = lambda evt: self.main.tabWidget_widgets.setCurrentWidget(
                 self.main.tab_connection)
             statusbar.addPermanentWidget(statusbar.right_label)
 
-            statusbar.btn = QtWidgets.QPushButton()
+            statusbar.btn = QPushButton()
             statusbar.btn.setProperty('class', 'connection')
             statusbar.btn.setCheckable(True)
             statusbar.addPermanentWidget(statusbar.btn)
@@ -376,7 +343,6 @@ class BCIFramework(QMainWindow):
                 statusbar.btn.setChecked(not status)
 
     # ----------------------------------------------------------------------
-
     def style_welcome(self):
         """"""
         style = """
@@ -426,7 +392,8 @@ class BCIFramework(QMainWindow):
         about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 
-        about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(lambda evt: about.destroy())
+        about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(
+            lambda evt: about.destroy())
 
         about.label.setMinimumSize(QSize(720, 200))
         about.label.setMaximumSize(QSize(720, 200))
@@ -452,7 +419,7 @@ class BCIFramework(QMainWindow):
 
         about.show()
 
-    @QtCore.Slot(object)
+    @Slot()
     # ----------------------------------------------------------------------
     def on_kafka_event(self, value):
         """"""
@@ -461,7 +428,8 @@ class BCIFramework(QMainWindow):
         self.streaming = True
 
         if value['topic'] == 'marker':
-            self.annotations.add_marker(datetime.fromtimestamp(value['value']['timestamp']), value['value']['marker'])
+            self.annotations.add_marker(datetime.fromtimestamp(
+                value['value']['timestamp']), value['value']['marker'])
         elif value['topic'] == 'annotation':
             self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
                                             value['value']['duration'],
@@ -469,8 +437,10 @@ class BCIFramework(QMainWindow):
         elif value['topic'] == 'eeg':
             # self.status_bar('Incoming streaming detected')
             eeg, aux = value['value']['data']
-            binary_created = datetime.fromtimestamp(value['value']['context']['binary_created'])
-            message_created = datetime.fromtimestamp(value['value']['timestamp'])
+            binary_created = datetime.fromtimestamp(
+                value['value']['context']['binary_created'])
+            message_created = datetime.fromtimestamp(
+                value['value']['timestamp'])
             # since = (datetime.now() - binary_created).total_seconds()
             since = (message_created - binary_created).total_seconds()
             count = value['value']['context']['samples']
@@ -506,11 +476,6 @@ class BCIFramework(QMainWindow):
         self.timer.timeout.connect(self.keep_updated)
         self.timer.start()
 
-            # return self.thread_kafka.kafking
-
-        # except:
-            # return False
-
     # ----------------------------------------------------------------------
     def stop_kafka(self):
         """"""
@@ -528,7 +493,7 @@ class BCIFramework(QMainWindow):
                 self.status_bar(right_message=('No streaming', False))
 
     # ----------------------------------------------------------------------
-    @QtCore.Slot()
+    @Slot()
     def kafka_message(self):
         """"""
         self.streaming = False
@@ -536,9 +501,6 @@ class BCIFramework(QMainWindow):
             self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
         else:
             self.conection_message = '* Kafka is not running on this machine.'
-
-        # Dialogs.warning_message(self.main, 'Kafka not running', message)
-        # self.connection.openbci_disconnect()
 
     # ----------------------------------------------------------------------
     def show_configurations(self, event=None):
