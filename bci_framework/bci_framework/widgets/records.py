@@ -1,30 +1,15 @@
-from PySide2.QtWidgets import QTableWidgetItem, QMenu
-from PySide2.QtCore import Qt, QTimer
-from PySide2.QtWidgets import QApplication, QAction
-from PySide2.QtGui import QCursor
-
-from openbci_stream.utils import HDF5Reader
-# from kafka import KafkaProducer
-# from kafka.errors import NoBrokersAvailable
-
-from PySide2.QtGui import QIcon
-
-import os
-from datetime import datetime, timedelta
-# import numpy as np
-
-# import pickle
-
-from datetime import datetime
-# import time
 import sys
 import os
 import shutil
-# import time
+from datetime import datetime, timedelta
 
+from PySide2.QtWidgets import QTableWidgetItem, QMenu, QApplication, QAction
+from PySide2.QtCore import Qt, QTimer
+from PySide2.QtGui import QCursor, QIcon
+
+from openbci_stream.utils import HDF5Reader
 from ..subprocess_script import run_subprocess
 from ..dialogs import Dialogs
-# from .. import doc_urls
 
 
 ########################################################################
@@ -43,16 +28,11 @@ class Records:
             os.getenv('BCISTREAM_HOME'), 'records')
         os.makedirs(self.records_dir, exist_ok=True)
 
-        # self.load_records()
         self.connect()
 
         self.parent_frame.label_records_path.setText(self.records_dir)
         self.parent_frame.label_records_path.setStyleSheet(
             '*{font-family: "DejaVu Sans Mono";}')
-
-        # self.parent_frame.textEdit_annotations.setStyleSheet('*{ padding: 10px;}')
-        # self.parent_frame.pushButton_remove_annotation.setDisabled(True)
-        # self.editor_set_visible(False)
 
         self.parent_frame.widget_record.hide()
 
@@ -87,7 +67,6 @@ class Records:
         response = Dialogs.question_message(self.parent_frame, 'Remove file?',
                                             f"""<p>This action cannot be undone.<br><br>
                                             <nobr>Remove permanently the file <code>{filename}.h5</code> from your system?</nobr></p>
-
                                             """)
         if response:
             os.remove(os.path.join(self.records_dir, f'{filename}.h5'))
@@ -117,7 +96,8 @@ class Records:
 
         self.parent_frame.tableWidget_records.setHorizontalHeaderLabels(
             ['Duration', 'Datetime', 'Name'])
-        records = filter(lambda s: s.endswith('h5'), os.listdir(self.records_dir))
+        records = filter(lambda s: s.endswith(
+            'h5'), os.listdir(self.records_dir))
 
         i = 0
         for filename in records:
@@ -153,17 +133,14 @@ class Records:
         montage = file.header['montage']
         channels = file.header['channels']
         filename = filename.replace('.h5', '')
-        created = datetime.fromtimestamp(file.header['datetime']).strftime("%x %X")
+        created = datetime.fromtimestamp(
+            file.header['datetime']).strftime("%x %X")
         _, samples = file.header['shape']
         sample_rate = file.header['sample_rate']
         duration = str(timedelta(seconds=int(samples / sample_rate)))
 
         if not light:
             annotations = file.annotations
-            # file.eeg
-            # file.aux
-            # file.timestamp
-
         else:
             annotations = []
 
@@ -179,7 +156,8 @@ class Records:
         name = self.parent_frame.tableWidget_records.item(
             item.row(), 2).text()
 
-        duration, datetime, _, montage, electrodes, annotations = self.get_metadata(f"{name}.h5", light=False)
+        duration, datetime, _, montage, electrodes, annotations = self.get_metadata(
+            f"{name}.h5", light=False)
 
         electrodes = list(electrodes.values())
         electrodes = '\n'.join([', '.join(electrodes[n:n + 8])
@@ -306,8 +284,6 @@ class Records:
                      'created': datetime.now().timestamp(),
                      'samples': samples,
                      }
-            # if kafka_produser := getattr(self.core, 'kafka_produser', False):
-                # self.core.kafka_produser.send('eeg', data_)
             self.start_streaming = end_streaming
 
     # ----------------------------------------------------------------------
@@ -330,27 +306,13 @@ class Records:
             self.timer.setInterval(1000 / 1)
             self.timer.timeout.connect(self.update_timer_record)
             self.timer.start()
-            # os.environ['BCI_RECORDING'] ------------------= 'False'
-            self.subprocess_script = run_subprocess([sys.executable, os.path.join(os.environ['BCISTREAM_ROOT'], 'transformers', 'record.py')])
-
-            # os.environ['BCI_RECORDING']
-
-            # self.parent_frame.stackedWidget_annotations.setCurrentIndex(0)
+            self.subprocess_script = run_subprocess([sys.executable, os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'transformers', 'record.py')])
 
         else:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
-            # time.sleep(3)
+
             self.load_records()
-
-    # # ----------------------------------------------------------------------
-    # def start_record(self):
-        # """"""
-        # self.record_signal(True)
-
-    # # ----------------------------------------------------------------------
-    # def stop_record(self):
-        # """"""
-        # self.record_signal(False)
 

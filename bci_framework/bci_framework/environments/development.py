@@ -33,8 +33,6 @@ class Development:
         self.save_all_files()
         self.build_linenumber()
 
-        self.check_tabs()
-
     # ----------------------------------------------------------------------
     def build_linenumber(self):
         """"""

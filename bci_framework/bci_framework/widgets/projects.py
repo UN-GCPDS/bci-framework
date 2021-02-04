@@ -1,22 +1,18 @@
 import os
 import sys
-import json
 import pickle
 
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QSize
-from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QTableWidgetItem, QDesktopWidget
-# from bci_framework.highlighters import PythonHighlighter
-from datetime import datetime
-
+from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QDesktopWidget
 from PySide2.QtUiTools import QUiLoader
+
 import shutil
 
-from ..editor import BCIEditor, MyDictionaryCompleter
+from ..editor import BCIEditor, Autocompleter
+
 
 ########################################################################
-
-
 class Projects:
     """"""
 
@@ -52,41 +48,24 @@ class Projects:
         self.parent_frame.pushButton_projects.clicked.connect(
             lambda evt: self.parent_frame.stackedWidget_projects.setCurrentWidget(getattr(self.parent_frame, "page_projects")))
 
-        # development opbect not exist, so use lambda
         self.parent_frame.pushButton_projects.clicked.connect(lambda evt:
                                                               self.core.development.stop_preview())
-
-        # self.parent_frame.listWidget_projects.itemDoubleClicked.connect(
-            # lambda evt: self.open_project(evt.text()))
 
         self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
         self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
 
-        self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(self.load_projects)
-
-        # self.parent.listWidget_projects_others.itemDoubleClicked.connect(
-        # lambda evt: self.open_project(evt.text()))
-
-        # self.parent.listWidget_projects.itemClicked.connect(
-        # self.there_can_only_be_one)
+        self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(
+            self.load_projects)
         self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
             self.there_can_only_be_one)
         self.parent_frame.listWidget_projects_delivery.itemClicked.connect(
             self.there_can_only_be_one)
-        # self.parent.listWidget_projects_others.itemClicked.connect(
-        # self.there_can_only_be_one)
-
-        # self.parent_frame.listWidget_projects.itemChanged.connect(
-            # self.project_renamed)
         self.parent_frame.listWidget_projects_visualizations.itemChanged.connect(
             self.project_renamed)
         self.parent_frame.listWidget_projects_delivery.itemChanged.connect(
             self.project_renamed)
-        # self.parent.listWidget_projects_others.itemChanged.connect(
-        # self.project_renamed)
-
         self.parent_frame.treeWidget_project.itemDoubleClicked.connect(
             self.open_script)
         self.parent_frame.treeWidget_project.itemChanged.connect(
@@ -97,24 +76,19 @@ class Projects:
             self.add_folder)
         self.parent_frame.pushButton_projects_remove.clicked.connect(
             self.remove)
-
         self.parent_frame.pushButton_add_project.clicked.connect(
             self.show_create_project_dialog)
         self.parent_frame.pushButton_remove_project.clicked.connect(
             self.remove_project)
-
         self.parent_frame.tabWidget_project.tabCloseRequested.connect(
             self.close_tab)
         self.parent_frame.tabWidget_project.currentChanged.connect(
             self.tab_changed)
 
     # ----------------------------------------------------------------------
-
     def there_can_only_be_one(self, event):
         """"""
-        # self.parent.listWidget_projects.clearSelection()
         self.parent_frame.listWidget_projects_delivery.clearSelection()
-        # self.parent.listWidget_projects_others.clearSelection()
         self.parent_frame.listWidget_projects_visualizations.clearSelection()
         event.setSelected(True)
 
@@ -128,9 +102,7 @@ class Projects:
     def open_script(self, item):
         """"""
         if not item.path in self.project_files:
-            # self.project_files.append(item.path)
             self.load_script_in_textedit(item.path)
-        # else:
         self.show_script_in_textedit(item.path)
         self.core.show_interface('Development')
         self.parent_frame.actionDevelopment.setEnabled(True)
@@ -138,16 +110,12 @@ class Projects:
     # ----------------------------------------------------------------------
     def load_projects(self):
         """"""
-        # self.parent_frame.listWidget_projects.clear()
         self.parent_frame.listWidget_projects_visualizations.clear()
         self.parent_frame.listWidget_projects_delivery.clear()
-        # self.parent.listWidget_projects_others.clear()
 
         projects = os.listdir(self.projects_dir)
-
         projects = filter(lambda f: os.path.isdir(
             os.path.join(self.projects_dir, f)), projects)
-
         projects = filter(lambda f: not f.startswith('__'), projects)
 
         if (not self.parent_frame.checkBox_projects_show_tutorials.isChecked()) and ('--local' in sys.argv):
@@ -166,16 +134,14 @@ class Projects:
                 modules = {'FigureStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
                            'StimuliServer': (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
                            }
-                # widget, icon_name = (
-                    # self.parent_frame.listWidget_projects, 'icon_dev')
                 for module in modules:
                     if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
                         break
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -184,18 +150,6 @@ class Projects:
                 f"bci:/primary/{icon_name}.svg", QSize(), QIcon.Normal, QIcon.Off)
             item.setIcon(icon)
             item.icon_name = icon_name
-
-            # self.parent.listWidget_projects.setItemDelegate(HTMLDelegate())
-
-            # item.setData(
-            # Qt.UserRole, "<b>{0}</b>".format('data to store for this QListWidgetItem'))
-
-        # self.parent.groupBox_visualizations.setVisible(
-            # self.parent.listWidget_projects_visualizations.count())
-        # self.parent.groupBox_delivery.setVisible(
-            # self.parent.listWidget_projects_delivery.count())
-        # self.parent.groupBox_others.setVisible(
-            # self.parent.listWidget_projects_others.count())
 
     # ----------------------------------------------------------------------
     def open_project(self, project_name):
@@ -257,8 +211,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -329,8 +283,6 @@ class Projects:
         """"""
         editor = BCIEditor(linenumber=self.parent_frame.textEdit_linenumber,
                            extension=os.path.splitext(module)[1])
-        # completer = MyDictionaryCompleter()
-        # editor.setCompleter(completer)
 
         tab = self.parent_frame.tabWidget_project.addTab(
             editor, os.path.split(module)[1])
@@ -344,10 +296,10 @@ class Projects:
             editor.module = module
 
             if 'bci_framework.extensions.stimuli_delivery' in content:
-                completer = MyDictionaryCompleter(mode='stimuli')
+                completer = Autocompleter(mode='stimuli')
                 editor.setCompleter(completer)
             elif 'bci_framework.projects.figure' in content:
-                completer = MyDictionaryCompleter(mode='visualization')
+                completer = Autocompleter(mode='visualization')
                 editor.setCompleter(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
@@ -363,30 +315,26 @@ class Projects:
         if module not in self.project_files:
             self.project_files.append(module)
 
-        # if selected := self.parent.treeWidget_project.currentItem():
-            # path = selected.path
-        # else:
-            # path = os.path.join('default_projects',
-            # self.parent.treeWidget_project.project_name)
-
     # ----------------------------------------------------------------------
     def show_create_project_dialog(self):
         """"""
         file = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'new_project.ui')
         project = QUiLoader().load(file, self.parent_frame)
-        project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(lambda evt: self.create_project(project.lineEdit_project_name.text(),
-                                                                                                      project.radioButton_visualization.isChecked(),
-                                                                                                      project.radioButton_stimulus_delivery.isChecked()))
+        project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
+            lambda evt: self.create_project(project.lineEdit_project_name.text(),
+                                            project.radioButton_visualization.isChecked(),
+                                            project.radioButton_stimulus_delivery.isChecked()))
 
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
             lambda evt: project.destroy())
         project.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(
             lambda evt: project.destroy())
 
-        project.lineEdit_project_name.textChanged.connect(lambda str_:
-                                                          project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
-                                                              os.path.join(self.projects_dir, str_))))
+        project.lineEdit_project_name.textChanged.connect(
+            lambda str_:
+            project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
+                os.path.join(self.projects_dir, str_))))
 
         center = QDesktopWidget().availableGeometry().center()
         geometry = project.frameGeometry()
@@ -403,20 +351,19 @@ class Projects:
 
         if visualization:
             icon_name = 'icon_viz'
-            item = QListWidgetItem(self.parent_frame.listWidget_projects_visualizations)
+            item = QListWidgetItem(
+                self.parent_frame.listWidget_projects_visualizations)
             default_project = '_default_visualization'
             self.mode = 'visualization'
         elif stimulus:
             icon_name = 'icon_sti'
-            item = QListWidgetItem(self.parent_frame.listWidget_projects_delivery)
+            item = QListWidgetItem(
+                self.parent_frame.listWidget_projects_delivery)
             default_project = '_default_stimuli_delivery'
             self.mode = 'delivery'
-        # else:
-            # icon_name = 'icon_dev'
-            # item = QListWidgetItem(self.parent_frame.listWidget_projects)
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -425,14 +372,12 @@ class Projects:
         item.setIcon(icon)
         item.icon_name = icon_name
 
-        source = os.path.join(os.getenv('BCISTREAM_ROOT'), 'default_projects', default_project)
+        source = os.path.join(os.getenv('BCISTREAM_ROOT'),
+                              'default_projects', default_project)
         target = os.path.join(self.projects_dir, project_name)
         shutil.copytree(source, target)
 
         self.open_project(project_name)
-
-        # with open(os.path.join(self.projects_dir, project_name, f'main.py'), 'wb') as file:
-            # file.write(b'')
 
     # ----------------------------------------------------------------------
     def remove_project(self, evt):
@@ -515,8 +460,6 @@ class Projects:
         """"""
         if hasattr(evt, 'previous_name'):
             if evt.previous_name.strip() != evt.text().strip():
-                # shutil.move(os.path.join('default_projects', evt.previous_name, f"{evt.previous_name}.py"), os.path.join(
-                # 'default_projects', evt.previous_name, f"{evt.text()}.py"))
                 shutil.move(os.path.join(self.projects_dir, evt.previous_name), os.path.join(
                     self.projects_dir, evt.text()))
                 evt.previous_name == evt.text()
@@ -552,7 +495,8 @@ class Projects:
         if isinstance(evt, (int, float)):
             editor_closed = self.parent_frame.tabWidget_project.widget(evt)
             try:
-                self.project_files.pop(self.project_files.index(editor_closed.path))
+                self.project_files.pop(
+                    self.project_files.index(editor_closed.path))
             except:
                 pass
             self.parent_frame.tabWidget_project.removeTab(evt)

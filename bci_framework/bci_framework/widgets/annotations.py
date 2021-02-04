@@ -1,7 +1,7 @@
-from PySide2.QtWidgets import QTableWidgetItem
+import os
 from datetime import datetime
 
-import os
+from PySide2.QtWidgets import QTableWidgetItem
 
 
 ########################################################################
@@ -22,18 +22,15 @@ class Annotations:
         border-radius: 4px;
         }}
         """
-
-        # self.parent_frame.doubleSpinBox_annotation_duration.setStyleSheet(style)
-        # self.parent_frame.plainTextEdit_annotations.setStyleSheet(style)
-        # self.parent_frame.lineEdit_marker.setStyleSheet(style)
-
         self.connect()
 
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent_frame.pushButton_save_annotation.clicked.connect(self.save_annotation)
-        self.parent_frame.pushButton_save_marker.clicked.connect(self.save_marker)
+        self.parent_frame.pushButton_save_annotation.clicked.connect(
+            self.save_annotation)
+        self.parent_frame.pushButton_save_marker.clicked.connect(
+            self.save_marker)
 
     # ----------------------------------------------------------------------
     def save_annotation(self):

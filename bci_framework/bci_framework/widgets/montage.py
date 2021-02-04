@@ -1,33 +1,25 @@
 import os
 import json
 
-from PySide2.QtCore import QTimer
+from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem
+from PySide2.QtGui import QResizeEvent
 
 import mne
 import numpy as np
-# import time
-
+from scipy.spatial.distance import pdist, squareform
 import matplotlib
 from matplotlib import cm, pyplot
 from matplotlib.figure import Figure
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
-from scipy.spatial.distance import pdist, squareform
-
 from openbci_stream.acquisition import OpenBCIConsumer
+from gcpds.utils.filters import GenericButterBand
 
-
-from gcpds.utils.filters import GenericButterBand, notch60
-
-# from ..config_manager import ConfigManager
 from ...extensions import properties as prop
 from ...extensions.visualizations.utils import thread_this
 
-
-# from ..projects import properties as prop
-# from ..projects.figure import thread_this
 matplotlib.rcParams['axes.edgecolor'] = 'k'
 
 
@@ -39,24 +31,28 @@ class FigureTopo(FigureCanvas):
     def __init__(self):
         """Constructor"""
         super().__init__(Figure(figsize=(1, 1), dpi=90))
-        # self.resize_timer = QTimer()
-        # self.resize_timer.timeout.connect(self.do_resize_now)
+        self.resize_timer = QTimer()
+        self.resize_timer.timeout.connect(self.do_resize_now)
 
-    # # ----------------------------------------------------------------------
-    # def resizeEvent(self, event):
-        # """"""
-        # self.lastEvent = (event.size().width(), event.size().height())
-        # self.resize_timer.stop()
-        # self.resize_timer.start(200)
+    # ----------------------------------------------------------------------
+    def resizeEvent(self, event):
+        """"""
+        self.figure.set_visible(False)
+        self.draw()
+        self.lastEvent = (event.size().width(), event.size().height())
+        self.resize_timer.stop()
+        self.resize_timer.start(50)
 
-    # # ----------------------------------------------------------------------
-    # def do_resize_now(self):
-        # newsize = QtCore.QSize(*self.lastEvent)
-        # # create new event from the stored size
-        # event = QtGui.QResizeEvent(newsize, QtCore.QSize(1, 1))
-        # # print "Now I let you resize."
-        # # and propagate the event to let the canvas resize.
-        # super().resizeEvent(event)
+    # ----------------------------------------------------------------------
+    def do_resize_now(self):
+        newsize = QSize(*self.lastEvent)
+        # create new event from the stored size
+        event = QResizeEvent(newsize, QSize(1, 1))
+        # print "Now I let you resize."
+        # and propagate the event to let the canvas resize.
+        super().resizeEvent(event)
+        self.figure.set_visible(True)
+        self.draw()
 
 
 ########################################################################
@@ -133,7 +129,8 @@ class TopoplotMontage(FigureTopo):
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
         # colors = ['#3d7a84', '#3d7a84']
-        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
+        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get(
+            'QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
         cm = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0, cmap=cm, outlines='skirt', names=channels_labels, show_names=True, axes=self.ax, sensors=True, show=False,
@@ -219,7 +216,8 @@ class TopoplotImpedances(FigureTopo):
             else:
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
-        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
+        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get(
+            'QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
         cmap_ = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         self.ax.clear()
@@ -353,12 +351,8 @@ class Montage:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
-        self.parent_frame.comboBox_montages.activated.connect(self.update_topoplot)
-
-        # self.parent.comboBox_historical_montages.activated.connect(
-        # lambda evt: self.load_montage(self.parent.comboBox_historical_montages.currentText()))
-        # self.parent.comboBox_historical_montages.editTextChanged.connect(
-        # lambda evt: self.parent.pushButton_save_montage.setEnabled(bool(self.parent.comboBox_historical_montages.currentText())))
+        self.parent_frame.comboBox_montages.activated.connect(
+            self.update_topoplot)
 
         self.parent_frame.comboBox_montage_channels.activated.connect(
             self.update_topoplot)
@@ -370,8 +364,6 @@ class Montage:
         self.parent_frame.pushButton_remove_montage.clicked.connect(
             self.delete_montage)
 
-        # self.parent_frame.tableWidget_montages.itemDoubleClicked.connect(
-            # self.load_montage)
         self.parent_frame.tableWidget_montages.itemClicked.connect(
             self.load_montage)
 
@@ -383,26 +375,10 @@ class Montage:
         """"""
         if self.parent_frame.checkBox_view_impedances.isChecked():  # impedances
             self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
-            # self.topoplot_impedance.configure()
         else:  # montage
             self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
 
         self.start_impedance_measurement()
-
-    # # ----------------------------------------------------------------------
-    # def set_impedances(self, mode):
-        # """"""
-        # self.parent_frame.checkBox_view_impedances.setChecked(mode)
-        # if mode:
-            # self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
-        # else:
-            # self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
-
-    # # ----------------------------------------------------------------------
-    # def update_montage(self):
-        # """"""
-        # self.montage_name = self.parent.comboBox_montages.currentText()
-        # self.montage = mne.channels.make_standard_montage(self.montage_name)
 
     # ----------------------------------------------------------------------
     def get_mne_montage(self):
@@ -414,8 +390,6 @@ class Montage:
     # ----------------------------------------------------------------------
     def update_topoplot(self):
         """"""
-        # montage_name = self.parent.comboBox_montages.currentText()
-        # self.montage = mne.channels.make_standard_montage(montage_name)
         montage = self.get_mne_montage()
 
         channels = self.parent_frame.comboBox_montage_channels.currentIndex() + 1
@@ -440,8 +414,6 @@ class Montage:
             for i in reversed(range(layout.count())):
                 if item := layout.takeAt(i):
                     item.widget().deleteLater()
-
-            # layout.setColumnStretch(0, 1)
             layout.setColumnStretch(1, 1)
 
         if self.channels_names_widgets:
@@ -453,7 +425,6 @@ class Montage:
         self.channels_names_widgets = []
         self.labels_names_widgets = []
         montage = self.get_mne_montage()
-        # for i in range(self.parent.spinBox_montage_channels.value()):
         for i in range(self.parent_frame.comboBox_montage_channels.currentIndex() + 1):
 
             if i % 2:
@@ -480,54 +451,7 @@ class Montage:
 
             layout.addWidget(channel_name)
 
-    # # ----------------------------------------------------------------------
-    # def generate_list_impedances(self):
-        # """"""
-        # for layout in [self.parent.gridLayout_list_impedances_right, self.parent.gridLayout_list_impedances_left]:
-
-            # for i in reversed(range(layout.count())):
-            # if item := layout.takeAt(i):
-            # item.widget().deleteLater()
-
-            # # layout.setColumnStretch(0, 1)
-            # layout.setColumnStretch(1, 1)
-
-        # # if self.channels_names_widgets:
-            # # previous_labels = [ch.currentText()
-            # # for ch in self.channels_names_widgets]
-        # # else:
-            # # previous_labels = []
-
-        # self.impedance_names_widgets = []
-        # self.labels_impedance_widgets = []
-        # # montage = self.get_mne_montage()
-        # # for i in range(self.parent.spinBox_montage_channels.value()):
-        # for i in range(self.parent.comboBox_montage_channels.currentIndex() + 1):
-
-            # if i % 2:
-            # layout = self.parent.gridLayout_list_impedances_right
-            # else:
-            # layout = self.parent.gridLayout_list_impedances_left
-
-            # channel_label = QLabel(f'CH{i+1}')
-            # self.labels_impedance_widgets.append(channel_label)
-            # layout.addWidget(channel_label)
-
-            # channel_name = QLineEdit()
-            # channel_name.setText('?? K \Omenga')
-
-            # self.impedance_names_widgets.append(channel_name)
-
-            # layout.addWidget(channel_name)
-
-    # #----------------------------------------------------------------------
-    # def update_montage_name(self):
-        # """"""
-        # channels_names = ','.join([ch.currentText() for ch in self.channels_names_widgets])
-        # self.parent.comboBox_historical_montages.setCurrentText(f'{self.montage_name} [{len(self.channels_names_widgets)}CH] [{channels_names}]')
-
     # ----------------------------------------------------------------------
-
     def save_montage(self):
         """"""
         montage_name = self.parent_frame.comboBox_montages.currentText()
@@ -543,8 +467,8 @@ class Montage:
                 self.core.config.save()
                 self.set_saved_montages()
                 return
-    # ----------------------------------------------------------------------
 
+    # ----------------------------------------------------------------------
     def delete_montage(self, event=None):
         """"""
         row = self.parent_frame.tableWidget_montages.currentRow()
@@ -558,13 +482,10 @@ class Montage:
     def set_saved_montages(self):
         """"""
         self.parent_frame.tableWidget_montages.clear()
-
         self.parent_frame.tableWidget_montages.setRowCount(0)
         self.parent_frame.tableWidget_montages.setColumnCount(3)
-
         self.parent_frame.tableWidget_montages.setHorizontalHeaderLabels(
             ['Montage', 'Channels', 'Electrodes'])
-
         saved_montages = self.core.config['montages']
 
         i = 0
@@ -591,8 +512,6 @@ class Montage:
     # ----------------------------------------------------------------------
     def load_montage(self, event=None):
         """"""
-        # saved_montages = self.core.config['montages']
-
         if event is None:
             montage_name, channels = self.core.config.get(
                 'montages', 'last_montage').split('|')
@@ -607,18 +526,11 @@ class Montage:
                                  f"{montage_name}|{','.join(channels)}")
             self.core.config.save()
 
-        # self.montage_name = montage_name
-
         self.parent_frame.comboBox_montages.setCurrentText(montage_name)
-        # self.montage = mne.channels.make_standard_montage(self.montage_name)
-        # self.parent.spinBox_montage_channels.setMaximum(
-        # len(self.montage.ch_names))
-        # self.parent.spinBox_montage_channels.setValue(len(channels))
         self.parent_frame.comboBox_montage_channels.setCurrentIndex(
             len(channels) - 1)
 
         self.generate_list_channels()
-        # self.generate_list_impedances()
         [wg.setCurrentText(ch) for wg, ch in zip(
             self.channels_names_widgets, channels)]
         self.update_topoplot()

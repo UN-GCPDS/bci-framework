@@ -1,42 +1,24 @@
 import os
-from ..dialogs import Dialogs
-from openbci_stream.acquisition import Cyton, CytonBase
 import json
 import time
 import logging
-import sys
 
-
-import pickle
-
-from ...extensions import properties as prop
-
-# from ..config_manager import C
-# from PySide2.QtUiTools import QUiLoader
-# from PySide2.QtCore import QTimer
-# from PySide2.QtGui import QMovie
-
-# from contextlib import contextmanager
-# from PyQt4 import QtCore
-# from PyQt4.QtGui import QApplication, QCursor
-
+from openbci_stream.acquisition import Cyton, CytonBase
 from PySide2 import QtCore
-
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QApplication
+from PySide2.QtCore import Qt, Signal, QThread, Slot
 from PySide2.QtGui import QCursor
+from PySide2.QtWidgets import QApplication
 
-
-from kafka import KafkaConsumer, KafkaProducer
-from datetime import datetime
+from ..dialogs import Dialogs
+from ...extensions import properties as prop
 
 
 ########################################################################
-class OpenBCIThread(QtCore.QThread):
+class OpenBCIThread(QThread):
     """"""
-    connection_ok = QtCore.Signal()
-    connection_fail = QtCore.Signal()
-    disconnected_ok = QtCore.Signal()
+    connection_ok = Signal()
+    connection_fail = Signal()
+    disconnected_ok = Signal()
     connected = False
 
     # ----------------------------------------------------------------------
@@ -47,10 +29,6 @@ class OpenBCIThread(QtCore.QThread):
     # ----------------------------------------------------------------------
     def run(self):
         """"""
-
-        # if self.streaming():
-            # self.connection_ok.emit()
-
         self.openbci = Cyton(self.mode,
                              self.endpoint,
                              host=self.host,
@@ -75,21 +53,18 @@ class OpenBCIThread(QtCore.QThread):
         boardmode = self.openbci.boardmode
         if not boardmode_setted:
             logging.warning('Boardmode not setted!')
-            # Dialogs.warning_message(
-                # self.parent_frame, 'Boardmode', f'Boardmode could no be setted correctly.\n{self.boardmode}')
-            # self.parent_frame.comboBox_boardmode.setCurrentText(boardmode.capitalize())
-
-        self.session_settings(self.montage, self.bias, self.gain, self.srb1, self.adsinput, self.srb2)
+        self.session_settings(self.montage, self.bias,
+                              self.gain, self.srb1, self.adsinput, self.srb2)
 
         if not self.checkBox_send_leadoff:
-            self.openbci.leadoff_impedance(self.montage, pchan=pchan, nchan=nchan)
+            self.openbci.leadoff_impedance(
+                self.montage, pchan=pchan, nchan=nchan)
 
         if self.checkBox_test_signal:
             test_signal = self.comboBox_test_signal
-            test_signal = getattr(CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
+            test_signal = getattr(
+                CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
             self.openbci.command(test_signal)
-
-            # self.core.status_bar(message=f'OpenBCI connected on test mode ({test_signal}) to {self.endpoint} running in {self.host}')
 
         else:
             all_channels = set(range(16 if prop.DAISY else 8))
@@ -97,8 +72,6 @@ class OpenBCIThread(QtCore.QThread):
             deactivated = all_channels.difference(used_channels)
             self.openbci.deactivate_channel(deactivated)
             self.openbci.activate_channel(used_channels)
-
-            # self.core.status_bar(message=f'OpenBCI connected and streaming in {boardmode} mode to {self.endpoint} running in {self.host}')
 
         if not self.streaming():
             self.openbci.start_stream()
@@ -126,8 +99,8 @@ class OpenBCIThread(QtCore.QThread):
                                           bias=bias,
                                           srb2=srb2,
                                           srb1=srb1)
-    # ----------------------------------------------------------------------
 
+    # ----------------------------------------------------------------------
     def disconnect(self):
         """"""
         try:
@@ -237,24 +210,13 @@ class Connection:
             self.parent_frame.comboBox_ip.show()
             self.parent_frame.comboBox_port.hide()
 
-    # # ----------------------------------------------------------------------
-
-    # def show_dialog_connection(self):
-        # """"""
-        # self.dialog_conection = QUiLoader().load('bci_framework/qtgui/connecting.ui', self.parent)
-
-        # movie = QMovie(':/bci/icons/bci/connecting.gif')
-        # movie.start()
-        # self.dialog_conection.label_gif.setMovie(movie)
-
-        # self.dialog_conection.show()
-
     # ----------------------------------------------------------------------
     def on_connect(self, toggled):
         """"""
         if toggled:  # Connect
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.core.update_kafka(self.parent_frame.comboBox_host.currentText())
+            self.core.update_kafka(
+                self.parent_frame.comboBox_host.currentText())
             self.openbci_connect()
 
         else:   # Disconnect
@@ -335,42 +297,6 @@ class Connection:
         self.parent_frame.pushButton_connect.setEnabled(False)
         self.update_environ()
 
-    # # ----------------------------------------------------------------------
-    # def session_settings(self, *args):
-        # """"""
-        # if hasattr(self, 'last_settings'):
-            # channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
-        # elif args:
-            # self.last_settings = args
-            # channels, bias, gain, srb1, adsinput, srb2 = args
-        # else:
-            # return
-
-        # if self.parent_frame.checkBox_default_settings.isChecked():
-            # self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
-        # else:
-            # self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
-                                          # gain=gain,
-                                          # input_type=adsinput,
-                                          # bias=bias,
-                                          # srb2=srb2,
-                                          # srb1=srb1)
-
-    # # ----------------------------------------------------------------------
-    # def openbci_disconnect(self):
-        # """"""
-        # # self.openbci.
-        # if self.parent_frame.checkBox_test_signal.isChecked():
-            # self.parent_frame.groupBox_settings.setEnabled(False)
-            # self.parent_frame.groupBox_leadoff_impedance.setEnabled(False)
-        # try:
-            # self.openbci.stop_stream()
-        # except:
-            # pass
-        # self.parent_frame.pushButton_connect.setText('Connect')
-        # self.parent_frame.pushButton_connect.setChecked(False)
-        # self.core.status_bar(right_message=('Disconnect', None))
-
     # ----------------------------------------------------------------------
     def update_environ(self):
         """"""
@@ -390,7 +316,7 @@ class Connection:
             self.parent_frame.comboBox_boardmode.currentText().lower())
 
     # ----------------------------------------------------------------------
-    @QtCore.Slot()
+    @Slot()
     def connection_ok(self):
         """"""
         QApplication.restoreOverrideCursor()
@@ -398,7 +324,7 @@ class Connection:
         self.parent_frame.pushButton_connect.setEnabled(True)
 
     # ----------------------------------------------------------------------
-    @QtCore.Slot()
+    @Slot()
     def connection_fail(self):
         """"""
         QApplication.restoreOverrideCursor()
@@ -414,18 +340,16 @@ class Connection:
             checks.extend([f'* The server could not be running, or running on a different IP that {self.parent_frame.comboBox_host.currentText()}',
                            '* This machine must have access to the server or running on the same network.',
                            ])
-        # else:
-            # checks.extend([f'* Verify that Kafka is running on this machine',
-                           # ])
 
         if hasattr(self.core, 'conection_message'):
             checks.extend([self.core.conection_message])
             self.core.conection_message = ""
         checks = '\n'.join(checks)
-        Dialogs.critical_message(self.parent_frame, 'Connection error', f"{checks}")
+        Dialogs.critical_message(
+            self.parent_frame, 'Connection error', f"{checks}")
 
     # ----------------------------------------------------------------------
-    @QtCore.Slot()
+    @Slot()
     def disconnected_ok(self):
         """"""
         self.core.stop_kafka()
