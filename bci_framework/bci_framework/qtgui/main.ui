@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1501</width>
-    <height>779</height>
+    <height>776</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -492,7 +492,7 @@ p, li { white-space: pre-wrap; }
                     </font>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Works with &lt;span style=&quot; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;for the data acquisition and the external stimulus synchronization.&lt;/p&gt;&lt;p&gt;Use &lt;span style=&quot; font-weight:600;&quot;&gt;Python&lt;/span&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;span style=&quot; font-weight:600;&quot;&gt;API&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Works with &lt;span style=&quot; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;for the data acquisition and the external stimuli synchronization.&lt;/p&gt;&lt;p&gt;Use &lt;span style=&quot; font-weight:600;&quot;&gt;Python&lt;/span&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;span style=&quot; font-weight:600;&quot;&gt;API&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -693,7 +693,7 @@ p, li { white-space: pre-wrap; }
                     </font>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Perform &lt;span style=&quot; font-weight:600;&quot;&gt;remote stimuli delivery experiments&lt;/span&gt; with real-time feedback and events syncronizations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Perform &lt;span style=&quot; font-weight:600;&quot;&gt;remote stimuli delivery experiments&lt;/span&gt; with real-time feedback and events synchronization.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -711,7 +711,7 @@ p, li { white-space: pre-wrap; }
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,0,0">
+                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,1,0">
                  <property name="leftMargin">
                   <number>15</number>
                  </property>
@@ -775,7 +775,7 @@ p, li { white-space: pre-wrap; }
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
                      <property name="text">
-                      <string>Run visualization</string>
+                      <string>Run data analysis</string>
                      </property>
                      <property name="flat">
                       <bool>true</bool>
@@ -792,7 +792,7 @@ p, li { white-space: pre-wrap; }
                     </font>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Integrate all Python scientific environment (&lt;span style=&quot; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;, &lt;span style=&quot; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;, &lt;span style=&quot; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;, MNE) to develop real-time data analysis and visualizations. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Distributed&lt;/span&gt; preprocess tasks can be implemented to create a network-accessible new kind of data stream.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Integrate all Python scientific environment (&lt;span style=&quot; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;, &lt;span style=&quot; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;, &lt;span style=&quot; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;, &lt;span style=&quot; font-weight:600;&quot;&gt;MNE&lt;/span&gt;) to develop real-time data analysis and visualizations. &lt;/p&gt;&lt;p&gt;Implement &lt;span style=&quot; font-weight:600;&quot;&gt;distributed&lt;/span&gt; process to create a new kind of data for streaming through the network and reuse it for data analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -1022,7 +1022,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>444</width>
-                  <height>492</height>
+                  <height>489</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1058,7 +1058,7 @@ p, li { white-space: pre-wrap; }
                       <x>0</x>
                       <y>0</y>
                       <width>432</width>
-                      <height>480</height>
+                      <height>477</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1108,7 +1108,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>444</width>
-                  <height>492</height>
+                  <height>489</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1364,7 +1364,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>456</width>
-                 <height>640</height>
+                 <height>637</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -2438,7 +2438,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>456</width>
-              <height>600</height>
+              <height>597</height>
              </rect>
             </property>
             <attribute name="label">
