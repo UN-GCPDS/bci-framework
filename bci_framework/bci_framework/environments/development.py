@@ -76,14 +76,14 @@ class Development:
     # ----------------------------------------------------------------------
     def check_tabs(self, event=None):
         """"""
-        if self.parent_frame.tabWidget_project.count():
-            self.parent_frame.tabWidget_project.show()
-            self.parent_frame.textEdit_linenumber.show()
-            self.parent_frame.widget_new_project.hide()
-        else:
-            self.parent_frame.tabWidget_project.hide()
-            self.parent_frame.textEdit_linenumber.hide()
-            self.parent_frame.widget_new_project.show()
+        # if self.parent_frame.tabWidget_project.count():
+            # self.parent_frame.tabWidget_project.show()
+            # self.parent_frame.textEdit_linenumber.show()
+            # self.parent_frame.widget_new_project.hide()
+        # else:
+            # self.parent_frame.tabWidget_project.hide()
+            # self.parent_frame.textEdit_linenumber.hide()
+            # self.parent_frame.widget_new_project.show()
 
     # ----------------------------------------------------------------------
     def hide_preview(self):
@@ -159,8 +159,12 @@ class Development:
         # if not self.parent_frame.mdiArea_development.subWindowList():
             # self.build_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
+        self.parent_frame.tabWidget_widgets.setCurrentWidget(self.parent_frame.tab_projects)
+
+        self.parent_frame.actionDevelopment.setEnabled(self.parent_frame.tabWidget_project.count())
 
     # ----------------------------------------------------------------------
+
     def build_preview(self):
         """
 

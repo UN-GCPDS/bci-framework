@@ -116,14 +116,12 @@ class BCIWebSocket(WebSocket):
     # ----------------------------------------------------------------------
     def on_open(self, evt):
         """"""
-        print('Opened')
         self.send({'action': 'register'})
 
     # ----------------------------------------------------------------------
     def on_message(self, evt):
         """"""
         data = json.loads(evt.data)
-        print("MESSAGE", data, self.main)
         if 'method' in data:
             getattr(self.main, data['method']).no_decorator(
                 self.main, *data['args'], **data['kwargs'])
@@ -132,7 +130,6 @@ class BCIWebSocket(WebSocket):
     def on_close(self, evt):
         """"""
         getattr(self.main, 'stop', lambda: None)()
-        print('Closed WS')
         timer.set_timeout(lambda: self.__init__(
             f'ws://localhost:{self.ip_}/ws'), 1000)
 

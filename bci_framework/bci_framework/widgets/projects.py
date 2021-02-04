@@ -133,6 +133,7 @@ class Projects:
         # else:
         self.show_script_in_textedit(item.path)
         self.core.show_interface('Development')
+        self.parent_frame.actionDevelopment.setEnabled(True)
 
     # ----------------------------------------------------------------------
     def load_projects(self):
@@ -562,3 +563,10 @@ class Projects:
                     editor = self.parent_frame.tabWidget_project.widget(i)
                     if editor.path == evt:
                         return self.close_tab(i)
+
+        if self.parent_frame.tabWidget_project.count():
+            self.parent_frame.actionDevelopment.setEnabled(True)
+        else:
+            self.core.show_interface('Home')
+            self.parent_frame.actionDevelopment.setEnabled(False)
+
