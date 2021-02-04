@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
