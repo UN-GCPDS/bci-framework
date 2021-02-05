@@ -45,6 +45,8 @@ class FigureTopo(FigureCanvas):
 
     # ----------------------------------------------------------------------
     def do_resize_now(self):
+        """"""
+        self.resize_timer.stop()
         newsize = QSize(*self.lastEvent)
         # create new event from the stored size
         event = QResizeEvent(newsize, QSize(1, 1))
