@@ -16,7 +16,8 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('exts'))
+# sys.path.insert(0, os.path.abspath('../../bci_framework'))
+# sys.path.insert(0, os.path.abspath('exts'))
 
 # -- Project information -----------------------------------------------------
 
@@ -217,6 +218,7 @@ autodoc_mock_imports = [
     'scipy',
     'mne',
     'matplotlib',
+    'matplotlib.rcParams',
     'google',
     'colorama',
     'tqdm',

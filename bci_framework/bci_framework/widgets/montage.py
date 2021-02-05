@@ -20,7 +20,11 @@ from gcpds.utils.filters import GenericButterBand
 from ...extensions import properties as prop
 from ...extensions.visualizations.utils import thread_this
 
-matplotlib.rcParams['axes.edgecolor'] = 'k'
+try:
+    matplotlib.rcParams['axes.edgecolor'] = 'k'
+except:
+    # 'rcParams' object does not support item assignment
+    pass
 
 
 ########################################################################

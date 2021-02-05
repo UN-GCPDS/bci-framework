@@ -14,7 +14,6 @@ import matplotlib
 
 import logging
 
-
 matplotlib.rcParams['text.color'] = "#ffffff"
 matplotlib.rcParams['font.size'] = 16
 

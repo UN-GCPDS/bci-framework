@@ -1,3 +1,12 @@
+"""
+===============
+CSS Highlighter
+===============
+
+
+QSyntaxHighlighter for CSS syntax.
+"""
+
 import os
 
 from PySide2.QtCore import QRegExp as QRegularExpression
@@ -6,7 +15,7 @@ from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 ########################################################################
 class CSSHighlighter(QSyntaxHighlighter):
-    """Syntax highlighter for the Python language."""
+    """Syntax highlighter for CSS style sheets."""
 
     keywords = ['important', ]
 
@@ -60,8 +69,7 @@ class CSSHighlighter(QSyntaxHighlighter):
 
     # ----------------------------------------------------------------------
     def highlightBlock(self, text):
-        """Apply syntax highlighting to the given block of text.
-        """
+        """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
         for expression, nth, format in self.rules:
             index = expression.indexIn(text, 0)
@@ -97,7 +105,7 @@ class CSSHighlighter(QSyntaxHighlighter):
     # ----------------------------------------------------------------------
     @property
     def styles(self):
-        """"""
+        """The styles depend on the theme."""
         if 'light' in os.environ['QTMATERIAL_THEME']:
 
             # Syntax self.styles that can be shared by all languages

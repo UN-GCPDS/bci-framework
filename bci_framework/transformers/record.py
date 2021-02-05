@@ -3,10 +3,11 @@ import atexit
 import os
 import sys
 
-sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'),
-                               'records', 'log.stderr'), 'w')
-sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'),
-                               'records', 'log.stdout'), 'w')
+if os.getenv('BCISTREAM_HOME'):
+    sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'),
+                                   'records', 'log.stderr'), 'w')
+    sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'),
+                                   'records', 'log.stdout'), 'w')
 
 # from datetime import datetime
 from openbci_stream.utils import HDF5Writer
