@@ -388,7 +388,7 @@ class BCIFramework(QMainWindow):
         """"""
 
         frame = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'about.ui')
+            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'about.ui')
         about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 

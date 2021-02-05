@@ -12,8 +12,8 @@ from PySide2.QtWidgets import QApplication
 from PySide2.QtCore import Qt, QCoreApplication
 from qt_material import apply_stylesheet
 
-from .bci_framework import BCIFramework
-from .bci_framework.config_manager import ConfigManager
+from .framework import BCIFramework
+from .framework.config_manager import ConfigManager
 
 
 # Set logging
@@ -40,7 +40,7 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'default_projec
                     os.path.join(os.environ['BCISTREAM_HOME'], 'default_projects'))
 
 
-from .bci_framework.qtgui.icons import generate_icons
+from .framework.qtgui.icons import generate_icons
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 

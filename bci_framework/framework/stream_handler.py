@@ -146,7 +146,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """Constructor"""
         super().__init__(None)
         ui = os.path.realpath(os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'visualization_widget.ui'))
+            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'visualization_widget.ui'))
         self.main = QUiLoader().load(ui, self)
         self.mdi_area = mdi_area
 

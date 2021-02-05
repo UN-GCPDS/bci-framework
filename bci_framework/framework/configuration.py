@@ -16,7 +16,7 @@ class ConfigurationFrame(QMainWindow):
         super().__init__(*args, **kwargs)
 
         frame = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'configurations.ui')
+            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'configurations.ui')
         self.main = QUiLoader().load(frame)
         self.main.widget_restart.hide()
 
