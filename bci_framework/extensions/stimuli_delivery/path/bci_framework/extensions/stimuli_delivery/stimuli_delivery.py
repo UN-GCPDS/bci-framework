@@ -1,15 +1,10 @@
+import os
+import json
+import random
+from browser import timer, html, document
+# from datetime import datetimes
 
 from radiant.utils import WebSocket
-
-from mdc.MDCLinearProgress import MDCLinearProgress
-
-import json
-import os
-from browser import timer, html, document
-from datetime import datetime
-from functools import wraps
-
-import random
 
 StimuliServer = None
 
@@ -21,7 +16,10 @@ class DeliveryInstance_:
     # ----------------------------------------------------------------------
     @classmethod
     def both(cls, method):
-        """Decorator for execute method in both environs, dashboard and delivery."""
+        """Decorator for execute method in both environs, dashboard and delivery.
+
+        This decorator only works from dashboard calls.
+        """
 
         def wrap(self, *args, **kwargs):
 
@@ -39,7 +37,10 @@ class DeliveryInstance_:
     # ----------------------------------------------------------------------
     @classmethod
     def rboth(cls, method):
-        """Decorator for execute method in both environs, dashboard and delivery."""
+        """Decorator for execute method in both environs, dashboard and delivery.
+
+        This decorator only works from remote calls.
+        """
 
         def wrap(self, *args, **kwargs):
 
@@ -55,10 +56,12 @@ class DeliveryInstance_:
         return wrap
 
     # ----------------------------------------------------------------------
-
     @classmethod
     def remote(cls, method):
-        """Decorator for execute methon only in delivery environ."""
+        """Decorator for execute methon only in delivery environ.
+
+        This decorator only works from dashboard calls.
+        """
 
         def wrap(self, *args, **kwargs):
 
@@ -75,7 +78,10 @@ class DeliveryInstance_:
     # ----------------------------------------------------------------------
     @classmethod
     def local(cls, method):
-        """"""
+        """Decorator for execute methon only in dashboard environ.
+
+        This decorator only works from dashboard calls.
+        """
 
         def wrap(self, *args, **kwargs):
 
@@ -88,7 +94,11 @@ class DeliveryInstance_:
     # ----------------------------------------------------------------------
     @classmethod
     def event(cls, method):
-        """"""
+        """Decorator for execute method in both environs, dashboard and delivery.
+
+
+        This decorator only works in both environs.
+        """
 
         def wrap(self, *args, **kwargs):
 
@@ -133,13 +143,6 @@ class BCIWebSocket(WebSocket):
         timer.set_timeout(lambda: self.__init__(
             f'ws://localhost:{self.ip_}/ws'), 1000)
 
-    # # ----------------------------------------------------------------------
-    # def on_error(self, evt):
-        # """"""
-        # self.main.stop()
-        # print('Error WS')
-        # self.__init__(self.ip)
-
 
 ########################################################################
 class StimuliAPI:
@@ -156,16 +159,6 @@ class StimuliAPI:
     def mode(self):
         """"""
         return getattr(self, '_bci_mode', None)
-
-    # # ----------------------------------------------------------------------
-    # @abstractmethod
-    # def start(self):
-        # """"""
-
-    # # ----------------------------------------------------------------------
-    # @abstractmethod
-    # def stop(self):
-        # """"""
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
@@ -189,16 +182,16 @@ class StimuliAPI:
     @DeliveryInstance.remote
     def start_record(self):
         """"""
-        self.annotation_('start_record')
+        self._annotation('start_record')
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.remote
     def stop_record(self):
         """"""
-        self.annotation_('stop_record')
+        self._annotation('stop_record')
 
     # ----------------------------------------------------------------------
-    def annotation_(self, description):
+    def _annotation(self, description):
         """"""
         self.ws.send({
             'action': 'annotation',
@@ -213,12 +206,13 @@ class StimuliAPI:
         """"""
         if blink := getattr(self, '_blink_area', False):
             blink.style = {'background-color': blink.color_on, }
-            timer.set_timeout(lambda: setattr(blink, 'style', {'background-color': blink.color_off}), time)
+            timer.set_timeout(lambda: setattr(
+                blink, 'style', {'background-color': blink.color_off}), time)
 
     # ----------------------------------------------------------------------
     def add_stylesheet(self, file):
         """"""
-        document.select('head')[0] <= html.LINK(
+        document.select_one('head') <= html.LINK(
             href=os.path.join('root', file), type='text/css', rel='stylesheet')
 
     # ----------------------------------------------------------------------
@@ -262,6 +256,7 @@ class StimuliAPI:
     # ----------------------------------------------------------------------
     def add_run_progressbar(self):
         """"""
+        from mdc.MDCLinearProgress import MDCLinearProgress
         self.run_progressbar = MDCLinearProgress(Class='run_progressbar')
         self.run_progressbar.style = {'position': 'absolute', 'bottom': '4px', }
         document <= self.run_progressbar

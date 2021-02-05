@@ -1,22 +1,16 @@
-"""
-"""
 import os
 import sys
 import socket
-import signal
 import logging
 import subprocess
 from urllib import request
 from contextlib import closing
 
 from PySide2.QtCore import QTimer, QSize
-from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineSettings
+from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 from .nbstreamreader import NonBlockingStreamReader as NBSR
 from ..extensions import properties as prop
-
-
-import psutil
 
 
 # ----------------------------------------------------------------------
@@ -94,7 +88,6 @@ class VisualizationSubprocess:
     # ----------------------------------------------------------------------
     def viz_debug(self):
         """"""
-        # self.stdout = NBSR(self.subprocess_script.stdout)
         self.stdout = self.subprocess_script.nb_stdout
 
     # ----------------------------------------------------------------------
@@ -150,13 +143,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
 
-        # # Register the PID to kill it later
-        # with open(os.environ['BCISTREAM_PIDS'], 'a+') as file:
-            # file.write(f'{self.subprocess_script.pid}\n')
-
-        # self.timer.singleShot(500, self.prepare)
         self.prepare()
-        # self.start_debug()
 
     # ----------------------------------------------------------------------
     def prepare(self):
@@ -193,7 +180,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.subprocess_script.nb_stdout.stop()
             self.subprocess_script.terminate()
             if hasattr(self, 'subprocess_script'):
-                self.timer.singleShot(300, lambda: self.__delattr__('subprocess_script'))
+                self.timer.singleShot(
+                    300, lambda: self.__delattr__('subprocess_script'))
 
         if hasattr(self, 'web_engine_page'):
             try:
@@ -201,7 +189,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             except:  # already deleted.
                 pass
 
-        # TODO: A wait page could be a nice idea
+        # TODO: A wait page could be a god idea
         self.main.widget_development_webview.hide()
         if hasattr(self.main, 'web_engine'):
             self.main.web_engine.setUrl('about:blank')
@@ -243,9 +231,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     def reload(self):
         """"""
         self.main.web_engine.setUrl(self.url)
-
-        # self.web_engine_page = QWebEnginePage(self.main.web_engine)
-        # self.web_engine_page.profile().clearHttpCache()
 
     # ----------------------------------------------------------------------
     def blank(self):

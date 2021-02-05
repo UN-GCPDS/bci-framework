@@ -1,15 +1,16 @@
-from figurestream import FigureStream
-from ...extensions import properties as prop
+import os
+import sys
+import logging
 
 import numpy as np
 import matplotlib
 from matplotlib import pyplot
 from cycler import cycler
-import logging
+from figurestream import FigureStream
 
-import os
-import sys
+from ...extensions import properties as prop
 
+# Consigure matplotlib
 if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
     pass
 else:
@@ -17,13 +18,13 @@ else:
 
 q = matplotlib.cm.get_cmap('rainbow')
 matplotlib.rcParams['axes.prop_cycle'] = cycler(
-    color=[q(m) for m in np.linspace(0, 1, 16)]
-)
+    color=[q(m) for m in np.linspace(0, 1, 16)])
 
 matplotlib.rcParams['figure.dpi'] = 60
 matplotlib.rcParams['font.family'] = 'monospace'
 matplotlib.rcParams['font.size'] = 15
 
+# Set logger
 logger = logging.getLogger("mne")
 logger.setLevel(logging.CRITICAL)
 
@@ -38,13 +39,13 @@ class Transformers:
         ndim = x.shape[1] // num
         return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
         # return zoom(x, (1, num / x.shape[1]))
-
         # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
 
     # ----------------------------------------------------------------------
     def centralize(self, x, normalize=False, axis=0):
         """"""
-        cent = np.nan_to_num(np.apply_along_axis(lambda x_: x_ - x_.mean(), 1, x))
+        cent = np.nan_to_num(np.apply_along_axis(
+            lambda x_: x_ - x_.mean(), 1, x))
 
         if normalize:
             if normalize == True:
@@ -133,8 +134,6 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
 
         axis = self.add_subplot(*subplot)
 
-        # pyplot.set_cmap(q)
-
         if window == 'auto':
             window = self.get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
                                              n=1000)
@@ -188,7 +187,6 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         self.boundary = 0
         self.boundary_aux = 0
 
-        # axis = self.gca()
         self.boundary_line = axis.vlines(
             0, min, max, color='w', zorder=99)
         self.boundary_aux_line = axis.vlines(
@@ -256,12 +254,15 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
                     self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
 
                 if (self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d]).shape != aux.shape:
-                    l = self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d].shape[1]
+                    l = self.buffer_aux[:,
+                                        self.boundary_aux:self.boundary_aux + d].shape[1]
                     logging.warning([l, aux.shape[1]])
 
-                    self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d] = aux[:, :l]
+                    self.buffer_aux[:,
+                                    self.boundary_aux:self.boundary_aux + d] = aux[:, :l]
                 else:
-                    self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d] = aux
+                    self.buffer_aux[:,
+                                    self.boundary_aux:self.boundary_aux + d] = aux
 
                 if roll:
                     self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)

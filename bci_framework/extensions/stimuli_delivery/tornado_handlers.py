@@ -1,12 +1,12 @@
 import json
 import pickle
-import os
+import logging
+
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer
-import logging
 
-from datetime import datetime
+# from datetime import datetime
 from bci_framework.extensions import properties as prop
 
 clients = []
@@ -14,6 +14,9 @@ clients = []
 
 ########################################################################
 class ModeHandler(RequestHandler):
+    """"""
+
+    # ----------------------------------------------------------------------
     def get(self):
         self.write('stimuli')
 

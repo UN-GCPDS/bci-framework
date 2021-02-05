@@ -1,20 +1,12 @@
 import os
 import sys
-import urllib
-from pathlib import Path
 from datetime import datetime
-import shutil
 
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QIcon
-from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction
 from PySide2.QtCore import QTimer, Qt
-
-from PySide2.QtWidgets import QVBoxLayout, QMenuBar, QMenu, QMdiSubWindow, QWidget
+from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar
 
 from .subprocess_script import LoadSubprocess
-from ..extensions import properties as prop
-from .dialogs import Dialogs
 from .config_manager import ConfigManager
 
 
@@ -62,12 +54,9 @@ class VisualizationsMenu:
         # View
         menu_view = QMenu("View")
         if visualization:
-            # if debugger:
-                # menu_view.addAction(
-                    # QAction('Reload', menu_view, triggered=debugger.reload))
-            # else:
-            menu_view.addAction(QAction('Reload', menu_view, triggered=self.reload))
-            # menu_view.addAction(QAction('Reset', menu_view, triggered=self.reset))
+
+            menu_view.addAction(
+                QAction('Reload', menu_view, triggered=self.reload))
 
             menu_view.addAction(
                 QAction('Save capture', menu_view, triggered=self.save_img))
@@ -132,21 +121,13 @@ class VisualizationsMenu:
         # View
         menu_view = QMenu("View")
         if visualization:
-            # if debugger:
-                # menu_view.addAction(
-                    # QAction('Reload', menu_view, triggered=debugger.reload))
-            # else:
-                # menu_view.addAction(
-                    # QAction('Reload', menu_view, triggered=self.reload))
 
-            menu_view.addAction(QAction('Reload', menu_view, triggered=self.reload))
-            # menu_view.addAction(QAction('Reset', menu_view, triggered=self.reset))
-
-            # menu_view.addAction(
-                # QAction('Save capture', menu_view, triggered=self.save_img))
+            menu_view.addAction(
+                QAction('Reload', menu_view, triggered=self.reload))
 
             if debugger:
-                menu_view.addAction(QAction('Open subwindow delivery', menu_view, triggered=debugger.open_subwindow))
+                menu_view.addAction(
+                    QAction('Open subwindow delivery', menu_view, triggered=debugger.open_subwindow))
             if not debugger:
                 menu_view.addSeparator()
                 menu_view.addAction(
@@ -173,8 +154,6 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.mode = mode
         self.current_viz = None
         self.visualizations_list = visualizations_list
-
-        # Dialogs.save_filename(self.main, '', '', '')
 
         if '--local' in sys.argv:
             self.projects_dir = os.path.join(
@@ -231,19 +210,6 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """"""
         # overwriteme
 
-    # # ----------------------------------------------------------------------
-    # def contextMenuEvent(self, event):
-        # """"""
-        # menu = QMenu(self)
-
-        # menu.addAction(QAction(QIcon.fromTheme('dialog-cancel'),
-                               # "Remove", self, triggered=self.remove))
-        # if self.current_viz:
-            # menu.addAction(QAction(QIcon.fromTheme('view-refresh'),
-                                   # "Reload", self, triggered=self.reload))
-
-        # menu.exec_(event.globalPos())
-
     # ----------------------------------------------------------------------
     def remove(self):
         """"""
@@ -263,7 +229,8 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         """"""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
         # filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
-        captures_dir = os.path.join(self.projects_dir, self.current_viz, 'captures')
+        captures_dir = os.path.join(
+            self.projects_dir, self.current_viz, 'captures')
         filename = os.path.join(captures_dir, name)
         if not os.path.exists(captures_dir):
             os.makedirs(captures_dir, exist_ok=True)
@@ -289,27 +256,12 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         if hasattr(self, 'stream_subprocess'):
             self.stream_subprocess.stop_preview()
 
-            # self.stream_subprocess.blank()
-
-    # # ----------------------------------------------------------------------
-    # def reset(self):
-        # """"""
-        # # if self.is_visualization:
-            # # self.stop_preview()
-            # # if self.current_viz:
-                # # self.load_visualization(self.current_viz)
-        # # elif self.is_stimuli:
-            # # self.stream_subprocess.reload()
-
-        # self.stream_subprocess.reload()
-
     # ----------------------------------------------------------------------
     def reload(self):
         """"""
         self.stream_subprocess.reload()
 
     # ----------------------------------------------------------------------
-
     def set_dpi(self, menu_dpi, text, dpi):
         """"""
         def wrap():

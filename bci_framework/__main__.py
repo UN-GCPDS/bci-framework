@@ -1,33 +1,31 @@
-from multiprocessing import freeze_support
-from PySide2.QtWidgets import QApplication, QSplashScreen
-from PySide2.QtGui import QPixmap, QIcon
-from PySide2.QtCore import Qt, QCoreApplication
-from qt_material import apply_stylesheet  # , set_icons_theme
-from .bci_framework import BCIFramework
 import sys
 import os
-from pathlib import Path
-import psutil
-import logging
 import json
+import psutil
 import shutil
+import signal
+import logging
+from pathlib import Path
+from multiprocessing import freeze_support
 
+from PySide2.QtWidgets import QApplication
+from PySide2.QtCore import Qt, QCoreApplication
+from qt_material import apply_stylesheet
+
+from .bci_framework import BCIFramework
 from .bci_framework.config_manager import ConfigManager
 
-import signal
 
-import logging
+# Set logging
 logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('kafka').setLevel(logging.ERROR)
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
-
-"""A distributed processing tool, stimuli delivery, psychophysiological
-experiments, and real-time visualizations for OpenBCI."""
-
 os.environ.setdefault('APP_NAME', 'BCI Framework')
-os.environ.setdefault('BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
-os.environ.setdefault('BCISTREAM_HOME', os.path.join(Path.home(), '.bciframework'))
+os.environ.setdefault(
+    'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
+os.environ.setdefault('BCISTREAM_HOME', os.path.join(
+    Path.home(), '.bciframework'))
 # os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
 
 
@@ -104,21 +102,17 @@ def main():
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
-    # if not '--debug' in sys.argv:
-        # pixmap = QPixmap(os.path.join("assets", "splash_dark.svg"))
-        # splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-        # splash.setMask(pixmap.mask())
-        # splash.show()
-
     extra = {'danger': '#dc3545',
              'warning': '#e2a963',
              'success': '#17a2b8',
              }
 
     if ConfigManager().get('framework', 'theme') == 'light':
-        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True, extra=extra, parent='bci_framework_qt_material')
+        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True,
+                         extra=extra, parent='bci_framework_qt_material')
     else:
-        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra, parent='bci_framework_qt_material')
+        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra,
+                         parent='bci_framework_qt_material')
 
     stylesheet = app.styleSheet()
     with open(os.path.join(os.path.dirname(__file__), 'custom.css')) as file:
@@ -128,9 +122,6 @@ def main():
 
     frame = BCIFramework()
     frame.main.showMaximized()
-
-    # if not '--debug' in sys.argv:
-        # splash.finish(frame.main)
 
     app.exec_()
 

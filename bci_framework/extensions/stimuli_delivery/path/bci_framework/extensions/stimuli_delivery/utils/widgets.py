@@ -1,14 +1,12 @@
-# from mdc import MDCButton, MDCCheckbox, MDCFormField, MDCForm, MDCComponent, MDCLinearProgress
 from mdc.MDCComponent import MDCComponent
 from mdc.MDCButton import MDCButton
 from mdc.MDCFormField import MDCFormField, MDCCheckbox, MDCForm
 from mdc.MDCLinearProgress import MDCLinearProgress
 
-
 from browser import document, html
 
-########################################################################
 
+########################################################################
 class Widgets:
 
     # ----------------------------------------------------------------------
@@ -17,7 +15,7 @@ class Widgets:
         self.widgets = {}
 
     # ----------------------------------------------------------------------
-    def fix_value(self, value):
+    def _fix_value(self, value):
         """"""
         if isinstance(value, int):
             return value
@@ -33,11 +31,17 @@ class Widgets:
         """"""
         v = self.widgets.get(id)
         if isinstance(v, (list, tuple)):
-            return list(map(self.fix_value, v))
+            return list(map(self._fix_value, v))
         else:
-            return self.fix_value(v)
+            return self._fix_value(v)
 
     # ----------------------------------------------------------------------
+    def __getitem__(self, id):
+        """"""
+        return self.get_value(id)
+
+    # ----------------------------------------------------------------------
+
     def label(self, text, typo='body1', style={}, *args, **kwargs):
         """"""
         label = MDCComponent(html.SPAN(f'{text}'), style=style, *args, **kwargs)
@@ -51,20 +55,25 @@ class Widgets:
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
         form <= label_
-        form <= MDCComponent(html.SPAN(f' {float(value):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
-        slider_ = form.mdc.Slider('Slider', min=min, max=max, value=value, step=step, marks=marks, *args, **kwargs)
+        form <= MDCComponent(html.SPAN(
+            f' {float(value):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
+        slider_ = form.mdc.Slider(
+            'Slider', min=min, max=max, value=value, step=step, marks=marks, *args, **kwargs)
 
         if on_change:
-            slider_.mdc.listen('MDCSlider:change', lambda evt: on_change(self.widgets[id]))
+            slider_.mdc.listen('MDCSlider:change',
+                               lambda evt: on_change(self.widgets[id]))
 
         if id:
-            self.widgets[id] = self.fix_value(value)
+            self.widgets[id] = self._fix_value(value)
 
             def set_value(id, value):
                 self.widgets[id] = float(value)
-                document.select_one(f'#value_{id}').html = f' {self.get_value(id)} {unit}'
+                document.select_one(
+                    f'#value_{id}').html = f' {self.get_value(id)} {unit}'
 
-            slider_.mdc.listen('MDCSlider:input', lambda event: set_value(id, slider_.mdc.getValue()))
+            slider_.mdc.listen('MDCSlider:input', lambda event: set_value(
+                id, slider_.mdc.getValue()))
 
         return form
 
@@ -75,20 +84,26 @@ class Widgets:
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
         form <= label_
-        form <= MDCComponent(html.SPAN(f' {float(value_lower):.1f}-{float(value_upper):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
-        slider_ = form.mdc.RangeSlider('Slider', min, max, value_lower, value_upper, step, *args, **kwargs)
+        form <= MDCComponent(html.SPAN(
+            f' {float(value_lower):.1f}-{float(value_upper):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
+        slider_ = form.mdc.RangeSlider(
+            'Slider', min, max, value_lower, value_upper, step, *args, **kwargs)
 
         if on_change:
-            slider_.mdc.listen('MDCSlider:change', lambda evt: on_change(self.widgets[id]))
+            slider_.mdc.listen('MDCSlider:change',
+                               lambda evt: on_change(self.widgets[id]))
 
         if id:
-            self.widgets[id] = [self.fix_value(value_lower), self.fix_value(value_upper)]
+            self.widgets[id] = [self._fix_value(
+                value_lower), self._fix_value(value_upper)]
 
             def set_value(id, value):
                 self.widgets[id] = [float(value[0]), float(value[1])]
-                document.select_one(f'#value_{id}').html = f' {self.get_value(id)[0]}-{self.get_value(id)[1]} {unit}'
+                document.select_one(
+                    f'#value_{id}').html = f' {self.get_value(id)[0]}-{self.get_value(id)[1]} {unit}'
 
-            slider_.mdc.listen('MDCSlider:input', lambda event: set_value(id, [slider_.mdc.getValueStart(), slider_.mdc.getValue()]))
+            slider_.mdc.listen('MDCSlider:input', lambda event: set_value(
+                id, [slider_.mdc.getValueStart(), slider_.mdc.getValue()]))
 
         return form
 
@@ -102,7 +117,8 @@ class Widgets:
         form <= label
 
         for i, (radio, value) in enumerate(radios):
-            radios_.append([form.mdc.Radio(radio, name=id, checked=(i == 0)), value])
+            radios_.append(
+                [form.mdc.Radio(radio, name=id, checked=(i == 0)), value])
 
         if id:
             self.widgets[id] = radios[0][1]
@@ -131,14 +147,16 @@ class Widgets:
         form <= label
 
         for checkbox, checked in checkboxes:
-            checkbox_.append([form.mdc.Checkbox(checkbox, name=id, checked=checked), checkbox])
+            checkbox_.append(
+                [form.mdc.Checkbox(checkbox, name=id, checked=checked), checkbox])
 
         if id:
             self.widgets[id] = [ch[0] for ch in checkboxes if ch[1]]
 
             def set_value():
                 def wrap(evt):
-                    self.widgets[id] = [value for ch, value in checkbox_ if ch.mdc.checked]
+                    self.widgets[id] = [value for ch,
+                                        value in checkbox_ if ch.mdc.checked]
                 return wrap
 
             for checkbox, _ in checkbox_:
@@ -155,7 +173,8 @@ class Widgets:
         """"""
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
-        form = MDCForm(formfield_style={'width': '100px', 'min-height': '90px', 'margin-left': '15px'})
+        form = MDCForm(formfield_style={
+                       'width': '100px', 'min-height': '90px', 'margin-left': '15px'})
         form <= label_
         select_ = form.mdc.Select('', options=options, selected=value)
 
@@ -170,14 +189,16 @@ class Widgets:
             select_.mdc.listen('MDCSelect:change', set_value())
 
         if on_change:
-            select_.mdc.listen('MDCSelect:change', lambda evt: on_change(select_.mdc['value']))
+            select_.mdc.listen('MDCSelect:change',
+                               lambda evt: on_change(select_.mdc['value']))
 
         return form
 
     # ----------------------------------------------------------------------
     def button(self, label, unelevated=True, on_click=None, style={}, *args, **kwargs):
         """"""
-        btn = MDCButton(label, unelevated=unelevated, style=style, *args, **kwargs)
+        btn = MDCButton(label, unelevated=unelevated,
+                        style=style, *args, **kwargs)
         if on_click:
             btn.bind('click', lambda evt: on_click())
         return btn
@@ -190,7 +211,8 @@ class Widgets:
         form.select_one('label').style = {'margin-left': '10px'}
 
         if on_change:
-            switch_.bind('change', lambda *args, **kwargs: on_change(switch_.mdc.checked))
+            switch_.bind('change', lambda *args,
+                         ** kwargs: on_change(switch_.mdc.checked))
 
         if id:
             self.widgets[id] = checked

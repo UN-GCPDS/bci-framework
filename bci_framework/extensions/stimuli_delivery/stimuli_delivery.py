@@ -12,56 +12,16 @@ else:
 ########################################################################
 class DeliveryInstance_:
     """"""
+    # ---------------------------------------------------------------------
+    @staticmethod
+    def no_sense_decorator(method):
+        return method
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def both(cls, method):
-        def wrap(*args, **kwargs):
-            try:
-                return method(*args, **kwargs)
-            except:
-                return method()
-        return wrap
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def rboth(cls, method):
-        def wrap(*args, **kwargs):
-            try:
-                return method(*args, **kwargs)
-            except:
-                return method()
-        return wrap
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def remote(cls, method):
-        def wrap(*args, **kwargs):
-            try:
-                return method(*args, **kwargs)
-            except:
-                return method()
-        return wrap
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def local(cls, method):
-        def wrap(*args, **kwargs):
-            try:
-                return method(*args, **kwargs)
-            except:
-                return method()
-        return wrap
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def event(cls, method):
-        def wrap(*args, **kwargs):
-            try:
-                return method(*args, **kwargs)
-            except:
-                return method()
-        return wrap
+    both = no_sense_decorator
+    rboth = no_sense_decorator
+    remote = no_sense_decorator
+    local = no_sense_decorator
+    event = no_sense_decorator
 
 
 DeliveryInstance = DeliveryInstance_()
@@ -71,6 +31,7 @@ DeliveryInstance = DeliveryInstance_()
 class StimuliAPI(RadiantAPI):
     """"""
 
+    # ---------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
@@ -80,17 +41,22 @@ class StimuliAPI(RadiantAPI):
 def StimuliServer(class_, *args, **kwargs):
     """"""
     return RadiantServer(class_,
-                         path=os.path.realpath(os.path.join(os.path.dirname(__file__), 'path')),
+                         path=os.path.realpath(os.path.join(
+                             os.path.dirname(__file__), 'path')),
                          handlers=([r'^/ws', (os.path.realpath(os.path.join(os.path.dirname(__file__), 'tornado_handlers.py')), 'WSHandler'), {}],
-                                   [r'^/dashboard', RadiantHandler, {'mode': 'dashboard', }],
-                                   [r'^/mode', (os.path.realpath(os.path.join(os.path.dirname(__file__), 'tornado_handlers.py')), 'ModeHandler'), {}],
+                                   [r'^/dashboard', RadiantHandler,
+                                       {'mode': 'dashboard', }],
+                                   [r'^/mode', (os.path.realpath(os.path.join(os.path.dirname(
+                                       __file__), 'tornado_handlers.py')), 'ModeHandler'), {}],
                                    ),
-                         template=os.path.realpath(os.path.join(os.path.dirname(__file__), 'template.html')),
+                         template=os.path.realpath(os.path.join(
+                             os.path.dirname(__file__), 'template.html')),
                          environ={'port': port,
                                   'mode': 'stimuli',
                                   },
                          port=port,
                          host='0.0.0.0',
-                         theme=os.path.realpath(os.path.join(os.path.dirname(__file__), 'colors.xml')),
+                         theme=os.path.realpath(os.path.join(
+                             os.path.dirname(__file__), 'colors.xml')),
                          )
 

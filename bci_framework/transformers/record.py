@@ -3,17 +3,16 @@ import atexit
 import os
 import sys
 
-sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'), 'records', 'log.stderr'), 'w')
-sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'), 'records', 'log.stdout'), 'w')
+sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'),
+                               'records', 'log.stderr'), 'w')
+sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'),
+                               'records', 'log.stdout'), 'w')
 
-from datetime import datetime
+# from datetime import datetime
 from openbci_stream.utils import HDF5Writer
 
 from bci_framework.extensions import properties as prop
-from bci_framework.extensions.visualizations.utils import loop_consumer, fake_loop_consumer
-
-# from bci_framework.projects import properties as prop
-# from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
+from bci_framework.extensions.visualizations.utils import loop_consumer
 
 
 ########################################################################
@@ -31,7 +30,6 @@ class RecordTransformer:
         os.makedirs(records_dir, exist_ok=True)
         self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
-        # self.writer = HDF5_Writer(f'{filename}.h5')
 
         header = {'sample_rate': prop.SAMPLE_RATE,
                   'streaming_sample_rate': prop.STREAMING_PACKAGE_SIZE,

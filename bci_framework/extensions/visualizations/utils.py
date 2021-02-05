@@ -1,10 +1,12 @@
-from openbci_stream.acquisition import OpenBCIConsumer
-from ...extensions import properties as prop
-import numpy as np
 import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
+
+import numpy as np
+from openbci_stream.acquisition import OpenBCIConsumer
+
+from ...extensions import properties as prop
 
 
 # ----------------------------------------------------------------------
@@ -86,7 +88,6 @@ def fake_loop_consumer(fn):
                     np.random.choice(range(ord('A'), ord('Z') + 1)))
                 fn(cls, data, 'marker', *args, **kwargs)
 
-            # while time.time() < (t0 + (prop.STREAMING_PACKAGE_SIZE / 1000)):
             while time.time() < (t0 + 1 / (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):
                 time.sleep(0.01)
 
