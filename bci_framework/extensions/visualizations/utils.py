@@ -1,7 +1,16 @@
+"""
+=====
+Utils
+=====
+
+This module define usefull decorators to use with data analysis.
+"""
+
 import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
+from typing import Callable
 
 import numpy as np
 from openbci_stream.acquisition import OpenBCIConsumer
@@ -10,7 +19,9 @@ from ...extensions import properties as prop
 
 
 # ----------------------------------------------------------------------
-def subprocess_this(fn):
+def subprocess_this(fn: Callable) -> Callable:
+    """Decorator to move methods to subprocessing."""
+
     def wraper(self, *args, **kwargs):
         c = Process(target=fn, args=(self, *args))
         c.start()
@@ -18,7 +29,9 @@ def subprocess_this(fn):
 
 
 # ----------------------------------------------------------------------
-def thread_this(fn):
+def thread_this(fn: Callable) -> Callable:
+    """Decorator to move methods to threading."""
+
     def wraper(self, *args, **kwargs):
         c = Thread(target=fn, args=(self, *args))
         c.start()
@@ -26,8 +39,25 @@ def thread_this(fn):
 
 
 # ----------------------------------------------------------------------
-def loop_consumer(fn):
-    """"""
+def timeit(fn: Callable) -> Callable:
+    """Decorator to calculate the execution time of a method."""
+
+    def wrap(self, *args, **kwargs):
+        t0 = time.time()
+        r = fn(self, *args, **kwargs)
+        t1 = time.time()
+        print(f"[timeit] {fn.__name__}: {(t1-t0)*1000:.2f} ms")
+        return r
+    return wrap
+
+
+# ----------------------------------------------------------------------
+def loop_consumer(fn: Callable) -> Callable:
+    """Decorator to iterate methods with new streamming data.
+
+    This decorator will call a method on every new data streamming input.
+    """
+
     def wrap(cls, **kwargs):
         with OpenBCIConsumer(host=prop.HOST) as stream:
             frame = 0
@@ -46,7 +76,11 @@ def loop_consumer(fn):
 
 # ----------------------------------------------------------------------
 def fake_loop_consumer(fn):
-    """"""
+    """Decorator to iterate methods with new streamming data.
+
+    This decorator will call a method with fake data.
+    """
+
     def wrap(cls, *args, **kwargs):
         frame = 0
         while True:
@@ -91,15 +125,4 @@ def fake_loop_consumer(fn):
             while time.time() < (t0 + 1 / (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):
                 time.sleep(0.01)
 
-    return wrap
-
-
-# ----------------------------------------------------------------------
-def timeit(fn):
-    def wrap(self, *args, **kwargs):
-        t0 = time.time()
-        r = fn(self, *args, **kwargs)
-        t1 = time.time()
-        print(f"[timeit] {fn.__name__}: {(t1-t0)*1000:.2f} ms")
-        return r
     return wrap

@@ -1,12 +1,24 @@
+"""
+==========
+EEG Stream
+==========
+
+Reimplementation of `Matplotlib-FigureStream
+<https://figurestream.readthedocs.io/en/latest/>`_ with some renames and a
+preconfigured server.
+"""
+
 import os
 import sys
 import logging
 
+import mne
 import numpy as np
 import matplotlib
 from matplotlib import pyplot
 from cycler import cycler
 from figurestream import FigureStream
+from typing import Optional, List, Tuple, Literal
 
 from ...extensions import properties as prop
 
@@ -34,19 +46,51 @@ logger.setLevel(logging.CRITICAL)
 
 ########################################################################
 class Transformers:
-    """"""
+    """Used to preprocess EEG streams."""
 
     # ----------------------------------------------------------------------
-    def resample(self, x, num):
-        """"""
+    def resample(self, x: np.ndarray, num: int) -> np.array:
+        """Fast resample.
+
+        Parameters
+        ----------
+        x
+            Input array of shape (`channels, time`).
+        num
+            Desired time samples.
+
+        Returns
+        -------
+        array
+            Resampled array (`channels, num`).
+        """
+
         ndim = x.shape[1] // num
         return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
         # return zoom(x, (1, num / x.shape[1]))
         # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
 
     # ----------------------------------------------------------------------
-    def centralize(self, x, normalize=False, axis=0):
-        """"""
+    def centralize(self, x: np.array, normalize: bool = False, axis: int = 0) -> np.array:
+        """Crentralize array.
+
+        Remove the mean to all axis.
+
+        Parameters
+        ----------
+        x
+            Input array of shape (`channels, time`).
+        normalize
+            Return array with maximun amplitude equal to 1.
+        axis
+            Axis to centralize.
+
+        Returns
+        -------
+        array
+            Centralized array.
+        """
+
         cent = np.nan_to_num(np.apply_along_axis(
             lambda x_: x_ - x_.mean(), 1, x))
 
@@ -60,11 +104,15 @@ class Transformers:
 
 ########################################################################
 class MNEObjects:
-    """"""
+    """Creat MNE handlers using the framework GUI information."""
 
     # ----------------------------------------------------------------------
-    def get_mne_info(self):
-        """"""
+    def get_mne_info(self) -> mne.Info:
+        """Create the `Info` object to use with mne handlers.
+
+        The information is acquired automatically from GUI interface.
+        """
+
         info = mne.create_info(
             list(prop.CHANNELS.values()),
             sfreq=prop.SAMPLE_RATE,
@@ -74,14 +122,22 @@ class MNEObjects:
         return info
 
     # ----------------------------------------------------------------------
-    def get_mne_montage(self):
-        """"""
+    def get_mne_montage(self) -> mne.channels.DigMontage:
+        """Create the `Montage` object to use with mne handlers.
+
+        The information is acquired automatically from GUI interface.
+        """
+
         montage = mne.channels.make_standard_montage(prop.MONTAGE_NAME)
         return montage
 
     # ----------------------------------------------------------------------
-    def get_mne_evoked(self):
-        """"""
+    def get_mne_evoked(self) -> mne.EvokedArray:
+        """Create the `Evoked` object to use with mne handlers.
+
+        The information is acquired automatically from GUI interface.
+        """
+
         comment = "bcistream"
         evoked = mne.EvokedArray(
             self.buffer_eeg, self.get_mne_info(), 0, comment=comment, nave=0
@@ -91,16 +147,54 @@ class MNEObjects:
 
 ########################################################################
 class EEGStream(FigureStream, Transformers, MNEObjects):
-    """"""
+    """Matplotlib figure re-implementation.
+
+    This class define some usefull methods to use for simplificate the data
+    manipulation.
+    """
 
     # ----------------------------------------------------------------------
-    def __init__(self, host='0.0.0.0', port='5000', endpoint='', *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """"""
-        super().__init__(host, port, endpoint, *args, **kwargs)
+        port = 5000
+        super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode='eeg', time=-15, window='auto', cmap='cool', fill=np.nan, subplot=[1, 1, 1],):
-        """"""
+    def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
+                     time: Optional[int] = -15,
+                     window: Optional[str] = 'auto',
+                     cmap: Optional[str] = 'cool',
+                     fill: Optional[np.ndarray] = np.nan,
+                     subplot: Optional[list] = [1, 1, 1],) -> Tuple[matplotlib.axes.Axes, np.ndarray, list[matplotlib.lines]]:
+        """Create plot automatically.
+
+        Create and configure a subplot to display figures.
+
+        Parameters
+        ----------
+        mode
+            Used for select the axis labels.
+        time
+            The time window, can be negative.
+        window
+            The number of samples used to draw the figure.
+        cmap
+            The matplolib `cmap` to use.
+        fill
+            Start signals array with this value.
+        subplot
+            The matplolib subplot.
+
+        Returns
+        -------
+        axis
+            The subplot created.
+        time
+            The time array.
+        lines
+            The matplotlib `lines` object created for each channel.
+        """
+
         mode = mode.lower()
         sr = prop.SAMPLE_RATE
 
@@ -138,8 +232,8 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         axis = self.add_subplot(*subplot)
 
         if window == 'auto':
-            window = self.get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
-                                             n=1000)
+            window = self._get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
+                                              n=1000)
 
         a = np.empty(window)
         a.fill(fill)
@@ -171,8 +265,22 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds=30, aux_shape=3, fill=0):
-        """"""
+    def create_buffer(self, seconds: Optional[int] = [30], aux_shape: Optional[int] = 3, fill: Optional[int] = 0):
+        """Create a buffer with fixed time length.
+
+        Since the `loop_consumer` iteraror only return the last data package, the
+        object `buffer_eeg` and `buffer_aux` will retain a longer (in time) data.
+
+        Parameters
+        ----------
+        seconds
+            How many seconds will content the buffer.
+        aux_shape
+            Define the shape of aux array.
+        fill
+            Initialize buffet with this value
+        """
+
         chs = len(prop.CHANNELS)
         time = prop.SAMPLE_RATE * seconds
 
@@ -185,19 +293,19 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         self.buffer_aux.fill(fill)
 
     # ----------------------------------------------------------------------
-    def create_boundary(self, axis, min=0, max=17):
-        """"""
+    def create_boundary(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17):
+        """Add the boundary line to some visualizations."""
+
         self.boundary = 0
         self.boundary_aux = 0
 
-        self.boundary_line = axis.vlines(
-            0, min, max, color='w', zorder=99)
-        self.boundary_aux_line = axis.vlines(
-            0, max, max, color='w', zorder=99)
+        self.boundary_line = axis.vlines(0, min, max, color='w', zorder=99)
+        self.boundary_aux_line = axis.vlines(0, max, max, color='w', zorder=99)
 
     # ----------------------------------------------------------------------
-    def plot_boundary(self, eeg=True, aux=False):
-        """"""
+    def plot_boundary(self, eeg: Optional[bool] = True, aux: Optional[bool] = False):
+        """Update the position of the boundary line."""
+
         if eeg and hasattr(self, 'boundary_line'):
             segments = self.boundary_line.get_segments()
             segments[0][:, 0] = [self.boundary / prop.SAMPLE_RATE,
@@ -205,16 +313,25 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
             self.boundary_line.set_segments(segments)
         elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux
-                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux /
+                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
         else:
             logging.warning('No "boundary" to plot')
 
     # ----------------------------------------------------------------------
-    def update_buffer(self, eeg, aux):
-        """"""
+    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray):
+        """Uppdate the buffers.
+
+        Parameters
+        ----------
+        eeg
+            The new EEG array
+        aux
+            The new AUX array
+        """
+
         if self.boundary is False:
             c = eeg.shape[1]
             self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
@@ -274,8 +391,23 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
                 self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
 
     # ----------------------------------------------------------------------
-    def get_factor_near_to(self, x, n=1000):
-        a = np.array(
-            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
+    def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:
+        """Get the integer number factor of `x` nearest to `n`.
+
+        This factor is used to fast resampling.
+
+        Parameters
+        ----------
+        x
+            Samples.
+        n
+            Near factor
+
+        Returns
+        -------
+        int
+            Factor.
+        """
+        a = np.array([(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
         a[a % 1 != 0] = 0
         return int(a[np.argmin(np.abs(a - n))])
