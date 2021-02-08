@@ -1,6 +1,15 @@
+"""
+================
+Tornado Handlers
+================
+
+This handlers are used to configure the `Stimuli Delivery`.
+"""
+
 import json
 import pickle
 import logging
+from typing import TypeVar
 
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
@@ -12,9 +21,12 @@ from bci_framework.extensions import properties as prop
 clients = []
 
 
+JSON = TypeVar('json')
+
+
 ########################################################################
 class ModeHandler(RequestHandler):
-    """"""
+    """`/mode` endpoint to differentiate between `Data analysis` and `Stimuli Delivery`."""
 
     # ----------------------------------------------------------------------
     def get(self):
@@ -23,11 +35,13 @@ class ModeHandler(RequestHandler):
 
 ########################################################################
 class WSHandler(WebSocketHandler):
-    """"""
+    """WebSockets is the way to comunicate between dashboard and presentations."""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
+        super().__init__(*args, **kwargs)
+
         try:
             self.marker_producer = KafkaProducer(
                 bootstrap_servers=[f'{prop.HOST}:9092'],
@@ -36,10 +50,9 @@ class WSHandler(WebSocketHandler):
             )
         except:
             logging.warning('Kafka not available!')
-        super().__init__(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def check_origin(self, origin):
+    def check_origin(self, *args, **kwargs):
         """"""
         return True
 
@@ -52,24 +65,10 @@ class WSHandler(WebSocketHandler):
     def on_close(self):
         """"""
         if hasattr(self, 'client_id'):
-            # if DEBUG:
             print("connection closed: {}".format(self.client_id))
 
-            if self.client_id in clients:
-                client_g = clients[self.client_id]
-
-                if self == client_g['web']:
-                    client_g['web'] = None
-                    print('Clossed: web')
-
-                elif self == client_g['device']:
-                    client_g['device'] = None
-                    print('Clossed: device')
-                    client_g['web'].write_message(
-                        {'log': 'Device unlinked', })
-
     # ----------------------------------------------------------------------
-    def print_log(self, message):
+    def print_log(self, message: str):
         """"""
         try:
             self.write_message({'log': message})
@@ -82,23 +81,32 @@ class WSHandler(WebSocketHandler):
                 pass
 
     # ----------------------------------------------------------------------
-    def on_message(self, message):
-        """"""
+    def on_message(self, message: JSON):
+        """Input messages are methods reference with arguments.
+
+        The callable are defined with a `bci_` prefix in the methods names.
+
+        Parameters
+        ----------
+        message
+            json string with method name and key words arguments.
+        """
         if message:
             data = json.loads(message)
-            getattr(self, 'bci_{action}'.format(**data))(**data)
+            getattr(self, f'bci_{data["action"]}')(**data)
 
     # ----------------------------------------------------------------------
     def bci_register(self, **kwargs):
-        """"""
+        """Register clients."""
         if not self in clients:
             clients.append(self)
             print('Client added')
-        print('Client already registered')
+        else:
+            print('Client already registered')
 
     # ----------------------------------------------------------------------
     def bci_feed(self, **kwargs):
-        """"""
+        """Call the same method in all clients."""
         for i, client in enumerate(clients):
             if client != self:
                 try:
@@ -108,7 +116,8 @@ class WSHandler(WebSocketHandler):
 
     # ----------------------------------------------------------------------
     def bci_marker(self, **kwargs):
-        """"""
+        """Use kafka to stream markers."""
+
         marker = kwargs['marker']
         # marker['datetime'] = datetime.now().timestamp()
 
@@ -119,7 +128,8 @@ class WSHandler(WebSocketHandler):
 
     # ----------------------------------------------------------------------
     def bci_annotation(self, **kwargs):
-        """"""
+        """Use kafka to stream annotations."""
+
         annotation = kwargs['annotation']
         # annotation['onset'] = datetime.now().timestamp()
 

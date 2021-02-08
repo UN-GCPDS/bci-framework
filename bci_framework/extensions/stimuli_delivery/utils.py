@@ -1,3 +1,13 @@
+"""
+=====
+Utils
+=====
+
+The trick behind `Brython-Radiant <https://radiant-framework.readthedocs.io/en/latest/>`_
+is make the same script callable from Python and Brython, so, the Python modules
+must be faked.
+"""
+
 import sys
 
 
@@ -7,6 +17,6 @@ class fake:
 
 
 brython = ['Widgets', 'Tone']
-
 for module in brython:
-    sys.modules[f"bci_framework.extensions.stimuli_delivery.utils.{module}"] = fake()
+    sys.modules[f"bci_framework.extensions.stimuli_delivery.utils.{module}"] = fake(
+    )
