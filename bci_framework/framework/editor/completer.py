@@ -1,3 +1,13 @@
+"""
+=============
+Autocompleter
+=============
+
+Auxiliar pop-up list of options with frequent use snippets and methods.
+"""
+
+from typing import Literal
+
 from PySide2 import QtCore
 from PySide2.QtWidgets import QCompleter
 
@@ -6,11 +16,22 @@ from .snippets import STIMULI_KEYWORDS, ANALISYS_KEYWORDS, analisys_snippets, st
 
 ########################################################################
 class Autocompleter(QCompleter):
-    """"""
+    """Autocompleter for Python Scripts.
+
+
+    Parameters
+    ----------
+    mode
+        The available options are different form stimuli delivery and data analysis.
+    parent
+
+
+    """
+
     insertText = QtCore.Signal(str)
 
     # ----------------------------------------------------------------------
-    def __init__(self, mode, parent=None):
+    def __init__(self, mode: Literal['stimuli', 'visualization'], parent=None):
         """"""
         if mode == 'stimuli':
             QCompleter.__init__(self, STIMULI_KEYWORDS, parent)
@@ -33,13 +54,14 @@ class Autocompleter(QCompleter):
         """)
 
     # ----------------------------------------------------------------------
-    def changeCompletion(self, completion):
+    def changeCompletion(self, completion: str) -> None:
+        """Update list options."""
         if completion.find("(") != -1:
             completion = completion[:completion.find("(")]
         self.insertText.emit(completion)
 
     # ----------------------------------------------------------------------
-    def changeHighlighted(self, value):
-        """"""
+    def changeHighlighted(self, value: str) -> None:
+        """Retain the last option selected."""
         self.last_highlighted = value
 

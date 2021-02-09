@@ -3,7 +3,6 @@
 CSS Highlighter
 ===============
 
-
 QSyntaxHighlighter for CSS syntax.
 """
 
@@ -68,7 +67,7 @@ class CSSHighlighter(QSyntaxHighlighter):
                       for (pat, index, fmt) in rules]
 
     # ----------------------------------------------------------------------
-    def highlightBlock(self, text):
+    def highlightBlock(self, text: str) -> None:
         """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
         for expression, nth, format in self.rules:
@@ -85,7 +84,7 @@ class CSSHighlighter(QSyntaxHighlighter):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def get_format(cls, color, style='', fontsize=None):
+    def get_format(cls, color: str, style='', fontsize=None) -> QTextCharFormat:
         """Return a QTextCharFormat with the given attributes."""
         _color = QColor()
         _color.setNamedColor(color)

@@ -1,18 +1,37 @@
-from PySide2.QtWidgets import QTextEdit, QCompleter
-from PySide2.QtGui import QTextOption
-from PySide2.QtCore import Qt, QPoint
+"""
+=========
+BCIEditor
+=========
+
+"""
 
 import os
+from typing import Literal, TypeVar
+
+from PySide2.QtWidgets import QTextEdit, QCompleter
+from PySide2.QtGui import QTextOption
+from PySide2.QtCore import Qt
 
 from .highlighters import PythonHighlighter, CSSHighlighter
 
 
+AUTOCOMPLETER = TypeVar('Autocompleter')
+
+
 ########################################################################
 class BCIEditor(QTextEdit):
-    """"""
+    """Custom QTextEdit with autocompleter and linenumbers.
+
+    Parameters
+    ----------
+    linenumber
+        QTextEdit object that will be updated with linenumbers.
+    extension
+        To set the highlighter.
+    """
 
     # ----------------------------------------------------------------------
-    def __init__(self, linenumber=None, extension='.py', *args, **kwargs):
+    def __init__(self, linenumber: QTextEdit, extension: Literal['.py', '.css'] = '.py', *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
 
@@ -51,21 +70,20 @@ class BCIEditor(QTextEdit):
         self.completer = None
 
     # ----------------------------------------------------------------------
-    def connect_(self):
-        """"""
-        if self.linenumber:
-            self.textChanged.connect(self.update_linenumber)
+    def connect_(self) -> None:
+        """Update linenumber."""
+        self.textChanged.connect(self.update_linenumber)
 
     # ----------------------------------------------------------------------
     def wheelEvent(self, evt):
-        """"""
+        """Update the offset of the linenumber."""
         if self.linenumber:
             self.linenumber.wheelEvent(evt)
         return super().wheelEvent(evt)
 
     # ----------------------------------------------------------------------
-    def update_linenumber(self):
-        """"""
+    def update_linenumber(self) -> None:
+        """Update linenumber."""
         lines = len(self.toPlainText().split('\n'))
         lines_ln = len(self.linenumber.toPlainText().split('\n'))
 
@@ -76,8 +94,8 @@ class BCIEditor(QTextEdit):
         self.linenumber.verticalScrollBar().setValue(self.verticalScrollBar().value())
 
     # ----------------------------------------------------------------------
-    def set_options(self):
-        """"""
+    def set_options(self) -> None:
+        """Configure QTextEdit."""
         document = self.document()
         option = QTextOption()
 
@@ -87,8 +105,9 @@ class BCIEditor(QTextEdit):
 
     # ----------------------------------------------------------------------
     def keyPressEvent(self, event):
-        """"""
-        completionPrefix = self.textUnderCursor()
+        """Process key events."""
+
+        completionPrefix = self.text_under_cursor()
         if self.completer and len(completionPrefix) < 3 and self.completer.popup().isVisible():
             self.completer.popup().hide()
 
@@ -142,7 +161,7 @@ class BCIEditor(QTextEdit):
         super().keyPressEvent(event)
 
         if self.completer and event.text():
-            completionPrefix = self.textUnderCursor()
+            completionPrefix = self.text_under_cursor()
             if len(completionPrefix) >= 3:
                 self.show_completer(completionPrefix)
             elif self.completer.popup().isVisible():
@@ -298,9 +317,8 @@ class BCIEditor(QTextEdit):
                 tc.insertText(" " * start + f'{char}' + line[start:])
 
     # ----------------------------------------------------------------------
-
-    def setCompleter(self, completer):
-        """"""
+    def set_completer(self, completer: AUTOCOMPLETER) -> None:
+        """Update the autocompleter used."""
         if self.completer:
             self.disconnect(self.completer)
         if not completer:
@@ -310,13 +328,13 @@ class BCIEditor(QTextEdit):
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer = completer
-        self.completer.insertText.connect(self.insertCompletion)
+        self.completer.insertText.connect(self.insert_completion)
 
     # ----------------------------------------------------------------------
-    def insertCompletion(self, completion):
-        """"""
+    def insert_completion(self, completion: str) -> None:
+        """Process and inset the desired option."""
         tc = self.textCursor()
-        self.textUnderCursor(tc)
+        self.text_under_cursor(tc)
         tc.removeSelectedText()
         pos = tc.position()
 
@@ -334,14 +352,15 @@ class BCIEditor(QTextEdit):
         tc.insertText(extra)
 
         if text_position > 0:
-            tc.setPosition(pos + text_position
-                           + (4 * extra[:text_position].count('\n')))
+            tc.setPosition(pos + text_position +
+                           (4 * extra[:text_position].count('\n')))
 
         self.setTextCursor(tc)
 
     # ----------------------------------------------------------------------
-    def textUnderCursor(self, tc=None):
-        """"""
+    def text_under_cursor(self, tc=None) -> str:
+        """Return de text under cursor."""
+
         if tc is None:
             tc = self.textCursor()
 
@@ -372,16 +391,16 @@ class BCIEditor(QTextEdit):
         return completionPrefix
 
     # ----------------------------------------------------------------------
-    def focusInEvent(self, event):
-        """"""
+    def focusInEvent(self, event) -> None:
+        """Keep the focus on the editor."""
         if self.completer:
             self.completer.setWidget(self)
         QTextEdit.focusInEvent(self, event)
 
     # ----------------------------------------------------------------------
-    def show_completer(self, completionPrefix):
-        """"""
-        self.completer.setCompletionPrefix(completionPrefix)
+    def show_completer(self, completion_prefix: str) -> None:
+        """Show better options for current text."""
+        self.completer.setCompletionPrefix(completion_prefix)
         popup = self.completer.popup()
         popup.setCurrentIndex(self.completer.completionModel().index(0, 0))
         cr = self.cursorRect()

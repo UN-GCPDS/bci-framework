@@ -1,3 +1,11 @@
+"""
+==================
+Python Highlighter
+==================
+
+QSyntaxHighlighter for Python syntax.
+"""
+
 import os
 
 from PySide2.QtCore import QRegExp as QRegularExpression
@@ -176,7 +184,7 @@ class PythonHighlighter(QSyntaxHighlighter):
     # ----------------------------------------------------------------------
     @property
     def styles(self):
-        """"""
+        """The styles depend on the theme."""
         # Syntax styles that can be shared by all languages
         if 'light' in os.environ['QTMATERIAL_THEME']:
             return {
