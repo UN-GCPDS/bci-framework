@@ -1,7 +1,9 @@
 """
+==========
 Properties
 ==========
 """
+
 import json
 import os
 import logging
@@ -33,7 +35,7 @@ class Properties:
     # BOARDMODE = 'analog'
 
     # ----------------------------------------------------------------------
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str):
         """Add the prefix to environ variable and try to get it."""
         if prop := os.environ.get(f"BCISTREAM_{attr}", None):
             p = json.loads(prop)
@@ -41,7 +43,8 @@ class Properties:
                 p = {int(k): p[k] for k in p}
             return p
         else:
-            logging.warning(f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}')
+            logging.warning(
+                f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}')
             return None
 
 
