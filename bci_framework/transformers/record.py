@@ -1,28 +1,39 @@
+"""
+======
+Record
+======
+
+Kafka consumer to save EEG streamings into HDF5 format using the `Data storage
+handler <https://openbci-stream.readthedocs.io/en/latest/notebooks/07-data_storage_handler.html>`_
+defined in `OpenBCI-Stream <https://openbci-stream.readthedocs.io/en/latest/index.html>`_.
+"""
+
 import signal
 import atexit
 import os
 import sys
+from typing import TypeVar
 
-if os.getenv('BCISTREAM_HOME'):
-    sys.stderr = open(os.path.join(os.getenv('BCISTREAM_HOME'),
-                                   'records', 'log.stderr'), 'w')
-    sys.stdout = open(os.path.join(os.getenv('BCISTREAM_HOME'),
-                                   'records', 'log.stdout'), 'w')
+if home := os.getenv('BCISTREAM_HOME'):
+    sys.stderr = open(os.path.join(home, 'records', 'log.stderr'), 'w')
+    sys.stdout = open(os.path.join(home, 'records', 'log.stdout'), 'w')
 
-# from datetime import datetime
+from datetime import datetime
 from openbci_stream.utils import HDF5Writer
 
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.visualizations.utils import loop_consumer
 
+KafkaStream = TypeVar('kafka-stream')
+
 
 ########################################################################
 class RecordTransformer:
-    """"""
+    """This consumer is basically an extension."""
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        """Constructor"""
+        """"""
 
         now = datetime.now()
 
@@ -40,6 +51,7 @@ class RecordTransformer:
                   }
         self.writer.add_header(header, prop.HOST)
 
+        # trying to finish well
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
         atexit.register(self.stop)
@@ -48,9 +60,16 @@ class RecordTransformer:
 
     # ----------------------------------------------------------------------
     @loop_consumer
-    def save_data(self, data, topic, **kwargs):
-        """"""
-        # os.environ['BCI_RECORDING'] = 'True'
+    def save_data(self, data: KafkaStream, topic: str, **kwargs) -> None:
+        """Write data on every strem package.
+
+        Parameters
+        ----------
+        data
+            Kafka stream with deserialized data.
+        topic
+            The topic of the stream.
+        """
 
         if not self.writer.f.isopen:
             return
@@ -78,7 +97,7 @@ class RecordTransformer:
             self.writer.add_annotation(onset, duration, description)
 
     # ----------------------------------------------------------------------
-    def stop(self, *args, **kwargs):
+    def stop(self, *args, **kwargs) -> None:
         """"""
         self.writer.close()
 

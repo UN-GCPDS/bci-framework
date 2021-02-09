@@ -297,10 +297,10 @@ class Projects:
 
             if 'bci_framework.extensions.stimuli_delivery' in content:
                 completer = Autocompleter(mode='stimuli')
-                editor.setCompleter(completer)
+                editor.set_completer(completer)
             elif 'bci_framework.projects.figure' in content:
                 completer = Autocompleter(mode='visualization')
-                editor.setCompleter(completer)
+                editor.set_completer(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
                 tab, f"{self.parent_frame.tabWidget_project.tabText(tab).strip('*')}*"))

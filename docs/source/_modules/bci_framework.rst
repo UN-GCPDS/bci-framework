@@ -12,6 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   bci_framework.bci_framework
    bci_framework.extensions
+   bci_framework.framework
    bci_framework.transformers

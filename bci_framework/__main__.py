@@ -1,3 +1,9 @@
+"""
+=============
+BCI-Framework
+=============
+"""
+
 import sys
 import os
 import json
@@ -45,7 +51,7 @@ from .framework.qtgui.icons import generate_icons
 
 
 # ----------------------------------------------------------------------
-def kill_subprocess():
+def kill_subprocess() -> None:
     """Kill all subprocess registered.
 
     On start, kill previous live subprocess. On exit, kill all subprocess
@@ -72,7 +78,7 @@ def kill_subprocess():
 
 
 # ----------------------------------------------------------------------
-def kill_childs():
+def kill_childs() -> None:
     """Kill the remaning childs not registered yet (only on exit)."""
 
     current_process = psutil.Process()
@@ -86,7 +92,7 @@ def kill_childs():
 
 
 # ----------------------------------------------------------------------
-def main():
+def main() -> None:
     """"""
     kill_subprocess()
     freeze_support()
