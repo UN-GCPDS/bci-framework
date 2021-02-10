@@ -5,7 +5,7 @@ from qt_material.resources import ResourseGenerator
 
 
 # ----------------------------------------------------------------------
-def generate_icons():
+def generate_icons() -> None:
     """"""
     source = os.path.join(os.path.dirname(__file__), 'source')
     resources = ResourseGenerator(primary=os.getenv('QTMATERIAL_PRIMARYCOLOR'),

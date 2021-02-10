@@ -1,15 +1,23 @@
+"""
+========
+Projects
+========
+"""
+
 import os
 import sys
 import pickle
+import shutil
+from typing import TypeVar
 
 from PySide2.QtGui import QIcon
 from PySide2.QtCore import Qt, QSize
 from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QDesktopWidget
 from PySide2.QtUiTools import QUiLoader
 
-import shutil
-
 from ..editor import BCIEditor, Autocompleter
+
+PATH = TypeVar('path')
 
 
 ########################################################################
@@ -18,7 +26,7 @@ class Projects:
 
     # ----------------------------------------------------------------------
     def __init__(self, parent, core):
-        """Constructor"""
+        """"""
 
         self.project_files = []
 
@@ -43,8 +51,8 @@ class Projects:
         self.connect()
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.parent_frame.pushButton_projects.clicked.connect(
             lambda evt: self.parent_frame.stackedWidget_projects.setCurrentWidget(getattr(self.parent_frame, "page_projects")))
 
@@ -75,7 +83,7 @@ class Projects:
         self.parent_frame.pushButton_projects_add_folder.clicked.connect(
             self.add_folder)
         self.parent_frame.pushButton_projects_remove.clicked.connect(
-            self.remove)
+            self.remove_file)
         self.parent_frame.pushButton_add_project.clicked.connect(
             self.show_create_project_dialog)
         self.parent_frame.pushButton_remove_project.clicked.connect(
@@ -86,21 +94,21 @@ class Projects:
             self.tab_changed)
 
     # ----------------------------------------------------------------------
-    def there_can_only_be_one(self, event):
-        """"""
+    def there_can_only_be_one(self, event) -> None:
+        """Only one project can be selected at once."""
         self.parent_frame.listWidget_projects_delivery.clearSelection()
         self.parent_frame.listWidget_projects_visualizations.clearSelection()
         event.setSelected(True)
 
     # ----------------------------------------------------------------------
-    def tab_changed(self, index):
-        """"""
+    def tab_changed(self, index) -> None:
+        """Update linenumber."""
         if editor := self.parent_frame.tabWidget_project.widget(index):
             editor.update_linenumber()
 
     # ----------------------------------------------------------------------
-    def open_script(self, item):
-        """"""
+    def open_script(self, item) -> None:
+        """Load file in the editor."""
         if not item.path in self.project_files:
             self.load_script_in_textedit(item.path)
         self.show_script_in_textedit(item.path)
@@ -108,8 +116,8 @@ class Projects:
         self.parent_frame.actionDevelopment.setEnabled(True)
 
     # ----------------------------------------------------------------------
-    def load_projects(self):
-        """"""
+    def load_projects(self) -> None:
+        """Load projects."""
         self.parent_frame.listWidget_projects_visualizations.clear()
         self.parent_frame.listWidget_projects_delivery.clear()
 
@@ -152,8 +160,8 @@ class Projects:
             item.icon_name = icon_name
 
     # ----------------------------------------------------------------------
-    def open_project(self, project_name):
-        """"""
+    def open_project(self, project_name) -> None:
+        """Open project in the code editor."""
         global files_count, dir_count, project_name_
 
         if self.parent_frame.listWidget_projects_visualizations.selectedItems():
@@ -247,31 +255,8 @@ class Projects:
         self.core.show_interface('Development')
 
     # ----------------------------------------------------------------------
-    def load_scripts(self):
-        """"""
-        projects = os.listdir(self.projects_dir)
-        projects = filter(lambda d: os.path.isdir(os.path.join(self.projects_dir, d)) and os.path.isfile(
-            os.path.join(self.projects_dir, d, f"main.py")), projects)
-
-        self.available_scripts = {'visualization': {},
-                                  'stimuli': {},
-                                  }
-
-        for project in projects:
-
-            path = '.'.join([self.projects_dir, project, project])
-            module = __import__(path, fromlist=[None])
-
-            if hasattr(module, 'SCRIPT'):
-                if mode := module.SCRIPT.get('mode', False):
-
-                    name = module.SCRIPT.get('name', 'NO NAME')
-                    # os.path.join(*scripts, file)
-                    self.available_scripts[mode][name] = path
-
-    # ----------------------------------------------------------------------
-    def show_script_in_textedit(self, module):
-        """"""
+    def show_script_in_textedit(self, module: PATH) -> None:
+        """Focus editor with module."""
         for i in range(self.parent_frame.tabWidget_project.count()):
             editor = self.parent_frame.tabWidget_project.widget(i)
             if editor.path == module:
@@ -279,8 +264,8 @@ class Projects:
                 return
 
     # ----------------------------------------------------------------------
-    def load_script_in_textedit(self, module):
-        """"""
+    def load_script_in_textedit(self, module: PATH) -> None:
+        """Build editor with autocompleter and syntax highlighters."""
         editor = BCIEditor(linenumber=self.parent_frame.textEdit_linenumber,
                            extension=os.path.splitext(module)[1])
 
@@ -316,8 +301,8 @@ class Projects:
             self.project_files.append(module)
 
     # ----------------------------------------------------------------------
-    def show_create_project_dialog(self):
-        """"""
+    def show_create_project_dialog(self) -> None:
+        """Dialog to create new project."""
         file = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'new_project.ui')
         project = QUiLoader().load(file, self.parent_frame)
@@ -344,8 +329,8 @@ class Projects:
         project.show()
 
     # ----------------------------------------------------------------------
-    def create_project(self, project_name, visualization, stimulus):
-        """"""
+    def create_project(self, project_name: str, visualization: bool = False, stimulus: bool = False) -> None:
+        """Create a new project with a template and open it."""
         icon = QIcon()
         icon_name = 'icon_sti'
 
@@ -380,8 +365,8 @@ class Projects:
         self.open_project(project_name)
 
     # ----------------------------------------------------------------------
-    def remove_project(self, evt):
-        """"""
+    def remove_project(self, evt) -> None:
+        """Remove project from directory."""
         items = [self.parent_frame.listWidget_projects_delivery.currentItem(),
                  self.parent_frame.listWidget_projects_visualizations.currentItem(),
                  ]
@@ -391,8 +376,8 @@ class Projects:
         self.load_projects()
 
     # ----------------------------------------------------------------------
-    def add_file(self):
-        """"""
+    def add_file(self) -> None:
+        """Create a new file in the project directory, by default is a Pyhon file."""
         if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
         else:
@@ -401,14 +386,12 @@ class Projects:
 
         if os.path.isfile(path):
             path = os.path.dirname(path)
-
         index = 0
 
         while True:
             filename = os.path.join(path, f'new_file-{index}.py')
             if os.path.exists(filename):
                 index += 1
-
             else:
                 file = open(filename, 'wb')
                 file.close()
@@ -417,8 +400,8 @@ class Projects:
         self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
-    def add_folder(self):
-        """"""
+    def add_folder(self) -> None:
+        """Create new folder in the project directory."""
         if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
         else:
@@ -440,8 +423,8 @@ class Projects:
         self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
-    def remove(self):
-        """"""
+    def remove_file(self) -> None:
+        """Remove file from project directory."""
         if selected := self.parent_frame.treeWidget_project.currentItem():
             path = selected.path
             self.close_tab(path)
@@ -456,8 +439,8 @@ class Projects:
         self.open_project(self.parent_frame.treeWidget_project.project_name)
 
     # ----------------------------------------------------------------------
-    def project_renamed(self, evt):
-        """"""
+    def project_renamed(self, evt) -> None:
+        """Rename project directory."""
         if hasattr(evt, 'previous_name'):
             if evt.previous_name.strip() != evt.text().strip():
                 shutil.move(os.path.join(self.projects_dir, evt.previous_name), os.path.join(
@@ -465,8 +448,8 @@ class Projects:
                 evt.previous_name == evt.text()
 
     # ----------------------------------------------------------------------
-    def project_file_renamed(self, evt):
-        """"""
+    def project_file_renamed(self, evt) -> None:
+        """Rename file."""
         if hasattr(evt, 'previous_name'):
             if evt.previous_name != evt.text(0):
                 new_path = os.path.join(
@@ -490,8 +473,8 @@ class Projects:
                 evt.path = new_path
 
     # ----------------------------------------------------------------------
-    def close_tab(self, evt):
-        """"""
+    def close_tab(self, evt) -> None:
+        """Close file."""
         if isinstance(evt, (int, float)):
             editor_closed = self.parent_frame.tabWidget_project.widget(evt)
             try:

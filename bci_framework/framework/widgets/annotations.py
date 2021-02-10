@@ -1,12 +1,16 @@
-import os
-from datetime import datetime
+"""
+===========
+Annotations
+===========
+"""
+
 
 from PySide2.QtWidgets import QTableWidgetItem
 
 
 ########################################################################
 class Annotations:
-    """"""
+    """Widget connected with Kafka to stream messages."""
 
     # ----------------------------------------------------------------------
     def __init__(self, parent, core):
@@ -14,27 +18,19 @@ class Annotations:
 
         self.parent_frame = parent
         self.core = core
-
-        style = f"""
-        *{{
-        border: 1px solid {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
-        background-color: {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#ffffff')};
-        border-radius: 4px;
-        }}
-        """
         self.connect()
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.parent_frame.pushButton_save_annotation.clicked.connect(
             self.save_annotation)
         self.parent_frame.pushButton_save_marker.clicked.connect(
             self.save_marker)
 
     # ----------------------------------------------------------------------
-    def save_annotation(self):
-        """"""
+    def save_annotation(self) -> None:
+        """Write the annotation in the streaming."""
         content = self.parent_frame.textEdit_annotations.toPlainText()
         duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
 
@@ -44,15 +40,15 @@ class Annotations:
         self.core.thread_kafka.produser.send('annotation', data_)
 
     # ----------------------------------------------------------------------
-    def save_marker(self):
-        """"""
+    def save_marker(self) -> None:
+        """Write the marker in the streaming."""
         marker = self.parent_frame.lineEdit_marker.text()
         data_ = {'marker': marker, }
         self.core.thread_kafka.produser.send('marker', data_)
 
     # ----------------------------------------------------------------------
     def add_annotation(self, onset, duration, description):
-        """"""
+        """Write the annotation in the GUI."""
         row = self.parent_frame.tableWidget_annotations.rowCount()
         self.parent_frame.tableWidget_annotations.insertRow(row)
 
@@ -70,7 +66,7 @@ class Annotations:
 
     # ----------------------------------------------------------------------
     def add_marker(self, onset, marker):
-        """"""
+        """Write the marker in the GUI."""
         row = self.parent_frame.tableWidget_markers.rowCount()
         self.parent_frame.tableWidget_markers.insertRow(row)
 

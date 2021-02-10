@@ -1,10 +1,15 @@
+"""
+===========
+Connections
+===========
+"""
+
 import os
 import json
 import time
 import logging
 
 from openbci_stream.acquisition import Cyton, CytonBase
-from PySide2 import QtCore
 from PySide2.QtCore import Qt, Signal, QThread, Slot
 from PySide2.QtGui import QCursor
 from PySide2.QtWidgets import QApplication
@@ -15,20 +20,21 @@ from ...extensions import properties as prop
 
 ########################################################################
 class OpenBCIThread(QThread):
-    """"""
+    """Handle the OpenBCI connection."""
+
     connection_ok = Signal()
     connection_fail = Signal()
     disconnected_ok = Signal()
     connected = False
 
     # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
+    def stop(self) -> None:
+        """Kill the trhrad."""
         self.terminate()
 
     # ----------------------------------------------------------------------
-    def run(self):
-        """"""
+    def run(self) -> None:
+        """Connect and configure OpenBCI board."""
         self.openbci = Cyton(self.mode,
                              self.endpoint,
                              host=self.host,
@@ -80,8 +86,8 @@ class OpenBCIThread(QThread):
         self.connection_ok.emit()
 
     # ----------------------------------------------------------------------
-    def session_settings(self, *args):
-        """"""
+    def session_settings(self, *args) -> None:
+        """Create a session setting to reuse it after an impedance measurement."""
         if hasattr(self, 'last_settings'):
             channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
         elif args:
@@ -101,11 +107,10 @@ class OpenBCIThread(QThread):
                                           srb1=srb1)
 
     # ----------------------------------------------------------------------
-    def disconnect(self):
-        """"""
+    def disconnect(self) -> None:
+        """Disconnect OpenBCI."""
         try:
             self.openbci.stop_stream()
-            self.openbci
         except:
             pass
         self.disconnected_ok.emit()
@@ -114,11 +119,11 @@ class OpenBCIThread(QThread):
 
 ########################################################################
 class Connection:
-    """"""
+    """Widget that handle the OpenBCI connection."""
 
     # ----------------------------------------------------------------------
     def __init__(self, core):
-        """Constructor"""
+        """"""
         self.parent_frame = core.main
         self.core = core
 
@@ -143,7 +148,6 @@ class Connection:
             'nchan': self.parent_frame.comboBox_nchan,
             'test_signal_type': self.parent_frame.comboBox_test_signal,
             'test_signal': self.parent_frame.checkBox_test_signal,
-
         }
 
         self.load_config()
@@ -153,33 +157,33 @@ class Connection:
         self.core.config.connect_widgets(self.update_config, self.config)
 
     # ----------------------------------------------------------------------
-    def on_focus(self):
-        """"""
+    def on_focus(self) -> None:
+        """Try to autoconnect."""
         if getattr(self.core, 'streaming', False) and not self.openbci.connected:
             self.parent_frame.pushButton_connect.setEnabled(False)
             self.openbci_connect()
 
     # ----------------------------------------------------------------------
-    def load_config(self):
-        """"""
+    def load_config(self) -> None:
+        """Load widgets."""
         self.core.config.load_widgets('connection', self.config)
         self.core.update_kafka(self.parent_frame.comboBox_host.currentText())
 
     # ----------------------------------------------------------------------
-    def update_config(self, *args, **kwargs):
-        """"""
+    def update_config(self, *args, **kwargs) -> None:
+        """Save widgets status."""
         self.core.config.save_widgets('connection', self.config)
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.parent_frame.pushButton_connect.clicked.connect(self.on_connect)
         self.parent_frame.comboBox_connection_mode.activated.connect(
             self.update_connections)
 
     # ----------------------------------------------------------------------
-    def update_connections(self):
-        """"""
+    def update_connections(self) -> None:
+        """Set widgets for connection modes."""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
 
             for index in range(1, self.parent_frame.comboBox_sample_rate.count()):
@@ -211,8 +215,8 @@ class Connection:
             self.parent_frame.comboBox_port.hide()
 
     # ----------------------------------------------------------------------
-    def on_connect(self, toggled):
-        """"""
+    def on_connect(self, toggled: bool) -> None:
+        """Event to handle connection."""
         if toggled:  # Connect
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.core.update_kafka(
@@ -223,8 +227,8 @@ class Connection:
             self.openbci.disconnect()
 
     # ----------------------------------------------------------------------
-    def openbci_connect(self):
-        """"""
+    def openbci_connect(self) -> None:
+        """Recollect values from GUI."""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
             mode = 'serial'
             endpoint = self.parent_frame.comboBox_port.currentText()
@@ -298,8 +302,8 @@ class Connection:
         self.update_environ()
 
     # ----------------------------------------------------------------------
-    def update_environ(self):
-        """"""
+    def update_environ(self) -> None:
+        """Update environment variables."""
         os.environ['BCISTREAM_HOST'] = json.dumps(
             self.parent_frame.comboBox_host.currentText())
 
@@ -317,8 +321,8 @@ class Connection:
 
     # ----------------------------------------------------------------------
     @Slot()
-    def connection_ok(self):
-        """"""
+    def connection_ok(self) -> None:
+        """Event for OpenBCI connected."""
         QApplication.restoreOverrideCursor()
         self.parent_frame.pushButton_connect.setText('Disconnect')
         self.parent_frame.pushButton_connect.setEnabled(True)
@@ -326,7 +330,7 @@ class Connection:
     # ----------------------------------------------------------------------
     @Slot()
     def connection_fail(self):
-        """"""
+        """Event for OpenBCI failed connection."""
         QApplication.restoreOverrideCursor()
 
         checks = []
@@ -350,8 +354,8 @@ class Connection:
 
     # ----------------------------------------------------------------------
     @Slot()
-    def disconnected_ok(self):
-        """"""
+    def disconnected_ok(self) -> None:
+        """OpenBCI disconnected."""
         self.core.stop_kafka()
         if self.parent_frame.checkBox_test_signal.isChecked():
             self.parent_frame.groupBox_settings.setEnabled(False)

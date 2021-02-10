@@ -1,9 +1,15 @@
+"""
+=======
+Records
+=======
+"""
+
 import sys
 import os
 import shutil
 from datetime import datetime, timedelta
 
-from PySide2.QtWidgets import QTableWidgetItem, QMenu, QApplication, QAction
+from PySide2.QtWidgets import QTableWidgetItem, QApplication
 from PySide2.QtCore import Qt, QTimer
 from PySide2.QtGui import QCursor, QIcon
 
@@ -14,11 +20,11 @@ from ..dialogs import Dialogs
 
 ########################################################################
 class Records:
-    """"""
+    """Widget with rocords and offline streaming."""
 
     # ----------------------------------------------------------------------
     def __init__(self, parent, core):
-        """Constructor"""
+        """"""
 
         self.parent_frame = parent
         self.core = core
@@ -37,19 +43,19 @@ class Records:
         self.parent_frame.widget_record.hide()
 
     # ----------------------------------------------------------------------
-    def on_focus(self):
-        """"""
+    def on_focus(self) -> None:
+        """Reload records."""
         self.load_records()
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.parent_frame.tableWidget_records.itemDoubleClicked.connect(
             self.load_file)
         self.parent_frame.horizontalSlider_record.valueChanged.connect(
             self.update_record_time)
         self.parent_frame.pushButton_play_signal.clicked.connect(
-            self.play_signal)
+            self.stream_record)
         self.parent_frame.pushButton_record.toggled.connect(
             self.record_signal)
 
@@ -60,8 +66,8 @@ class Records:
             self.remove_record)
 
     # ----------------------------------------------------------------------
-    def remove_record(self):
-        """"""
+    def remove_record(self) -> None:
+        """Remove file from records directory."""
         filename = self.parent_frame.tableWidget_records.currentItem().previous_name
 
         response = Dialogs.question_message(self.parent_frame, 'Remove file?',
@@ -73,8 +79,8 @@ class Records:
             self.load_records()
 
     # ----------------------------------------------------------------------
-    def record_renamed(self, item):
-        """"""
+    def record_renamed(self, item) -> None:
+        """Rename records file."""
         if not hasattr(item, 'previous_name'):
             return
 
@@ -87,13 +93,11 @@ class Records:
             self.load_records()
 
     # ----------------------------------------------------------------------
-    def load_records(self):
-        """"""
+    def load_records(self) -> None:
+        """Load all records from records directory."""
         self.parent_frame.tableWidget_records.clear()
-
         self.parent_frame.tableWidget_records.setRowCount(0)
         self.parent_frame.tableWidget_records.setColumnCount(3)
-
         self.parent_frame.tableWidget_records.setHorizontalHeaderLabels(
             ['Duration', 'Datetime', 'Name'])
         records = filter(lambda s: s.endswith(
@@ -117,8 +121,8 @@ class Records:
         self.parent_frame.tableWidget_records.sortByColumn(1)
 
     # ----------------------------------------------------------------------
-    def get_metadata(self, filename, light=True):
-        """"""
+    def get_metadata(self, filename: str, light: bool = True) -> None:
+        """Read the record file and load the header."""
         file = None
         for _ in range(10):
             try:
@@ -148,8 +152,8 @@ class Records:
         return [duration, created, filename, montage, channels, annotations]
 
     # ----------------------------------------------------------------------
-    def load_file(self, item):
-        """"""
+    def load_file(self, item) -> None:
+        """Prepare file to stream it in offline mode."""
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         self.current_signal = item.row()
@@ -203,8 +207,8 @@ class Records:
         QApplication.restoreOverrideCursor()
 
     # ----------------------------------------------------------------------
-    def get_offset(self):
-        """"""
+    def get_offset(self) -> float:
+        """The offset for slider animation."""
         h, m, s = self.parent_frame.label_record_primary.text()[
             2:-1].split(':')
         seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
@@ -213,8 +217,8 @@ class Records:
         return seconds * value
 
     # ----------------------------------------------------------------------
-    def update_record_time(self):
-        """"""
+    def update_record_time(self) -> None:
+        """Update the value of the current streamed signal."""
         offset = timedelta(seconds=self.get_offset())
         self.start_play = datetime.now()
 
@@ -224,12 +228,11 @@ class Records:
             str(offset - timedelta(microseconds=offset.microseconds)))
 
     # ----------------------------------------------------------------------
-    def play_signal(self, toggled):
-        """"""
+    def stream_record(self, toggled) -> None:
+        """Start the stream."""
         self.parent_frame.tableWidget_records.selectRow(self.current_signal)
 
         if toggled:
-
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.record_reader = HDF5Reader(os.path.join(
                 self.records_dir, f'{self.parent_frame.label_record_name.text()}.h5'))
@@ -238,7 +241,6 @@ class Records:
             QApplication.restoreOverrideCursor()
 
             self.start_streaming = 0
-
             self.start_play = datetime.now()
             self.timer = QTimer()
             self.timer.setInterval(1000 / 4)
@@ -254,8 +256,8 @@ class Records:
                 QIcon.fromTheme('media-playback-start'))
 
     # ----------------------------------------------------------------------
-    def update_timer(self):
-        """"""
+    def update_timer(self) -> None:
+        """Stream data into kafka."""
         now = datetime.now()
         delta = now - self.start_play + timedelta(seconds=self.get_offset())
 
@@ -284,22 +286,21 @@ class Records:
                      'created': datetime.now().timestamp(),
                      'samples': samples,
                      }
+            # TODO: stream data
             self.start_streaming = end_streaming
 
     # ----------------------------------------------------------------------
-    def update_timer_record(self):
-        """"""
+    def update_timer_record(self) -> None:
+        """Update the timer to indicate that the records is active."""
         now = datetime.now()
         delta = now - self.start_record
-
         n_time = datetime.strptime(str(delta), '%H:%M:%S.%f').time()
-
         self.parent_frame.pushButton_record.setText(
             f"Recording [{n_time.strftime('%H:%M:%S')}]")
 
     # ----------------------------------------------------------------------
-    def record_signal(self, toggled):
-        """"""
+    def record_signal(self, toggled) -> None:
+        """Start record and start record animation."""
         if toggled:
             self.start_record = datetime.now()
             self.timer = QTimer()
@@ -308,7 +309,6 @@ class Records:
             self.timer.start()
             self.subprocess_script = run_subprocess([sys.executable, os.path.join(
                 os.environ['BCISTREAM_ROOT'], 'transformers', 'record.py')])
-
         else:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
