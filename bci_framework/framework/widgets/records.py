@@ -14,7 +14,7 @@ from PySide2.QtCore import Qt, QTimer
 from PySide2.QtGui import QCursor, QIcon
 
 from openbci_stream.utils import HDF5Reader
-from ..subprocess_script import run_subprocess
+from ..subprocess_handler import run_subprocess
 from ..dialogs import Dialogs
 
 
@@ -70,11 +70,7 @@ class Records:
         """Remove file from records directory."""
         filename = self.parent_frame.tableWidget_records.currentItem().previous_name
 
-        response = Dialogs.question_message(self.parent_frame, 'Remove file?',
-                                            f"""<p>This action cannot be undone.<br><br>
-                                            <nobr>Remove permanently the file <code>{filename}.h5</code> from your system?</nobr></p>
-                                            """)
-        if response:
+        if Dialogs.remove_file_warning(self.parent_frame, filenamee):
             os.remove(os.path.join(self.records_dir, f'{filename}.h5'))
             self.load_records()
 

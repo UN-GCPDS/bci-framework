@@ -1,15 +1,28 @@
+"""
+==========================
+Non blocking stream reader
+==========================
+"""
+
+import time
+from typing import Optional
 from threading import Thread
 from queue import Queue, Empty
-import time
 
 
 ########################################################################
 class NonBlockingStreamReader:
+    """Artificial `timeout` for blocking process.
+
+    Parameters
+    ----------
+    stream
+        The stream to read from, usually a process' stdout or stderr.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self, stream):
-        """stream: the stream to read from.Usually a process' stdout or stderr."""
-
+        """"""
         self._s = stream
         self._q = Queue()
         self.running = True
@@ -28,21 +41,19 @@ class NonBlockingStreamReader:
                     # raise UnexpectedEndOfStream
                 time.sleep(0.1)
 
-        self._t = Thread(target=_populateQueue,
-                         args=(self._s, self._q))
+        self._t = Thread(target=_populateQueue, args=(self._s, self._q))
         self._t.daemon = True
         self._t.start()  # start collecting lines from the stream
 
     # ----------------------------------------------------------------------
-    def readline(self, timeout=None):
-        """"""
+    def readline(self, timeout: Optional[int] = None) -> None:
+        """Read lines from queue object."""
         try:
-            return self._q.get(block=timeout is not None,
-                               timeout=timeout)
+            return self._q.get(block=timeout is not None, timeout=timeout)
         except Empty:
             return None
 
     # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
+    def stop(self) -> None:
+        """Stop the readline."""
         self.running = False

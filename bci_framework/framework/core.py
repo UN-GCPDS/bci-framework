@@ -1,8 +1,15 @@
+"""
+====
+Core
+====
+"""
+
 import os
 import json
 import psutil
 import pickle
 from datetime import datetime
+from typing import TypeVar
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
@@ -16,28 +23,30 @@ from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
 
+KAFKA_STREAM = TypeVar('Kafka')
+
 
 ########################################################################
 class Kafka(QThread):
-    """"""
+    """Kafka run on a thread."""
     over = Signal(object)
     message = Signal()
     continue_ = True
 
     # ----------------------------------------------------------------------
-    def set_host(self, host):
-        """"""
+    def set_host(self, host: str) -> None:
+        """Set the host for kafka."""
         self.host = host
 
     # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
+    def stop(self) -> None:
+        """Kill the thread."""
         self.continue_ = False
         self.terminate()
 
     # ----------------------------------------------------------------------
-    def run(self):
-        """"""
+    def run(self) -> None:
+        """Start the produser and consumer for Kafka."""
         try:
             self.create_produser()
             self.create_consumer()
@@ -46,8 +55,8 @@ class Kafka(QThread):
             self.stop()
 
     # ----------------------------------------------------------------------
-    def create_consumer(self):
-        """"""
+    def create_consumer(self) -> None:
+        """Basic consumer to check stream status and availability."""
         bootstrap_servers = [f'{self.host}:9092']
         topics = ['annotation', 'marker', 'eeg']
         self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
@@ -66,15 +75,18 @@ class Kafka(QThread):
                 return
 
     # ----------------------------------------------------------------------
-    def create_produser(self):
-        """"""
+    def create_produser(self) -> None:
+        """The produser is used for stream annotations and markers."""
         self.produser = KafkaProducer(bootstrap_servers=[f'{self.host}:9092'],
                                       compression_type='gzip',
                                       value_serializer=pickle.dumps,
                                       )
 
 ########################################################################
+
+
 class BCIFramework(QMainWindow):
+    """"""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -123,7 +135,7 @@ class BCIFramework(QMainWindow):
         # self.status_bar('OpenBCI no connected')
 
         self.main.tabWidget_widgets.setCurrentIndex(0)
-        self.style_welcome()
+        self.style_home_page()
 
         self.connect()
 
@@ -131,13 +143,16 @@ class BCIFramework(QMainWindow):
             'docs', 'build', 'html', 'index.html'))
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
-        self.register_subprocess()
+        self.subprocess_timer = QTimer()
+        self.subprocess_timer.timeout.connect(self.save_subprocess)
+        self.subprocess_timer.setInterval(5000)
+        self.subprocess_timer.start()
 
         self.status_bar(message='', right_message=('Diconected', None))
 
     # ----------------------------------------------------------------------
-    def set_icons(self):
-
+    def set_icons(self) -> None:
+        """The Qt resource system has been deprecated."""
         def icon(name):
             return QIcon(f"bci:/primary/{name}.svg")
 
@@ -172,16 +187,8 @@ class BCIFramework(QMainWindow):
         self.main.setWindowIcon(icon("logo"))
 
     # ----------------------------------------------------------------------
-    def register_subprocess(self):
-        """"""
-        self.subprocess_timer = QTimer()
-        self.subprocess_timer.timeout.connect(self.save_subprocess)
-        self.subprocess_timer.setInterval(5000)
-        self.subprocess_timer.start()
-
-    # ----------------------------------------------------------------------
-    def save_subprocess(self):
-        """"""
+    def save_subprocess(self) -> None:
+        """Save in a file all the child subprocess."""
         current_process = psutil.Process()
         children = current_process.children(recursive=True)
         file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
@@ -193,8 +200,8 @@ class BCIFramework(QMainWindow):
             pass
 
     # ----------------------------------------------------------------------
-    def build_collapse_button(self):
-        """"""
+    def build_collapse_button(self) -> None:
+        """Custom collapsible widgets area."""
         # And with the space is possible to add ad custom widget
         self.pushButton_collapse_dock = QPushButton(
             self.main.dockWidget_global)
@@ -212,8 +219,8 @@ class BCIFramework(QMainWindow):
         self.pushButton_collapse_dock.move(5, 5)
 
     # ----------------------------------------------------------------------
-    def set_dock_collapsed(self, collapsed):
-        """"""
+    def set_dock_collapsed(self, collapsed: bool) -> None:
+        """Collapse widgets area."""
         if collapsed:
             w = self.main.tabWidget_widgets.tabBar().width() + 10
             icon = QIcon('bci:/primary/arrow-left-double.svg')
@@ -233,8 +240,8 @@ class BCIFramework(QMainWindow):
             self.main.dockWidget_global.setMinimumWidth(100)
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.main.tabWidget_widgets.currentChanged.connect(
             lambda: self.set_dock_collapsed(False))
 
@@ -256,18 +263,8 @@ class BCIFramework(QMainWindow):
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
     # ----------------------------------------------------------------------
-    def update_dock_tabs(self, event):
-        """"""
-        if b'Left' in event.name:
-            self.main.tabWidget_widgets.setTabPosition(
-                self.main.tabWidget_widgets.East)
-        elif b'Right' in event.name:
-            self.main.tabWidget_widgets.setTabPosition(
-                self.main.tabWidget_widgets.West)
-
-    # ----------------------------------------------------------------------
-    def show_interface(self, interface):
-        """"""
+    def show_interface(self, interface: str) -> None:
+        """Switch between environs."""
         self.main.stackedWidget_modes.setCurrentWidget(
             getattr(self.main, f"page{interface}"))
         for action in self.main.toolBar_environs.actions():
@@ -282,16 +279,16 @@ class BCIFramework(QMainWindow):
                 on_focus()
 
     # ----------------------------------------------------------------------
-    def show_widget(self, index):
-        """"""
+    def show_widget(self, index: int) -> None:
+        """Call `on_focus` method for all widgets."""
         widget = self.main.tabWidget_widgets.tabText(index)
         if wg := getattr(self, widget.lower(), False):
             if on_focus := getattr(wg, 'on_focus', False):
                 on_focus()
 
     # ----------------------------------------------------------------------
-    def set_editor(self):
-        """"""
+    def set_editor(self) -> None:
+        """Change some styles."""
         self.main.plainTextEdit_preview_log.setStyleSheet("""
         *{
         font-weight: normal;
@@ -306,16 +303,16 @@ class BCIFramework(QMainWindow):
         }}
         """)
 
-    # ----------------------------------------------------------------------
-    def remove_widgets_from_layout(self, layout):
-        """"""
-        for i in reversed(range(layout.count())):
-            if item := layout.takeAt(i):
-                item.widget().deleteLater()
+    # # ----------------------------------------------------------------------
+    # def remove_widgets_from_layout(self, layout) -> None:
+        # """"""
+        # for i in reversed(range(layout.count())):
+            # if item := layout.takeAt(i):
+                # item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def status_bar(self, message=None, right_message=None):
-        """"""
+    def status_bar(self, message: str = None, right_message: str = None) -> None:
+        """Update messages for status bar."""
         statusbar = self.main.statusBar()
 
         if not hasattr(statusbar, 'right_label'):
@@ -343,8 +340,8 @@ class BCIFramework(QMainWindow):
                 statusbar.btn.setChecked(not status)
 
     # ----------------------------------------------------------------------
-    def style_welcome(self):
-        """"""
+    def style_home_page(self) -> None:
+        """Set the styles for home page."""
         style = """
         *{
         width:      80px;
@@ -384,9 +381,8 @@ class BCIFramework(QMainWindow):
         self.main.label_20.setStyleSheet(style)
 
     # ----------------------------------------------------------------------
-    def show_about(self, event=None):
-        """"""
-
+    def show_about(self, event=None) -> None:
+        """Display about window."""
         frame = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'about.ui')
         about = QUiLoader().load(frame, self.main)
@@ -421,8 +417,8 @@ class BCIFramework(QMainWindow):
 
     @Slot()
     # ----------------------------------------------------------------------
-    def on_kafka_event(self, value):
-        """"""
+    def on_kafka_event(self, value: KAFKA_STREAM) -> None:
+        """Register annotations and markers."""
         self.main.pushButton_connect.setChecked(True)
         self.main.pushButton_connect.setText('Disconnect')
         self.streaming = True
@@ -459,8 +455,8 @@ class BCIFramework(QMainWindow):
             self.status_bar(right_message=(message, True))
 
     # ----------------------------------------------------------------------
-    def update_kafka(self, host):
-        """"""
+    def update_kafka(self, host) -> None:
+        """Try to restart kafka services."""
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
             self.status_bar(right_message=('No streaming', False))
@@ -477,16 +473,16 @@ class BCIFramework(QMainWindow):
         self.timer.start()
 
     # ----------------------------------------------------------------------
-    def stop_kafka(self):
-        """"""
+    def stop_kafka(self) -> None:
+        """Stop kafka."""
         self.streaming = False
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
             self.status_bar(right_message=('No streaming', False))
 
     # ----------------------------------------------------------------------
-    def keep_updated(self):
-        """"""
+    def keep_updated(self) -> None:
+        """The status is update each 3 seconds."""
         if hasattr(self, 'thread_kafka') and hasattr(self.thread_kafka, 'last_message'):
             last = datetime.now() - self.thread_kafka.last_message
             if last.seconds > 3:
@@ -494,8 +490,8 @@ class BCIFramework(QMainWindow):
 
     # ----------------------------------------------------------------------
     @Slot()
-    def kafka_message(self):
-        """"""
+    def kafka_message(self) -> None:
+        """Error on kafka."""
         self.streaming = False
         if self.main.comboBox_host.currentText() != 'localhost':
             self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
@@ -503,7 +499,7 @@ class BCIFramework(QMainWindow):
             self.conection_message = '* Kafka is not running on this machine.'
 
     # ----------------------------------------------------------------------
-    def show_configurations(self, event=None):
-        """"""
+    def show_configurations(self, *args, **kwargs) -> None:
+        """Show configuration window."""
         configuration = ConfigurationFrame(self)
         configuration.show()

@@ -1,3 +1,9 @@
+"""
+=============
+Configuration
+=============
+"""
+
 import os
 import shutil
 
@@ -9,7 +15,7 @@ from .config_manager import ConfigManager
 
 ########################################################################
 class ConfigurationFrame(QMainWindow):
-    """"""
+    """Auxiliar window with configuration options."""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -31,8 +37,8 @@ class ConfigurationFrame(QMainWindow):
         self.connect()
 
     # ----------------------------------------------------------------------
-    def show(self):
-        """"""
+    def show(self) -> None:
+        """Show frame."""
         center = QDesktopWidget().availableGeometry().center()
         geometry = self.main.frameGeometry()
         geometry.moveCenter(center)
@@ -40,8 +46,8 @@ class ConfigurationFrame(QMainWindow):
         self.main.show()
 
     # ----------------------------------------------------------------------
-    def connect(self):
-        """"""
+    def connect(self) -> None:
+        """Connect events."""
         self.main.lineEdit_user_directory.setText(os.environ['BCISTREAM_HOME'])
         self.main.lineEdit_projects_directory.setText(
             os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
@@ -62,36 +68,36 @@ class ConfigurationFrame(QMainWindow):
             self.reset_connections)
 
     # ----------------------------------------------------------------------
-    def restore_projects(self, *args, **kwargs):
-        """"""
+    def restore_projects(self, *args, **kwargs) -> None:
+        """Copy defautl project into the user projects directory."""
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'projects'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
-    def reset_projects(self, *args, **kwargs):
-        """"""
+    def reset_projects(self, *args, **kwargs) -> None:
+        """Remove user projects nad copy the default projects."""
         shutil.rmtree(os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
 
     # ----------------------------------------------------------------------
-    def remove_records(self, *args, **kwargs):
-        """"""
+    def remove_records(self, *args, **kwargs) -> None:
+        """Clear the directory with records."""
         shutil.rmtree(os.path.join(os.environ['BCISTREAM_HOME'], 'records'))
 
     # ----------------------------------------------------------------------
-    def reset_montages(self, *args, **kwargs):
-        """"""
+    def reset_montages(self, *args, **kwargs) -> None:
+        """Remove user defined montages."""
         self.reset_section('montages')
 
     # ----------------------------------------------------------------------
-    def reset_connections(self):
-        """"""
+    def reset_connections(self) -> None:
+        """Remove user modified connection configurations."""
         self.reset_section('connection')
 
     # ----------------------------------------------------------------------
-    def reset_section(self, section):
-        """"""
+    def reset_section(self, section: str) -> None:
+        """Overwrite user section with default section."""
         self.config.remove_section(section)
         for option in self.original_config.options(section):
             self.config.set(section, option,

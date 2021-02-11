@@ -13,7 +13,7 @@ from typing import TypeVar
 from PySide2.QtCore import QTimer
 from PySide2.QtGui import QTextCursor
 
-from ..stream_handler import VisualizationWidget
+from ..extensions_handler import ExtensionWidget
 from ..editor import Autocompleter
 
 
@@ -105,7 +105,7 @@ class Development:
         self.parent_frame.mdiArea_development.tileSubWindows()
         self.save_all_files()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
-        self.sub.load_visualization(self.get_project(), debugger=self)
+        self.sub.load_extension(self.get_project(), debugger=self)
         self.log_timer.start()
 
         self.parent_frame.pushButton_stop_preview.show()
@@ -137,7 +137,7 @@ class Development:
         if sub := getattr(self, 'sub', False):
             sub.deleteLater()
 
-        self.sub = VisualizationWidget(
+        self.sub = ExtensionWidget(
             self.parent_frame.mdiArea_development, [], mode=self.mode)
         self.parent_frame.mdiArea_development.addSubWindow(self.sub)
         self.sub.show()

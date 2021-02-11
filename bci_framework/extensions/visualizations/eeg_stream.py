@@ -18,7 +18,7 @@ import matplotlib
 from matplotlib import pyplot
 from cycler import cycler
 from figurestream import FigureStream
-from typing import Optional, List, Tuple, Literal
+from typing import Optional, Tuple, Literal
 
 from ...extensions import properties as prop
 

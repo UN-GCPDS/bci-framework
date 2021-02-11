@@ -13,7 +13,7 @@ import webbrowser
 from PySide2.QtCore import QTimer
 from PySide2.QtUiTools import QUiLoader
 
-from ..stream_handler import VisualizationWidget
+from ..extensions_handler import ExtensionWidget
 
 
 ########################################################################
@@ -42,7 +42,7 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def build_dashboard(self) -> None:
         """Create the experiments selector."""
-        sub = VisualizationWidget(
+        sub = ExtensionWidget(
             self.parent_frame.mdiArea_stimuli, self.stimuli_list, mode='stimuli')
         self.parent_frame.mdiArea_stimuli.addSubWindow(sub)
         sub.show()

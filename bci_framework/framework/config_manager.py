@@ -1,16 +1,25 @@
+"""
+=====================
+Configuration Manager
+=====================
+"""
+
 import os
 from configparser import ConfigParser
+from typing import Optional, Dict, TypeVar, Callable
 
 from PySide2 import QtWidgets
+
+WIDGET = TypeVar('QWidget')
 
 
 ########################################################################
 class ConfigManager(ConfigParser):
-    """"""
+    """File based configurations manager."""
 
     # ----------------------------------------------------------------------
     def __init__(self, filename='.bciframework'):
-        """Constructor"""
+        """"""
         super().__init__()
 
         if os.path.isabs(filename):
@@ -23,16 +32,16 @@ class ConfigManager(ConfigParser):
         self.load()
 
     # ----------------------------------------------------------------------
-    def load(self):
-        """"""
+    def load(self) -> None:
+        """Load the filename with configirations."""
         assert os.path.exists(
             self.filename), f'"{self.filename} does not exist!"'
 
         self.read(self.filename)
 
     # ----------------------------------------------------------------------
-    def set(self, section, option, value='', save=False):
-        """"""
+    def set(self, section: str, option: str, value: Optional[str] = '', save: Optional[bool] = False) -> None:
+        """Write and save configuration option."""
         if not self.has_section(section):
             self.add_section(section)
         super().set(section, option, value)
@@ -40,8 +49,8 @@ class ConfigManager(ConfigParser):
             self.save()
 
     # ----------------------------------------------------------------------
-    def get(self, section, option, default=None, *args, **kwargs):
-        """"""
+    def get(self, section: str, option: str, default: Optional[str] = None, *args, **kwargs) -> None:
+        """Read a configuration value, if not exists then save the default."""
         if self.has_option(section, option):
             return super().get(section, option, *args, **kwargs)
         else:
@@ -49,14 +58,14 @@ class ConfigManager(ConfigParser):
             return default
 
     # ----------------------------------------------------------------------
-    def save(self):
-        """"""
+    def save(self) -> None:
+        """Save configurations."""
         with open(self.filename, 'w') as configfile:
             self.write(configfile)
 
     # ----------------------------------------------------------------------
-    def save_widgets(self, section, config):
-        """"""
+    def save_widgets(self, section: str, config: Dict[str, WIDGET]) -> None:
+        """Automatically save values from widgets."""
         for option in config:
             widget = config[option]
 
@@ -74,8 +83,8 @@ class ConfigManager(ConfigParser):
         self.save()
 
     # ----------------------------------------------------------------------
-    def load_widgets(self, section, config):
-        """"""
+    def load_widgets(self, section: str, config: Dict[str, WIDGET]) -> None:
+        """Automatically load values from configurations and set them in widgets."""
         for option in config:
             widget = config[option]
 
@@ -93,8 +102,8 @@ class ConfigManager(ConfigParser):
                 widget
 
     # ----------------------------------------------------------------------
-    def connect_widgets(self, method, config):
-        """"""
+    def connect_widgets(self, method: Callable, config: Dict[str, WIDGET]) -> None:
+        """Automatically connect widgets with events."""
         for option in config:
             widget = config[option]
 

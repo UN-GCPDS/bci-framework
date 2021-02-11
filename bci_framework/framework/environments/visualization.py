@@ -9,7 +9,7 @@ Kafka consumers and transformers with data processing and outputs.
 from PySide2.QtCore import QTimer
 
 from ..config_manager import ConfigManager
-from ..stream_handler import VisualizationWidget
+from ..extensions_handler import ExtensionWidget
 
 
 ########################################################################
@@ -64,7 +64,7 @@ class Visualization:
     # ----------------------------------------------------------------------
     def add_subwindow(self) -> None:
         """Add new patition."""
-        sub = VisualizationWidget(
+        sub = ExtensionWidget(
             self.parent_frame.mdiArea, self.visualizations_list, mode='visualization')
         self.parent_frame.mdiArea.addSubWindow(sub)
         sub.show()

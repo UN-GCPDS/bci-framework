@@ -1,22 +1,29 @@
+"""
+===============
+Stream handlers
+===============
+"""
+
 import os
 import sys
 from datetime import datetime
+from typing import Optional, Literal, List, Callable
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QTimer, Qt
 from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar
 
-from .subprocess_script import LoadSubprocess
+from .subprocess_handler import LoadSubprocess
 from .config_manager import ConfigManager
 
 
 ########################################################################
-class VisualizationsMenu:
-    """"""
+class ExtensionMenu:
+    """MDIArea menu for extensions."""
 
     # ----------------------------------------------------------------------
-    def build_menu_visualization(self, visualization, debugger=False):
-        """"""
+    def build_menu_visualization(self, visualization: bool, debugger: Optional[bool] = False) -> None:
+        """Menu for visualizations."""
         self.menubar = QMenuBar(self)
         self.menubar.clear()
         self.menubar.setMinimumWidth(1e4)
@@ -33,10 +40,10 @@ class VisualizationsMenu:
                 menu_stimuli = QMenu('Data analysis 🞃')
 
         # Add visualizations
-        for viz in self.visualizations_list:
+        for viz in self.extensions_list:
             if viz != visualization:
                 menu_stimuli.addAction(QAction(viz, menu_stimuli,
-                                               triggered=self.set_visualization(viz)))
+                                               triggered=self.set_extension(viz)))
 
         self.accent_menubar.addMenu(menu_stimuli)
 
@@ -82,7 +89,7 @@ class VisualizationsMenu:
 
     # ----------------------------------------------------------------------
     def build_menu_stimuli(self, visualization, debugger):
-        """"""
+        """Menu for stimuli delivery."""
         self.menubar = QMenuBar(self)
         self.menubar.clear()
 
@@ -99,10 +106,10 @@ class VisualizationsMenu:
             else:
                 menu_stimuli = QMenu('Stimuli' + ' 🞃')
 
-        for viz in self.visualizations_list:
+        for viz in self.extensions_list:
             if viz != visualization:
                 menu_stimuli.addAction(QAction(viz, menu_stimuli,
-                                               triggered=self.set_visualization(viz)))
+                                               triggered=self.set_extension(viz)))
         # self.menubar.addMenu(menu_stimuli)
         self.accent_menubar.addMenu(menu_stimuli)
 
@@ -136,14 +143,32 @@ class VisualizationsMenu:
             menu_view.setEnabled(False)
         self.menubar.addMenu(menu_view)
 
-
-########################################################################
-class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
-    """"""
+    # ----------------------------------------------------------------------
+    def set_dpi(self, menu_dpi, text: str, dpi: int) -> Callable:
+        """Set the DPI value for matplotlib figures."""
+        def wrap():
+            [action.setChecked(False) for action in menu_dpi.actions()]
+            [action.setChecked(
+                True) for action in menu_dpi.actions() if action.text() == text]
+            self.main.DPI = dpi
+            menu_dpi.setTitle(f'DPI ({dpi})')
+        return wrap
 
     # ----------------------------------------------------------------------
-    def __init__(self, mdi_area, visualizations_list, mode):
-        """Constructor"""
+    def set_extension(self, visualization: str) -> Callable:
+        """Load extension from menu."""
+        def wrap():
+            self.load_extension(visualization)
+        return wrap
+
+
+########################################################################
+class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
+    """MDIArea with extension."""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, mdi_area, extensions_list: List[str], mode: str):
+        """"""
         super().__init__(None)
         ui = os.path.realpath(os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'visualization_widget.ui'))
@@ -153,7 +178,7 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.main.DPI = 60
         self.mode = mode
         self.current_viz = None
-        self.visualizations_list = visualizations_list
+        self.extensions_list = extensions_list
 
         if '--local' in sys.argv:
             self.projects_dir = os.path.join(
@@ -172,47 +197,46 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         border-width: 0px 2px 2px 2px;
         }}
         QMenuBar {{
+        background: {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
         border-width: 0;
         }}
         """)
 
     # ----------------------------------------------------------------------
     @property
-    def is_visualization(self):
+    def is_visualization(self) -> str:
         """"""
         return self.mode == 'visualization'
 
     # ----------------------------------------------------------------------
     @property
-    def is_stimuli(self):
+    def is_stimuli(self) -> str:
         """"""
         return self.mode == 'stimuli'
 
     # ----------------------------------------------------------------------
-    def load_visualization(self, visualization, debugger=False):
-        """"""
-        self.current_viz = visualization
-        module = os.path.join(self.projects_dir, visualization, 'main.py')
+    def load_extension(self, extension: str, debugger: Optional[bool] = False) -> None:
+        """Load project."""
+        self.current_viz = extension
+        module = os.path.join(self.projects_dir, extension, 'main.py')
         self.stream_subprocess = LoadSubprocess(self.main, module)
-        self.update_menu_bar(visualization, debugger)
-
+        self.update_menu_bar(extension, debugger)
         self.update_ip(self.stream_subprocess.port)
-
         self.loaded()
 
     # ----------------------------------------------------------------------
-    def loaded(self, *args, **kwargs):
-        """"""
-        # overwriteme
+    def loaded(self, *args, **kwargs) -> None:
+        """Method to connect events."""
+        # keep this
 
     # ----------------------------------------------------------------------
-    def update_ip(self, *args, **kwargs):
-        """"""
-        # overwriteme
+    def update_ip(self, *args, **kwargs) -> None:
+        """Method to connect events."""
+        # keep this
 
     # ----------------------------------------------------------------------
-    def remove(self):
-        """"""
+    def remove(self) -> None:
+        """Remove active extension."""
         self.stop_preview()
         if hasattr(self, 'stream_subprocess'):
             del self.stream_subprocess
@@ -225,8 +249,8 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
             self.loaded()
 
     # ----------------------------------------------------------------------
-    def save_img(self):
-        """"""
+    def save_img(self) -> None:
+        """Save capture of visualization in the project directory."""
         name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
         # filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
         captures_dir = os.path.join(
@@ -237,9 +261,8 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
         self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
 
     # ----------------------------------------------------------------------
-
-    def update_menu_bar(self, visualization=None, debugger=False):
-        """"""
+    def update_menu_bar(self, visualization: Optional[bool] = None, debugger: Optional[bool] = False) -> None:
+        """Create menubar."""
         if self.is_visualization:
             self.build_menu_visualization(visualization, debugger)
         elif self.is_stimuli:
@@ -251,32 +274,12 @@ class VisualizationWidget(QMdiSubWindow, VisualizationsMenu):
             self.menubar.styleSheet() + """QMenuBar::item {width: 10000px;}""")
 
     # ----------------------------------------------------------------------
-    def stop_preview(self):
-        """"""
+    def stop_preview(self) -> None:
+        """Stop process."""
         if hasattr(self, 'stream_subprocess'):
             self.stream_subprocess.stop_preview()
 
     # ----------------------------------------------------------------------
-    def reload(self):
-        """"""
+    def reload(self) -> None:
+        """Restart process."""
         self.stream_subprocess.reload()
-
-    # ----------------------------------------------------------------------
-    def set_dpi(self, menu_dpi, text, dpi):
-        """"""
-        def wrap():
-            [action.setChecked(False) for action in menu_dpi.actions()]
-            [action.setChecked(
-                True) for action in menu_dpi.actions() if action.text() == text]
-            self.main.DPI = dpi
-            menu_dpi.setTitle(f'DPI ({dpi})')
-        return wrap
-
-    # ----------------------------------------------------------------------
-    def set_visualization(self, visualization):
-        """"""
-        def wrap():
-            self.load_visualization(visualization)
-        return wrap
-
-

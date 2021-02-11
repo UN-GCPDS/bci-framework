@@ -1,3 +1,9 @@
+"""
+==================
+Subprocess handler
+==================
+"""
+
 import os
 import sys
 import socket
@@ -5,6 +11,7 @@ import logging
 import subprocess
 from urllib import request
 from contextlib import closing
+from typing import TypeVar, Optional
 
 from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
@@ -13,9 +20,13 @@ from .nbstreamreader import NonBlockingStreamReader as NBSR
 from ..extensions import properties as prop
 
 
+COMMAND = TypeVar('Command')
+PATH = TypeVar('Path')
+
+
 # ----------------------------------------------------------------------
-def run_subprocess(call):
-    """"""
+def run_subprocess(call: COMMAND) -> subprocess.Popen:
+    """Run a python script with non blocking debugger installed."""
     my_env = os.environ.copy()
     my_env['PYTHONPATH'] = ":".join(
         sys.path + [os.path.join(os.path.dirname(sys.argv[0]))])
@@ -34,22 +45,19 @@ def run_subprocess(call):
 
 
 ########################################################################
-class JavaScriptConsole:
-    """"""
+class BrythonLogging:
+    """Log messages from Brython."""
+
+    message = ""
 
     # ----------------------------------------------------------------------
-    def __init__(self):
-        """Constructor"""
-        self.message = ""
-
-    # ----------------------------------------------------------------------
-    def feed(self, level, message, lineNumber, sourceID):
-        """"""
+    def feed(self, level: int, message: str, lineNumber: int, sourceID: str) -> None:
+        """Concatenae messages."""
         self.message += message
 
     # ----------------------------------------------------------------------
-    def readline(self, timeout=None):
-        """"""
+    def readline(self, timeout: Optional[int] = None) -> str:
+        """Get mesage from JavaScriptConsole."""
         tmp = self.message
         self.message = ''
         return tmp.encode()
@@ -57,10 +65,10 @@ class JavaScriptConsole:
 
 ########################################################################
 class VisualizationSubprocess:
-    """"""
+    """Define matplotlib properties and start the auto-resizer."""
 
     # ----------------------------------------------------------------------
-    def viz_auto_size(self, timer=True):
+    def viz_auto_size(self, timer: bool = True) -> None:
         """"""
         if self.stopped:
             return
@@ -86,24 +94,24 @@ class VisualizationSubprocess:
             self.timer.singleShot(1000, self.viz_auto_size)
 
     # ----------------------------------------------------------------------
-    def viz_debug(self):
+    def viz_debug(self) -> None:
         """"""
         self.stdout = self.subprocess_script.nb_stdout
 
     # ----------------------------------------------------------------------
-    def viz_start(self):
+    def viz_start(self) -> None:
         """"""
         self.timer.singleShot(1000, self.viz_auto_size)
 
 
 ########################################################################
 class StimuliSubprocess:
-    """"""
+    """Connect with Brython logs."""
 
     # ----------------------------------------------------------------------
-    def stm_debug(self):
+    def stm_debug(self) -> None:
         """"""
-        console = JavaScriptConsole()
+        console = BrythonLogging()
         self.web_engine_page = QWebEnginePage(self.main.web_engine)
         self.web_engine_page.javaScriptConsoleMessage = console.feed
         self.main.web_engine.setPage(self.web_engine_page)
@@ -112,7 +120,7 @@ class StimuliSubprocess:
         self.stm_start()
 
     # ----------------------------------------------------------------------
-    def stm_start(self):
+    def stm_start(self) -> None:
         """"""
         self.main.web_engine.setUrl(self.url)
 
@@ -120,13 +128,11 @@ class StimuliSubprocess:
 ########################################################################
 class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     """"""
+
     # ----------------------------------------------------------------------
-
-    def __init__(self, parent, path=None):
-        """Constructor"""
-
+    def __init__(self, parent, path: PATH = None):
+        """"""
         self.main = parent
-
         self.web_view = self.main.gridLayout_webview
         self.plot_size = QSize(0, 0)
         self.plot_dpi = 0
@@ -136,8 +142,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.load_path(path)
 
     # ----------------------------------------------------------------------
-    def load_path(self, path):
-        """"""
+    def load_path(self, path: PATH) -> None:
+        """Load Python scipt."""
         self.timer = QTimer()
         self.port = self.get_free_port()
         self.subprocess_script = run_subprocess(
@@ -146,14 +152,14 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.prepare()
 
     # ----------------------------------------------------------------------
-    def prepare(self):
-        """"""
+    def prepare(self) -> None:
+        """Try to load the webview."""
         # Try to get mode
         try:
             self.mode = request.urlopen(
                 f'http://localhost:{self.port}/mode', timeout=10).read().decode()
         except:  # if fail
-            self.timer.singleShot(1000 / 30, self.prepare)  # call again
+            self.timer.singleShot(100, self.prepare)  # call again
             return
 
         # and only when the mode is explicit...
@@ -172,8 +178,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.load_webview()
 
     # ----------------------------------------------------------------------
-    def stop_preview(self):
-        """"""
+    def stop_preview(self) -> None:
+        """Kill the subprocess and crear the webview."""
         self.timer.stop()
         self.stopped = True
         if hasattr(self, 'subprocess_script'):
@@ -195,8 +201,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.main.web_engine.setUrl('about:blank')
 
     # ----------------------------------------------------------------------
-    def load_webview(self):
-        """"""
+    def load_webview(self) -> None:
+        """After the process starting, set the URL into the webview."""
         self.main.widget_development_webview.show()
 
         # Create main QWebEngineView object
@@ -216,30 +222,24 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.stm_start()
 
     # ----------------------------------------------------------------------
-    def start_debug(self):
-        """"""
+    def start_debug(self) -> None:
+        """Try to start the debugger."""
         try:
             if self.is_stimuli:
                 self.stm_debug()
             elif self.is_visualization:
                 self.viz_debug()
-            return True
         except:
-            return False
+            pass
 
     # ----------------------------------------------------------------------
-    def reload(self):
-        """"""
+    def reload(self) -> None:
+        """Restart the webview."""
         self.main.web_engine.setUrl(self.url)
 
     # ----------------------------------------------------------------------
-    def blank(self):
-        """"""
-        self.main.web_engine.setUrl('about:blank')
-
-    # ----------------------------------------------------------------------
-    def get_free_port(self):
-        """"""
+    def get_free_port(self) -> str:
+        """Get any free port available."""
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
             s.bind(('', 0))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

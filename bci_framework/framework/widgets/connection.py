@@ -35,13 +35,18 @@ class OpenBCIThread(QThread):
     # ----------------------------------------------------------------------
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
-        self.openbci = Cyton(self.mode,
-                             self.endpoint,
-                             host=self.host,
-                             capture_stream=False,
-                             daisy=prop.DAISY,
-                             montage=self.montage,
-                             streaming_package_size=self.streaming_package_size)
+
+        try:
+            self.openbci = Cyton(self.mode,
+                                 self.endpoint,
+                                 host=self.host,
+                                 capture_stream=False,
+                                 daisy=prop.DAISY,
+                                 montage=self.montage,
+                                 streaming_package_size=self.streaming_package_size)
+
+        except:
+            self.connection_fail.emit()
 
         self.openbci.command(self.sample_rate)
         self.openbci.command(self.boardmode)
@@ -269,7 +274,7 @@ class Connection:
         nchan = self.parent_frame.comboBox_nchan.currentText()
         nchan = getattr(CytonBase, nchan.replace(' ', '_'))
 
-        channels = self.core.montage.get_montage()
+        channels = self.core.montage.get_mne_montage()
 
         # self.openbci = OpenBCIThread()
         self.openbci.connection_ok.connect(self.connection_ok)
