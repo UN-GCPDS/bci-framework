@@ -31,6 +31,7 @@ class Kafka(QThread):
     """Kafka run on a thread."""
     over = Signal(object)
     message = Signal()
+    produser_connected = Signal()
     continue_ = True
 
     # ----------------------------------------------------------------------
@@ -49,8 +50,9 @@ class Kafka(QThread):
         """Start the produser and consumer for Kafka."""
         try:
             self.create_produser()
+            self.produser_connected.emit()
             self.create_consumer()
-        except:
+        except Exception as e:
             self.message.emit()
             self.stop()
 
@@ -148,7 +150,7 @@ class BCIFramework(QMainWindow):
         self.subprocess_timer.setInterval(5000)
         self.subprocess_timer.start()
 
-        self.status_bar(message='', right_message=('Diconected', None))
+        self.status_bar(message='', right_message=('disconnected', None))
 
     # ----------------------------------------------------------------------
     def set_icons(self) -> None:
@@ -324,20 +326,36 @@ class BCIFramework(QMainWindow):
 
             statusbar.btn = QPushButton()
             statusbar.btn.setProperty('class', 'connection')
-            statusbar.btn.setCheckable(True)
+            statusbar.btn.blockSignals(True)
             statusbar.addPermanentWidget(statusbar.btn)
 
         if message:
             statusbar.showMessage(message)
 
         if right_message:
+            # statusbar.btn.blockSignals(False)
             message, status = right_message
             statusbar.right_label.setText(message)
             if status is None:
                 statusbar.btn.setDisabled(True)
+                if 'light' in os.environ.get('QTMATERIAL_THEME'):
+                    statusbar.btn.setStyleSheet(f"""*{{
+                    border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+                    background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};}}""")
+                else:
+                    statusbar.btn.setStyleSheet(f"""*{{
+                    border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+                    background-color: {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};}}""")
             else:
                 statusbar.btn.setDisabled(False)
-                statusbar.btn.setChecked(not status)
+                if status:
+                    statusbar.btn.setStyleSheet("""*{
+                      border: 1px solid #3fc55e;
+                    background-color: #3fc55e;}""")
+                else:
+                    statusbar.btn.setStyleSheet("""*{
+                      border: 1px solid #dc3545;
+                    background-color: #dc3545;}""")
 
     # ----------------------------------------------------------------------
     def style_home_page(self) -> None:
@@ -467,6 +485,8 @@ class BCIFramework(QMainWindow):
         self.thread_kafka = Kafka()
         self.thread_kafka.over.connect(self.on_kafka_event)
         self.thread_kafka.message.connect(self.kafka_message)
+        self.thread_kafka.produser_connected.connect(
+            self.kafka_produser_connected)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
@@ -503,6 +523,14 @@ class BCIFramework(QMainWindow):
             self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
         else:
             self.conection_message = '* Kafka is not running on this machine.'
+
+        self.status_bar(right_message=('Disconnected', None))
+
+    # ----------------------------------------------------------------------
+    @Slot()
+    def kafka_produser_connected(self) -> None:
+        """If produser connected is posible the consumer too."""
+        self.status_bar(right_message=('Connected', False))
 
     # ----------------------------------------------------------------------
     def show_configurations(self, *args, **kwargs) -> None:

@@ -292,7 +292,8 @@ class Records:
                      }
             self.start_streaming = end_streaming
 
-            self.core.thread_kafka.produser.send('eeg', data_)
+            if produser := getattr(self.core.thread_kafka, 'produser', False):
+                produser.send('eeg', data_)
 
     # ----------------------------------------------------------------------
     def update_timer_record(self) -> None:

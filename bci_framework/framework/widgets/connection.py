@@ -185,6 +185,7 @@ class Connection:
         self.parent_frame.pushButton_connect.clicked.connect(self.on_connect)
         self.parent_frame.comboBox_connection_mode.activated.connect(
             self.update_connections)
+        self.parent_frame.comboBox_host.textActivated.connect(self.load_config)
 
     # ----------------------------------------------------------------------
     def update_connections(self) -> None:

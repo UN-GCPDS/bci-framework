@@ -12,16 +12,4 @@ QPushButton.connection {{
   max-width: 12px;
   max-height: 12px;
   border-radius: 6px !important;
-  border: 1px solid #3fc55e;
-  background-color: #3fc55e;
-}}
-
-QPushButton.connection:checked {{
-  border: 1px solid #dc3545;
-  background-color: #dc3545;
-}}
-
-QPushButton.connection:disabled {{
-  border: 1px solid {secondaryDarkColor};
-  background-color: {secondaryDarkColor};
 }}
