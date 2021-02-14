@@ -59,21 +59,30 @@ class Projects:
         self.parent_frame.pushButton_projects.clicked.connect(lambda evt:
                                                               self.core.development.stop_preview())
 
+        self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(
+            self.load_projects)
+
         self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
         self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.text()))
+        self.parent_frame.listWidget_projects_analysis.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.text()))
 
-        self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(
-            self.load_projects)
         self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
+            self.there_can_only_be_one)
+        self.parent_frame.listWidget_projects_analysis.itemClicked.connect(
             self.there_can_only_be_one)
         self.parent_frame.listWidget_projects_delivery.itemClicked.connect(
             self.there_can_only_be_one)
+
         self.parent_frame.listWidget_projects_visualizations.itemChanged.connect(
+            self.project_renamed)
+        self.parent_frame.listWidget_projects_analysis.itemChanged.connect(
             self.project_renamed)
         self.parent_frame.listWidget_projects_delivery.itemChanged.connect(
             self.project_renamed)
+
         self.parent_frame.treeWidget_project.itemDoubleClicked.connect(
             self.open_script)
         self.parent_frame.treeWidget_project.itemChanged.connect(
@@ -97,6 +106,7 @@ class Projects:
     def there_can_only_be_one(self, event) -> None:
         """Only one project can be selected at once."""
         self.parent_frame.listWidget_projects_delivery.clearSelection()
+        self.parent_frame.listWidget_projects_analysis.clearSelection()
         self.parent_frame.listWidget_projects_visualizations.clearSelection()
         event.setSelected(True)
 
@@ -119,6 +129,7 @@ class Projects:
     def load_projects(self) -> None:
         """Load projects."""
         self.parent_frame.listWidget_projects_visualizations.clear()
+        self.parent_frame.listWidget_projects_analysis.clear()
         self.parent_frame.listWidget_projects_delivery.clear()
 
         projects = os.listdir(self.projects_dir)
@@ -139,17 +150,19 @@ class Projects:
             with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
-                modules = {'FigureStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
+                modules = {'EEGStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
                            'StimuliServer': (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
+                           'DataAnalysis': (self.parent_frame.listWidget_projects_analysis, 'icon_ana'),
                            }
                 for module in modules:
                     if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
                         break
+                    widget, icon_name = modules['DataAnalysis']
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -168,6 +181,8 @@ class Projects:
             self.mode = 'visualization'
         elif self.parent_frame.listWidget_projects_delivery.selectedItems():
             self.mode = 'stimuli'
+        elif self.parent_frame.listWidget_projects_analysis.selectedItems():
+            self.mode = 'analysis'
 
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent_frame, "page_projects_files"))
@@ -219,8 +234,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -329,7 +344,7 @@ class Projects:
         project.show()
 
     # ----------------------------------------------------------------------
-    def create_project(self, project_name: str, visualization: bool = False, stimulus: bool = False) -> None:
+    def create_project(self, project_name: str, visualization: bool = False, stimulus: bool = False, analysis: bool = False) -> None:
         """Create a new project with a template and open it."""
         icon = QIcon()
         icon_name = 'icon_sti'
@@ -346,9 +361,15 @@ class Projects:
                 self.parent_frame.listWidget_projects_delivery)
             default_project = '_default_stimuli_delivery'
             self.mode = 'delivery'
+        elif analysis:
+            icon_name = 'icon_ana'
+            item = QListWidgetItem(
+                self.parent_frame.listWidget_projects_analysis)
+            default_project = '_default_data_analysis'
+            self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -369,6 +390,7 @@ class Projects:
         """Remove project from directory."""
         items = [self.parent_frame.listWidget_projects_delivery.currentItem(),
                  self.parent_frame.listWidget_projects_visualizations.currentItem(),
+                 self.parent_frame.listWidget_projects_analysis.currentItem(),
                  ]
         selected_project = list(filter(None, items))[0]
         shutil.rmtree(os.path.join(

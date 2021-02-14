@@ -79,19 +79,21 @@ class Development:
     # ----------------------------------------------------------------------
     def hide_preview(self) -> None:
         """Expand editor."""
-        self.parent_frame.mdiArea_development.hide()
-        self.parent_frame.splitter_preview.moveSplitter(
-            self.parent_frame.splitter_preview.getRange(1)[1], 1)
-        self.handle_width = self.parent_frame.splitter_preview.handleWidth()
-        self.parent_frame.splitter_preview.setHandleWidth(0)
+        if self.mode != 'analysis':
+            self.parent_frame.mdiArea_development.hide()
+            self.parent_frame.splitter_preview.moveSplitter(
+                self.parent_frame.splitter_preview.getRange(1)[1], 1)
+            self.handle_width = self.parent_frame.splitter_preview.handleWidth()
+            self.parent_frame.splitter_preview.setHandleWidth(0)
 
     # ----------------------------------------------------------------------
     def show_preview(self) -> None:
         """Show previsualization."""
-        self.parent_frame.mdiArea_development.show()
-        self.parent_frame.splitter_preview.moveSplitter(
-            self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
-        self.parent_frame.splitter_preview.setHandleWidth(self.handle_width)
+        if self.mode != 'analysis':
+            self.parent_frame.mdiArea_development.show()
+            self.parent_frame.splitter_preview.moveSplitter(
+                self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
+            self.parent_frame.splitter_preview.setHandleWidth(self.handle_width)
 
     # ----------------------------------------------------------------------
     def get_project(self) -> PATH:
@@ -251,4 +253,4 @@ class Development:
     @property
     def mode(self):
         """"""
-        return self.core.projects.mode
+        return getattr(self.core.projects, 'mode', None)

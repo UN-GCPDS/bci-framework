@@ -9,19 +9,39 @@ This handlers are used to configure the `Stimuli Delivery`.
 import json
 import pickle
 import logging
+from queue import Queue
 from typing import TypeVar
+import asyncio
 
+from tornado import gen
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaConsumer
 
 # from datetime import datetime
 from bci_framework.extensions import properties as prop
+from bci_framework.extensions.visualizations.utils import thread_this, subprocess_this
 
 clients = []
-
-
 JSON = TypeVar('json')
+
+
+# @thread_this
+# def consumer(*args, **kwargs):
+    # """"""
+    # consumer = KafkaConsumer(
+        # bootstrap_servers=[f'{prop.HOST}:9092'],
+        # # value_deserializer=pickle.loads,
+        # auto_offset_reset='latest',
+    # )
+    # consumer.subscribe(['commands'])
+
+    # for message in consumer:
+        # for client in WSHandler.clients:
+            # client.write_message(json.dumps({'method': 'command',
+                                             # 'args': message.value.decode(),
+                                             # 'kwargs': {}, }))
 
 
 ########################################################################
@@ -43,10 +63,10 @@ class WSHandler(WebSocketHandler):
         super().__init__(*args, **kwargs)
 
         try:
-            self.marker_producer = KafkaProducer(
+            self.kafka_producer = KafkaProducer(
                 bootstrap_servers=[f'{prop.HOST}:9092'],
                 compression_type='gzip',
-                value_serializer=pickle.dumps
+                value_serializer=pickle.dumps,
             )
         except:
             logging.warning('Kafka not available!')
@@ -122,7 +142,7 @@ class WSHandler(WebSocketHandler):
         # marker['datetime'] = datetime.now().timestamp()
 
         if hasattr(self, 'marker_producer'):
-            self.marker_producer.send('marker', marker)
+            self.kafka_producer.send('marker', marker)
         else:
             print("No Kafka produser available!")
 
@@ -134,6 +154,30 @@ class WSHandler(WebSocketHandler):
         # annotation['onset'] = datetime.now().timestamp()
 
         if hasattr(self, 'marker_producer'):
-            self.marker_producer.send('annotation', annotation)
+            self.kafka_producer.send('annotation', annotation)
         else:
             print("No Kafka produser available!")
+
+    @thread_this
+    # ----------------------------------------------------------------------
+    def bci_consumer(cls, **kwargs):
+        """"""
+        asyncio.set_event_loop(asyncio.new_event_loop())
+        consumer = KafkaConsumer(
+            bootstrap_servers=[f'{prop.HOST}:9092'],
+            # value_deserializer=pickle.loads,
+            auto_offset_reset='latest',
+        )
+        consumer.subscribe(['command'])
+
+        for message in consumer:
+            for i, client in enumerate(clients):
+                if cls != client:
+                    try:
+                        client.write_message(json.dumps({'method': '_on_command',
+                                                         'args': [message.value.decode()],
+                                                         'kwargs': {}, }))
+                    except:
+                        clients.pop(i)
+
+

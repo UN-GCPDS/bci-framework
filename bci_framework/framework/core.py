@@ -58,7 +58,7 @@ class Kafka(QThread):
     def create_consumer(self) -> None:
         """Basic consumer to check stream status and availability."""
         bootstrap_servers = [f'{self.host}:9092']
-        topics = ['annotation', 'marker', 'eeg']
+        topics = ['annotation', 'marker', 'command', 'eeg']
         self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
                                       value_deserializer=pickle.loads,
                                       auto_offset_reset='latest',
@@ -82,9 +82,8 @@ class Kafka(QThread):
                                       value_serializer=pickle.dumps,
                                       )
 
+
 ########################################################################
-
-
 class BCIFramework(QMainWindow):
     """"""
 
@@ -135,6 +134,7 @@ class BCIFramework(QMainWindow):
         # self.status_bar('OpenBCI no connected')
 
         self.main.tabWidget_widgets.setCurrentIndex(0)
+        self.main.tabWidget_data_analysis.setCurrentIndex(0)
         self.style_home_page()
 
         self.connect()
@@ -419,13 +419,16 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def on_kafka_event(self, value: KAFKA_STREAM) -> None:
         """Register annotations and markers."""
-        self.main.pushButton_connect.setChecked(True)
-        self.main.pushButton_connect.setText('Disconnect')
+        # self.main.pushButton_connect.setChecked(True)
+        # self.main.pushButton_connect.setText('Disconnect')
         self.streaming = True
 
         if value['topic'] == 'marker':
             self.annotations.add_marker(datetime.fromtimestamp(
                 value['value']['timestamp']), value['value']['marker'])
+        elif value['topic'] == 'command':
+            self.annotations.add_command(datetime.fromtimestamp(
+                value['value']['timestamp']), value['value']['command'])
         elif value['topic'] == 'annotation':
             self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
                                             value['value']['duration'],
@@ -487,6 +490,9 @@ class BCIFramework(QMainWindow):
             last = datetime.now() - self.thread_kafka.last_message
             if last.seconds > 3:
                 self.status_bar(right_message=('No streaming', False))
+                self.annotations.set_enable(False)
+            else:
+                self.annotations.set_enable(True)
 
     # ----------------------------------------------------------------------
     @Slot()

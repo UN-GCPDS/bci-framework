@@ -88,7 +88,7 @@ class ExtensionMenu:
         self.menubar.addMenu(menu_dpi)
 
     # ----------------------------------------------------------------------
-    def build_menu_stimuli(self, visualization, debugger):
+    def build_menu_stimuli(self, visualization: bool, debugger: Optional[bool] = False) -> None:
         """Menu for stimuli delivery."""
         self.menubar = QMenuBar(self)
         self.menubar.clear()
@@ -215,11 +215,18 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         return self.mode == 'stimuli'
 
     # ----------------------------------------------------------------------
+    @property
+    def is_analysis(self) -> str:
+        """"""
+        return self.mode == 'analysis'
+
+    # ----------------------------------------------------------------------
     def load_extension(self, extension: str, debugger: Optional[bool] = False) -> None:
         """Load project."""
         self.current_viz = extension
         module = os.path.join(self.projects_dir, extension, 'main.py')
-        self.stream_subprocess = LoadSubprocess(self.main, module)
+        self.stream_subprocess = LoadSubprocess(
+            self.main, module, use_webview=not self.is_analysis)
         self.update_menu_bar(extension, debugger)
         self.update_ip(self.stream_subprocess.port)
         self.loaded()
@@ -268,10 +275,11 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         elif self.is_stimuli:
             self.build_menu_stimuli(visualization, debugger)
 
-        self.main.gridLayout_menubar.setMenuBar(self.menubar)
-        self.menubar.adjustSize()
-        self.menubar.setStyleSheet(
-            self.menubar.styleSheet() + """QMenuBar::item {width: 10000px;}""")
+        if not self.is_analysis:
+            self.main.gridLayout_menubar.setMenuBar(self.menubar)
+            self.menubar.adjustSize()
+            self.menubar.setStyleSheet(
+                self.menubar.styleSheet() + """QMenuBar::item {width: 10000px;}""")
 
     # ----------------------------------------------------------------------
     def stop_preview(self) -> None:

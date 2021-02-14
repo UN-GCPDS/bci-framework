@@ -141,11 +141,13 @@ class Records:
 
         if not light:
             annotations = file.annotations
+            markers = file.markers_relative
         else:
             annotations = []
+            markers = []
 
         file.close()
-        return [duration, created, filename, montage, channels, annotations]
+        return [duration, created, filename, montage, channels, annotations, markers]
 
     # ----------------------------------------------------------------------
     def load_file(self, item) -> None:
@@ -156,7 +158,7 @@ class Records:
         name = self.parent_frame.tableWidget_records.item(
             item.row(), 2).text()
 
-        duration, datetime, _, montage, electrodes, annotations = self.get_metadata(
+        duration, datetime, _, montage, electrodes, annotations, markers = self.get_metadata(
             f"{name}.h5", light=False)
 
         electrodes = list(electrodes.values())
@@ -180,23 +182,26 @@ class Records:
         self.parent_frame.label_record_montage.setStyleSheet(
             "*{font-family: 'mono'}")
 
-        self.parent_frame.tableWidget_annotations.clear()
-        self.parent_frame.tableWidget_annotations.setRowCount(0)
-        self.parent_frame.tableWidget_annotations.setColumnCount(3)
+        self.core.annotations.bulk_annotations(annotations)
+        self.core.annotations.bulk_markers(markers)
 
-        self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
-            ['Onset', 'Duration', 'Description'])
+        # self.parent_frame.tableWidget_annotations.clear()
+        # self.parent_frame.tableWidget_annotations.setRowCount(0)
+        # self.parent_frame.tableWidget_annotations.setColumnCount(3)
 
-        for row, annotation in enumerate(annotations):
-            self.parent_frame.tableWidget_annotations.insertRow(row)
-            onset, duration, description = annotation
+        # self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
+            # ['Onset', 'Duration', 'Description'])
 
-            item = QTableWidgetItem(f"{round(onset, 2)}")
-            self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
-            item = QTableWidgetItem(f"{duration}")
-            self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
-            item = QTableWidgetItem(description)
-            self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
+        # for row, annotation in enumerate(annotations):
+            # self.parent_frame.tableWidget_annotations.insertRow(row)
+            # onset, duration, description = annotation
+
+            # item = QTableWidgetItem(f"{round(onset, 2)}")
+            # self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
+            # item = QTableWidgetItem(f"{duration}")
+            # self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
+            # item = QTableWidgetItem(description)
+            # self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
 
         self.parent_frame.horizontalSlider_record.setValue(0)
         self.parent_frame.widget_record.show()
@@ -275,15 +280,19 @@ class Records:
             # print(samples, [max([end_streaming - samples, 0]), end_streaming])
             samples = int(samples)
 
-            data_ = {'context': 'context',
+            context = {
+                'binary_created': datetime.now().timestamp(),
+                'created': datetime.now().timestamp(),
+                'samples': samples,
+            }
+
+            data_ = {'context': context,
                      'data': (self.record_reader.eeg[:, max([end_streaming - samples, 0]): end_streaming],
                               self.record_reader.aux[:, max([end_streaming - samples, 0]): end_streaming]),
-                     'binary_created': datetime.now().timestamp(),
-                     'created': datetime.now().timestamp(),
-                     'samples': samples,
                      }
-            # TODO: stream data
             self.start_streaming = end_streaming
+
+            self.core.thread_kafka.produser.send('eeg', data_)
 
     # ----------------------------------------------------------------------
     def update_timer_record(self) -> None:
@@ -295,7 +304,7 @@ class Records:
             f"Recording [{n_time.strftime('%H:%M:%S')}]")
 
     # ----------------------------------------------------------------------
-    def record_signal(self, toggled) -> None:
+    def record_signal(self, toggled: bool) -> None:
         """Start record and start record animation."""
         if toggled:
             self.start_record = datetime.now()
@@ -309,6 +318,5 @@ class Records:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
-
             self.load_records()
 

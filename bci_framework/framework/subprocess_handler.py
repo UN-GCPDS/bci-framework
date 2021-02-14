@@ -130,13 +130,16 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, path: PATH = None):
+    def __init__(self, parent, path: Optional[PATH] = None, use_webview: Optional[bool] = True):
         """"""
         self.main = parent
         self.web_view = self.main.gridLayout_webview
         self.plot_size = QSize(0, 0)
         self.plot_dpi = 0
         self.stopped = False
+        self.is_analysis = not use_webview
+        self.is_visualization = use_webview
+        self.is_stimuli = use_webview
 
         if path:
             self.load_path(path)
@@ -145,21 +148,30 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     def load_path(self, path: PATH) -> None:
         """Load Python scipt."""
         self.timer = QTimer()
-        self.port = self.get_free_port()
+
+        if not self.is_analysis:
+            self.port = self.get_free_port()
+        else:
+            self.port = ''
+
         self.subprocess_script = run_subprocess(
             [sys.executable, path, self.port])
 
-        self.prepare()
+        if self.is_analysis:
+            pass
+            # self.start_debug()
+        else:
+            self.prepare_webview()
 
     # ----------------------------------------------------------------------
-    def prepare(self) -> None:
+    def prepare_webview(self) -> None:
         """Try to load the webview."""
         # Try to get mode
         try:
             self.mode = request.urlopen(
                 f'http://localhost:{self.port}/mode', timeout=10).read().decode()
         except:  # if fail
-            self.timer.singleShot(100, self.prepare)  # call again
+            self.timer.singleShot(100, self.prepare_webview)  # call again
             return
 
         # and only when the mode is explicit...
@@ -167,10 +179,12 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         if self.mode == 'visualization':
             self.is_visualization = True
             self.is_stimuli = False
+            self.is_analysis = False
             endpoint = ''
         elif self.mode == 'stimuli':
             self.is_visualization = False
             self.is_stimuli = True
+            self.is_analysis = False
             endpoint = 'dashboard'
 
         # self.main.widget_development_webview.show()
@@ -227,7 +241,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         try:
             if self.is_stimuli:
                 self.stm_debug()
-            elif self.is_visualization:
+            elif self.is_visualization or self.is_analysis:
                 self.viz_debug()
         except:
             pass

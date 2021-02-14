@@ -164,9 +164,9 @@ class Connection:
     # ----------------------------------------------------------------------
     def on_focus(self) -> None:
         """Try to autoconnect."""
-        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
-            self.parent_frame.pushButton_connect.setEnabled(False)
-            self.openbci_connect()
+        # if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            # self.parent_frame.pushButton_connect.setEnabled(False)
+            # self.openbci_connect()
 
     # ----------------------------------------------------------------------
     def load_config(self) -> None:

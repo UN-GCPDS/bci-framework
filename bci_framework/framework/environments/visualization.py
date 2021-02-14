@@ -6,10 +6,17 @@ Data Analysis and Visualizations
 Kafka consumers and transformers with data processing and outputs.
 """
 
-from PySide2.QtCore import QTimer
+import os
+import sys
+
+import psutil
+from PySide2.QtCore import QTimer, Qt
+from PySide2.QtGui import QColor, QBrush
+from PySide2.QtWidgets import QTableWidgetItem
 
 from ..config_manager import ConfigManager
 from ..extensions_handler import ExtensionWidget
+from ..subprocess_handler import run_subprocess
 
 
 ########################################################################
@@ -19,14 +26,18 @@ class Visualization:
     # ----------------------------------------------------------------------
     def __init__(self, core):
         """"""
-
         self.parent_frame = core.main
         self.core = core
         self.config = ConfigManager()
 
-        self.connect()
+        self.process_status_timer = QTimer()
+        self.process_status_timer.timeout.connect(self.update_data_analysis)
+        self.process_status_timer.setInterval(1000)
+
         self.on_focus()
         self.add_subwindow()
+        self.connect()
+        self.build_analysis()
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
@@ -37,6 +48,12 @@ class Visualization:
             self.remove_all)
         self.parent_frame.pushButton_visualizations_reload_all.clicked.connect(
             self.reload_all)
+        self.parent_frame.tableWidget_anlaysis.itemChanged.connect(
+            self.analisys_status_update)
+        self.parent_frame.pushButton_visualizations_stop_all.clicked.connect(
+            self.stop_all_scripts)
+        self.parent_frame.pushButton_visualizations_restart_all.clicked.connect(
+            self.restart_running_scripts)
 
     # ----------------------------------------------------------------------
     def on_focus(self) -> None:
@@ -90,5 +107,153 @@ class Visualization:
                 self.parent_frame.pushButton_visualizations_reload_all.setEnabled(
                     True)
                 break
+
+    # ----------------------------------------------------------------------
+    def build_analysis(self) -> None:
+        """"""
+        columns = ['Data analisys',
+                   'PID',
+                   'CPU%',
+                   'Memory',
+                   'Status',
+                   ]
+        self.parent_frame.tableWidget_anlaysis.clear()
+        self.parent_frame.tableWidget_anlaysis.setRowCount(0)
+        self.parent_frame.tableWidget_anlaysis.setColumnCount(len(columns))
+
+        self.parent_frame.tableWidget_anlaysis.setHorizontalHeaderLabels(
+            columns)
+
+        for i in range(self.parent_frame.listWidget_projects_analysis.count()):
+            item = self.parent_frame.listWidget_projects_analysis.item(i)
+
+            if item.text().startswith('_'):
+                continue
+
+            if item.text().startswith('Tutorial |'):
+                continue
+
+            self.parent_frame.tableWidget_anlaysis.insertRow(i)
+            for j in range(len(columns)):
+
+                if j == 0:
+                    item = QTableWidgetItem(item.text())
+                    item.setCheckState(Qt.Unchecked)
+                    item.is_running = False
+                else:
+                    item = QTableWidgetItem()
+
+                if 0 < j < 4:
+                    item.setTextAlignment(Qt.AlignCenter)
+
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable
+                              & ~Qt.ItemIsSelectable)
+                self.parent_frame.tableWidget_anlaysis.setItem(i, j, item)
+
+                self.parent_frame.tableWidget_anlaysis.cellWidget(i, j)
+
+    # ----------------------------------------------------------------------
+    def analisys_status_update(self, item) -> None:
+        """"""
+        if item.column() != 0:
+            return
+
+        if item.checkState() == Qt.Checked:
+            self.start_script(item)
+        else:
+            self.stop_script(item)
+
+    # ----------------------------------------------------------------------
+    def stop_script(self, item) -> None:
+        """"""
+        if hasattr(item, 'subprocess'):
+            item.subprocess.terminate()
+            del item.subprocess
+            item.setCheckState(Qt.Unchecked)
+            self.update_row_information(item.row(), '', '', '', 'Terminated')
+
+    # ----------------------------------------------------------------------
+    def start_script(self, item) -> None:
+        """"""
+        script = item.text()
+        item.setCheckState(Qt.Checked)
+        item.subprocess = run_subprocess([sys.executable, os.path.join(
+            self.core.projects.projects_dir, script, 'main.py')])
+        if not self.process_status_timer.isActive():
+            self.process_status_timer.start()
+
+    # ----------------------------------------------------------------------
+    def update_data_analysis(self) -> None:
+        """"""
+        running = 0
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, 'subprocess'):
+
+                try:
+                    process = psutil.Process(item.subprocess.pid)
+                    pid = str(item.subprocess.pid)
+                    memory = f"{process.memory_info().vms / (1024):.0f} K"
+                    cpu = f"{process.cpu_percent()}%"
+                    status = 'Running...'
+                    running += 1
+                except:
+                    item.setCheckState(Qt.Unchecked)
+                    pid = ''
+                    memory = ""
+                    cpu = ""
+                    status = 'Finalized'
+
+                if process.memory_info().vms == 0:
+                    pid = ''
+                    memory = ""
+                    cpu = ""
+                    status = 'Finalized'
+                    self.stop_script(item)
+
+                self.update_row_information(row, pid, cpu, memory, status)
+
+        if not running:
+            self.process_status_timer.stop()
+
+        enable = self.process_status_timer.isActive()
+        self.parent_frame.pushButton_visualizations_stop_all.setEnabled(enable)
+        self.parent_frame.pushButton_visualizations_restart_all.setEnabled(
+            enable)
+
+    # ----------------------------------------------------------------------
+    def update_row_information(self, row, pid: str, cpu: str, memory: str, status: str) -> None:
+        """"""
+        item1 = self.parent_frame.tableWidget_anlaysis.item(row, 1)
+        item1.setText(pid)
+        item2 = self.parent_frame.tableWidget_anlaysis.item(row, 2)
+        item2.setText(cpu)
+        item2 = self.parent_frame.tableWidget_anlaysis.item(row, 3)
+        item2.setText(memory)
+        item3 = self.parent_frame.tableWidget_anlaysis.item(row, 4)
+        item3.setText(status)
+
+        if status in ['Terminated', 'Finalized']:
+            item3.setBackgroundColor(QColor(220, 53, 69, 30))
+        elif status in ['Running...']:
+            item3.setBackgroundColor(QColor(63, 197, 94, 30))
+
+    # ----------------------------------------------------------------------
+    def stop_all_scripts(self) -> None:
+        """"""
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, 'subprocess'):
+                self.stop_script(item)
+
+    # ----------------------------------------------------------------------
+    def restart_running_scripts(self) -> None:
+        """"""
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, 'subprocess'):
+                self.stop_script(item)
+                self.start_script(item)
+
 
 

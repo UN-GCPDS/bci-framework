@@ -133,8 +133,12 @@ class BCIWebSocket(WebSocket):
         """"""
         data = json.loads(evt.data)
         if 'method' in data:
-            getattr(self.main, data['method']).no_decorator(
-                self.main, *data['args'], **data['kwargs'])
+            try:
+                getattr(self.main, data['method']).no_decorator(
+                    self.main, *data['args'], **data['kwargs'])
+            except:
+                getattr(self.main, data['method'])(
+                    *data['args'], **data['kwargs'])
 
     # ----------------------------------------------------------------------
     def on_close(self, evt):
@@ -147,12 +151,18 @@ class BCIWebSocket(WebSocket):
 ########################################################################
 class StimuliAPI:
     """"""
+    listen_commands_ = False
 
     # ----------------------------------------------------------------------
     def connect(self, ip=5000):
         """"""
         self.ws = BCIWebSocket(f'ws://localhost:{ip}/ws')
         self.ws.main = self
+
+        if self.listen_commands_:
+            print('CONSUMMINGG')
+            timer.set_timeout(lambda: self.ws.send(
+                {'action': 'consumer', }), 1000)
 
     # ----------------------------------------------------------------------
     @property
@@ -199,6 +209,17 @@ class StimuliAPI:
                            # 'onset': datetime.now().timestamp(),
                            'description': description},
         })
+
+    # ----------------------------------------------------------------------
+    def listen_commands(self, command):
+        """"""
+        self.command_listener_ = command
+        self.listen_commands_ = True
+
+    # ----------------------------------------------------------------------
+    def _on_command(self, command):
+        """"""
+        self.command_listener_(command)
 
     # ----------------------------------------------------------------------
     # @DeliveryInstance.both
@@ -316,4 +337,3 @@ class StimuliAPI:
             self.stimuli_area
         if dashboard:
             self.dashboard
-

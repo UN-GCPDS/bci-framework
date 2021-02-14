@@ -22,8 +22,8 @@ from ...extensions import properties as prop
 def subprocess_this(fn: Callable) -> Callable:
     """Decorator to move methods to subprocessing."""
 
-    def wraper(self, *args, **kwargs):
-        c = Process(target=fn, args=(self, *args))
+    def wraper(*args, **kwargs):
+        c = Process(target=fn, args=args)
         c.start()
     return wraper
 
@@ -32,8 +32,8 @@ def subprocess_this(fn: Callable) -> Callable:
 def thread_this(fn: Callable) -> Callable:
     """Decorator to move methods to threading."""
 
-    def wraper(self, *args, **kwargs):
-        c = Thread(target=fn, args=(self, *args))
+    def wraper(*args, **kwargs):
+        c = Thread(target=fn, args=args)
         c.start()
     return wraper
 
