@@ -10,6 +10,7 @@ preconfigured server.
 
 import os
 import sys
+import pickle
 import logging
 
 import mne
@@ -17,10 +18,12 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot
 from cycler import cycler
+from kafka import KafkaProducer
 from figurestream import FigureStream
 from typing import Optional, Tuple, Literal
 
 from ...extensions import properties as prop
+from ... extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer
 
 # Consigure matplotlib
 if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
@@ -42,64 +45,6 @@ except:
 # Set logger
 logger = logging.getLogger("mne")
 logger.setLevel(logging.CRITICAL)
-
-
-########################################################################
-class Transformers:
-    """Used to preprocess EEG streams."""
-
-    # ----------------------------------------------------------------------
-    def resample(self, x: np.ndarray, num: int) -> np.array:
-        """Fast resample.
-
-        Parameters
-        ----------
-        x
-            Input array of shape (`channels, time`).
-        num
-            Desired time samples.
-
-        Returns
-        -------
-        array
-            Resampled array (`channels, num`).
-        """
-
-        ndim = x.shape[1] // num
-        return np.mean(np.nan_to_num(x[:, :ndim * num].reshape(x.shape[0], num, ndim)), axis=-1)
-        # return zoom(x, (1, num / x.shape[1]))
-        # return np.nan_to_num(x[:, :ndim * num][:, ::ndim])
-
-    # ----------------------------------------------------------------------
-    def centralize(self, x: np.array, normalize: bool = False, axis: int = 0) -> np.array:
-        """Crentralize array.
-
-        Remove the mean to all axis.
-
-        Parameters
-        ----------
-        x
-            Input array of shape (`channels, time`).
-        normalize
-            Return array with maximun amplitude equal to 1.
-        axis
-            Axis to centralize.
-
-        Returns
-        -------
-        array
-            Centralized array.
-        """
-
-        cent = np.nan_to_num(np.apply_along_axis(
-            lambda x_: x_ - x_.mean(), 1, x))
-
-        if normalize:
-            if normalize == True:
-                normalize = 1
-            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
-
-        return cent
 
 
 ########################################################################
@@ -146,7 +91,7 @@ class MNEObjects:
 
 
 ########################################################################
-class EEGStream(FigureStream, Transformers, MNEObjects):
+class EEGStream(FigureStream, DataAnalysis, MNEObjects):
     """Matplotlib figure re-implementation.
 
     This class define some usefull methods to use for simplificate the data
@@ -154,10 +99,13 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
     """
 
     # ----------------------------------------------------------------------
-    def __init__(self, *args, **kwargs):
+    def __init__(self, enable_produser=False, *args, **kwargs):
         """"""
         port = 5000
         super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
+        self.boundary = False
+        if enable_produser:
+            self._enable_commands()
 
     # ----------------------------------------------------------------------
     def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
@@ -232,8 +180,10 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         axis = self.add_subplot(*subplot)
 
         if window == 'auto':
-            window = self._get_factor_near_to(prop.SAMPLE_RATE * np.abs(time),
-                                              n=1000)
+            window = self._get_factor_near_to(
+                prop.SAMPLE_RATE * np.abs(time), n=window)
+            # self._create_resampled_buffer(
+                # prop.SAMPLE_RATE * np.abs(time), n=1000)
 
         a = np.empty(window)
         a.fill(fill)
@@ -265,34 +215,6 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds: Optional[int] = [30], aux_shape: Optional[int] = 3, fill: Optional[int] = 0):
-        """Create a buffer with fixed time length.
-
-        Since the `loop_consumer` iteraror only return the last data package, the
-        object `buffer_eeg` and `buffer_aux` will retain a longer (in time) data.
-
-        Parameters
-        ----------
-        seconds
-            How many seconds will content the buffer.
-        aux_shape
-            Define the shape of aux array.
-        fill
-            Initialize buffet with this value
-        """
-
-        chs = len(prop.CHANNELS)
-        time = prop.SAMPLE_RATE * seconds
-
-        self.buffer_eeg = np.empty((chs, time))
-        self.buffer_eeg.fill(fill)
-
-        self.buffer_eeg_split = []
-
-        self.buffer_aux = np.empty((aux_shape, time))
-        self.buffer_aux.fill(fill)
-
-    # ----------------------------------------------------------------------
     def create_boundary(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17):
         """Add the boundary line to some visualizations."""
 
@@ -319,95 +241,3 @@ class EEGStream(FigureStream, Transformers, MNEObjects):
 
         else:
             logging.warning('No "boundary" to plot')
-
-    # ----------------------------------------------------------------------
-    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray):
-        """Uppdate the buffers.
-
-        Parameters
-        ----------
-        eeg
-            The new EEG array
-        aux
-            The new AUX array
-        """
-
-        if self.boundary is False:
-            c = eeg.shape[1]
-            self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
-            self.buffer_eeg[:, -c:] = eeg
-
-            self.buffer_eeg_split.append(c)
-
-            if sum(self.buffer_eeg_split) > self.buffer_eeg.shape[1]:
-                self.buffer_eeg_split.pop(0)
-
-            if not aux is None:
-                d = aux.shape[1]
-                self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
-                self.buffer_aux[:, -d:] = aux
-
-        else:
-            c = eeg.shape[1]
-
-            roll = 0
-            if self.boundary + c >= self.buffer_eeg.shape[1]:
-                roll = self.buffer_eeg.shape[1] - (self.boundary + c)
-                self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
-                self.buffer_eeg[:, -eeg.shape[1]:] = eeg
-                self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
-
-            else:
-                self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg
-
-            self.boundary += c
-            self.boundary = self.boundary % self.buffer_eeg.shape[1]
-
-            if not aux is None:
-                d = aux.shape[1]
-
-                roll = 0
-                if self.boundary_aux + d >= self.buffer_aux.shape[1]:
-                    roll = self.boundary_aux + d
-
-                if roll:
-                    self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
-
-                if (self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d]).shape != aux.shape:
-                    l = self.buffer_aux[:,
-                                        self.boundary_aux:self.boundary_aux + d].shape[1]
-                    logging.warning([l, aux.shape[1]])
-
-                    self.buffer_aux[:,
-                                    self.boundary_aux:self.boundary_aux + d] = aux[:, :l]
-                else:
-                    self.buffer_aux[:,
-                                    self.boundary_aux:self.boundary_aux + d] = aux
-
-                if roll:
-                    self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)
-
-                self.boundary_aux += d
-                self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
-
-    # ----------------------------------------------------------------------
-    def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:
-        """Get the integer number factor of `x` nearest to `n`.
-
-        This factor is used to fast resampling.
-
-        Parameters
-        ----------
-        x
-            Samples.
-        n
-            Near factor
-
-        Returns
-        -------
-        int
-            Factor.
-        """
-        a = np.array([(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
-        a[a % 1 != 0] = 0
-        return int(a[np.argmin(np.abs(a - n))])

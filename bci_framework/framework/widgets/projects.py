@@ -54,10 +54,7 @@ class Projects:
     def connect(self) -> None:
         """Connect events."""
         self.parent_frame.pushButton_projects.clicked.connect(
-            lambda evt: self.parent_frame.stackedWidget_projects.setCurrentWidget(getattr(self.parent_frame, "page_projects")))
-
-        self.parent_frame.pushButton_projects.clicked.connect(lambda evt:
-                                                              self.core.development.stop_preview())
+            self.show_projects)
 
         self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(
             self.load_projects)
@@ -101,6 +98,15 @@ class Projects:
             self.close_tab)
         self.parent_frame.tabWidget_project.currentChanged.connect(
             self.tab_changed)
+
+    # ----------------------------------------------------------------------
+    def show_projects(self, evt) -> None:
+        """Save files and update projects before load view."""
+        self.parent_frame.stackedWidget_projects.setCurrentWidget(
+            getattr(self.parent_frame, "page_projects"))
+        self.core.development.stop_preview()
+        self.core.development.save_all_files()
+        self.load_projects()
 
     # ----------------------------------------------------------------------
     def there_can_only_be_one(self, event) -> None:
@@ -161,8 +167,8 @@ class Projects:
                     widget, icon_name = modules['DataAnalysis']
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -234,8 +240,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -319,7 +325,7 @@ class Projects:
     def show_create_project_dialog(self) -> None:
         """Dialog to create new project."""
         file = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'bci_framework', 'qtgui', 'new_project.ui')
+            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'new_project.ui')
         project = QUiLoader().load(file, self.parent_frame)
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
             lambda evt: self.create_project(project.lineEdit_project_name.text(),
@@ -368,8 +374,8 @@ class Projects:
             default_project = '_default_data_analysis'
             self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 

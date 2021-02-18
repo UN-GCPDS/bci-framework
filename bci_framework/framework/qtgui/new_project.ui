@@ -41,14 +41,21 @@
       <item row="1" column="1">
        <widget class="QRadioButton" name="radioButton_visualization">
         <property name="text">
-         <string>Visualization or Data analysis</string>
+         <string>Real-time Visualization</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QRadioButton" name="radioButton_stimulus_delivery">
+        <property name="text">
+         <string>Stimuli delivery</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QRadioButton" name="radioButton_stimulus_delivery">
+       <widget class="QRadioButton" name="radioButton_data_analysis">
         <property name="text">
-         <string>Stimuli delivery</string>
+         <string>Real-time data analysis</string>
         </property>
        </widget>
       </item>

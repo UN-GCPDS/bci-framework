@@ -192,20 +192,20 @@ class StimuliAPI:
     @DeliveryInstance.remote
     def start_record(self):
         """"""
-        self._annotation('start_record')
+        self.send_annotationn('start_record')
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.remote
     def stop_record(self):
         """"""
-        self._annotation('stop_record')
+        self.send_annotationn('stop_record')
 
     # ----------------------------------------------------------------------
-    def _annotation(self, description):
+    def send_annotationn(self, description, duration=0):
         """"""
         self.ws.send({
             'action': 'annotation',
-            'annotation': {'duration': 0,
+            'annotation': {'duration': duration,
                            # 'onset': datetime.now().timestamp(),
                            'description': description},
         })

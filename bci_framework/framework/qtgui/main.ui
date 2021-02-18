@@ -968,7 +968,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1059,8 +1059,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>444</width>
-                  <height>456</height>
+                  <width>96</width>
+                  <height>95</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1095,8 +1095,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>432</width>
-                      <height>444</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1145,8 +1145,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>444</width>
-                  <height>456</height>
+                  <width>339</width>
+                  <height>489</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1404,7 +1404,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>456</width>
+                 <width>411</width>
                  <height>637</height>
                 </rect>
                </property>
@@ -2389,8 +2389,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>456</width>
-              <height>565</height>
+              <width>269</width>
+              <height>234</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2484,7 +2484,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>456</width>
+              <width>351</width>
               <height>565</height>
              </rect>
             </property>
@@ -2545,8 +2545,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>456</width>
-              <height>565</height>
+              <width>175</width>
+              <height>141</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2737,7 +2737,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
+                  <width>351</width>
                   <height>479</height>
                  </rect>
                 </property>
@@ -2789,8 +2789,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
-                  <height>479</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -2838,8 +2838,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
-                  <height>479</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
