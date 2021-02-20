@@ -142,7 +142,7 @@ class BCIFramework(QMainWindow):
         self.connect()
 
         docs = os.path.abspath(os.path.join(
-            'docs', 'build', 'html', 'index.html'))
+            'bci_framework', 'documentation', 'index.html'))
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
         self.subprocess_timer = QTimer()

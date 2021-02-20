@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   bci_framework.extensions.data_analysis
    bci_framework.extensions.stimuli_delivery
    bci_framework.extensions.visualizations
 

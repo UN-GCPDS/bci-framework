@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 4
 
    bci_framework.extensions.visualizations.eeg_stream
-   bci_framework.extensions.visualizations.utils

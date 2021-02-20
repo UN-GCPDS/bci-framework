@@ -17,6 +17,7 @@ Navigation
    notebooks/75-develop_data_analysis
    notebooks/80-develop_stimuli_delivery
    notebooks/81-decorators
+   notebooks/82-debugging
    notebooks/99-troubleshoots
 
 Indices and tables
