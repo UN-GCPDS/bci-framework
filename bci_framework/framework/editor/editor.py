@@ -129,7 +129,7 @@ class BCIEditor(QTextEdit):
             tc.select(tc.LineUnderCursor)
             line = tc.selectedText()
 
-            if line.strip()[0] == '#':
+            if line.strip() and line.strip()[0] == '#':
                 self._remove_symbol('# ')
             else:
                 self._insert_symbol('# ')

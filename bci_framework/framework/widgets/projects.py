@@ -167,8 +167,8 @@ class Projects:
                     widget, icon_name = modules['DataAnalysis']
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
 
@@ -240,8 +240,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -374,8 +374,8 @@ class Projects:
             default_project = '_default_data_analysis'
             self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
 
@@ -524,4 +524,3 @@ class Projects:
         else:
             self.core.show_interface('Home')
             self.parent_frame.actionDevelopment.setEnabled(False)
-

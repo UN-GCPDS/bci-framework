@@ -1,9 +1,7 @@
-import time
 from bci_framework.extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer
 import logging
 
-
-# 4/0
+print("#"*10)
 
 ########################################################################
 class Stream(DataAnalysis):
@@ -15,14 +13,8 @@ class Stream(DataAnalysis):
         super().__init__(*args, **kwargs)
 
         self.create_buffer(30, samples=1000)
-    
-        # 5/0
-    
-        
-        # print("@"*10)
-        logging.warning("@"*10)
-        
         self.stream()
+        print("@"*10)
         
 
     # ----------------------------------------------------------------------
@@ -33,11 +25,8 @@ class Stream(DataAnalysis):
         
         print("="*10)
         print("Holas\n")
-        logging.critical(frame)
-        logging.error(frame)
         logging.warning(frame)
         logging.info(frame)
-        logging.debug(frame)
         
 
 

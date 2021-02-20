@@ -171,15 +171,30 @@ class Development:
             self.sub.stream_subprocess.start_debug()
             return
 
-        warning = self.parent_frame.checkBox_log_warning.isChecked()
-        error = self.parent_frame.checkBox_log_error.isChecked()
+        loglevel = self.parent_frame.comboBox_log_level.currentText()
+        levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
         lines = []
 
         if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
             if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
-                lines.append(line.decode())
-        if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
-            lines.append(line.decode())
+                if hasattr(line, 'decode'):
+                    lines.append(line.decode())
+                else:
+                    lines.append(line)
+
+        if self.mode == 'stimuli':
+            if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+                if hasattr(line, 'decode'):
+                    lines.append(line.decode())
+                else:
+                    lines.append(line)
+
+        # if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
+            # if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+                # if hasattr(line, 'decode'):
+                    # lines.append(line.decode())
+                # else:
+                    # lines.append(line)
 
         filter_ = [
             'using indexedDB',
@@ -187,7 +202,13 @@ class Development:
             'Error 404 means',
             'The AudioContext',
             'WARNING:tornado.access:404',
+            'INFO:tornado.access:200',
             'upgrade needed',
+            'INFO:werkzeug',
+            '* Serving',
+            '* Environment:',
+            '* Debug mode:',
+            'This is a development server',
         ]
 
         for line in lines:
@@ -208,13 +229,13 @@ class Development:
 
             self.parent_frame.plainTextEdit_preview_log.moveCursor(
                 QTextCursor.End)
-            if line.startswith('WARNING') and warning:
-                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
-                    line)
-            elif line.startswith('ERROR') and error:
-                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
-                    line)
-            elif not line.startswith('WARNING') and not line.startswith('ERROR'):
+
+            if line[:line.find(':')] in levels:
+                s = [level == loglevel for level in levels]
+                if line[:line.find(':')] in levels[s.index(True):]:
+                    self.parent_frame.plainTextEdit_preview_log.insertPlainText(
+                        line)
+            else:
                 self.parent_frame.plainTextEdit_preview_log.insertPlainText(
                     line)
 
@@ -223,7 +244,7 @@ class Development:
                     '\n')
 
         if lines:
-            self.log_timer.setInterval(10)
+            self.log_timer.setInterval(5)
         else:
             self.log_timer.setInterval(500)
 

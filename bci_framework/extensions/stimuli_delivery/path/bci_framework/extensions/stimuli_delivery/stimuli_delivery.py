@@ -1,12 +1,16 @@
 import os
 import json
 import random
+import logging
 from browser import timer, html, document
 # from datetime import datetimes
 
 from radiant.utils import WebSocket
 
 StimuliServer = None
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 ########################################################################

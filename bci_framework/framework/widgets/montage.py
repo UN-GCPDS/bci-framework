@@ -8,8 +8,9 @@ import os
 import json
 from typing import List, TypeVar, Dict, Optional
 
-from PySide2.QtCore import QTimer, QSize
-from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem
+from PySide2.QtGui import QCursor
+from PySide2.QtCore import QTimer, QSize, Qt
+from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication
 from PySide2.QtGui import QResizeEvent
 
 import mne
@@ -25,7 +26,7 @@ from openbci_stream.acquisition import OpenBCIConsumer
 from gcpds.utils.filters import GenericButterBand
 
 from ...extensions import properties as prop
-from ...extensions.visualizations.utils import thread_this
+from ...extensions.data_analysis.utils import thread_this
 
 try:
     matplotlib.rcParams['axes.edgecolor'] = 'k'
@@ -508,6 +509,7 @@ class Montage:
     # ----------------------------------------------------------------------
     def load_montage(self, event=None) -> None:
         """Load the selected montage."""
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         if event is None:
             montage_name, channels = self.core.config.get(
                 'montages', 'last_montage').split('|')
@@ -530,6 +532,7 @@ class Montage:
         [wg.setCurrentText(ch) for wg, ch in zip(
             self.channels_names_widgets, channels)]
         self.update_topoplot()
+        QApplication.restoreOverrideCursor()
 
     # ----------------------------------------------------------------------
     def validate_channels(self) -> None:

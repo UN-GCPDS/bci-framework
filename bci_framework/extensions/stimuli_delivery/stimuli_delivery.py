@@ -10,6 +10,7 @@ preconfigured server.
 
 import os
 import sys
+import logging
 
 from radiant.server import RadiantAPI, RadiantServer, RadiantHandler
 
@@ -17,6 +18,9 @@ if len(sys.argv) > 1:
     port = sys.argv[1]
 else:
     port = '5000'
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 ########################################################################

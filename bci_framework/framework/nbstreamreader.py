@@ -36,8 +36,8 @@ class NonBlockingStreamReader:
                 line = stream.readline()
                 if line:
                     queue.put(line)
-                else:
-                    pass
+                # else:
+                    # pass
                     # raise UnexpectedEndOfStream
                 time.sleep(0.1)
 
@@ -46,10 +46,11 @@ class NonBlockingStreamReader:
         self._t.start()  # start collecting lines from the stream
 
     # ----------------------------------------------------------------------
-    def readline(self, timeout: Optional[int] = None) -> None:
+    def readline(self, timeout: Optional[int] = 0.1) -> None:
         """Read lines from queue object."""
         try:
             return self._q.get(block=timeout is not None, timeout=timeout)
+            # return self._q.get(block=True, timeout=0.1)
         except Empty:
             return None
 

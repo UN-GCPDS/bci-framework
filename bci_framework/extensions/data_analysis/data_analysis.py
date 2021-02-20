@@ -1,4 +1,5 @@
 import pickle
+import logging
 from typing import Optional
 
 import numpy as np
@@ -7,9 +8,11 @@ from kafka import KafkaProducer
 from ...extensions import properties as prop
 from .utils import loop_consumer, fake_loop_consumer
 
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+
+
 ########################################################################
-
-
 class Transformers:
     """Used to preprocess EEG streams."""
 

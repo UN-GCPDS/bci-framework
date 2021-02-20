@@ -9,6 +9,7 @@ import sys
 import socket
 import logging
 import subprocess
+from queue import Queue, Empty
 from urllib import request
 from contextlib import closing
 from typing import TypeVar, Optional
@@ -36,9 +37,10 @@ def run_subprocess(call: COMMAND) -> subprocess.Popen:
                            stderr=subprocess.STDOUT,
                            env=my_env,
                            preexec_fn=os.setsid,
-                           # shell=True,
+                           shell=False,
+                           # universal_newlines=True,
+                           # bufsize=1,
                            )
-
     sub.nb_stdout = NBSR(sub.stdout)
 
     return sub
@@ -48,19 +50,23 @@ def run_subprocess(call: COMMAND) -> subprocess.Popen:
 class BrythonLogging:
     """Log messages from Brython."""
 
-    message = ""
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        """"""
+        self.message = Queue()
 
     # ----------------------------------------------------------------------
     def feed(self, level: int, message: str, lineNumber: int, sourceID: str) -> None:
         """Concatenae messages."""
-        self.message += message
+        self.message.put(message)
 
     # ----------------------------------------------------------------------
     def readline(self, timeout: Optional[int] = None) -> str:
         """Get mesage from JavaScriptConsole."""
-        tmp = self.message
-        self.message = ''
-        return tmp.encode()
+        try:
+            return self.message.get(block=timeout is not None, timeout=timeout)
+        except Empty:
+            return None
 
 
 ########################################################################

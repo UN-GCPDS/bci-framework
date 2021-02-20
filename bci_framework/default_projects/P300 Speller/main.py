@@ -3,11 +3,14 @@ from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
 
 from browser import document, html, timer
 import random
+import logging
 
 
 CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ON = 1
 OFF = 0.3
+
+logging.warning("@"*10)
 
 
 ########################################################################
@@ -24,7 +27,9 @@ class P300Speller(StimuliAPI):
         self.add_run_progressbar()
         self.widgets = Widgets()
         self.tone = Tone()
-        self.listen_commands(self.command)
+        logging.debug('#'*10)
+        logging.warning('#'*10)
+        # self.listen_commands(self.command)
 
         self.stimuli_area.style = {'background-color': 'black'}
         self.build_grid()
@@ -46,6 +51,17 @@ class P300Speller(StimuliAPI):
             'Start run', on_click=self.start, style={'margin': '0 15px'})
         self.dashboard <= self.widgets.button(
             'Stop run', on_click=self.stop, style={'margin': '0 15px'})
+        self.dashboard <= self.widgets.button(
+            'LOG', on_click=self.log, style={'margin': '0 15px'}) 
+            
+    # ----------------------------------------------------------------------
+    def log(self):
+        """"""
+        logging.debug('#'*10)
+        logging.info('#'*10)
+        logging.warning('#'*10)
+        logging.error('#'*10)
+        logging.critical('#'*10)
 
     # ----------------------------------------------------------------------
     def command(self, command):
@@ -157,7 +173,7 @@ class P300Speller(StimuliAPI):
                 table <= tr
         self.stimuli_area <= table
 
-    if __name__ == '__main__':
-        StimuliServer('P300Speller')
+if __name__ == '__main__':
+    StimuliServer('P300Speller')
 
 

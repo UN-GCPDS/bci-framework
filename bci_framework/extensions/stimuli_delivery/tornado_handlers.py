@@ -21,7 +21,7 @@ from kafka import KafkaProducer, KafkaConsumer
 
 # from datetime import datetime
 from bci_framework.extensions import properties as prop
-from bci_framework.extensions.visualizations.utils import thread_this, subprocess_this
+from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
 
 clients = []
 JSON = TypeVar('json')
