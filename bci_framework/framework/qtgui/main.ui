@@ -994,7 +994,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="widget_montage" native="true">
            <layout class="QGridLayout" name="gridLayout_37">
             <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_10" columnstretch="1,0,0">
+             <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0,1">
               <item row="0" column="1">
                <spacer name="horizontalSpacer_9">
                 <property name="orientation">
@@ -1059,8 +1059,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
-                  <height>95</height>
+                  <width>339</width>
+                  <height>489</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1095,8 +1095,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>100</width>
-                      <height>30</height>
+                      <width>327</width>
+                      <height>477</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -3118,7 +3118,7 @@ p, li { white-space: pre-wrap; }
                  </layout>
                 </item>
                 <item row="0" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_24">
+                 <layout class="QHBoxLayout" name="horizontalLayout_24" stretch="2,1">
                   <item>
                    <spacer name="horizontalSpacer_30">
                     <property name="orientation">
