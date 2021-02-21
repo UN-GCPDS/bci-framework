@@ -292,7 +292,7 @@ class Records:
                      }
             self.start_streaming = end_streaming
 
-            if produser := getattr(self.core.thread_kafka, 'produser', False):
+            if produser := getattr(self.core.thread_kafka, 'consumer', False):
                 produser.send('eeg', data_)
 
     # ----------------------------------------------------------------------

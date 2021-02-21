@@ -22,7 +22,7 @@ from datetime import datetime
 from openbci_stream.utils import HDF5Writer
 
 from bci_framework.extensions import properties as prop
-from bci_framework.extensions.visualizations.utils import loop_consumer
+from bci_framework.extensions.data_analysis.utils import loop_consumer
 
 KafkaStream = TypeVar('kafka-stream')
 
