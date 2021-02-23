@@ -1059,8 +1059,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>339</width>
-                  <height>489</height>
+                  <width>96</width>
+                  <height>95</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1095,8 +1095,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>327</width>
-                      <height>477</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -2625,7 +2625,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
@@ -2731,121 +2731,20 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QToolBox" name="toolBox">
+              <widget class="QToolBox" name="toolBox_3">
                <widget class="QWidget" name="toolBoxPage1">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
-                  <height>93</height>
-                 </rect>
-                </property>
-                <attribute name="label">
-                 <string>Visualizations</string>
-                </attribute>
-                <layout class="QGridLayout" name="gridLayout_45">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="verticalSpacing">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QListWidget" name="listWidget_projects_visualizations">
-                   <property name="focusPolicy">
-                    <enum>Qt::NoFocus</enum>
-                   </property>
-                   <property name="editTriggers">
-                    <set>QAbstractItemView::SelectedClicked</set>
-                   </property>
-                   <property name="selectionBehavior">
-                    <enum>QAbstractItemView::SelectRows</enum>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>56</width>
-                     <height>56</height>
-                    </size>
-                   </property>
-                   <property name="verticalScrollMode">
-                    <enum>QAbstractItemView::ScrollPerPixel</enum>
-                   </property>
-                   <property name="layoutMode">
-                    <enum>QListView::Batched</enum>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="toolBoxPage2">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>96</width>
-                  <height>93</height>
-                 </rect>
-                </property>
-                <attribute name="label">
-                 <string>Stimuli delivery</string>
-                </attribute>
-                <layout class="QGridLayout" name="gridLayout_47">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QListWidget" name="listWidget_projects_delivery">
-                   <property name="focusPolicy">
-                    <enum>Qt::NoFocus</enum>
-                   </property>
-                   <property name="editTriggers">
-                    <set>QAbstractItemView::SelectedClicked</set>
-                   </property>
-                   <property name="selectionBehavior">
-                    <enum>QAbstractItemView::SelectRows</enum>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>56</width>
-                     <height>56</height>
-                    </size>
-                   </property>
-                   <property name="verticalScrollMode">
-                    <enum>QAbstractItemView::ScrollPerPixel</enum>
-                   </property>
-                   <property name="layoutMode">
-                    <enum>QListView::Batched</enum>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="toolBoxPage3">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>96</width>
-                  <height>93</height>
+                  <width>351</width>
+                  <height>479</height>
                  </rect>
                 </property>
                 <attribute name="label">
                  <string>Data analysis</string>
                 </attribute>
-                <layout class="QGridLayout" name="gridLayout_22">
+                <layout class="QGridLayout" name="gridLayout_47">
                  <property name="leftMargin">
                   <number>0</number>
                  </property>
@@ -2882,9 +2781,110 @@ p, li { white-space: pre-wrap; }
                  </item>
                 </layout>
                </widget>
+               <widget class="QWidget" name="toolBoxPage2">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>351</width>
+                  <height>479</height>
+                 </rect>
+                </property>
+                <attribute name="label">
+                 <string>Visualizations</string>
+                </attribute>
+                <layout class="QGridLayout" name="gridLayout_22">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QListWidget" name="listWidget_projects_visualizations">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::SelectedClicked</set>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>56</width>
+                     <height>56</height>
+                    </size>
+                   </property>
+                   <property name="verticalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
+                   </property>
+                   <property name="layoutMode">
+                    <enum>QListView::Batched</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="toolBoxPage3">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>351</width>
+                  <height>479</height>
+                 </rect>
+                </property>
+                <attribute name="label">
+                 <string>Stimuli delivery</string>
+                </attribute>
+                <layout class="QGridLayout" name="gridLayout_45">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QListWidget" name="listWidget_projects_delivery">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::SelectedClicked</set>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>56</width>
+                     <height>56</height>
+                    </size>
+                   </property>
+                   <property name="verticalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
+                   </property>
+                   <property name="layoutMode">
+                    <enum>QListView::Batched</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
               </widget>
              </item>
             </layout>
+            <zorder>toolBox_3</zorder>
+            <zorder>checkBox_projects_show_tutorials</zorder>
+            <zorder>label_projects_path</zorder>
            </widget>
            <widget class="QWidget" name="page_projects_files">
             <layout class="QGridLayout" name="gridLayout">
@@ -3860,38 +3860,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>1338</x>
      <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>listWidget_projects_visualizations</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>listWidget_projects_delivery</receiver>
-   <slot>clearSelection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1444</x>
-     <y>262</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1444</x>
-     <y>301</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>listWidget_projects_delivery</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>listWidget_projects_visualizations</receiver>
-   <slot>clearSelection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1444</x>
-     <y>301</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1444</x>
-     <y>262</y>
     </hint>
    </hints>
   </connection>

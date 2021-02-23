@@ -10,9 +10,6 @@ CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ON = 1
 OFF = 0.3
 
-logging.warning("@"*10)
-
-
 ########################################################################
 class P300Speller(StimuliAPI):
     """"""
@@ -27,8 +24,6 @@ class P300Speller(StimuliAPI):
         self.add_run_progressbar()
         self.widgets = Widgets()
         self.tone = Tone()
-        logging.debug('#'*10)
-        logging.warning('#'*10)
         # self.listen_commands(self.command)
 
         self.stimuli_area.style = {'background-color': 'black'}

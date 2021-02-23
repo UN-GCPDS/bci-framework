@@ -16,6 +16,9 @@ from PySide2.QtUiTools import QUiLoader
 from ..extensions_handler import ExtensionWidget
 
 
+DEFAULT_LOCAL_IP = 'localhost'
+
+
 ########################################################################
 class StimuliDelivery:
     """Dashboard for experiments executions."""
@@ -79,11 +82,21 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def get_local_ip_address(self) -> str:
         """Connect to internet for get the local IP."""
+
         try:
-            local_ip_address = socket.gethostbyname(socket.gethostname())
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            local_ip_address = s.getsockname()[0]
+            s.close()
             return local_ip_address
+
         except:
-            return 'localhost'
+            logging.warning('Impossible to detect a network connection, the WiFi'
+                            'module and this machine must share the same network.')
+            logging.warning(f'If you are using this machine as server (access point) '
+                            f'the address {DEFAULT_LOCAL_IP} will be used.')
+
+            return DEFAULT_LOCAL_IP
 
     # ----------------------------------------------------------------------
     def open_browser(self) -> None:

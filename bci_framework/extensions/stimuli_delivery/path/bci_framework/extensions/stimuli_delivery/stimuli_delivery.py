@@ -88,7 +88,6 @@ class DeliveryInstance_:
         """
 
         def wrap(self, *args, **kwargs):
-
             if self._bci_mode == 'dashboard':
                 method(self, *args, **kwargs)
 

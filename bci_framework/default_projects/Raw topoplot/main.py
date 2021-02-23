@@ -13,7 +13,7 @@ class Stream(EEGStream):
         super().__init__(*args, **kwargs)
 
         self.axis = self.add_subplot(1, 1, 1)
-        self.tight_layout()
+        # self.tight_layout()
         self.info = self.get_mne_info()
 
         self.stream()

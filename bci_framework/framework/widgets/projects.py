@@ -330,7 +330,8 @@ class Projects:
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
             lambda evt: self.create_project(project.lineEdit_project_name.text(),
                                             project.radioButton_visualization.isChecked(),
-                                            project.radioButton_stimulus_delivery.isChecked()))
+                                            project.radioButton_stimulus_delivery.isChecked(),
+                                            project.radioButton_data_analysis.isChecked()))
 
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
             lambda evt: project.destroy())
@@ -473,7 +474,7 @@ class Projects:
             if evt.previous_name.strip() != evt.text().strip():
                 shutil.move(os.path.join(self.projects_dir, evt.previous_name), os.path.join(
                     self.projects_dir, evt.text()))
-                evt.previous_name == evt.text()
+                evt.previous_name = evt.text()
 
     # ----------------------------------------------------------------------
     def project_file_renamed(self, evt) -> None:

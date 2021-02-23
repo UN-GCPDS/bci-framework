@@ -1,34 +1,29 @@
 from bci_framework.extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer
 import logging
 
-print("#"*10)
-
 ########################################################################
-class Stream(DataAnalysis):
+class Analysis(DataAnalysis):
     """"""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
-
-        self.create_buffer(30, samples=1000)
+        # self.create_buffer(30, samples=1000)
         self.stream()
-        print("@"*10)
         
 
     # ----------------------------------------------------------------------
     @fake_loop_consumer('eeg')
     def stream(self, frame):
         """"""
-        eeg = self.buffer_eeg_resampled
+        # eeg = self.buffer_eeg_resampled
         
-        print("="*10)
-        print("Holas\n")
-        logging.warning(frame)
+        logging.debug(frame)
         logging.info(frame)
+        logging.warning(frame)
+        logging.error(frame)
+        logging.critical(frame)
         
-
-
 if __name__ == '__main__':
-    Stream()
+    Analysis()

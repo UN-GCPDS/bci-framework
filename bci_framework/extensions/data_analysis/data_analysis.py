@@ -10,6 +10,7 @@ from .utils import loop_consumer, fake_loop_consumer
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger('matplotlib.font_manager').disabled = True
 
 
 ########################################################################
@@ -73,7 +74,7 @@ class DataAnalysis:
             self.kafka_producer = None
 
     # ----------------------------------------------------------------------
-    def send_command(self, command):
+    def send_command(self, command: str) -> None:
         """"""
         if hasattr(self, 'kafka_producer'):
 
@@ -87,17 +88,38 @@ class DataAnalysis:
                 "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
 
     # ----------------------------------------------------------------------
-    def send_annotationn(self, description, duration=0):
+    def send_annotation(self, description: str, duration: Optional[int] = 0) -> None:
         """"""
-        self.kafka_producer.send({
-            'action': 'annotation',
-            'annotation': {'duration': duration,
-                           # 'onset': datetime.now().timestamp(),
-                           'description': description},
-        })
+        if hasattr(self, 'kafka_producer'):
+
+            if self.kafka_producer is None:
+                logging.error('Kafka not available!')
+            else:
+                self.kafka_producer.send('annotation', {
+                    'action': 'annotation',
+                    'annotation': {'duration': duration,
+                                   # 'onset': datetime.now().timestamp(),
+                                   'description': description},
+                })
+        else:
+            logging.error(
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
 
     # ----------------------------------------------------------------------
-    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray):
+    def generic_produser(self, topic: str, data) -> None:
+        """"""
+        if hasattr(self, 'kafka_producer'):
+
+            if self.kafka_producer is None:
+                logging.error('Kafka not available!')
+            else:
+                self.kafka_producer.send(topic, data)
+        else:
+            logging.error(
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+
+    # ----------------------------------------------------------------------
+    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray) -> None:
         """Uppdate the buffers.
 
         Parameters
@@ -186,15 +208,15 @@ class DataAnalysis:
         return int(a[np.argmin(np.abs(a - n))])
 
     # ----------------------------------------------------------------------
-    def _create_resampled_buffer(self, x: int, samples: Optional[int] = 1000) -> np.ndarray:
+    def _create_resampled_buffer(self, x: int, resampling: Optional[int] = 1000) -> np.ndarray:
         """"""
-        f = self._get_factor_near_to(x, samples)
+        f = self._get_factor_near_to(x, resampling)
         self.buffer_eeg_split = np.zeros(x)
         index = np.linspace(0, x, f + 1).astype(int)[:-1]
         self.buffer_eeg_split[index] = 1
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, samples: Optional[int] = 1000):
+    def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, resampling: Optional[int] = 1000):
         """Create a buffer with fixed time length.
 
         Since the `loop_consumer` iteraror only return the last data package, the
@@ -207,14 +229,16 @@ class DataAnalysis:
         aux_shape
             Define the shape of aux array.
         fill
-            Initialize buffet with this value
+            Initialize buffet with this value.
+        resampling
+            The resampling size.
         """
 
         chs = len(prop.CHANNELS)
         time = prop.SAMPLE_RATE * seconds
 
         self._create_resampled_buffer(
-            prop.SAMPLE_RATE * np.abs(seconds), samples=samples)
+            prop.SAMPLE_RATE * np.abs(seconds), resampling=resampling)
 
         self.buffer_eeg = np.empty((chs, time))
         self.buffer_eeg.fill(fill)
@@ -225,13 +249,13 @@ class DataAnalysis:
     @property
     def buffer_eeg_resampled(self):
         """"""
-        return self.buffer_eeg[:, np.argwhere(self.buffer_eeg_split == 1)]
+        return self.buffer_eeg[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
 
     # ----------------------------------------------------------------------
     @property
     def buffer_aux_resampled(self):
         """"""
-        return self.buffer_aux[:, np.argwhere(self.buffer_eeg_split == 1)]
+        return self.buffer_aux[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
 
 
 
