@@ -9,7 +9,6 @@ class Analysis(DataAnalysis):
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
-        # self.create_buffer(30, samples=1000)
         self.stream()
         
 
@@ -17,8 +16,6 @@ class Analysis(DataAnalysis):
     @fake_loop_consumer('eeg')
     def stream(self, frame):
         """"""
-        # eeg = self.buffer_eeg_resampled
-        
         logging.debug(frame)
         logging.info(frame)
         logging.warning(frame)

@@ -1,6 +1,5 @@
-from bci_framework.projects.figure import FigureStream
-from bci_framework.projects import properties as prop
-from bci_framework.projects.utils import loop_consumer, fake_loop_consumer
+from bci_framework.extensions.visualizations import EEGStream, loop_consumer, fake_loop_consumer
+from bci_framework.extensions import properties as prop
 
 import logging
 import numpy as np

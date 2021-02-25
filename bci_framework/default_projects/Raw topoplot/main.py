@@ -1,4 +1,4 @@
-from bci_framework.extensions.visualizations import EEGStream, loop_consumer, fake_loop_consumer
+from bci_framework.extensions.visualizations import EEGStream, loop_consumer, fake_loop_consumer, thread_this, subprocess_this
 from bci_framework.extensions import properties as prop
 import mne
 
@@ -20,13 +20,14 @@ class Stream(EEGStream):
 
     # ----------------------------------------------------------------------
     @fake_loop_consumer('eeg')
-    def stream(self, data):
+    def stream(self, data, frame):
         """"""
-        eeg, _ = data.value['data']
-        self.axis.clear()
-        mne.viz.plot_topomap(eeg.mean(axis=1) - eeg.mean(), self.info, axes=self.axis, show=False, outlines='skirt', cmap='cool')
+        if (frame % 5) == 0:
+            eeg, _ = data.value['data']
+            self.axis.clear()
+            mne.viz.plot_topomap(eeg.mean(axis=1) - eeg.mean(), self.info, axes=self.axis, show=False, outlines='skirt', cmap='cool')
 
-        self.feed()
+            self.feed()
 
 
 if __name__ == '__main__':

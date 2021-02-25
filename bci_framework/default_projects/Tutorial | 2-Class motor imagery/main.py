@@ -20,7 +20,7 @@ class TwoClassMotorImagery(StimuliAPI):
 
         self.build_areas()
         self.add_cross()
-        self.add_blink_area()
+        # self.add_blink_area()
 
         self.widgets = Widgets()
 

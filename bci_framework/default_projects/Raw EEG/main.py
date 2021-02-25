@@ -24,7 +24,7 @@ class Stream(EEGStream):
         self.axis.set_yticks(range(1, len(prop.CHANNELS) + 1))
         self.axis.set_yticklabels(prop.CHANNELS.values())
 
-        self.create_buffer(30, samples=1000)
+        self.create_buffer(30, resampling=1000)
         self.stream()
 
     # ----------------------------------------------------------------------
@@ -36,9 +36,8 @@ class Stream(EEGStream):
         for i, line in enumerate(self.lines):
             line.set_data(self.time, eeg[i] + 1 + i)
 
-        # self.send_command('Q')
         self.feed()
 
 
 if __name__ == '__main__':
-    Stream(enable_produser=False)
+    Stream()
