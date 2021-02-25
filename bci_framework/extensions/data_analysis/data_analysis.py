@@ -6,9 +6,10 @@ import numpy as np
 from kafka import KafkaProducer
 
 from ...extensions import properties as prop
-from .utils import loop_consumer, fake_loop_consumer
+from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this
 
 logging.basicConfig()
+logging.root.name = "DataAnalysis"
 logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('matplotlib.font_manager').disabled = True
 
@@ -74,14 +75,16 @@ class DataAnalysis:
             self.kafka_producer = None
 
     # ----------------------------------------------------------------------
-    def send_command(self, command: str) -> None:
+    def send_command(self, command: str, value: Optional[dict] = {}) -> None:
         """"""
         if hasattr(self, 'kafka_producer'):
 
             if self.kafka_producer is None:
                 logging.error('Kafka not available!')
             else:
-                data = {'command': command}
+                data = {'command': command,
+                        'value': data,
+                        }
                 self.kafka_producer.send('command', data)
         else:
             logging.error(

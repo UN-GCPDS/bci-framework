@@ -20,6 +20,7 @@ else:
     port = '5000'
 
 logging.basicConfig()
+logging.root.name = "StimuliDelivery:Python"
 logging.getLogger().setLevel(logging.DEBUG)
 
 

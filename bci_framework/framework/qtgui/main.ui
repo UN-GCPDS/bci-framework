@@ -2672,7 +2672,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_add_project">
                  <property name="text">
-                  <string>New Project</string>
+                  <string>New Extension</string>
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
@@ -2786,8 +2786,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>351</width>
-                  <height>479</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -2835,8 +2835,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>351</width>
-                  <height>479</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">

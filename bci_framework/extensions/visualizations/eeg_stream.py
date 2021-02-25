@@ -23,7 +23,7 @@ from figurestream import FigureStream
 from typing import Optional, Tuple, Literal
 
 from ...extensions import properties as prop
-from ... extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer
+from ... extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer, thread_this, subprocess_this
 
 # Consigure matplotlib
 if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
@@ -45,6 +45,7 @@ except:
 # Set logger
 logger = logging.getLogger("mne")
 logger.setLevel(logging.CRITICAL)
+logging.root.name = "Visualizations"
 
 
 ########################################################################
