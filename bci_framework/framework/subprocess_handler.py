@@ -63,10 +63,11 @@ class BrythonLogging:
     # ----------------------------------------------------------------------
     def readline(self, timeout: Optional[int] = None) -> str:
         """Get mesage from JavaScriptConsole."""
-        try:
-            return self.message.get(block=timeout is not None, timeout=timeout)
-        except Empty:
-            return None
+        if self.message.qsize():
+            try:
+                return self.message.get(block=timeout is not None, timeout=timeout)
+            except Empty:
+                return None
 
 
 ########################################################################
@@ -231,8 +232,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.web_view.addWidget(self.main.web_engine)
 
         else:
-            self.main.web_engine.deleteLater()
-            self.main.web_engine = QWebEngineView()
+            # self.main.web_engine.deleteLater()
+            # self.main.web_engine = QWebEngineView()
             self.web_view.addWidget(self.main.web_engine)
 
         # Set URL and start interface

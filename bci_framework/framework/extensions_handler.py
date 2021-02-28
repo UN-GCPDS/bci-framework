@@ -212,7 +212,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
     @property
     def is_stimuli(self) -> str:
         """"""
-        return self.mode == 'stimuli'
+        return self.mode in ['stimuli', 'delivery']
 
     # ----------------------------------------------------------------------
     @property
