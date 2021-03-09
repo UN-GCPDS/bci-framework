@@ -21,7 +21,7 @@ else:
 
 logging.basicConfig()
 logging.root.name = "StimuliDelivery:Python"
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.WARNING)
 
 
 ########################################################################

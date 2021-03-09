@@ -76,10 +76,17 @@ def loop_consumer(*topics) -> Callable:
                         if hasattr(cls, 'buffer_eeg'):
                             cls.update_buffer(
                                 *data.value['data'], data.value['context']['binary_created'])
+                        latency = (datetime.now() - datetime.fromtimestamp(
+                            data.value['context']['binary_created'])).total_seconds() * 1000
+                    else:
+                        latency = (datetime.now(
+                        ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
 
                     kwargs = {'data': data,
                               'topic': data.topic,
-                              'frame': frame, }
+                              'frame': frame,
+                              'latency': latency,
+                              }
 
                     fn(*[cls] + [kwargs[v] for v in arguments])
         return wrap
@@ -138,7 +145,9 @@ def fake_loop_consumer(*topics) -> Callable:
 
                     kwargs = {'data': data,
                               'topic': 'eeg',
-                              'frame': frame, }
+                              'frame': frame,
+                              'latency': 0,
+                              }
                     fn(*[cls] + [kwargs[v] for v in arguments])
 
                 if 'marker' in topics:
@@ -149,7 +158,9 @@ def fake_loop_consumer(*topics) -> Callable:
 
                         kwargs = {'data': data,
                                   'topic': 'marker',
-                                  'frame': frame, }
+                                  'frame': frame,
+                                  'latency': 0,
+                                  }
                         fn(*[cls] + [kwargs[v] for v in arguments])
 
                 while time.time() < (t0 + 1 / (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):

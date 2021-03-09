@@ -9,10 +9,11 @@ from openbci_stream.utils import interpolate_datetime
 from ...extensions import properties as prop
 from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this
 
+# Set logger
 logging.basicConfig()
 logging.root.name = "DataAnalysis"
-logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('matplotlib.font_manager').disabled = True
+logging.getLogger().setLevel(logging.WARNING)
 
 
 ########################################################################

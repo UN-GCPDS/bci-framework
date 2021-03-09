@@ -216,14 +216,15 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_boundary(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17):
+    def create_boundary(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
         """Add the boundary line to some visualizations."""
 
         self.boundary = 0
         self.boundary_aux = 0
 
-        self.boundary_line = axis.vlines(0, min, max, color='w', zorder=99)
-        self.boundary_aux_line = axis.vlines(0, max, max, color='w', zorder=99)
+        self.boundary_line = axis.vlines(0, min, max, color=color, zorder=99)
+        self.boundary_aux_line = axis.vlines(
+            0, max, max, color=color, zorder=99)
 
     # ----------------------------------------------------------------------
     def plot_boundary(self, eeg: Optional[bool] = True, aux: Optional[bool] = False):
@@ -236,8 +237,8 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
             self.boundary_line.set_segments(segments)
         elif aux and hasattr(self, 'boundary_aux_line'):
             segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux /
-                                 prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self.boundary_aux
+                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
             self.boundary_aux_line.set_segments(segments)
 
         else:

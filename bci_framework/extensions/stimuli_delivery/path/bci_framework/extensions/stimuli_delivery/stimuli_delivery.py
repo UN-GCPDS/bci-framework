@@ -11,7 +11,7 @@ StimuliServer = None
 
 logging.basicConfig()
 logging.root.name = "StimuliDelivery:Brython"
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.WARNING)
 
 
 ########################################################################
