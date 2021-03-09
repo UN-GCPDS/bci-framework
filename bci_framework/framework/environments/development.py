@@ -35,7 +35,7 @@ class Development:
 
         self.log_timer = QTimer()
         self.log_timer.timeout.connect(self.update_log)
-        self.log_timer.setInterval(500)
+        self.log_timer.setInterval(10)
 
         self.timer_autosave = QTimer()
         self.timer_autosave.timeout.connect(self.save_all_files)
@@ -243,10 +243,11 @@ class Development:
                 self.parent_frame.plainTextEdit_preview_log.insertPlainText(
                     '\n')
 
-        if lines:
-            self.log_timer.setInterval(5)
-        else:
-            self.log_timer.setInterval(500)
+        # if lines:
+            # self.log_timer.setInterval(5)
+        # else:
+            # self.log_timer.setInterval(500)
+        # self.log_timer.setInterval(5)
 
     # ----------------------------------------------------------------------
     def save_all_files(self) -> None:
