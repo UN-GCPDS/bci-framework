@@ -167,6 +167,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             [sys.executable, path, self.port])
 
         if self.is_analysis:
+            self.is_visualization = False
+            self.is_stimuli = False
             pass
             # self.start_debug()
         else:
@@ -259,7 +261,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
                     self.stm_debug()
                 elif self.is_visualization or self.is_analysis:
                     self.viz_debug()
-            except:
+            except Exception as e:
                 pass
 
     # ----------------------------------------------------------------------
