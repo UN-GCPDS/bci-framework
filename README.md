@@ -27,8 +27,4 @@ It provides a standard way to build and deploy applications and is a universal, 
 
 ## Screenshots
 
-![](images/Screenshot_20200817_204616.png)
-![](images/Peek_2020-08-17_20-58.gif)
-![](images/Peek_2020-08-17_20-54.gif)
-
-**Under hard development right now**
+![](images/readme.gif)

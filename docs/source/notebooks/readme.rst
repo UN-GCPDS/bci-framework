@@ -34,10 +34,4 @@ Features
 Screenshots
 -----------
 
-|image1| |image2| |image3|
-
-.. |image1| image:: images/Screenshot_20200817_204616.png
-.. |image2| image:: images/Peek_2020-08-17_20-58.gif
-.. |image3| image:: images/Peek_2020-08-17_20-54.gif
-
-**Under hard development right now**
+.. image:: images/readme.gif
