@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1008</width>
-    <height>776</height>
+    <height>784</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1">
@@ -1145,8 +1145,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>339</width>
-                  <height>489</height>
+                  <width>262</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1404,8 +1404,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>411</width>
-                 <height>637</height>
+                 <width>419</width>
+                 <height>616</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -2389,8 +2389,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>269</width>
-              <height>234</height>
+              <width>273</width>
+              <height>236</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2484,8 +2484,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>351</width>
-              <height>565</height>
+              <width>163</width>
+              <height>143</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2545,8 +2545,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>175</width>
-              <height>141</height>
+              <width>179</width>
+              <height>143</height>
              </rect>
             </property>
             <attribute name="label">

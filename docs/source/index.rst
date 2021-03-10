@@ -12,7 +12,9 @@ Navigation
    notebooks/00-installation
    notebooks/01-configuration
    notebooks/02-interface
-   notebooks/03-prepare_acquistion
+   notebooks/10-montage
+   notebooks/11-connection
+   notebooks/12-records
    notebooks/70-develop_data_analysis
    notebooks/75-develop_visualizations
    notebooks/80-develop_stimuli_delivery
