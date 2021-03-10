@@ -141,7 +141,7 @@ class DataAnalysis:
             self.buffer_eeg[:, -c:] = eeg
 
             self.buffer_timestamp_ = np.roll(self.buffer_timestamp_, -c, axis=0)
-            self.buffer_eeg[:, -c:] = np.zeros(eeg.shape)
+            self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
             self.buffer_timestamp_[-1] = timestamp
 
             if hasattr(self, 'buffer_eeg_split'):
