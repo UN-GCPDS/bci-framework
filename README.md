@@ -10,7 +10,7 @@ OpenBCI specializes in creating low-cost, high-quality biosensing hardware for b
 
 
 
-BCI-Framework provide a software for handle [OpeBCI](https://openbci.com/) boards, an environment for develop real time EEG/EMG/ECG data visualizations and a 
+BCI-Framework provide a software for handle [OpeBCI](https://openbci.com/) boards, an environment for develop real time EEG/EMG/ECG data visualizations and a
 
 
 
@@ -19,7 +19,7 @@ BCI-Framework provide a software for handle [OpeBCI](https://openbci.com/) board
 
 
 
-It provides a standard way to build and deploy applications and is a universal, reusable software environment that provides particular functionality as part of a larger software platform to facilitate development of software applications, products and solutions. Software frameworks may include support programs, compilers, code libraries, tool sets, and application programming interfaces (APIs) that bring together all the different components to enable development of a project or system. 
+It provides a standard way to build and deploy applications and is a universal, reusable software environment that provides particular functionality as part of a larger software platform to facilitate development of software applications, products and solutions. Software frameworks may include support programs, compilers, code libraries, tool sets, and application programming interfaces (APIs) that bring together all the different components to enable development of a project or system.
 
 
 
@@ -27,4 +27,4 @@ It provides a standard way to build and deploy applications and is a universal, 
 
 ## Screenshots
 
-![](images/readme.gif)
+![](https://github.com/UN-GCPDS/bci-framework/blob/master/docs/source/notebooks/images/readme.gif)

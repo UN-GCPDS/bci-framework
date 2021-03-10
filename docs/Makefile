@@ -28,4 +28,5 @@ buildapi:
 
 	jupyter nbconvert --to rst source/notebooks/readme.ipynb
 	jupyter nbconvert --to markdown source/notebooks/readme.ipynb --output ../../../README.md
-	#mv README.md ../../README.md
+
+	python fix_readme.py

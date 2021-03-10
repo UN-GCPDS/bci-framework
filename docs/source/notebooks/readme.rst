@@ -34,4 +34,7 @@ Features
 Screenshots
 -----------
 
-.. image:: images/readme.gif
+|image1| |image2|
+
+.. |image1| image:: images/readme.gif
+.. |image2| image:: https://github.com/UN-GCPDS/bci-framework/blob/master/docs/source/notebooks/images/readme.gif
