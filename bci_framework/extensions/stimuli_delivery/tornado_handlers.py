@@ -19,7 +19,7 @@ from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
 from kafka import KafkaProducer, KafkaConsumer
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
 
@@ -139,7 +139,8 @@ class WSHandler(WebSocketHandler):
         """Use kafka to stream markers."""
 
         marker = kwargs['marker']
-        # marker['datetime'] = datetime.now().timestamp()
+        # marker['datetime'] = (datetime.now() - timedelta(milliseconds=0)).timestamp()
+        marker['datetime'] = datetime.now().timestamp()
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('marker', marker)
@@ -151,7 +152,8 @@ class WSHandler(WebSocketHandler):
         """Use kafka to stream annotations."""
 
         annotation = kwargs['annotation']
-        # annotation['onset'] = datetime.now().timestamp()
+        annotation['onset'] = (
+            datetime.now() - timedelta(milliseconds=0)).timestamp()
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('annotation', annotation)
