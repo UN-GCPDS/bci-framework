@@ -1,0 +1,13 @@
+.bci_dashboard {
+    display: none;
+}
+
+.bci_stimuli {
+    background-color: #f5f5f5;
+    width: 100vw;
+    height: 100vh;
+}
+
+.run_progressbar {
+    width: 100vw;
+}

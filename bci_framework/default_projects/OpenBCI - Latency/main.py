@@ -6,8 +6,11 @@ import numpy as np
 from datetime import datetime
 import seaborn as snb
 
+BUFFER = 10
 
 ########################################################################
+
+
 class Stream(EEGStream):
     """"""
 
@@ -35,6 +38,7 @@ class Stream(EEGStream):
         self.markers_timestamps = []
 
         self.latencies = [0]
+        self.latency_correction = 0
 
         # self.create_boundary(self.axis, -0.5, 1.5)
 
@@ -53,7 +57,7 @@ class Stream(EEGStream):
 
         # self.axis.set_ylim(-0.5, 1.5)
 
-        self.create_buffer(10, resampling=1000, fill=-1)
+        self.create_buffer(BUFFER, resampling=1000, fill=-1)
 
         self.stream()
 
@@ -82,7 +86,7 @@ class Stream(EEGStream):
 
         # logging.warning(f"L: {latency:.2f}")
 
-        latencies = np.array(self.latencies)
+        latencies = np.array(self.latencies) - self.latency_correction
 
         if latencies.size > 5:
             latencies = latencies[3:]
@@ -110,6 +114,9 @@ class Stream(EEGStream):
         self.axis_wave.grid(True)
 
         self.timestamp_rises, diff = self.get_rises(aux, self.buffer_timestamp)
+
+        if len(self.timestamp_rises) > BUFFER * 1.5:
+            return
 
         # self.wave_line2.set_data(t, diff)
 
@@ -150,7 +157,7 @@ class Stream(EEGStream):
 
             for i, text in enumerate([
                 ('count', len(latencies)),
-                ('mean', np.mean(latencies)),
+                ('mean', np.mean(latencies[-20:])),
                 ('median', np.median(latencies)),
                 # ('std', np.std(latencies)),
                 ('var', np.var(latencies)),
@@ -173,10 +180,11 @@ class Stream(EEGStream):
 
     # elif topic == 'marker' and self.timestamp_rises.size > 0:
 
+        # self.markers_timestamps.append(
+            # datetime.fromtimestamp(data.timestamp / 1000))
         self.markers_timestamps.append(
-            datetime.fromtimestamp(data.timestamp / 1000))
-        # self.markers_timestamps.append(datetime.fromtimestamp(data.value['datetime']))
-        if len(self.markers_timestamps) >= 3:
+            datetime.fromtimestamp(data.value['datetime']))
+        if len(self.markers_timestamps) >= 5:
             self.markers_timestamps.pop(0)
 
         x = []
@@ -196,8 +204,10 @@ class Stream(EEGStream):
         self.feed()
 
         # logging.warning(f"Latency: {latency:.3f} ms")
+
+    # self.latency_correction -= np.sign(latency)*0.1
         self.send_feedback({'command': 'set_latency',
-                            'value': np.mean(latencies),
+                            'value': 0,
                             })
 
 
