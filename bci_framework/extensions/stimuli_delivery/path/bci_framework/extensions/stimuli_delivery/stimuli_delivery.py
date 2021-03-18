@@ -180,7 +180,7 @@ class StimuliAPI:
         """"""
         marker = {
             'marker': marker,
-            'datetime': datetime.now().timestamp(),
+            # 'datetime': datetime.now().timestamp(),
         }
 
         if self.mode == 'stimuli' or force:
@@ -210,7 +210,7 @@ class StimuliAPI:
         self.ws.send({
             'action': 'annotation',
             'annotation': {'duration': duration,
-                           'onset': datetime.now().timestamp(),
+                           # 'onset': datetime.now().timestamp(),
                            'description': description},
         })
 
@@ -283,7 +283,11 @@ class StimuliAPI:
         """"""
         from mdc.MDCLinearProgress import MDCLinearProgress
         self.run_progressbar = MDCLinearProgress(Class='run_progressbar')
-        self.run_progressbar.style = {'position': 'absolute', 'bottom': '4px', }
+        self.run_progressbar.style = {
+            'position': 'absolute',
+            'bottom': '4px',
+            'z-index': 999,
+        }
         document <= self.run_progressbar
         return self.run_progressbar
 
