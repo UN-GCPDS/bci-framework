@@ -24,7 +24,7 @@ class P300Speller(StimuliAPI):
         self.add_run_progressbar()
         self.widgets = Widgets()
         self.tone = Tone()
-        # self.listen_commands(self.command)
+        self.listen_feedbacks(self.command)
 
         self.stimuli_area.style = {'background-color': 'black'}
         self.build_grid()

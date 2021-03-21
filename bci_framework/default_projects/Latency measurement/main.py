@@ -2,6 +2,7 @@ from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI,
 from bci_framework.extensions.stimuli_delivery.utils import Widgets
 
 from browser import timer
+import logging
 
 
 ########################################################################
@@ -12,6 +13,8 @@ class StimuliDelivery(StimuliAPI):
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
+
+        self.listen_feedbacks(self.on_feedback)
 
         self.build_areas()
 
@@ -42,6 +45,12 @@ class StimuliDelivery(StimuliAPI):
     def _last_init(self):
         """"""
         self._bci_mode = 'dashboard'
+
+    # ----------------------------------------------------------------------
+    def on_feedback(self, name, value):
+        """"""
+        if name == 'set_latency':
+            self._latency = value
 
     # ----------------------------------------------------------------------
     def start(self):

@@ -6,6 +6,11 @@ import numpy as np
 from datetime import datetime
 import seaborn as snb
 
+from simple_pid import PID
+
+pid = PID(Kp=0.75, Ki=0.001, Kd=0.01, setpoint=0,
+          sample_time=1, output_limits=(-1000, 1000))
+
 BUFFER = 10
 
 ########################################################################
@@ -184,7 +189,7 @@ class Stream(EEGStream):
             # datetime.fromtimestamp(data.timestamp / 1000))
         self.markers_timestamps.append(
             datetime.fromtimestamp(data.value['datetime']))
-        if len(self.markers_timestamps) >= 5:
+        if len(self.markers_timestamps) >= 3:
             self.markers_timestamps.pop(0)
 
         x = []
@@ -205,9 +210,9 @@ class Stream(EEGStream):
 
         # logging.warning(f"Latency: {latency:.3f} ms")
 
-    # self.latency_correction -= np.sign(latency)*0.1
-        self.send_feedback({'command': 'set_latency',
-                            'value': 0,
+        self.latency_correction = -pid(np.mean(self.latencies[-5:]))
+        self.send_feedback({'name': 'set_latency',
+                            'value': self.latency_correction,
                             })
 
 
