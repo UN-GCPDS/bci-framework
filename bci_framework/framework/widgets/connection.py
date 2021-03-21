@@ -36,18 +36,18 @@ class OpenBCIThread(QThread):
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
 
-        # try:
-        self.openbci = Cyton(self.mode,
-                             self.endpoint,
-                             host=self.host,
-                             capture_stream=False,
-                             daisy=prop.DAISY,
-                             montage=self.montage,
-                             streaming_package_size=self.streaming_package_size)
+        try:
+            self.openbci = Cyton(self.mode,
+                                 self.endpoint,
+                                 host=self.host,
+                                 capture_stream=False,
+                                 daisy=prop.DAISY,
+                                 montage=self.montage,
+                                 streaming_package_size=self.streaming_package_size)
 
-        # except:
-            # self.connection_fail.emit([])
-            # return
+        except:
+            self.connection_fail.emit([])
+            return
 
         try:
             self.openbci.command(self.sample_rate)
@@ -84,17 +84,23 @@ class OpenBCIThread(QThread):
             self.openbci.command(test_signal)
 
         else:
-            all_channels = set(range(16 if prop.DAISY else 8))
+            all_channels = set(range(1, 17 if prop.DAISY else 9))
             used_channels = set(self.montage.keys())
             deactivated = all_channels.difference(used_channels)
-            self.openbci.deactivate_channel(deactivated)
-            self.openbci.activate_channel(used_channels)
+            if deactivated:
+                self.openbci.deactivate_channel(deactivated)
+            if used_channels:
+                self.openbci.activate_channel(used_channels)
 
         if not self.streaming():
             try:
                 self.openbci.start_stream()
                 self.connected = True
                 self.connection_ok.emit()
+
+                if self.mode == 'wifi':
+                    self.openbci.set_latency(self.tcp_latency)
+
             except Exception as e:
                 if 'NoBrokersAvailable' in str(e):
 
@@ -168,6 +174,7 @@ class Connection:
             'nchan': self.parent_frame.comboBox_nchan,
             'test_signal_type': self.parent_frame.comboBox_test_signal,
             'test_signal': self.parent_frame.checkBox_test_signal,
+            'tcp_latency': self.parent_frame.spinBox_tcp_latency,
         }
 
         self.load_config()
@@ -222,6 +229,8 @@ class Connection:
             self.parent_frame.label_port_ip.setText('Port')
             self.parent_frame.comboBox_ip.hide()
             self.parent_frame.comboBox_port.show()
+            self.parent_frame.label_latency.setEnabled(False)
+            self.parent_frame.spinBox_tcp_latency.setEnabled(False)
 
         else:
 
@@ -234,6 +243,8 @@ class Connection:
             self.parent_frame.label_port_ip.setText('IP')
             self.parent_frame.comboBox_ip.show()
             self.parent_frame.comboBox_port.hide()
+            self.parent_frame.label_latency.setEnabled(True)
+            self.parent_frame.spinBox_tcp_latency.setEnabled(True)
 
     # ----------------------------------------------------------------------
     def on_connect(self, toggled: bool) -> None:
@@ -290,6 +301,8 @@ class Connection:
         nchan = self.parent_frame.comboBox_nchan.currentText()
         nchan = getattr(CytonBase, nchan.replace(' ', '_'))
 
+        tcp_latency = self.parent_frame.spinBox_tcp_latency.value()
+
         # channels = self.core.montage.get_mne_montage().ch_names
 
         # self.openbci = OpenBCIThread()
@@ -300,6 +313,7 @@ class Connection:
         self.openbci.mode = mode
         self.openbci.endpoint = endpoint
         self.openbci.host = host
+        self.openbci.tcp_latency = tcp_latency
         self.openbci.montage = prop.CHANNELS
         self.openbci.streaming_package_size = int(streaming_sample_rate)
         self.openbci.sample_rate = sample_rate

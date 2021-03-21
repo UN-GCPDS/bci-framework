@@ -139,8 +139,10 @@ class WSHandler(WebSocketHandler):
         """Use kafka to stream markers."""
 
         marker = kwargs['marker']
-        # marker['datetime'] = (datetime.now() - timedelta(milliseconds=0)).timestamp()
-        marker['datetime'] = datetime.now().timestamp()
+        marker['datetime'] = (
+            datetime.now() - timedelta(milliseconds=marker['latency'])).timestamp()
+        del marker['latency']
+        # marker['datetime'] = datetime.now().timestamp()
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('marker', marker)
@@ -153,33 +155,37 @@ class WSHandler(WebSocketHandler):
 
         annotation = kwargs['annotation']
         annotation['onset'] = (
-            datetime.now() - timedelta(milliseconds=0)).timestamp()
+            datetime.now() - timedelta(milliseconds=marker['latency'])).timestamp()
+
+        del marker['latency']
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('annotation', annotation)
         else:
             print("No Kafka produser available!")
 
-    @thread_this
     # ----------------------------------------------------------------------
+    @thread_this
     def bci_consumer(cls, **kwargs):
         """"""
         asyncio.set_event_loop(asyncio.new_event_loop())
         consumer = KafkaConsumer(
             bootstrap_servers=[f'{prop.HOST}:9092'],
-            # value_deserializer=pickle.loads,
+            value_deserializer=pickle.loads,
             auto_offset_reset='latest',
         )
-        consumer.subscribe(['command'])
+        consumer.subscribe(['feedback'])
 
         for message in consumer:
             for i, client in enumerate(clients):
-                if cls != client:
-                    try:
-                        client.write_message(json.dumps({'method': '_on_command',
-                                                         'args': [message.value.decode()],
-                                                         'kwargs': {}, }))
-                    except:
-                        clients.pop(i)
+                # if cls != client:
+                try:
+                    client.write_message(json.dumps({'method': '_on_feedback',
+                                                     'args': [],
+                                                     'kwargs': message.value,
+                                                     }))
+                except Exception as e:
+                    pass
+                    # clients.pop(i)
 
 

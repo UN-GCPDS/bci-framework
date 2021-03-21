@@ -77,6 +77,10 @@ class ConfigManager(ConfigParser):
             elif isinstance(widget, QtWidgets.QCheckBox):
                 self.set(section, option, str(widget.isChecked()))
 
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                self.set(section, option, str(widget.value()))
+
             else:
                 widget
 
@@ -97,7 +101,9 @@ class ConfigManager(ConfigParser):
             # QCheckBox
             elif isinstance(widget, QtWidgets.QCheckBox):
                 widget.setChecked(self.getboolean(section, option))
-
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                widget.setValue(int(self.get(section, option)))
             else:
                 widget
 
@@ -113,7 +119,9 @@ class ConfigManager(ConfigParser):
             # QCheckBox
             elif isinstance(widget, QtWidgets.QCheckBox):
                 widget.clicked.connect(method)
-
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                widget.valueChanged.connect(method)
             else:
                 widget
 

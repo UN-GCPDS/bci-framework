@@ -38,6 +38,13 @@ class Annotations:
         self.parent_frame.pushButton_save_command.clicked.connect(
             self.save_command)
 
+        self.parent_frame.pushButton_remove_annotations.clicked.connect(lambda:
+                                                                        self.parent_frame.tableWidget_annotations.setRowCount(0))
+        self.parent_frame.pushButton_remove_markers.clicked.connect(lambda:
+                                                                    self.parent_frame.tableWidget_markers.setRowCount(0))
+        self.parent_frame.pushButton_remove_commands.clicked.connect(lambda:
+                                                                     self.parent_frame.tableWidget_commands.setRowCount(0))
+
     # ----------------------------------------------------------------------
     def save_annotation(self) -> None:
         """Write the annotation in the streaming."""

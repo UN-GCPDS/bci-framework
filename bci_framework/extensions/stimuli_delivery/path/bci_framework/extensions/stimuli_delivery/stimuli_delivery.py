@@ -155,7 +155,12 @@ class BCIWebSocket(WebSocket):
 ########################################################################
 class StimuliAPI:
     """"""
-    listen_commands_ = False
+    listen_feedback_ = False
+
+    # ----------------------------------------------------------------------
+    def __init__(self, *args, **kwargs):
+        """"""
+        self._latency = 0
 
     # ----------------------------------------------------------------------
     def connect(self, port=5000):
@@ -163,8 +168,8 @@ class StimuliAPI:
         self.ws = BCIWebSocket(f'ws://localhost:{port}/ws')
         self.ws.main = self
 
-        if self.listen_commands_:
-            print('CONSUMMINGG')
+        if self.listen_feedback_:
+            print('CONSUMMING')
             timer.set_timeout(lambda: self.ws.send(
                 {'action': 'consumer', }), 1000)
 
@@ -180,6 +185,7 @@ class StimuliAPI:
         """"""
         marker = {
             'marker': marker,
+            'latency': self._latency,
             # 'datetime': datetime.now().timestamp(),
         }
 
@@ -211,19 +217,21 @@ class StimuliAPI:
             'action': 'annotation',
             'annotation': {'duration': duration,
                            # 'onset': datetime.now().timestamp(),
-                           'description': description},
+                           'description': description,
+                           'latency': self._latency,
+                           },
         })
 
     # ----------------------------------------------------------------------
-    def listen_commands(self, command):
+    def listen_feedbacks(self, handler):
         """"""
-        self.command_listener_ = command
-        self.listen_commands_ = True
+        self.feedback_listener_ = handler
+        self.listen_feedback_ = True
 
     # ----------------------------------------------------------------------
-    def _on_command(self, command):
+    def _on_feedback(self, *args, **kwargs):
         """"""
-        self.command_listener_(command)
+        self.feedback_listener_(**kwargs)
 
     # ----------------------------------------------------------------------
     # @DeliveryInstance.both

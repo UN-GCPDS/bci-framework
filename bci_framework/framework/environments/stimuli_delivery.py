@@ -11,6 +11,7 @@ import socket
 import webbrowser
 import logging
 import sys
+import json
 
 from PySide2.QtCore import QTimer
 from PySide2.QtUiTools import QUiLoader
@@ -174,6 +175,7 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def start_calibration(self):
         """"""
+        os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(0)
         port_viz = self.get_free_port()
         self.latency_calibration = run_subprocess([sys.executable, os.path.join(
             self.core.projects.projects_dir, 'Latency measurement', 'main.py'), port_viz])

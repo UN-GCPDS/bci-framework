@@ -1,5 +1,6 @@
 import pickle
 import logging
+import json
 from typing import Optional
 
 import numpy as np
@@ -111,17 +112,10 @@ class DataAnalysis:
     # ----------------------------------------------------------------------
     def send_feedback(self, kwargs) -> None:
         """"""
-        if hasattr(self, 'kafka_producer'):
-            if self.kafka_producer is None:
-                logging.error('Kafka not available!')
-            else:
-                self.kafka_producer.send('feedback', kwargs)
-        else:
-            logging.error(
-                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+        self.generic_produser('feedback', kwargs)
 
     # ----------------------------------------------------------------------
-    def generic_produser(self, topic: str, data) -> None:
+    def generic_produser(self, topic: str, data: str) -> None:
         """"""
         if hasattr(self, 'kafka_producer'):
 
@@ -129,6 +123,7 @@ class DataAnalysis:
                 logging.error('Kafka not available!')
             else:
                 self.kafka_producer.send(topic, data)
+                # self.kafka_producer.send(topic, 888)
         else:
             logging.error(
                 "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")

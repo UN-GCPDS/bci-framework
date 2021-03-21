@@ -23,7 +23,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from openbci_stream.acquisition import OpenBCIConsumer
-from gcpds.utils import filters
+from gcpds.filters import frequency as filters
 
 from ...extensions import properties as prop
 from ...extensions.data_analysis.utils import thread_this

@@ -22,6 +22,9 @@ from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
+from ..extensions import properties as prop
+
+import numpy as np
 
 KAFKA_STREAM = TypeVar('Kafka')
 
@@ -544,7 +547,7 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def handle_feedback(self, data):
         """"""
-        if fn := getattr(self, f"feedback_{data['command']}", False):
+        if fn := getattr(self, f"feedback_{data['name']}", False):
             fn(data['value'])
 
     # ----------------------------------------------------------------------

@@ -33,7 +33,7 @@ os.environ.setdefault(
 os.environ.setdefault('BCISTREAM_HOME', os.path.join(
     Path.home(), '.bciframework'))
 # os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
-
+os.environ.setdefault('BCISTREAM_SYNCLATENCY', '0')
 
 # Create configuration if not exists
 if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], '.bciframework')):
