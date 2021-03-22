@@ -8,14 +8,13 @@ import seaborn as snb
 
 from simple_pid import PID
 
-pid = PID(Kp=0.75, Ki=0.001, Kd=0.01, setpoint=0,
+pid = PID(Kp=2, Ki=0.5, Kd=0.07, setpoint=0,
           sample_time=1, output_limits=(-1000, 1000))
 
 BUFFER = 10
 
+
 ########################################################################
-
-
 class Stream(EEGStream):
     """"""
 
@@ -91,7 +90,7 @@ class Stream(EEGStream):
 
         # logging.warning(f"L: {latency:.2f}")
 
-        latencies = np.array(self.latencies) - self.latency_correction
+        latencies = np.array(self.latencies)
 
         if latencies.size > 5:
             latencies = latencies[3:]
@@ -102,6 +101,7 @@ class Stream(EEGStream):
             latencies = latencies[latencies < (Q3 + 1.5 * IQR)]
             latencies = latencies[latencies > (Q1 - 1.5 * IQR)]
 
+        latencies = latencies[-60:]
         LATENCY = np.mean(latencies)
 
         # Rise plot
@@ -210,7 +210,8 @@ class Stream(EEGStream):
 
         # logging.warning(f"Latency: {latency:.3f} ms")
 
-        self.latency_correction = -pid(np.mean(self.latencies[-5:]))
+        self.latency_correction = -pid(np.mean(self.latencies[-6:]))
+        # self.latency_correction = -pid(LATENCY)
         self.send_feedback({'name': 'set_latency',
                             'value': self.latency_correction,
                             })
