@@ -44,7 +44,7 @@ class Stream(EEGStream):
         
         # self.create_boundary(self.axis, -0.5, 1.5)
         
-
+        
         
 
         self.axis_wave.set_title('Synchronizations')
