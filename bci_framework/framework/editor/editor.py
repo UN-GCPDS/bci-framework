@@ -122,6 +122,35 @@ class BCIEditor(QTextEdit):
             tc.insertText(" " * 4)
             return
 
+        # Manage {([ for seleceted text
+        for text, *keys in (["({})", Qt.Key_ParenLeft, Qt.Key_ParenRight],
+                            ["[{}]", Qt.Key_BracketLeft, Qt.Key_BracketRight],
+                            ["{{{}}}", Qt.Key_BraceLeft, Qt.Key_BraceRight],
+                            ):
+            if event.key() in keys:
+                tc = self.textCursor()
+                start = tc.selectionStart()
+                if selected := tc.selectedText():
+                    tc.removeSelectedText()
+                    tc.insertText(text.format(selected))
+                    if event.key() == keys[0]:
+                        tc.setPosition(start, tc.MoveAnchor)
+                    self.setTextCursor(tc)
+                    return
+
+        # Manage quotation for selected text
+        for text, *keys in (['"{}"', Qt.Key_QuoteDbl],
+                            ["'{}'", Qt.Key_Apostrophe, ]
+                            ):
+            if event.key() in keys:
+                tc = self.textCursor()
+                start = tc.selectionStart()
+                if selected := tc.selectedText():
+                    tc.removeSelectedText()
+                    tc.insertText(text.format(selected))
+                    self.setTextCursor(tc)
+                    return
+
         # Toggle comment
         if (event.key() == Qt.Key_Period) and bool(event.modifiers() & Qt.ControlModifier):
             tc = self.textCursor()
@@ -352,8 +381,8 @@ class BCIEditor(QTextEdit):
         tc.insertText(extra)
 
         if text_position > 0:
-            tc.setPosition(pos + text_position +
-                           (4 * extra[:text_position].count('\n')))
+            tc.setPosition(pos + text_position
+                           + (4 * extra[:text_position].count('\n')))
 
         self.setTextCursor(tc)
 
