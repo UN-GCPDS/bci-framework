@@ -308,7 +308,7 @@ class Projects:
                 completer = Autocompleter(mode='visualization')
                 editor.set_completer(completer)
             elif 'bci_framework.extensions.data_analysis' in content:
-                completer = Autocompleter(mode='visualization')
+                completer = Autocompleter(mode='analysis')
                 editor.set_completer(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(

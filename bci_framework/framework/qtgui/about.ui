@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>720</width>
-    <height>620</height>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,16 +30,11 @@
     <item row="1" column="0" colspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
-      <widget class="QWidget" name="tab_4">
-       <attribute name="title">
-        <string>About</string>
-       </attribute>
-      </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Version</string>
+        <string>Changelog</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="tab_license">
@@ -49,10 +44,13 @@
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <widget class="QPlainTextEdit" name="plainTextEdit_license">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
           <property name="plainText">
            <string>BSD 2-Clause License
 
-Copyright (c) 2020, GCPDS
+Copyright (c) 2021, GCPDS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -84,7 +82,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</string>
        <attribute name="title">
         <string>Credits</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_3"/>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QTextEdit" name="textEdit">
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Icons made by &lt;a href=&quot;https://www.flaticon.com/authors/itim2101&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;itim2101&lt;/span&gt;&lt;/a&gt; from &lt;a href=&quot;https://www.flaticon.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;www.flaticon.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="textInteractionFlags">
+           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

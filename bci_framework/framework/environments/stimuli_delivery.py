@@ -145,7 +145,7 @@ class StimuliDelivery:
 
         if not hasattr(self, 'sub_window_delivery'):
             frame = os.path.join(
-                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'stimuli_delivery.ui')
+                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'stimuli_delivery_subwindow.ui')
             self.sub_window_delivery = QUiLoader().load(frame, self.parent_frame)
 
         self.sub_window_delivery.show()

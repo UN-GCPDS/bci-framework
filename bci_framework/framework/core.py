@@ -171,6 +171,8 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_brain.setIcon(icon("brain"))
         self.main.pushButton_imagery.setIcon(icon("imagery"))
         self.main.pushButton_docs.setIcon(icon("documentation"))
+        self.main.pushButton_latency.setIcon(icon("latency2"))
+        self.main.pushButton_annotations.setIcon(icon("annotation"))
 
         self.main.pushButton_stop_preview.setIcon(icon('media-playback-stop'))
         self.main.pushButton_script_preview.setIcon(
@@ -363,29 +365,34 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def style_home_page(self) -> None:
         """Set the styles for home page."""
-        style = """
-        *{
+        style = f"""
+        *{{
         width:      80px;
         height:     80px;
         max-width:  80px;
         min-width:  80px;
         max-height: 80px;
         min-height: 80px;
-        }
+        background-color: {os.environ.get('secondaryColor')}
+        }}
         """
         self.main.pushButton_file.setStyleSheet(style)
         self.main.pushButton_brain.setStyleSheet(style)
         self.main.pushButton_imagery.setStyleSheet(style)
         self.main.pushButton_docs.setStyleSheet(style)
+        self.main.pushButton_latency.setStyleSheet(style)
+        self.main.pushButton_annotations.setStyleSheet(style)
 
         style = f"""
-        *{{
+        QFrame {{
         background-color: {os.environ.get('secondaryColor')}
         }}
         """
         self.main.frame_3.setStyleSheet(style)
         self.main.frame_2.setStyleSheet(style)
         self.main.frame_5.setStyleSheet(style)
+        self.main.frame_6.setStyleSheet(style)
+        self.main.frame_7.setStyleSheet(style)
         self.main.frame.setStyleSheet(style)
 
         style = """

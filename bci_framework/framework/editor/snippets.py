@@ -64,23 +64,47 @@ stimuly_keywords = [
 
 # Data analisys snippets
 
-analisys_snippets = {
+analysis_snippets = {
 
 }
 
-analisys_snippets_ = [
+analysis_snippets_ = [
 
 ]
 
-analisys_keywords = [
+analysis_keywords = [
+
+]
+
+# Visualizations snippets
+
+visualizations_snippets = {
+
+}
+
+visualizations_snippets_ = [
+
+]
+
+visualizations_keywords = [
 
 ]
 
 
-[stimuli_snippets.update({key.replace('[!]', ''): key}) for key in stimuli_snippets_]
-[analisys_snippets.update({key.replace('[!]', ''): key})for key in analisys_snippets_]
+[stimuli_snippets.update({key.replace('[!]', ''): key})
+ for key in stimuli_snippets_]
+[analysis_snippets.update({key.replace('[!]', ''): key})
+ for key in analysis_snippets_]
+[visualizations_snippets.update({key.replace('[!]', ''): key})
+ for key in visualizations_snippets_]
+
+
 [snippets.update({key.replace('[!]', ''): key}) for key in snippets_]
 
 
-STIMULI_KEYWORDS = stimuly_keywords + list(stimuli_snippets.keys()) + list(snippets.keys())
-ANALISYS_KEYWORDS = analisys_keywords + list(analisys_snippets.keys()) + list(snippets.keys())
+STIMULI_KEYWORDS = stimuly_keywords + \
+    list(stimuli_snippets.keys()) + list(snippets.keys())
+ANALISYS_KEYWORDS = analysis_keywords + \
+    list(analysis_snippets.keys()) + list(snippets.keys())
+VISUALIZATION_KEYWORDS = visualizations_keywords + \
+    list(visualizations_snippets.keys()) + list(snippets.keys())
