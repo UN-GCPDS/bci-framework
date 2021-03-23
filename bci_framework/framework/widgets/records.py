@@ -314,7 +314,7 @@ class Records:
             self.timer.timeout.connect(self.update_timer_record)
             self.timer.start()
             self.subprocess_script = run_subprocess([sys.executable, os.path.join(
-                os.environ['BCISTREAM_ROOT'], 'transformers', 'record.py')])
+                os.environ['BCISTREAM_ROOT'], 'kafka_scripts', 'record.py')])
         else:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")

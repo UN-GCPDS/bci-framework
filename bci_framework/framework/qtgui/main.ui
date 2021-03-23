@@ -131,7 +131,41 @@
            <attribute name="title">
             <string>Latency correction</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0">
+           <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0,0">
+            <item row="2" column="0">
+             <widget class="QMdiArea" name="mdiArea_latency"/>
+            </item>
+            <item row="3" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_28">
+              <item>
+               <widget class="QPushButton" name="pushButton_start_calibration">
+                <property name="text">
+                 <string>Start calibration</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_stop_calibration">
+                <property name="text">
+                 <string>Stop calibration</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_18">
               <item>
@@ -194,74 +228,12 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_28">
-              <item>
-               <widget class="QPushButton" name="pushButton_start_calibration">
-                <property name="text">
-                 <string>Start calibration</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_stop_calibration">
-                <property name="text">
-                 <string>Stop calibration</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="doubleSpinBox_latency">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="prefix">
-                 <string>Latency: </string>
-                </property>
-                <property name="suffix">
-                 <string> ms</string>
-                </property>
-                <property name="decimals">
-                 <number>3</number>
-                </property>
-                <property name="minimum">
-                 <double>-10000.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>1000.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>0.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="doubleSpinBox_manual_latency">
-                <property name="minimum">
-                 <double>-10000.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>10000.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item row="1" column="0">
-             <widget class="QMdiArea" name="mdiArea_latency"/>
+             <widget class="QLabel" name="label_calibration_image">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

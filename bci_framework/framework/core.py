@@ -553,6 +553,5 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def feedback_set_latency(self, value):
         """"""
-        self.main.doubleSpinBox_latency.setValue(value)
         os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(value)
 

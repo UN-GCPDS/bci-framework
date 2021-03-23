@@ -167,7 +167,12 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
     """MDIArea with extension."""
 
     # ----------------------------------------------------------------------
-    def __init__(self, mdi_area, mode: str, extensions_list: List[str] = [], autostart: Optional[str] = None, hide_menu: Optional[bool] = False):
+    def __init__(self, mdi_area,
+                 mode: str,
+                 extensions_list: List[str] = [],
+                 autostart: Optional[str] = None,
+                 hide_menu: Optional[bool] = False,
+                 directory: Optional[str] = None):
         """"""
         super().__init__(None)
         ui = os.path.realpath(os.path.join(
@@ -184,12 +189,15 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         else:
             self.extensions_list = extensions_list
 
-        if '--local' in sys.argv:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_ROOT'), 'default_projects')
+        if directory:
+            self.projects_dir = directory
         else:
-            self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_HOME'), 'projects')
+            if '--local' in sys.argv:
+                self.projects_dir = os.path.join(
+                    os.getenv('BCISTREAM_ROOT'), 'default_projects')
+            else:
+                self.projects_dir = os.path.join(
+                    os.getenv('BCISTREAM_HOME'), 'projects')
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWidget(self.main)
@@ -266,16 +274,22 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
             self.loaded()
 
     # ----------------------------------------------------------------------
-    def save_img(self) -> None:
+    def save_img(self, name: Optional[str] = None) -> None:
         """Save capture of visualization in the project directory."""
-        name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
-        # filename = os.path.join(os.getenv('BCISTREAM_TMP'), name)
+        if name is None:
+            name = f"{self.current_viz.replace(' ', '')} {str(datetime.now()).replace(':', '_')}.jpg"
         captures_dir = os.path.join(
             self.projects_dir, self.current_viz, 'captures')
         filename = os.path.join(captures_dir, name)
+
         if not os.path.exists(captures_dir):
             os.makedirs(captures_dir, exist_ok=True)
+
+        if os.path.exists(f'{filename}'):
+            os.remove(f'{filename}')
+
         self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
+        return filename
 
     # ----------------------------------------------------------------------
     def update_menu_bar(self, visualization: Optional[bool] = None, debugger: Optional[bool] = False) -> None:

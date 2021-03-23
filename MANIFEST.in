@@ -4,3 +4,4 @@ recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 recursive-exclude local/ *
 recursive-exclude docs/ *
+recursive-exclude bci_framework/default_projects/*/captures *

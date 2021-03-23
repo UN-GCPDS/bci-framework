@@ -32,8 +32,8 @@ class StimuliDelivery(StimuliAPI):
             'Delay', min=1000, max=10000, step=100, value=1000, on_change=self.run, unit='ms', id='delay')
         self.dashboard <= self.widgets.slider(
             'Pulse duration', min=100, max=5000, step=100, value=500, on_change=self.run, unit='ms', id='pulse')
-        self.dashboard <= self.widgets.switch(
-            'Record EEG', checked=False, on_change=None, id='record')
+        # self.dashboard <= self.widgets.switch(
+            # 'Record EEG', checked=False, on_change=None, id='record')
         self.dashboard <= self.widgets.button(
             'Start run', on_click=self.start, style={'margin': '0 15px'})
         self.dashboard <= self.widgets.button(
@@ -55,16 +55,16 @@ class StimuliDelivery(StimuliAPI):
     # ----------------------------------------------------------------------
     def start(self):
         """"""
-        if self.widgets.get_value('record'):
-            self.start_record()
-        timer.set_timeout(self.run, 2000)
+        # if self.widgets.get_value('record'):
+            # self.start_record()
+        self.run()
 
     # ----------------------------------------------------------------------
     def stop(self):
         """"""
         timer.clear_interval(self.timer_cue)
-        if self.widgets.get_value('record'):
-            timer.set_timeout(self.stop_record, 2000)
+        # if self.widgets.get_value('record'):
+            # timer.set_timeout(self.stop_record, 2000)
 
     # ----------------------------------------------------------------------
     def trial(self, pulse):

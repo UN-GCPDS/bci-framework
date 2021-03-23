@@ -9,9 +9,9 @@ import seaborn as snb
 from simple_pid import PID
 
 pid = PID(Kp=2, Ki=0.5, Kd=0.07, setpoint=0,
-          sample_time=1, output_limits=(-1000, 1000))
+          sample_time=1, output_limits=(-300, 300))
 
-BUFFER = 10
+BUFFER = 15
 
 
 ########################################################################
@@ -51,10 +51,7 @@ class Stream(EEGStream):
         # self.axis_wave.set_ylabel('Amplitude')
         # self.axis_wave.grid(True)
 
-        self.axis_time.set_title('Latency timeline')
-        self.axis_time.set_xlabel('Samples analyzed')
-        self.axis_time.set_ylabel('Latency (ms)')
-        self.axis_time.grid(True)
+        self.frames_names()
 
         # self.axis_time.spines['right'].set_visible(False)
         # self.axis_time.spines['top'].set_visible(False)
@@ -81,11 +78,33 @@ class Stream(EEGStream):
         return timestamp[np.nonzero(diff)[0]], diff
 
     # ----------------------------------------------------------------------
+
+    def frames_names(self):
+        """"""
+        self.axis_wave.set_title('Event synchronization')
+        self.axis_wave.set_xlabel('Time [ms]')
+        self.axis_wave.set_ylabel('Amplitude')
+        self.axis_wave.grid(True)
+
+        self.axis_time.set_title('Latency timeline')
+        self.axis_time.set_xlabel('Samples analyzed')
+        self.axis_time.set_ylabel('Latency (ms)')
+        self.axis_time.grid(True)
+
+        self.axis_log.axis('off')
+
+        self.axis_hist.set(
+            xlabel='Latency [ms]', ylabel='Count', title='Latency histogram')
+        self.axis_hist.grid(True)
+
+    # ----------------------------------------------------------------------
     @loop_consumer('eeg', 'marker')
     def stream(self, data, topic, frame, latency):
         """"""
 
         if topic != 'marker':
+            if len(self.latencies) <= 1 and (frame % 3) == 0:
+                self.feed()
             return
 
         # logging.warning(f"L: {latency:.2f}")
@@ -102,7 +121,7 @@ class Stream(EEGStream):
             latencies = latencies[latencies > (Q1 - 1.5 * IQR)]
 
         latencies = latencies[-60:]
-        LATENCY = np.mean(latencies)
+        # LATENCY = np.mean(latencies)
 
         # Rise plot
         self.axis_wave.clear()
@@ -113,9 +132,12 @@ class Stream(EEGStream):
         self.axis_wave.set_ylim(-0.1, 1.1)
         self.axis_wave.set_xlim(-1, 1)
 
-        self.axis_wave.set_title('Event synchronization')
-        self.axis_wave.set_xlabel('Time [ms]')
-        self.axis_wave.set_ylabel('Amplitude')
+        self.axis_wave.set(
+            xlabel='Time [ms]', ylabel='Amplitude', title='Event synchronization')
+
+        # self.axis_wave.set_title('Event synchronization')
+        # self.axis_wave.set_xlabel('Time [ms]')
+        # self.axis_wave.set_ylabel('Amplitude')
         self.axis_wave.grid(True)
 
         self.timestamp_rises, diff = self.get_rises(aux, self.buffer_timestamp)
@@ -136,8 +158,10 @@ class Stream(EEGStream):
             self.axis_wave.vlines([0], -1, 2, color='k',
                                   linestyle='--', label='event')
             self.axis_wave.set_xlim(-250, 250)
-            self.axis_wave.vlines([LATENCY], -1, 2,
-                                  color='r', linestyle='--', label='latency')
+            self.axis_wave.vlines([np.mean(latencies)], -1, 2, color='r', linestyle='--',
+                                  label='mean latency')
+            self.axis_wave.vlines([latencies[-1]], -1, 2, color='g', linestyle='--',
+                                  label='last latency')
             self.axis_wave.legend(loc=4)
 
         # Histogram
@@ -153,7 +177,8 @@ class Stream(EEGStream):
             t = range(len(latencies))
             self.latency_time.set_data(t, latencies)
             self.axis_time.set_xlim(0, t[-1])
-            self.axis_time.set_ylim(latencies.min(), latencies.max())
+            self.axis_time.set_ylim(
+                min([latencies.min(), -50]), max([latencies.max(), 50]))
 
         self.axis_log.clear()
         self.axis_log.axis('off')
@@ -161,24 +186,24 @@ class Stream(EEGStream):
         if latencies.size > 1:
 
             for i, text in enumerate([
-                ('count', len(latencies)),
-                ('mean', np.mean(latencies[-20:])),
-                ('median', np.median(latencies)),
-                # ('std', np.std(latencies)),
-                ('var', np.var(latencies)),
-                ('min', np.min(latencies)),
-                ('max', np.max(latencies))
+                ('count', f'{len(self.latencies)}'),
+                ('mean', f'{np.mean(latencies):.3f} ms'),
+                ('median', f'{np.median(latencies):.3f} ms'),
+                # ('std', f'{np.std(latencies):.3f}'),
+                ('range', f'{latencies.max()-latencies.min():.3f} ms'),
+                ('var', f'{latencies.var():.3f}'),
+                ('min', f'{latencies.max():.3f} ms'),
+                ('max', f'{latencies.min():.3f} ms'),
+                ('latency correction', f'{self.latency_correction:.3f} ms'),
+                ('error',
+                 f'$\pm${abs(latencies.max()-latencies.min()/2):.3f} ms'),
             ]):
 
                 self.axis_log.text(
                     10, 25 - 2 * i, f'{text[0]}:', fontdict={'weight': 'bold', 'size': 16, 'ha': 'right'})
 
-                if i == 0:
-                    label = f'{int(text[1])}'
-                else:
-                    label = f'{text[1]:.3f} ms'
-                self.axis_log.text(11, 25 - 2 * i, label,
-                                   fontdict={'size': 16, })
+                self.axis_log.text(
+                    11, 25 - 2 * i, text[1], fontdict={'size': 16, })
 
         self.axis_log.set_xlim(0, 30)
         self.axis_log.set_ylim(0, 30)
@@ -189,8 +214,11 @@ class Stream(EEGStream):
             # datetime.fromtimestamp(data.timestamp / 1000))
         self.markers_timestamps.append(
             datetime.fromtimestamp(data.value['datetime']))
-        if len(self.markers_timestamps) >= 3:
+        if len(self.markers_timestamps) > 7:
             self.markers_timestamps.pop(0)
+
+        # if len(self.markers_timestamps) < 3:
+            # return
 
         x = []
         for mt in self.markers_timestamps:
@@ -211,6 +239,10 @@ class Stream(EEGStream):
         # logging.warning(f"Latency: {latency:.3f} ms")
 
         self.latency_correction = -pid(np.mean(self.latencies[-6:]))
+
+        # if abs(self.latency_correction) == 400:
+            # self.latency_correction = -self.latency_correction
+
         # self.latency_correction = -pid(LATENCY)
         self.send_feedback({'name': 'set_latency',
                             'value': self.latency_correction,

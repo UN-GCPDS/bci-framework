@@ -15,6 +15,7 @@ import json
 
 from PySide2.QtCore import QTimer
 from PySide2.QtUiTools import QUiLoader
+from PySide2.QtGui import QPixmap
 
 from ..extensions_handler import ExtensionWidget
 from ..subprocess_handler import run_subprocess
@@ -37,6 +38,8 @@ class StimuliDelivery:
         self.core = core
 
         self.parent_frame.pushButton_stop_calibration.setVisible(False)
+        self.parent_frame.mdiArea_latency.hide()
+        self.parent_frame.label_calibration_image.show()
 
         self.connect()
 
@@ -47,6 +50,7 @@ class StimuliDelivery:
         self.update_experiments_list()
 
         self.parent_frame.mdiArea_stimuli.tileSubWindows()
+        self.parent_frame.mdiArea_latency.tileSubWindows()
 
         if not self.parent_frame.mdiArea_stimuli.subWindowList():
             self.build_dashboard()
@@ -175,19 +179,25 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def start_calibration(self):
         """"""
+        self.parent_frame.label_calibration_image.hide()
+        self.parent_frame.mdiArea_latency.show()
         os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(0)
+        kafka_scripts_dir = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'kafka_scripts')
+
         port_viz = self.get_free_port()
         self.latency_calibration = run_subprocess([sys.executable, os.path.join(
-            self.core.projects.projects_dir, 'Latency measurement', 'main.py'), port_viz])
+            kafka_scripts_dir, 'latency_synchronization_stimuli_marker', 'main.py'), port_viz])
 
         if not hasattr(self, 'latency_visualization'):
             self.latency_visualization = ExtensionWidget(
                 self.parent_frame.mdiArea_latency, mode='visualization',
-                autostart='OpenBCI - Latency', hide_menu=False)
+                autostart='latency_synchronization_visualization', hide_menu=True, directory=kafka_scripts_dir)
             self.parent_frame.mdiArea_latency.addSubWindow(
                 self.latency_visualization)
         else:
-            self.latency_visualization.load_extension('OpenBCI - Latency')
+            self.latency_visualization.load_extension(
+                'latency_synchronization_visualization')
 
         self.latency_visualization.show()
         self.parent_frame.mdiArea_latency.tileSubWindows()
@@ -204,8 +214,14 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def stop_calibration(self):
         """"""
+        capture = self.latency_visualization.save_img('last_calibration.jpg')
+        self.parent_frame.label_calibration_image.setPixmap(QPixmap(capture))
+
         self.latency_visualization.stop_preview()
         self.latency_calibration.terminate()
+
+        self.parent_frame.mdiArea_latency.hide()
+        self.parent_frame.label_calibration_image.show()
 
         self.parent_frame.lineEdit_stimuli_ip_lat.setText('')
         self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(False)
@@ -215,6 +231,7 @@ class StimuliDelivery:
         self.parent_frame.pushButton_stop_calibration.setVisible(False)
 
     # ----------------------------------------------------------------------
+
     def get_free_port(self) -> str:
         """Get any free port available."""
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
