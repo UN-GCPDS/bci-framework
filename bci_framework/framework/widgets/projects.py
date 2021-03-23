@@ -304,7 +304,10 @@ class Projects:
             if 'bci_framework.extensions.stimuli_delivery' in content:
                 completer = Autocompleter(mode='stimuli')
                 editor.set_completer(completer)
-            elif 'bci_framework.projects.figure' in content:
+            elif 'bci_framework.extensions.visualizations' in content:
+                completer = Autocompleter(mode='visualization')
+                editor.set_completer(completer)
+            elif 'bci_framework.extensions.data_analysis' in content:
                 completer = Autocompleter(mode='visualization')
                 editor.set_completer(completer)
 
