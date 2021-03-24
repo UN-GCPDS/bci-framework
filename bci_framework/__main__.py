@@ -35,6 +35,9 @@ os.environ.setdefault('BCISTREAM_HOME', os.path.join(
 os.environ.setdefault('BCISTREAM_SYNCLATENCY', '0')
 # os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
 
+if not os.path.exists(os.environ['BCISTREAM_HOME']):
+    os.mkdir(os.environ['BCISTREAM_HOME'])
+
 # Create configuration if not exists
 if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], '.bciframework')):
     shutil.copy(os.path.join(os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'),
@@ -113,7 +116,7 @@ def main() -> None:
              'success': '#17a2b8',
              }
 
-    if ConfigManager().get('framework', 'theme') == 'light':
+    if ConfigManager().get('framework', 'theme', 'light') == 'light':
         apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True,
                          extra=extra, parent='bci_framework_qt_material')
     else:
