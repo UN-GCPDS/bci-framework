@@ -9,7 +9,6 @@ from radiant.utils import WebSocket
 
 StimuliServer = None
 
-logging.basicConfig()
 logging.root.name = "StimuliDelivery:Brython"
 logging.getLogger().setLevel(logging.WARNING)
 
