@@ -62,6 +62,7 @@ class StimuliDelivery(StimuliAPI):
     def stop(self):
         """"""
         timer.clear_timeout(self.timer_cue)
+        self.set_progress(0)
         if self.widgets.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
         
