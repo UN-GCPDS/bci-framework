@@ -12,6 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   bci_framework.consumers
    bci_framework.extensions
    bci_framework.framework
+   bci_framework.kafka_scripts

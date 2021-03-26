@@ -16,10 +16,13 @@ Navigation
    notebooks/11-connection
    notebooks/12-records
    notebooks/70-develop_data_analysis
+   notebooks/71-default_data_analysis
    notebooks/75-develop_visualizations
+   notebooks/76-default_visualizations
    notebooks/80-develop_stimuli_delivery
-   notebooks/81-decorators
+   notebooks/81-default_stimuli_delivery_paradigms
    notebooks/82-debugging
+   notebooks/82-decorators
    notebooks/83-markers_annotations_and_commands
    notebooks/99-troubleshoots
 
