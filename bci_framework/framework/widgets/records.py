@@ -70,7 +70,7 @@ class Records:
         """Remove file from records directory."""
         filename = self.parent_frame.tableWidget_records.currentItem().previous_name
 
-        if Dialogs.remove_file_warning(self.parent_frame, filenamee):
+        if Dialogs.remove_file_warning(self.parent_frame, filename):
             os.remove(os.path.join(self.records_dir, f'{filename}.h5'))
             self.load_records()
 
