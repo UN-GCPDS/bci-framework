@@ -407,6 +407,8 @@ class BCIFramework(QMainWindow):
         self.main.label_16.setStyleSheet(style)
         self.main.label_17.setStyleSheet(style)
         self.main.label_20.setStyleSheet(style)
+        self.main.label_21.setStyleSheet(style)
+        self.main.label_22.setStyleSheet(style)
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None) -> None:
