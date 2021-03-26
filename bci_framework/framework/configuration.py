@@ -9,6 +9,7 @@ import shutil
 
 from PySide2.QtWidgets import QDesktopWidget, QMainWindow
 from PySide2.QtUiTools import QUiLoader
+from PySide2 import QtCore
 
 from .config_manager import ConfigManager
 
@@ -30,7 +31,7 @@ class ConfigurationFrame(QMainWindow):
         self.original_config = ConfigManager(os.path.join(
             os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'))
 
-        theme = self.config.get('framework', 'theme')
+        theme = self.config.get('framework', 'theme', 'light')
         self.main.radioButton_light.setChecked(theme == 'light')
         self.main.radioButton_dark.setChecked(theme == 'dark')
 

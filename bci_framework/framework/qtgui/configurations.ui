@@ -249,7 +249,7 @@
     </item>
     <item row="4" column="0">
      <widget class="QWidget" name="widget_restart" native="true">
-      <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,0">
+      <layout class="QGridLayout" name="gridLayout_2" columnstretch="1">
        <item row="0" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
@@ -257,16 +257,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton">
-         <property name="text">
-          <string>Restart now</string>
-         </property>
-         <property name="class" stdset="0">
-          <string>danger</string>
          </property>
         </widget>
        </item>
