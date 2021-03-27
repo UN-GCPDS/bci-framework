@@ -38,7 +38,7 @@ class Projects:
                 os.getenv('BCISTREAM_ROOT'), 'default_projects')
         else:
             self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_HOME'), 'projects')
+                os.getenv('BCISTREAM_HOME'), 'default_projects')
 
         self.parent_frame.label_projects_path.setText(self.projects_dir)
         self.parent_frame.label_projects_path.setStyleSheet(
