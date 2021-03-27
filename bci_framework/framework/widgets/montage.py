@@ -89,7 +89,7 @@ class TopoplotMontage(TopoplotBase):
     def update_montage(self, montage: mne.channels.DigMontage, electrodes: List[str]) -> None:
         """Redraw electrodes positions."""
         matplotlib.rcParams['text.color'] = "#ffffff"
-        matplotlib.rcParams['font.size'] = 16
+        matplotlib.rcParams['font.size'] = 13
 
         self.ax.clear()
         channels_names = montage.ch_names.copy()
