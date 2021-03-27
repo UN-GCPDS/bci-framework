@@ -9,7 +9,7 @@ import json
 import psutil
 import pickle
 from datetime import datetime
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
@@ -267,10 +267,16 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_show_configurations.clicked.connect(
             self.show_configurations)
 
+        self.main.pushButton_show_latency_correction.clicked.connect(
+            lambda evt: self.show_interface('Stimuli_delivery', 1))
+
+        self.main.pushButton_show_annotations.clicked.connect(
+            lambda evt: self.main.tabWidget_widgets.setCurrentIndex(3))
+
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
     # ----------------------------------------------------------------------
-    def show_interface(self, interface: str) -> None:
+    def show_interface(self, interface: str, sub_widget: Optional[int] = None) -> None:
         """Switch between environs."""
         self.main.stackedWidget_modes.setCurrentWidget(
             getattr(self.main, f"page{interface}"))
@@ -284,6 +290,10 @@ class BCIFramework(QMainWindow):
         if mod := getattr(self, f'{interface.lower().replace(" ", "_")}', False):
             if on_focus := getattr(mod, 'on_focus'):
                 on_focus()
+
+        if sub_widget != None:
+            if interface == 'Stimuli_delivery':
+                self.main.tabWidget_stimuli_delivery.setCurrentIndex(sub_widget)
 
     # ----------------------------------------------------------------------
     def show_widget(self, index: int) -> None:
