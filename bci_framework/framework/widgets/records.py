@@ -68,10 +68,13 @@ class Records:
     # ----------------------------------------------------------------------
     def remove_record(self) -> None:
         """Remove file from records directory."""
-        filename = self.parent_frame.tableWidget_records.currentItem().previous_name
+        row = self.parent_frame.tableWidget_records.currentRow()
+        filename = self.parent_frame.tableWidget_records.item(
+            row, 2).previous_name
 
         if Dialogs.remove_file_warning(self.parent_frame, filename):
-            os.remove(os.path.join(self.records_dir, f'{filename}.h5'))
+            os.remove(os.path.join(self.records_dir,
+                                   f'{filename.replace(":", "_")}.h5'))
             self.load_records()
 
     # ----------------------------------------------------------------------
