@@ -280,10 +280,17 @@ class StimuliAPI:
         self.set_seed(seed)
 
     # ----------------------------------------------------------------------
-    def add_cross(self):
+    def show_cross(self):
         """"""
-        self.stimuli_area <= html.DIV(Class='cross_contrast')
-        self.stimuli_area <= html.DIV(Class='cross')
+        self.hide_cross()
+        self.stimuli_area <= html.DIV(Class='bci_cross cross_contrast')
+        self.stimuli_area <= html.DIV(Class='bci_cross cross')
+
+    # ----------------------------------------------------------------------
+    def hide_cross(self):
+        """"""
+        for element in document.select('.bci_cross'):
+            element.remove()
 
     # ----------------------------------------------------------------------
     def add_run_progressbar(self):
@@ -307,8 +314,9 @@ class StimuliAPI:
         self.run_progressbar.mdc.set_progress(p)
 
     # ----------------------------------------------------------------------
-    def add_blink_area(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
+    def show_blink_area(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
         """"""
+        self.hide_blink_area()
         if 'upper' in position:
             top = '15px'
         elif 'lower' in position:
@@ -340,10 +348,10 @@ class StimuliAPI:
         return self._blink_area
 
     # ----------------------------------------------------------------------
-    def remove_blink_area(self):
+    def hide_blink_area(self):
         """"""
-        self._blink_area.remove()
-        del self._blink_area
+        if element := getattr(self, '_blink_area', None):
+            self._blink_area.remove()
 
     # ----------------------------------------------------------------------
     def build_areas(self, stimuli=True, dashboard=True):
