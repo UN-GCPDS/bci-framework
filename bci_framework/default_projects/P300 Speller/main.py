@@ -1,5 +1,16 @@
+"""
+============
+P300 Speller
+============
+
+
+
+"""
+
+
 from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
+from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
+from bci_framework.extensions.stimuli_delivery.utils import Tone as t
 
 from browser import document, html, timer
 import random
@@ -10,53 +21,53 @@ CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ON = 1
 OFF = 0.3
 
+
 ########################################################################
 class P300Speller(StimuliAPI):
-    """"""
+    """P300 docs"""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
-        """"""
+        """Hola"""
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
         self.build_areas()
         self.add_run_progressbar()
-        self.widgets = Widgets()
-        self.tone = Tone()
+
         self.listen_feedbacks(self.command)
 
         self.stimuli_area.style = {'background-color': 'black'}
         self.build_grid()
 
-        self.dashboard <= self.widgets.label(
+        self.dashboard <= w.label(
             'P300 Speller <br><br>', 'headline4')
 
-        self.dashboard <= self.widgets.slider(
+        self.dashboard <= w.slider(
             label='Trials:', min=1, max=20, value=15, step=1, discrete=True, marks=True, id='trials')
-        self.dashboard <= self.widgets.slider(
+        self.dashboard <= w.slider(
             label='Flash duration:', min=100, max=500, value=125, step=5, unit='ms', id='duration')
-        self.dashboard <= self.widgets.slider(
+        self.dashboard <= w.slider(
             label='Inter stimulus interval:', min=10, max=500, value=62.5, step=5, unit='ms', id='isi')
 
-        self.dashboard <= self.widgets.switch(
+        self.dashboard <= w.switch(
             'Record EEG', checked=False, on_change=None, id='record')
 
-        self.dashboard <= self.widgets.button(
+        self.dashboard <= w.button(
             'Start run', on_click=self.start, style={'margin': '0 15px'})
-        self.dashboard <= self.widgets.button(
+        self.dashboard <= w.button(
             'Stop run', on_click=self.stop, style={'margin': '0 15px'})
-        self.dashboard <= self.widgets.button(
-            'LOG', on_click=self.log, style={'margin': '0 15px'}) 
-            
+        self.dashboard <= w.button(
+            'LOG', on_click=self.log, style={'margin': '0 15px'})
+
     # ----------------------------------------------------------------------
     def log(self):
         """"""
-        logging.debug('#'*10)
-        logging.info('#'*10)
-        logging.warning('#'*10)
-        logging.error('#'*10)
-        logging.critical('#'*10)
+        logging.debug('#' * 10)
+        logging.info('#' * 10)
+        logging.warning('#' * 10)
+        logging.error('#' * 10)
+        logging.critical('#' * 10)
 
     # ----------------------------------------------------------------------
     def command(self, command):
@@ -66,7 +77,7 @@ class P300Speller(StimuliAPI):
     # ----------------------------------------------------------------------
     def start(self):
         """"""
-        if self.widgets.get_value('record'):
+        if w.get_value('record'):
             self.start_record()
         timer.set_timeout(self.run, 2000)
 
@@ -79,15 +90,15 @@ class P300Speller(StimuliAPI):
         if hasattr(self, 't1'):
             timer.clear_timeout(self.t1)
 
-        if self.widgets.get_value('record'):
+        if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
     # ----------------------------------------------------------------------
     def run(self):
         """"""
-        self.isi = self.widgets.get_value('isi')
-        self.duration = self.widgets.get_value('duration')
-        self.trials = self.widgets.get_value('trials')
+        self.isi = w.get_value('isi')
+        self.duration = w.get_value('duration')
+        self.trials = w.get_value('trials')
         self.progress = 0
 
         self.trial(self.isi, self.duration, self.trials)
@@ -115,7 +126,7 @@ class P300Speller(StimuliAPI):
         target = document.select_one(f'.col-{target[0]}.row-{target[1]}')
         target.style = {'color': '#00ff00', 'opacity': 0.5}
         self.send_marker(target.text)
-        self.tone("C#6", 200)
+        t("C#6", 200)
         def target_off(): return setattr(target, 'style', {
             'color': '#ffffff', 'opacity': OFF})
         timer.set_timeout(target_off, 1000)
@@ -136,8 +147,8 @@ class P300Speller(StimuliAPI):
                 lambda: self.trial(isi, duration, trials), 2000)
 
         else:
-            timer.set_timeout(lambda: self.tone("C#6", 100), 1000)
-            timer.set_timeout(lambda: self.tone("C#6", 100), 1150)
+            timer.set_timeout(lambda: t("C#6", 100), 1000)
+            timer.set_timeout(lambda: t("C#6", 100), 1150)
             timer.set_timeout(self.stop, 2000)
 
     # ----------------------------------------------------------------------
@@ -167,6 +178,7 @@ class P300Speller(StimuliAPI):
                 tr = html.TR()
                 table <= tr
         self.stimuli_area <= table
+
 
 if __name__ == '__main__':
     StimuliServer('P300Speller')
