@@ -183,14 +183,14 @@ class Widgets:
 
             def set_value():
                 def wrap(evt):
-                    self.widgets[id] = select_.mdc['value']
+                    self.widgets[id] = select_.mdc.value
                 return wrap
 
             select_.mdc.listen('MDCSelect:change', set_value())
 
         if on_change:
             select_.mdc.listen('MDCSelect:change',
-                               lambda evt: on_change(select_.mdc['value']))
+                               lambda evt: on_change(select_.mdc.value))
 
         return form
 
