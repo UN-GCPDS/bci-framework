@@ -1,4 +1,5 @@
 {% extends "templates/index.html" %}
+{% autoescape None %}
 
 {% block html_head %}
 
@@ -109,6 +110,9 @@
 
 
 {% block module_init %}
+import json
+from browser import window
+window.brython_environ = {{brython_environ}}
 arr = {{class_}}(None, {{python_}})
 arr.connect(f'{{port}}')
 arr._bci_mode = '{{mode}}'
