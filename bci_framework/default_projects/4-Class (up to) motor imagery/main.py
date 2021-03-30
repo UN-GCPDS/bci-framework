@@ -33,8 +33,8 @@ class FourClassMotorImagery(StimuliAPI):
         self.dashboard <= self.widgets.checkbox('Cues', [[cue, True] for cue in UNICODE_HINTS], on_change=None, id='cues')
 
         self.dashboard <= self.widgets.slider(label='Repetitions by class:', min=1, max=40, value=10, step=1, discrete=True, marks=True, id='repetitions')
-        self.dashboard <= self.widgets.slider(label='Stimulus duration', min=1000, max=8000, value=4000, step=100, unit='ms', id='duration')
-        self.dashboard <= self.widgets.range_slider('Delay duration', min=500, max=2000, value_lower=700, value_upper=1500, step=100, unit='ms', id='pause')
+        self.dashboard <= self.widgets.slider(label='Stimulus duration', min=2000, max=5000, value=4000, step=100, unit='ms', id='duration')
+        self.dashboard <= self.widgets.range_slider('Inter trial', min=2000, max=3000, value_lower=2000, value_upper=3000, step=100, unit='ms', id='pause')
 
         self.dashboard <= self.widgets.switch('Record EEG', checked=False, on_change=None, id='record')
         # self.dashboard <= self.widgets.button('Test Left', on_click=lambda: self.trial('Left', 1000), style={'margin': '0 15px'})
