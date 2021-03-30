@@ -1272,7 +1272,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1366,8 +1366,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>485</width>
-                  <height>495</height>
+                  <width>83</width>
+                  <height>95</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1408,8 +1408,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>485</width>
-                      <height>483</height>
+                      <width>83</width>
+                      <height>83</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -2982,8 +2982,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>485</width>
-              <height>571</height>
+              <width>175</width>
+              <height>175</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3099,7 +3099,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QStackedWidget" name="stackedWidget_projects">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_projects">
             <layout class="QGridLayout" name="gridLayout_24">
@@ -3260,7 +3260,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3309,7 +3309,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3374,24 +3374,6 @@ p, li { white-space: pre-wrap; }
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <property name="verticalSpacing">
-              <number>12</number>
-             </property>
-             <item row="1" column="0">
-              <widget class="QTreeWidget" name="treeWidget_project">
-               <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
-               </property>
-               <property name="editTriggers">
-                <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-               </property>
-               <column>
-                <property name="text">
-                 <string notr="true"/>
-                </property>
-               </column>
-              </widget>
-             </item>
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
@@ -3498,149 +3480,167 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="2" column="0">
-              <widget class="QGroupBox" name="groupBox_4">
-               <property name="title">
-                <string>Debug</string>
+             <item row="1" column="0">
+              <widget class="QSplitter" name="splitter">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
-               <layout class="QGridLayout" name="gridLayout_28">
-                <property name="leftMargin">
-                 <number>0</number>
+               <widget class="QTreeWidget" name="treeWidget_project">
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
                 </property>
-                <property name="rightMargin">
-                 <number>0</number>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
                 </property>
-                <property name="bottomMargin">
-                 <number>0</number>
+                <column>
+                 <property name="text">
+                  <string notr="true"/>
+                 </property>
+                </column>
+               </widget>
+               <widget class="QGroupBox" name="groupBox_4">
+                <property name="title">
+                 <string>Debug</string>
                 </property>
-                <property name="horizontalSpacing">
-                 <number>0</number>
-                </property>
-                <item row="2" column="0">
-                 <widget class="QPlainTextEdit" name="plainTextEdit_preview_log">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <layout class="QGridLayout" name="gridLayout_21">
-                  <item row="0" column="1">
-                   <widget class="QPushButton" name="pushButton_stop_preview">
-                    <property name="text">
-                     <string>Stop debug</string>
-                    </property>
-                    <property name="icon">
-                     <iconset theme="media-playback-stop">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                    </property>
-                    <property name="flat">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QPushButton" name="pushButton_script_preview">
-                    <property name="text">
-                     <string>Start Debug</string>
-                    </property>
-                    <property name="icon">
-                     <iconset theme="media-playback-start">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                    </property>
-                    <property name="flat">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <spacer name="horizontalSpacer_5">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QPushButton" name="pushButton_clear_debug">
-                    <property name="text">
-                     <string>Clear log</string>
-                    </property>
-                    <property name="icon">
-                     <iconset theme="edit-delete">
-                      <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>22</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="flat">
-                     <bool>true</bool>
-                    </property>
-                    <property name="class" stdset="0">
-                     <string>danger icon_button</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="0" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_24" stretch="2,1">
-                  <item>
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="comboBox_log_level">
-                    <property name="currentIndex">
-                     <number>2</number>
-                    </property>
-                    <item>
+                <layout class="QGridLayout" name="gridLayout_28">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="horizontalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="3" column="0">
+                  <layout class="QGridLayout" name="gridLayout_21">
+                   <item row="0" column="1">
+                    <widget class="QPushButton" name="pushButton_stop_preview">
                      <property name="text">
-                      <string>DEBUG</string>
+                      <string>Stop debug</string>
                      </property>
-                    </item>
-                    <item>
+                     <property name="icon">
+                      <iconset theme="media-playback-stop">
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     </property>
+                     <property name="flat">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="pushButton_script_preview">
                      <property name="text">
-                      <string>INFO</string>
+                      <string>Start Debug</string>
                      </property>
-                    </item>
-                    <item>
+                     <property name="icon">
+                      <iconset theme="media-playback-start">
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     </property>
+                     <property name="flat">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <spacer name="horizontalSpacer_5">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QPushButton" name="pushButton_clear_debug">
                      <property name="text">
-                      <string>WARNING</string>
+                      <string>Clear log</string>
                      </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>ERROR</string>
+                     <property name="icon">
+                      <iconset theme="edit-delete">
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>CRITICAL</string>
+                     <property name="iconSize">
+                      <size>
+                       <width>22</width>
+                       <height>22</height>
+                      </size>
                      </property>
-                    </item>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                     <property name="class" stdset="0">
+                      <string>danger icon_button</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_24" stretch="2,1">
+                   <item>
+                    <spacer name="horizontalSpacer_30">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_log_level">
+                     <property name="currentIndex">
+                      <number>2</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>DEBUG</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>INFO</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>WARNING</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ERROR</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CRITICAL</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QPlainTextEdit" name="plainTextEdit_preview_log">
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
               </widget>
              </item>
             </layout>
