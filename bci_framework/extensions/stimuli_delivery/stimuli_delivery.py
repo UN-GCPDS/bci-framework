@@ -11,6 +11,7 @@ preconfigured server.
 import os
 import sys
 import logging
+import json
 
 from radiant.server import RadiantAPI, RadiantServer, RadiantHandler
 
@@ -53,6 +54,15 @@ class StimuliAPI(RadiantAPI):
 # ----------------------------------------------------------------------
 def StimuliServer(class_, *args, **kwargs):
     """Rename `RadiantServer` with a preconfigured `StimuliServer`."""
+
+    # brython_environ = {k: os.environ[k] for k in os.environ if k.startswith('BCISTREAM_')}
+    brython_environ = {k: os.environ.get(k) for k in dict(
+        os.environ) if k.startswith('BCISTREAM_')}
+    environ = {'port': port,
+               'mode': 'stimuli',
+               'brython_environ': str(brython_environ),
+               }
+
     return RadiantServer(class_,
                          path=os.path.realpath(os.path.join(
                              os.path.dirname(__file__), 'path')),
@@ -64,9 +74,7 @@ def StimuliServer(class_, *args, **kwargs):
                                    ),
                          template=os.path.realpath(os.path.join(
                              os.path.dirname(__file__), 'template.html')),
-                         environ={'port': port,
-                                  'mode': 'stimuli',
-                                  },
+                         environ=environ,
                          port=port,
                          host='0.0.0.0',
                          theme=os.path.realpath(os.path.join(
