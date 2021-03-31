@@ -194,7 +194,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         else:
             if '--local' in sys.argv:
                 self.projects_dir = os.path.join(
-                    os.getenv('BCISTREAM_ROOT'), 'default_projects')
+                    os.getenv('BCISTREAM_ROOT'), 'default_extensions')
             else:
                 self.projects_dir = os.path.join(
                     os.getenv('BCISTREAM_HOME'), 'projects')

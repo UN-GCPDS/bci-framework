@@ -43,10 +43,10 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], '.bciframework'
     shutil.copy(os.path.join(os.environ['BCISTREAM_ROOT'], 'assets', 'bciframework.default'),
                 os.path.join(os.environ['BCISTREAM_HOME'], '.bciframework'))
 
-# Copy default_projects if not exists
-if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'default_projects')):
-    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
-                    os.path.join(os.environ['BCISTREAM_HOME'], 'default_projects'))
+# Copy default_extensions if not exists
+if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions')):
+    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
+                    os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'))
 
 
 from .framework.qtgui.icons import generate_icons

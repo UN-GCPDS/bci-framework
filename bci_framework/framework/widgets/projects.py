@@ -35,10 +35,10 @@ class Projects:
 
         if '--local' in sys.argv:
             self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_ROOT'), 'default_projects')
+                os.getenv('BCISTREAM_ROOT'), 'default_extensions')
         else:
             self.projects_dir = os.path.join(
-                os.getenv('BCISTREAM_HOME'), 'default_projects')
+                os.getenv('BCISTREAM_HOME'), 'default_extensions')
 
         self.parent_frame.label_projects_path.setText(self.projects_dir)
         self.parent_frame.label_projects_path.setStyleSheet(
@@ -389,7 +389,7 @@ class Projects:
         item.icon_name = icon_name
 
         source = os.path.join(os.getenv('BCISTREAM_ROOT'),
-                              'default_projects', default_project)
+                              'default_extensions', default_project)
         target = os.path.join(self.projects_dir, project_name)
         shutil.copytree(source, target)
 

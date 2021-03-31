@@ -71,14 +71,14 @@ class ConfigurationFrame(QMainWindow):
     # ----------------------------------------------------------------------
     def restore_projects(self, *args, **kwargs) -> None:
         """Copy defautl project into the user projects directory."""
-        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'projects'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
     def reset_projects(self, *args, **kwargs) -> None:
         """Remove user projects nad copy the default projects."""
         shutil.rmtree(os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
-        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_projects'),
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
 
     # ----------------------------------------------------------------------

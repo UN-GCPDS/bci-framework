@@ -7,7 +7,7 @@ import numpy as np
 from kafka import KafkaProducer
 from openbci_stream.utils import interpolate_datetime
 
-from ...extensions import properties as prop
+from bci_framework.extensions import properties as prop
 from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this
 
 # Set logger
