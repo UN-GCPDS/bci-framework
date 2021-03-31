@@ -1,16 +1,14 @@
-bci\_framework.extensions.data\_analysis package
-================================================
+
+:mod:`bci_framework.extensions.data_analysis`
 
 .. automodule:: bci_framework.extensions.data_analysis
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.extensions.data_analysis.data_analysis
    bci_framework.extensions.data_analysis.utils

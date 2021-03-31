@@ -1,16 +1,14 @@
-bci\_framework.extensions.stimuli\_delivery package
-===================================================
+
+:mod:`bci_framework.extensions.stimuli_delivery`
 
 .. automodule:: bci_framework.extensions.stimuli_delivery
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.extensions.stimuli_delivery.stimuli_delivery
    bci_framework.extensions.stimuli_delivery.tornado_handlers

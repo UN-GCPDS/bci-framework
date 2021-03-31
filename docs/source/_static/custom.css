@@ -90,6 +90,11 @@ dl:not(.docutils) dl dt {
 }
 
 
-/*dl.field-list > dd {*/
-    /*margin-top: 10px;*/
-/*}*/
+.xref.py.py-mod.docutils.literal.notranslate {
+
+    float: right;
+    font-weight: normal;
+    font-family: mono;
+    background: none;
+
+}

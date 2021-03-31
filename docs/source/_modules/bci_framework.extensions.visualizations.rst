@@ -1,15 +1,13 @@
-bci\_framework.extensions.visualizations package
-================================================
+
+:mod:`bci_framework.extensions.visualizations`
 
 .. automodule:: bci_framework.extensions.visualizations
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.extensions.visualizations.eeg_stream

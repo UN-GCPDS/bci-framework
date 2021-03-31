@@ -16,12 +16,13 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+# sys.path.insert(0, os.path.abspath('../../bci_framework'))
 # sys.path.insert(0, os.path.abspath('exts'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'BCI-Framework'
-copyright = '2020, Yeison Cardona'
+copyright = '2021, Yeison Cardona'
 author = 'Yeison Cardona'
 
 
@@ -230,6 +231,10 @@ autodoc_mock_imports = [
     'kafka',
     'rpyc',
     'serial',
+    'openbci_stream',
+    'gcpds',
+    'figurestream',
+    'qt_material',
 ]
 
 todo_include_todos = True
@@ -251,6 +256,8 @@ html_favicon = '_static/favico.ico'
     # 'undoc-members': True,
     # 'exclude-members': '__weakref__'
 # }
+
+modindex_common_prefix = ['bci_framework.']
 
 
 def setup(app):

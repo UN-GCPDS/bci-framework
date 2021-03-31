@@ -1,16 +1,14 @@
-bci\_framework.framework package
-================================
+
+:mod:`bci_framework.framework`
 
 .. automodule:: bci_framework.framework
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.framework.editor
    bci_framework.framework.environments
@@ -21,7 +19,7 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.framework.config_manager
    bci_framework.framework.configuration

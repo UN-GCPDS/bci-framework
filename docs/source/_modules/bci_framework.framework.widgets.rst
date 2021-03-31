@@ -1,16 +1,14 @@
-bci\_framework.framework.widgets package
-========================================
+
+:mod:`bci_framework.framework.widgets`
 
 .. automodule:: bci_framework.framework.widgets
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.framework.widgets.annotations
    bci_framework.framework.widgets.connection

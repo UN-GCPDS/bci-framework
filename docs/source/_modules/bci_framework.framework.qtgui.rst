@@ -1,15 +1,13 @@
-bci\_framework.framework.qtgui package
-======================================
+
+:mod:`bci_framework.framework.qtgui`
 
 .. automodule:: bci_framework.framework.qtgui
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.framework.qtgui.icons

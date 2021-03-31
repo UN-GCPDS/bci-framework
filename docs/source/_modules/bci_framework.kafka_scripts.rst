@@ -1,15 +1,13 @@
-bci\_framework.kafka\_scripts package
-=====================================
+
+:mod:`bci_framework.kafka_scripts`
 
 .. automodule:: bci_framework.kafka_scripts
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.kafka_scripts.record

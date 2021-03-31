@@ -1,16 +1,14 @@
-bci\_framework.framework.editor.highlighters package
-====================================================
+
+:mod:`bci_framework.framework.editor.highlighters`
 
 .. automodule:: bci_framework.framework.editor.highlighters
    :members:
-   :no-undoc-members:
-   :no-show-inheritance:
 
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 10
 
    bci_framework.framework.editor.highlighters.css_syntax
    bci_framework.framework.editor.highlighters.python_syntax
