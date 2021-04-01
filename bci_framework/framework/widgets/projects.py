@@ -5,6 +5,7 @@ Projects
 """
 
 import os
+import re
 import sys
 import pickle
 import shutil
@@ -60,11 +61,11 @@ class Projects:
             self.load_projects)
 
         self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.text()))
+            lambda evt: self.open_project(evt.path))
         self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.text()))
+            lambda evt: self.open_project(evt.path))
         self.parent_frame.listWidget_projects_analysis.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.text()))
+            lambda evt: self.open_project(evt.path))
 
         self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
             self.there_can_only_be_one)
@@ -132,6 +133,12 @@ class Projects:
         self.parent_frame.actionDevelopment.setEnabled(True)
 
     # ----------------------------------------------------------------------
+    def normalize_path(self, path):
+        """"""
+        path = re.sub('[^0-9a-zA-Z]+', '_', path)
+        return path
+
+    # ----------------------------------------------------------------------
     def load_projects(self) -> None:
         """Load projects."""
         self.parent_frame.listWidget_projects_visualizations.clear()
@@ -148,12 +155,27 @@ class Projects:
 
         projects = sorted(list(projects))
 
-        for project in projects:
+        for project_dir in projects:
+            project = project_dir
+            if os.path.exists(os.path.join(self.projects_dir, project_dir, '.bcifr')):
+                bcifr = pickle.load(
+                    open(os.path.join(self.projects_dir, project_dir, '.bcifr'), 'rb'))
+                if isinstance(bcifr, set):
+                    pickle.dump({'name': project, 'files': bcifr}, open(
+                        os.path.join(self.projects_dir, project_dir, '.bcifr'), 'wb'))
+                elif isinstance(bcifr, dict):
+                    project = bcifr.get('name', project)
+            else:
+                pickle.dump({'name': project, 'files': []}, open(
+                    os.path.join(self.projects_dir, project_dir, '.bcifr'), 'wb'))
 
             if project.startswith('Tutorial |') and not self.parent_frame.checkBox_projects_show_tutorials.isChecked():
                 continue
 
-            with open(os.path.join(self.projects_dir, project, 'main.py'), 'r') as file:
+            if project.startswith('Tutorial: ') and not self.parent_frame.checkBox_projects_show_tutorials.isChecked():
+                continue
+
+            with open(os.path.join(self.projects_dir, project_dir, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
                 modules = {'EEGStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
@@ -170,7 +192,8 @@ class Projects:
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
                           | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
-            item.previous_name = project
+            item.previous_name = project_dir
+            item.path = project_dir
 
             icon = QIcon()
             icon.addFile(
@@ -179,7 +202,7 @@ class Projects:
             item.icon_name = icon_name
 
     # ----------------------------------------------------------------------
-    def open_project(self, project_name) -> None:
+    def open_project(self, project_path) -> None:
         """Open project in the code editor."""
         global files_count, dir_count, project_name_
 
@@ -193,19 +216,19 @@ class Projects:
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent_frame, "page_projects_files"))
 
-        path = os.path.join(self.projects_dir, project_name)
+        path = os.path.join(self.projects_dir, project_path)
         # path = project_name
 
         self.parent_frame.tabWidget_project.clear()
 
         parent = self.parent_frame.treeWidget_project
-        parent.project_name = project_name
+        parent.project_name = project_path
         parent.clear()
 
         files_count = 0
         dir_count = 0
         open_item = None
-        project_name_ = project_name
+        project_name_ = project_path
 
         def add_leaves(parent, path):
             global files_count, dir_count, project_name_
@@ -249,7 +272,7 @@ class Projects:
             add_leaves(parent, path)
         except FileNotFoundError:
             self.load_projects()
-            self.open_project(project_name)
+            self.open_project(project_path)
 
         parent.sortItems(0, Qt.AscendingOrder)
         parent.path = path
@@ -257,8 +280,10 @@ class Projects:
             f"{os.path.split(path)[1]} [{files_count} files / {dir_count} dirs]")
 
         if os.path.exists(os.path.join(path, '.bcifr')):
-            files = list(
-                set(pickle.load(open(os.path.join(path, '.bcifr'), 'rb'))))
+            bcifr = pickle.load(open(os.path.join(path, '.bcifr'), 'rb'))
+            files = list(bcifr['files'])
+            parent.setHeaderLabel(
+                f"{bcifr['name']} [{files_count} files / {dir_count} dirs]")
 
             if 'main.py' in files:
                 files.pop(files.index('main.py'))
@@ -319,7 +344,10 @@ class Projects:
         files = []
         for i in range(self.parent_frame.tabWidget_project.count()):
             files.append(self.parent_frame.tabWidget_project.tabText(i))
-        pickle.dump(set(files), open(os.path.join(parent, '.bcifr'), 'wb'))
+
+        bcifr = pickle.load(open(os.path.join(parent, '.bcifr'), 'rb'))
+        bcifr['files'] = set(files)
+        pickle.dump(bcifr, open(os.path.join(parent, '.bcifr'), 'wb'))
 
         if module not in self.project_files:
             self.project_files.append(module)
@@ -480,11 +508,22 @@ class Projects:
     # ----------------------------------------------------------------------
     def project_renamed(self, evt) -> None:
         """Rename project directory."""
-        if hasattr(evt, 'previous_name'):
-            if evt.previous_name.strip() != evt.text().strip():
-                shutil.move(os.path.join(self.projects_dir, evt.previous_name), os.path.join(
-                    self.projects_dir, evt.text()))
-                evt.previous_name = evt.text()
+
+        new_name = evt.text().strip()
+        new_path = self.normalize_path(new_name)
+
+        if name := getattr(evt, 'previous_name', False):
+            if name.strip() != new_name:
+                shutil.move(os.path.join(self.projects_dir, evt.path),
+                            os.path.join(self.projects_dir, new_path))
+                evt.previous_name = new_name
+                evt.path = new_path
+
+                bcifr = pickle.load(
+                    open(os.path.join(self.projects_dir, new_path, '.bcifr'), 'rb'))
+                bcifr['name'] = new_name
+                pickle.dump(bcifr, open(os.path.join(
+                    self.projects_dir, new_path, '.bcifr'), 'wb'))
 
     # ----------------------------------------------------------------------
     def project_file_renamed(self, evt) -> None:

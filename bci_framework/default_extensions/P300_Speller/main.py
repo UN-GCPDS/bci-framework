@@ -3,10 +3,9 @@
 P300 Speller
 ============
 
-
+main.py
 
 """
-
 
 from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
@@ -19,16 +18,16 @@ import logging
 
 CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ON = 1
-OFF = 0.3
+OFF = 0.3   
 
 
 ########################################################################
 class P300Speller(StimuliAPI):
-    """P300 docs"""
+    """"""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
-        """Hola"""
+        """"""
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
