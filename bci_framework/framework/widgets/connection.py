@@ -49,6 +49,11 @@ class OpenBCIThread(QThread):
             self.connection_fail.emit([])
             return
 
+        if self.openbci.is_recycled:
+            self.connected = True
+            self.connection_ok.emit()
+            return
+
         try:
             self.openbci.command(self.sample_rate)
             self.openbci.command(self.boardmode)
@@ -132,7 +137,8 @@ class OpenBCIThread(QThread):
     def disconnect(self) -> None:
         """Disconnect OpenBCI."""
         try:
-            self.openbci.stop_stream()
+            # self.openbci.stop_stream()
+            self.openbci.close()
         except:
             pass
         self.disconnected_ok.emit()
@@ -186,9 +192,8 @@ class Connection:
     # ----------------------------------------------------------------------
     def on_focus(self) -> None:
         """Try to autoconnect."""
-        # if getattr(self.core, 'streaming', False) and not self.openbci.connected:
-            # self.parent_frame.pushButton_connect.setEnabled(False)
-            # self.openbci_connect()
+        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            self.openbci_connect()
 
     # ----------------------------------------------------------------------
     def load_config(self) -> None:
@@ -331,10 +336,11 @@ class Connection:
         self.openbci.comboBox_test_signal = self.parent_frame.comboBox_test_signal.currentText()
         self.openbci.checkBox_default_settings = self.parent_frame.checkBox_default_settings.isChecked()
 
-        self.openbci.start()
         self.parent_frame.pushButton_connect.setText('Connecting...')
         self.parent_frame.pushButton_connect.setEnabled(False)
         self.update_environ()
+
+        self.openbci.start()
 
     # ----------------------------------------------------------------------
     def update_environ(self) -> None:
@@ -361,6 +367,7 @@ class Connection:
         QApplication.restoreOverrideCursor()
         self.parent_frame.pushButton_connect.setText('Disconnect')
         self.parent_frame.pushButton_connect.setEnabled(True)
+        self.parent_frame.pushButton_connect.setChecked(True)
 
     # ----------------------------------------------------------------------
     @Slot()
