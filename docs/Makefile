@@ -1,7 +1,7 @@
 # Minimal makefile for Sphinx documentation
 #
-#export SPHINX_APIDOC_OPTIONS=members,no-undoc-members,no-show-inheritance
-export SPHINX_APIDOC_OPTIONS=members
+export SPHINX_APIDOC_OPTIONS=members,no-undoc-members,no-show-inheritance
+#export SPHINX_APIDOC_OPTIONS=no-undoc-members
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.

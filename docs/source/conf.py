@@ -208,7 +208,6 @@ epub_title = project
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-
 # -- Extension configuration -------------------------------------------------
 
 autodoc_mock_imports = [
@@ -235,6 +234,9 @@ autodoc_mock_imports = [
     'gcpds',
     'figurestream',
     'qt_material',
+    'browser',
+    'seaborn',
+    'simple_pid',
 ]
 
 todo_include_todos = True
@@ -305,7 +307,6 @@ notebooks = '\n   '.join(sorted(notebooks))
 
 with open('index.rst', 'w') as file:
     file.write(f"""
-
 .. include:: {notebooks_dir}/readme.rst
 
 Navigation

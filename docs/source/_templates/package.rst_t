@@ -13,13 +13,6 @@
 {%- endfor %}
 {%- endmacro %}
 
-{%- if is_namespace %}
-:mod:`{{- [pkgname] | join(" ") }}`
-{% else %}
-:mod:`{{- [pkgname] | join(" ") }}`
-{% endif %}
-
-
 
 {%- if modulefirst and not is_namespace %}
 {{ automodule(pkgname, automodule_options) }}
@@ -31,6 +24,7 @@ Subpackages
 
 {{ toctree(subpackages) }}
 {% endif %}
+
 
 {%- if submodules %}
 Submodules
