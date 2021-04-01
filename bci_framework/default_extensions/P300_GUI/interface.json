@@ -1,0 +1,30 @@
+[
+
+{
+    "type": "categorical",
+    "label": "Categorical",
+    "id": "id-0",
+    "options": ["option-1", "option-2", "option-3", "option-4", "option-5"]
+},
+
+{
+    "type": "slider",
+    "label": "Slider",
+    "id": "id-1",
+    "min": 0,
+    "max": 100,
+    "step": 10,
+    "value": 50 ,
+    "increase_modifiers": ["+10", "+5", "+1"],
+    "decrease_modifiers": ["-1", "-5", "-10"]
+},
+
+{
+    "type": "boolean",
+    "label": "Boolean",
+    "id": "id-2",
+    "options": ["option-1", "option-2", "option-3", "option-4", "option-5"],
+    "value": [true, true, false, false, true]
+}
+
+]
