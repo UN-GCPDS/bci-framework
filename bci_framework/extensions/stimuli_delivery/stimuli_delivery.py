@@ -50,6 +50,11 @@ class StimuliAPI(RadiantAPI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    # ----------------------------------------------------------------------
+    def __new__(self):
+        """"""
+        StimuliServer(self.__name__)
+
 
 # ----------------------------------------------------------------------
 def StimuliServer(class_, *args, **kwargs):

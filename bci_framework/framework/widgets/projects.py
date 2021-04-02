@@ -21,6 +21,11 @@ from ..editor import BCIEditor, Autocompleter
 PATH = TypeVar('path')
 
 
+LINE_DELIVERY = 'bci_framework.extensions.stimuli_delivery'
+LINE_VISUALIZATION = 'bci_framework.extensions.visualizations'
+LINE_ANALYSIS = 'bci_framework.extensions.data_analysis'
+
+
 ########################################################################
 class Projects:
     """"""
@@ -135,7 +140,7 @@ class Projects:
     # ----------------------------------------------------------------------
     def normalize_path(self, path):
         """"""
-        path = re.sub('[^0-9a-zA-Z]+', '_', path)
+        path = re.sub('[^a-zA-Z]+', '_', path).lstrip('1234567890_')
         return path
 
     # ----------------------------------------------------------------------
@@ -178,19 +183,19 @@ class Projects:
             with open(os.path.join(self.projects_dir, project_dir, 'main.py'), 'r') as file:
                 lines = file.readlines()
 
-                modules = {'EEGStream': (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
-                           'StimuliServer': (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
-                           'DataAnalysis': (self.parent_frame.listWidget_projects_analysis, 'icon_ana'),
+                modules = {LINE_VISUALIZATION: (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
+                           LINE_DELIVERY: (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
+                           LINE_ANALYSIS: (self.parent_frame.listWidget_projects_analysis, 'icon_ana'),
                            }
                 for module in modules:
-                    if [line for line in lines if f'import {module}' in ' '.join(line.split()) and not line.strip().startswith("#")]:
+                    if [line for line in lines if module in ' '.join(line.split()) and not line.strip().startswith("#")]:
                         widget, icon_name = modules[module]
                         break
-                    widget, icon_name = modules['DataAnalysis']
+                    widget, icon_name = modules[LINE_ANALYSIS]
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project_dir
             item.path = project_dir
@@ -263,8 +268,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -326,13 +331,13 @@ class Projects:
             editor.path = module
             editor.module = module
 
-            if 'bci_framework.extensions.stimuli_delivery' in content:
+            if LINE_DELIVERY in content:
                 completer = Autocompleter(mode='stimuli')
                 editor.set_completer(completer)
-            elif 'bci_framework.extensions.visualizations' in content:
+            elif LINE_VISUALIZATION in content:
                 completer = Autocompleter(mode='visualization')
                 editor.set_completer(completer)
-            elif 'bci_framework.extensions.data_analysis' in content:
+            elif LINE_ANALYSIS in content:
                 completer = Autocompleter(mode='analysis')
                 editor.set_completer(completer)
 
@@ -406,10 +411,16 @@ class Projects:
             default_project = '_default_data_analysis'
             self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
-                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
+                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
+        item.path = self.normalize_path(project_name)
+
+        ext = 0
+        while item.path in os.listdir(self.projects_dir):
+            ext += 1
+            item.path = f"{self.normalize_path(project_name)}{ext}"
 
         icon.addFile(f"bci:primary/{icon_name}.svg",
                      QSize(), QIcon.Normal, QIcon.Off)
@@ -418,10 +429,12 @@ class Projects:
 
         source = os.path.join(os.getenv('BCISTREAM_ROOT'),
                               'default_extensions', default_project)
-        target = os.path.join(self.projects_dir, project_name)
+        target = os.path.join(self.projects_dir, item.path)
         shutil.copytree(source, target)
 
-        self.open_project(project_name)
+        pickle.dump({'name': project_name, 'files': []}, open(
+            os.path.join(self.projects_dir, item.path, '.bcifr'), 'wb'))
+        self.open_project(item.path)
 
     # ----------------------------------------------------------------------
     def remove_project(self, evt) -> None:
@@ -432,17 +445,16 @@ class Projects:
                  ]
         selected_project = list(filter(None, items))[0]
 
-        if self.parent_frame.treeWidget_project.project_name == selected_project.text():
+        if hasattr(self.parent_frame.treeWidget_project, 'project_name') and self.parent_frame.treeWidget_project.project_name == selected_project.text():
             self.parent_frame.tabWidget_project.clear()
             self.core.show_interface('Home')
             self.parent_frame.actionDevelopment.setEnabled(False)
 
         shutil.rmtree(os.path.join(
-            self.projects_dir, selected_project.text()))
+            self.projects_dir, selected_project.path))
         self.load_projects()
 
     # ----------------------------------------------------------------------
-
     def add_file(self) -> None:
         """Create a new file in the project directory, by default is a Pyhon file."""
         if selected := self.parent_frame.treeWidget_project.currentItem():
@@ -509,21 +521,33 @@ class Projects:
     def project_renamed(self, evt) -> None:
         """Rename project directory."""
 
+        if (not evt.text()) or (not hasattr(evt, 'previous_name')):
+            return
+
+        if (evt.text() == evt.previous_name):
+            return
+
         new_name = evt.text().strip()
         new_path = self.normalize_path(new_name)
 
-        if name := getattr(evt, 'previous_name', False):
-            if name.strip() != new_name:
-                shutil.move(os.path.join(self.projects_dir, evt.path),
-                            os.path.join(self.projects_dir, new_path))
-                evt.previous_name = new_name
-                evt.path = new_path
+        ext = 0
+        while new_path in os.listdir(self.projects_dir):
+            ext += 1
+            new_path = f"{self.normalize_path(new_name)}{ext}"
 
-                bcifr = pickle.load(
-                    open(os.path.join(self.projects_dir, new_path, '.bcifr'), 'rb'))
-                bcifr['name'] = new_name
-                pickle.dump(bcifr, open(os.path.join(
-                    self.projects_dir, new_path, '.bcifr'), 'wb'))
+        name = evt.previous_name
+        # if name := getattr(evt, 'previous_name', False):
+            # if name.strip() != new_name:
+        shutil.move(os.path.join(self.projects_dir, evt.path),
+                    os.path.join(self.projects_dir, new_path))
+        evt.previous_name = new_name
+        evt.path = new_path
+
+        bcifr = pickle.load(
+            open(os.path.join(self.projects_dir, new_path, '.bcifr'), 'rb'))
+        bcifr['name'] = new_name
+        pickle.dump(bcifr, open(os.path.join(
+            self.projects_dir, new_path, '.bcifr'), 'wb'))
 
     # ----------------------------------------------------------------------
     def project_file_renamed(self, evt) -> None:

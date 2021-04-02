@@ -138,7 +138,7 @@ class Widgets:
         return form
 
     # ----------------------------------------------------------------------
-    def checkbox(self, label, checkboxes, on_change=None, id=None):
+    def checkbox(self, label, options, on_change=None, id=None):
         """"""
         label = MDCComponent(html.SPAN(f'{label}'))
         label.mdc.typography('subtitle1')
@@ -146,12 +146,12 @@ class Widgets:
         form = MDCForm(formfield_style={'width': '100px'})
         form <= label
 
-        for checkbox, checked in checkboxes:
+        for checkbox, checked in options:
             checkbox_.append(
                 [form.mdc.Checkbox(checkbox, name=id, checked=checked), checkbox])
 
         if id:
-            self.widgets[id] = [ch[0] for ch in checkboxes if ch[1]]
+            self.widgets[id] = [ch[0] for ch in options if ch[1]]
 
             def set_value():
                 def wrap(evt):

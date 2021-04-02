@@ -7,6 +7,8 @@ from datetime import datetime
 
 from radiant.utils import WebSocket
 
+from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
+
 StimuliServer = None
 
 logging.root.name = "StimuliDelivery:Brython"
@@ -28,7 +30,10 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'dashboard':
-                method(self, *args, **kwargs)
+                try:  # To call as decorator and as function
+                    method(self, *args, **kwargs)
+                except TypeError:
+                    method(*args, **kwargs)
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
@@ -49,7 +54,10 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'stimuli':
-                method(self, *args, **kwargs)
+                try:  # To call as decorator and as function
+                    method(self, *args, **kwargs)
+                except TypeError:
+                    method(*args, **kwargs)
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
@@ -89,7 +97,10 @@ class DeliveryInstance_:
 
         def wrap(self, *args, **kwargs):
             if self._bci_mode == 'dashboard':
-                method(self, *args, **kwargs)
+                try:  # To call as decorator and as function
+                    method(self, *args, **kwargs)
+                except TypeError:
+                    method(*args, **kwargs)
 
         wrap.no_decorator = method
         return wrap
@@ -111,9 +122,15 @@ class DeliveryInstance_:
                 method_ = method
 
             if self._bci_mode == 'dashboard':
-                cls.both(method_)(self, *args, **kwargs)
+                try:
+                    cls.both(method_)(self, *args, **kwargs)
+                except TypeError:
+                    cls.both(method_)(*args, **kwargs)
             else:
-                cls.rboth(method_)(self, *args, **kwargs)
+                try:
+                    cls.rboth(method_)(self, *args, **kwargs)
+                except:
+                    cls.rboth(method_)(*args, **kwargs)
 
         wrap.no_decorator = method
         return wrap
@@ -152,7 +169,63 @@ class BCIWebSocket(WebSocket):
 
 
 ########################################################################
-class StimuliAPI:
+class Pipeline:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def _build_pipeline(self, pipeline):
+        """"""
+        explicit_pipeline = []
+        for method, var in pipeline:
+            if isinstance(var, str):
+                var = w.get_value(var)
+            if isinstance(var, [list, tuple, set]):
+                var = random.randint(*var)
+            explicit_pipeline.append([method, var])
+        return explicit_pipeline
+
+    # ----------------------------------------------------------------------
+    def run_pipeline(self, pipeline, trials, callback=None):
+        """"""
+        self.show_progressbar(len(trials) * len(pipeline))
+        self._run_pipeline(pipeline, trials, callback)
+
+    # ----------------------------------------------------------------------
+    def _run_pipeline(self, pipeline, trials, callback):
+        """"""
+        pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
+        trial = trials.pop(0)
+        DeliveryInstance.both(pipeline_m[0])(self, trial)
+        self._timeouts = []
+        for i in range(len(pipeline_m) - 1):
+            t = timer.set_timeout(lambda: DeliveryInstance.both(
+                pipeline_m[i + 1])(self, trial), sum(timeouts[:i + 1]))
+            self._timeouts.append(t)
+
+            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts[:i + 1])):
+                self._timeouts.append(t_)
+
+        if trials:
+            t = timer.set_timeout(lambda: self._run_pipeline(
+                pipeline, trials, callback), sum(timeouts))
+            self._timeouts.append(t)
+            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts)):
+                self._timeouts.append(t_)
+
+        elif callback:
+                t = timer.set_timeout(lambda: DeliveryInstance.both(
+                    callback)(self), sum(timeouts))
+                self._timeouts.append(t)
+
+    # ----------------------------------------------------------------------
+    def stop_pipeline(self):
+        """"""
+        for t in self._timeouts:
+            timer.clear_timeout(t)
+
+
+########################################################################
+class StimuliAPI(Pipeline):
     """"""
     listen_feedback_ = False
 
@@ -293,16 +366,23 @@ class StimuliAPI:
             element.remove()
 
     # ----------------------------------------------------------------------
-    def add_run_progressbar(self):
+    @DeliveryInstance.both
+    def show_progressbar(self, steps=100):
         """"""
         from mdc.MDCLinearProgress import MDCLinearProgress
+        if progressbar := getattr(self, 'run_progressbar', False):
+            progressbar.remove()
+
         self.run_progressbar = MDCLinearProgress(Class='run_progressbar')
         self.run_progressbar.style = {
             'position': 'absolute',
-            'bottom': '4px',
+            'bottom': '0px',
             'z-index': 999,
         }
         document <= self.run_progressbar
+
+        self._progressbar_increment = 1 / (steps - 1)
+        self.set_progress(0)
         return self.run_progressbar
 
     # ----------------------------------------------------------------------
@@ -312,6 +392,14 @@ class StimuliAPI:
         if not hasattr(self, 'run_progressbar'):
             self.add_run_progressbar()
         self.run_progressbar.mdc.set_progress(p)
+        self._progressbar_value = p
+
+    # ----------------------------------------------------------------------
+    def increase_progress(self):
+        """"""
+        if hasattr(self, 'run_progressbar'):
+            self._progressbar_value += self._progressbar_increment
+            self.set_progress(self._progressbar_value)
 
     # ----------------------------------------------------------------------
     def show_blink_area(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
@@ -351,7 +439,7 @@ class StimuliAPI:
     def hide_blink_area(self):
         """"""
         if element := getattr(self, '_blink_area', None):
-            self._blink_area.remove()
+            element.remove()
 
     # ----------------------------------------------------------------------
     def build_areas(self, stimuli=True, dashboard=True):
