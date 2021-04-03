@@ -196,6 +196,8 @@ class Memory(StimuliAPI):
             print("DIFFFERENT")
         elif response == 'p':
             print("IDENTICAL")
+        else:
+            print(response)
 
     # ----------------------------------------------------------------------
     def soa(self, cue, d, **kwargs):

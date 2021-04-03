@@ -15,16 +15,15 @@ def keypress(callback, timeout=3000):
     document <= capture_key
     capture_key.focus()
 
-    def remove():
+    def process(key=None):
         capture_key.unbind('keypress')
         capture_key.remove()
-        print('removed')
+        callback(key)
+        timer.clear_timeout(t)
 
     def handle(evt):
         key = chr(evt.charCode)
-        callback(key)
-        remove()
+        process(key)
 
     capture_key.bind('keypress', handle)
-    if timeout:
-        timer.set_timeout(remove, timeout)
+    t = timer.set_timeout(process, timeout)
