@@ -27,6 +27,13 @@ class Widgets:
             return value
 
     # ----------------------------------------------------------------------
+    def _round(self, v):
+        """"""
+        if v == int(v):
+            return int(v)
+        return float(v)
+
+    # ----------------------------------------------------------------------
     def get_value(self, id):
         """"""
         v = self.widgets.get(id)
@@ -56,7 +63,7 @@ class Widgets:
         label_ .mdc.typography('subtitle1')
         form <= label_
         form <= MDCComponent(html.SPAN(
-            f' {float(value):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
+            f' {self._round(value)} {unit}', id=f'value_{id}')).mdc.typography('caption')
         slider_ = form.mdc.Slider(
             'Slider', min=min, max=max, value=value, step=step, marks=marks, *args, **kwargs)
 
@@ -68,7 +75,7 @@ class Widgets:
             self.widgets[id] = self._fix_value(value)
 
             def set_value(id, value):
-                self.widgets[id] = float(value)
+                self.widgets[id] = self._round(value)
                 document.select_one(
                     f'#value_{id}').html = f' {self.get_value(id)} {unit}'
 
@@ -85,7 +92,7 @@ class Widgets:
         label_ .mdc.typography('subtitle1')
         form <= label_
         form <= MDCComponent(html.SPAN(
-            f' {float(value_lower):.1f}-{float(value_upper):.1f} {unit}', id=f'value_{id}')).mdc.typography('caption')
+            f' {self._round(value_lower)}-{self._round(value_upper)} {unit}', id=f'value_{id}')).mdc.typography('caption')
         slider_ = form.mdc.RangeSlider(
             'Slider', min, max, value_lower, value_upper, step, *args, **kwargs)
 
@@ -98,7 +105,8 @@ class Widgets:
                 value_lower), self._fix_value(value_upper)]
 
             def set_value(id, value):
-                self.widgets[id] = [float(value[0]), float(value[1])]
+                self.widgets[id] = [self._round(
+                    value[0]), self._round(value[1])]
                 document.select_one(
                     f'#value_{id}').html = f' {self.get_value(id)[0]}-{self.get_value(id)[1]} {unit}'
 
@@ -140,11 +148,18 @@ class Widgets:
     # ----------------------------------------------------------------------
     def checkbox(self, label, options, on_change=None, id=None):
         """"""
-        label = MDCComponent(html.SPAN(f'{label}'))
+        label = MDCComponent(html.SPAN(f'{label}'),
+                             style={'flex-basis': '100%'})
         label.mdc.typography('subtitle1')
         checkbox_ = []
-        form = MDCForm(formfield_style={'width': '100px'})
+        form = MDCForm(formfield_style={
+            'min-width': 'unset',
+            'width': 'unset',
+            # 'display': 'inline',
+            # 'vertical-align': 'super',
+        })
         form <= label
+        form <= html.BR()
 
         for checkbox, checked in options:
             checkbox_.append(
@@ -225,4 +240,3 @@ class Widgets:
             switch_.bind('change', set_value())
 
         return form
-
