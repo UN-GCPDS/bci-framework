@@ -182,6 +182,7 @@ class Pipeline:
             if isinstance(var, [list, tuple, set]):
                 var = random.randint(*var)
             explicit_pipeline.append([method, var])
+
         return explicit_pipeline
 
     # ----------------------------------------------------------------------
@@ -195,14 +196,16 @@ class Pipeline:
         """"""
         pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
         trial = trials.pop(0)
-        DeliveryInstance.both(pipeline_m[0])(self, trial)
+
+        self.wrap_fn(pipeline_m[0], trial)()
         self._timeouts = []
-        for i in range(len(pipeline_m) - 1):
-            t = timer.set_timeout(lambda: DeliveryInstance.both(
-                pipeline_m[i + 1])(self, trial), sum(timeouts[:i + 1]))
+        for i in range(1, len(pipeline_m)):
+
+            t = timer.set_timeout(self.wrap_fn(
+                pipeline_m[i], trial), sum(timeouts[:i]))
             self._timeouts.append(t)
 
-            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts[:i + 1])):
+            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts[:i])):
                 self._timeouts.append(t_)
 
         if trials:
@@ -218,10 +221,27 @@ class Pipeline:
                 self._timeouts.append(t)
 
     # ----------------------------------------------------------------------
+    def wrap_fn(self, fn, trial):
+        """"""
+        fn_ = fn
+        trial_ = trial
+
+        def inner():
+            if isinstance(trial, list):
+                DeliveryInstance.both(fn_)(self, *trial_)
+            elif isinstance(trial, dict):
+                DeliveryInstance.both(fn_)(self, **trial_)
+            else:
+                DeliveryInstance.both(fn_)(self, trial_)
+
+        return inner
+
+    # ----------------------------------------------------------------------
     def stop_pipeline(self):
         """"""
         for t in self._timeouts:
             timer.clear_timeout(t)
+        self.set_progress(0)
 
 
 ########################################################################
@@ -402,9 +422,9 @@ class StimuliAPI(Pipeline):
             self.set_progress(self._progressbar_value)
 
     # ----------------------------------------------------------------------
-    def show_blink_area(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
+    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
         """"""
-        self.hide_blink_area()
+        self.hide_synchronizer()
         if 'upper' in position:
             top = '15px'
         elif 'lower' in position:
@@ -436,7 +456,7 @@ class StimuliAPI(Pipeline):
         return self._blink_area
 
     # ----------------------------------------------------------------------
-    def hide_blink_area(self):
+    def hide_synchronizer(self):
         """"""
         if element := getattr(self, '_blink_area', None):
             element.remove()

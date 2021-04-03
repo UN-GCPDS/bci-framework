@@ -1,1 +1,1 @@
-from .paradigms_diagram import build_paradigm
+from .paradigms_diagram import Paradigm

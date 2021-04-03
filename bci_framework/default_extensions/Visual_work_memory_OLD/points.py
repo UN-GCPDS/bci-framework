@@ -7,7 +7,7 @@ def distance(p1, p2):
 
 
 def point(margin):
-    return [random.uniform(0 + margin/2, 7.2 - margin/2),  random.uniform(0 + margin/2, 13.5 - margin/2)]
+    return [random.randint(10 + margin, 100 - margin - 15) / 2, random.randint(10, 70)]
 
 
 def add_point(points, d, margin):

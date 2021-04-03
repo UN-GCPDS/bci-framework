@@ -44,11 +44,11 @@ class Units:
 
     # ----------------------------------------------------------------------
     @classmethod
-    def dva(cls, value: Union[int, float], d: Union[None, int, float] = None, dpi: Union[None, int, float] = None) -> str:
+    def dva(cls, value: Union[int, float], d: Union[None, int, float] = None, dpi: Union[None, int, float] = None, scale: Union[None, int, float] = 1) -> str:
         """"""
         assert not (
             d is None and cls.d is None), "Must define d, as 'distance from monitor'"
         if d is None:
             d = cls.d
 
-        return f"{cls.scale(2*d*39.37*tan((radians(value)/2))*96, dpi)}px"
+        return f"{cls.scale(2*d*39.37*tan((radians(value)/2))*96*scale, dpi)}px"

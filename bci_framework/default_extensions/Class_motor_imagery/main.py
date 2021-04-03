@@ -32,7 +32,6 @@ class FourClassMotorImagery(StimuliAPI):
 
         self.build_areas()
         self.show_cross()
-        self.show_blink_area()
 
         self.dashboard <= w.label('4-Class motor imagery<br>', 'headline4')
 
@@ -43,9 +42,9 @@ class FourClassMotorImagery(StimuliAPI):
             id='cues',
         )
         self.dashboard <= w.slider(
-            label='Repetitions by class:',
+            label='Repetitions per class:',
             min=1,
-            max=40,
+            max=100,
             value=10,
             step=1,
             discrete=True,
@@ -55,7 +54,7 @@ class FourClassMotorImagery(StimuliAPI):
         self.dashboard <= w.slider(
             label='Stimulus duration',
             min=2000,
-            max=5000,
+            max=6000,
             value=4000,
             step=100,
             unit='ms',
@@ -63,7 +62,7 @@ class FourClassMotorImagery(StimuliAPI):
         )
         self.dashboard <= w.range_slider(
             label='Inter trial',
-            min=2000,
+            min=1000,
             max=3000,
             value_lower=2000,
             value_upper=3000,
@@ -74,7 +73,12 @@ class FourClassMotorImagery(StimuliAPI):
         self.dashboard <= w.switch(
             label='Record EEG',
             checked=False,
-            on_change=None,
+            id='record',
+        )
+        self.dashboard <= w.switch(
+            label='External marker synchronizer',
+            checked=False,
+            on_change=self.synchronizer,
             id='record',
         )
 
@@ -142,6 +146,15 @@ class FourClassMotorImagery(StimuliAPI):
         self.send_marker(cue)
         self.cue_placeholder.html = UNICODE_CUES[cue]
         self.cue_placeholder.style = {'display': 'flex'}
+
+    # ----------------------------------------------------------------------
+
+    def synchronizer(self, value):
+        """"""
+        if value:
+            self.show_synchronizer()
+        else:
+            self.hide_synchronizer()
 
 
 if __name__ == '__main__':

@@ -108,7 +108,7 @@ class Widgets:
         return form
 
     # ----------------------------------------------------------------------
-    def radios(self, label, radios, on_change=None, id=None):
+    def radios(self, label, options, on_change=None, id=None):
         """"""
         label = MDCComponent(html.SPAN(f'{label}'))
         label.mdc.typography('subtitle1')
@@ -116,12 +116,12 @@ class Widgets:
         form = MDCForm(formfield_style={'width': '100px'})
         form <= label
 
-        for i, (radio, value) in enumerate(radios):
+        for i, (radio, value) in enumerate(options):
             radios_.append(
                 [form.mdc.Radio(radio, name=id, checked=(i == 0)), value])
 
         if id:
-            self.widgets[id] = radios[0][1]
+            self.widgets[id] = options[0][1]
 
             def set_value(value):
                 def wrap(evt):

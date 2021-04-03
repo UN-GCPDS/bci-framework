@@ -1,19 +1,15 @@
-.bci_dashboard button {
-    margin: 10px;
-}
 
-.mdc-typography--headline3,
-.mdc-typography--headline4 {
-    line-height: 60px;
-}
+#hint {
 
-#cue {
+    font-size: 400px;
     color: #4dd0e1;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    line-height: 0;
-    z-index: 15;
-    position: relative;
+    height: 70%;
+
 }
+
 
 .test-button {
     bottom: 15px;

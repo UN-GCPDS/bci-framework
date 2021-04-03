@@ -31,7 +31,7 @@ class P300GUI(StimuliAPI):
 
         self.add_stylesheet('styles.css')
         self.build_areas()
-        w. = Widgets()
+        # w. = Widgets()
 
         self.interface = json.loads(
             open(f'/root/interface.json?foo={time.time()}').read())
