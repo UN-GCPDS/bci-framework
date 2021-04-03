@@ -28,7 +28,7 @@ class PythonHighlighter(QSyntaxHighlighter):
     keywords = ['__name__', 'format', 'int', 'float', 'str', 'list', 'tuple',
                 'dict', 'set', 'len', 'super', 'range', 'enumerate', 'hasattr',
                 'getattr', 'setattr', 'isinstance', 'issubclass', 'sum', 'ord',
-                'chr'
+                'chr', 'zip', 'bool'
                 ]
 
     # Python operators
