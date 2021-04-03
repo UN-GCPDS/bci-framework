@@ -36,7 +36,8 @@ def get_points(N, d=10, margin=10):
         c += 1
         points = []
         points.append(point(margin))
-        [add_point(points, d, margin) for i in range(int(N) - 1)][-1]
+        if N > 1:
+            [add_point(points, d, margin) for i in range(int(N) - 1)][-1]
 
         if len(points) == N:
             break

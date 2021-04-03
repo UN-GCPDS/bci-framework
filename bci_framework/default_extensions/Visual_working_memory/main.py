@@ -30,8 +30,6 @@ COLORS = [
 UNICODE_CUES = {
     'Right': '&#x1f86a;',
     'Left': '&#x1f868;',
-    'Up': '&#x1f869;',
-    'Bottom': '&#x1f86b;',
 }
 
 
@@ -51,23 +49,8 @@ class Memory(StimuliAPI):
 
         # Markers
         self.dashboard <= w.label('Markers', 'headline4')
-        self.dashboard <= w.radios(
-            label='Shapes',
-            options=[('square', '0%'),
-                     ('circles', '100%')],
-            id='shapes'
-        )
         self.dashboard <= w.slider(
-            label='Number of markers by hemifield:',
-            min=2,
-            max=8,
-            value=4,
-            discrete=True,
-            markers=True,
-            id='squares'
-        )
-        self.dashboard <= w.slider(
-            label='Marker size:',
+            label='Shape size:',
             min=0.1,
             max=5,
             step=0.01,
@@ -88,12 +71,20 @@ class Memory(StimuliAPI):
         # Intervals
         self.dashboard <= w.label('Intervals', 'headline4')
         self.dashboard <= w.slider(
-            label='Stimulus onset asynchrony:',
+            label='Inter trial break:',
+            min=0,
+            max=3000,
+            value=2000,
+            unit='ms',
+            id='break',
+        )
+        self.dashboard <= w.slider(
+            label='Arrow cue:',
             min=100,
             max=1000,
             value=200,
             unit='ms',
-            id='soa',
+            id='cue',
         )
         self.dashboard <= w.slider(
             label='Memory array:',
@@ -123,17 +114,14 @@ class Memory(StimuliAPI):
 
         # Trial
         self.dashboard <= w.label('Trial', 'headline4')
+        self.dashboard <= w.checkbox(
+            label='Task level:',
+            options=[[f'{i} squares', i in [1, 2, 4]] for i in range(1, 7)],
+            on_change=None,
+            id='task_level',
+        )        
         self.dashboard <= w.slider(
-            label='Max differences:',
-            min=1,
-            max=8,
-            value=2,
-            discrete=True,
-            markers=True,
-            id='differences'
-        )
-        self.dashboard <= w.slider(
-            label='Numbers of trials for each difference:',
+            label='Numbers of trials per level:',
             min=1,
             max=8,
             value=4,
@@ -142,8 +130,8 @@ class Memory(StimuliAPI):
             id='trials'
         )
         
-        # Montage
-        self.dashboard <= w.label('Montage', 'headline4')
+        # Presentation
+        self.dashboard <= w.label('Presentation', 'headline4')
         self.dashboard <= w.slider(
             label='Distance from monitor:',
             min=0.1,
@@ -186,7 +174,7 @@ class Memory(StimuliAPI):
         keypress(self.handle_response)
         u(d=w.get_value('d'), dpi=w.get_value('dpi'))
         self.build_markers_area()
-        self.soa('Right', d=2)
+        self.soa(cue='Right', shapes=4, change=True)
         self.memory_array()
         
     # ----------------------------------------------------------------------
@@ -197,16 +185,17 @@ class Memory(StimuliAPI):
         elif response == 'p':
             print("IDENTICAL")
         else:
-            print(response)
+            print("NO RESPONSE")
 
     # ----------------------------------------------------------------------
-    def soa(self, cue, d, **kwargs):
+    def soa(self, cue, shapes, change):
         """"""
         self.clear()
         u(d=w.get_value('d'), dpi=w.get_value('dpi'))
         self.build_markers_area()
-        self.build_markers()
-        self.prepare_shuffle(cue, d)
+        self.build_markers(shapes)
+        if change:
+            self.prepare_shuffle(cue)
 
     # ----------------------------------------------------------------------
     def cue(self, cue, **kwargs):
@@ -247,15 +236,16 @@ class Memory(StimuliAPI):
         self._set_visible_markers(False)
 
     # ----------------------------------------------------------------------
-    def test_array(self, cue, **kwargs):
+    def test_array(self, cue, change, **kwargs):
         """"""
-        f = self.shuffled_colors
-        keypress(self.handle_response)
-        for i, color in enumerate(f):
-            if cue == 'Right':
-                self.markers_r[i][0].style = {'background-color': color}
-            elif cue == 'Left':
-                self.markers_l[i][0].style = {'background-color': color}
+        if change:
+            f = self.shuffled_colors
+            keypress(self.handle_response)
+            for i, color in enumerate(f):
+                if cue == 'Right':
+                    self.markers_r[i][0].style = {'background-color': color}
+                elif cue == 'Left':
+                    self.markers_l[i][0].style = {'background-color': color}
 
         self._set_visible_markers(True)
 
@@ -274,29 +264,24 @@ class Memory(StimuliAPI):
     # ----------------------------------------------------------------------
     def build_trials(self):
         """"""
-
-        self.trials = [{'cue': 'Right',
-                        'd': 2,
-                        },
-                       {'cue': 'Right',
-                        'd': 2,
-                        },
-                       {'cue': 'Right',
-                        'd': 2,
-                        },
-                       {'cue': 'Right',
-                        'd': 2,
-                        },
-
-                       ]
-
+    
+        levels = [int(v[:1]) for v in w.get_value('task_level')]        
+        trials = levels * w.get_value('trials')
+        cues = [random.choice(['Right', 'Left']) for _ in trials]
+        changes = [random.choice([0, 1]) for _ in trials]
+        
+        trials = list(zip(trials, cues, changes))
+        
+        self.trials = [{'cue': cue, 'shapes': shapes, 'change': bool(change) } for shapes, cue, change in trials]
+        random.shuffle(self.trials)
+        
         self.pipeline_trial = [
 
-            (self.soa, 1000),
-            (self.cue, 500),
-            (self.memory_array, 500),
-            (self.retention, 500),
-            (self.test_array, 2000),
+            (self.soa, w.get_value('break')),
+            (self.cue, w.get_value('cue')),
+            (self.memory_array, w.get_value('memory_array')),
+            (self.retention, w.get_value('retention')),
+            (self.test_array, w.get_value('test_array')),
 
         ]
 
@@ -329,12 +314,11 @@ class Memory(StimuliAPI):
             timer.set_timeout(self.stop_record, 2000)
 
     # ----------------------------------------------------------------------
-    def build_markers(self):
+    def build_markers(self, shapes):
         """"""
-        boxes = w.get_value('squares')
+        boxes = shapes
         size = w.get_value('size')
         distance = w.get_value('distance')
-        shapes = w.get_value('shapes')
 
         points_r = get_points(boxes, distance, size)
         points_l = get_points(boxes, distance, size)
@@ -349,7 +333,6 @@ class Memory(StimuliAPI):
         for i, point in enumerate(points_r):
             self.markers_r.append([html.DIV('', Class='bci-marker', id=f'right_{i}', style={
                 'background-color': colors[i],
-                'border-radius': shapes,
                 'width': u.dva(size),
                 'height': u.dva(size),
                 'left': f'calc({u.dva(point[0])} - {u.dva(size, scale=0.5)})',
@@ -363,7 +346,6 @@ class Memory(StimuliAPI):
         for j, point in enumerate(points_l):
             self.markers_l.append([html.DIV('', Class='bci-marker', id=f'left_{i}', style={
                 'background-color': colors[i + j + 1],
-                'border-radius': shapes,
                 'width': u.dva(size),
                 'height': u.dva(size),                
                 'left': f'calc({u.dva(point[0])} - {u.dva(size, scale=0.5)})',
@@ -374,7 +356,7 @@ class Memory(StimuliAPI):
             document.select_one('.markers_l-placeholder') <= self.markers_l[-1][0]
 
     # ----------------------------------------------------------------------
-    def prepare_shuffle(self, cue, d):
+    def prepare_shuffle(self, cue, d=1):
         """"""
         right = [color for marker, color in self.markers_r]
         left = [color for marker, color in self.markers_l]
