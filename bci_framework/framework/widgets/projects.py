@@ -247,6 +247,15 @@ class Projects:
                 if file == '__pycache__':
                     continue
 
+                if file.startswith('.'):
+                    continue
+
+                if file.endswith('.ipynb'):
+                    continue
+
+                if file.endswith('.png'):
+                    continue
+
                 tree = QTreeWidgetItem(parent)
                 tree.setText(0, file)
                 tree.path = os.path.join(path, file)
