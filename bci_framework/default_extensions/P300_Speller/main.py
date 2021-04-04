@@ -3,8 +3,6 @@
 P300 Speller
 ============
 
-main.py
-
 """
 
 from bci_framework.extensions.stimuli_delivery import StimuliAPI
@@ -14,16 +12,14 @@ from bci_framework.extensions.stimuli_delivery.utils import Tone as t
 from browser import document, html, timer
 import random
 import logging
-
+from typing import List
 
 CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-ON = 1
-OFF = 0.3   
 
 
 ########################################################################
 class P300Speller(StimuliAPI):
-    """"""
+    """Classic P300 speller."""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -31,139 +27,148 @@ class P300Speller(StimuliAPI):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
-# self.show_progressbar()
-
-# self.listen_feedbacks(self.command)
-
         self.stimuli_area.style = {'background-color': 'black'}
         self.build_grid()
 
-        self.dashboard <= w.label(
-            'P300 Speller <br><br>', 'headline4')
-
+        self.dashboard <= w.label('P300 Speller', 'headline4')
         self.dashboard <= w.slider(
-            label='Trials:', min=1, max=20, value=15, step=1, discrete=True, marks=True, id='trials')
+            label='Trials:',
+            min=1,
+            max=20,
+            value=15,
+            step=1,
+            discrete=True,
+            marks=True,
+            id='trials'
+        )
         self.dashboard <= w.slider(
-            label='Flash duration:', min=100, max=500, value=125, step=5, unit='ms', id='duration')
+            label='Target notice:',
+            min=500,
+            max=5000,
+            value=2000,
+            step=100,
+            unit='ms',
+            id='notice'
+        )
         self.dashboard <= w.slider(
-            label='Inter stimulus interval:', min=10, max=500, value=62.5, step=5, unit='ms', id='isi')
-
+            label='Flash duration:',
+            min=100,
+            max=500,
+            value=125,
+            step=5,
+            unit='ms',
+            id='duration'
+        )
+        self.dashboard <= w.slider(
+            label='Inter stimulus interval:',
+            min=10,
+            max=500,
+            value=62.5,
+            step=5,
+            unit='ms',
+            id='inter_stimulus'
+        )
         self.dashboard <= w.switch(
-            'Record EEG', checked=False, on_change=None, id='record')
+            label='Record EEG',
+            checked=False,
+            id='record',
+        )
+        self.dashboard <= w.switch(
+            label='External marker synchronizer',
+            checked=False,
+            on_change=self.synchronizer,
+            id='record',
+        )
 
-        self.dashboard <= w.button(
-            'Start run', on_click=self.start, style={'margin': '0 15px'})
-        self.dashboard <= w.button(
-            'Stop run', on_click=self.stop, style={'margin': '0 15px'})
-        self.dashboard <= w.button(
-            'LOG', on_click=self.log, style={'margin': '0 15px'})
-
-    # ----------------------------------------------------------------------
-    def log(self):
-        """"""
-        logging.debug('#' * 10)
-        logging.info('#' * 10)
-        logging.warning('#' * 10)
-        logging.error('#' * 10)
-        logging.critical('#' * 10)
+        self.dashboard <= w.button('Start run', on_click=self.start)
+        self.dashboard <= w.button('Stop run', on_click=self.stop)
 
     # ----------------------------------------------------------------------
-    def command(self, command):
-        """"""
-        print(f"Command: {command}")
+    def start(self) -> None:
+        """Start the run.
 
-    # ----------------------------------------------------------------------
-    def start(self):
-        """"""
+        A run consist in a consecutive pipeline trials execution.
+        """
         if w.get_value('record'):
             self.start_record()
-        timer.set_timeout(self.run, 2000)
+
+        self.build_trials()
+        timer.set_timeout(lambda: self.run_pipeline(
+            self.pipeline_trial, self.trials), 2000)
 
     # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
-        self.trials = 0
-        if hasattr(self, 't0'):
-            timer.clear_timeout(self.t0)
-        if hasattr(self, 't1'):
-            timer.clear_timeout(self.t1)
-
+    def stop(self) -> None:
+        """Stop pipeline execution."""
+        self.stop_pipeline()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
     # ----------------------------------------------------------------------
-    def run(self):
-        """"""
-        self.isi = w.get_value('isi')
-        self.duration = w.get_value('duration')
-        self.trials = w.get_value('trials')
-        self.progress = 0
+    def build_trials(self) -> None:
+        """Define the `trials` and `pipeline trials`.
 
-        self.trial(self.isi, self.duration, self.trials)
+        The `trials` consist (in this case) in a list of cues.
+        The `pipeline trials` is a set of couples `(callable, duration)` that
+        define a single trial, this list of functions are executed asynchronously
+        and repeated for each trial.
+        """
+        inter_stimulus = w.get_value('inter_stimulus')
+        duration = w.get_value('duration')
 
-    # ----------------------------------------------------------------------
-    def trial(self, isi, duration, trials):
-        """"""
-        self.stimuli_array = []
-        for i in range(6):
-            self.stimuli_array.extend([f'.col-{i}', f'.row-{i}'])
-        random.shuffle(self.stimuli_array)
+        self.trials = []
+        for _ in range(w.get_value('trials')):
+            stimuli_array = []
+            for i in range(6):
+                stimuli_array.append(
+                    [e.text for e in document.select(f'.col-{i}')])
+                stimuli_array.append(
+                    [e.text for e in document.select(f'.row-{i}')])
+            random.shuffle(stimuli_array)
 
-        self.progress += 1
-        self.set_progress(self.progress / (trials + 1))
+            self.trials.append({'target': random.choice(CHARACTERS),
+                                'array': stimuli_array})
 
-        target = [random.randint(0, 5), random.randint(0, 5)]
-        self.show_target(target)
+        random.shuffle(self.trials)
 
-        timer.set_timeout(lambda: self.show_trial(isi, duration, trials), 3000)
+        self.pipeline_trial = [
+            (lambda ** kwargs: None, 500),
+            (self.target_notice, w.get_value('notice')),
+            (self.inter_stimulus, 300)
+        ]
 
-    # ----------------------------------------------------------------------
-# @DeliveryInstance.both
-    def show_target(self, target):
-        """"""
-        target = document.select_one(f'.col-{target[0]}.row-{target[1]}')
-        target.style = {'color': '#00ff00', 'opacity': 0.5}
-        self.send_marker(target.text)
-        t("C#6", 200)
-        def target_off(): return setattr(target, 'style', {
-            'color': '#ffffff', 'opacity': OFF})
-        timer.set_timeout(target_off, 1000)
-
-    # ----------------------------------------------------------------------
-# @DeliveryInstance.both
-    def show_trial(self, isi, duration, trials):
-        """"""
-        if self.stimuli_array:
-            chars = self.stimuli_array.pop(0)
-            self.activate(chars, duration)
-            self.t0 = timer.set_timeout(lambda: self.show_trial(
-                isi, duration, trials), isi + duration)
-
-        elif self.trials > 1:
-            self.trials -= 1
-            self.t1 = timer.set_timeout(
-                lambda: self.trial(isi, duration, trials), 2000)
-
-        else:
-            timer.set_timeout(lambda: t("C#6", 100), 1000)
-            timer.set_timeout(lambda: t("C#6", 100), 1150)
-            timer.set_timeout(self.stop, 2000)
+        [self.pipeline_trial.extend(
+            [(self.activate, 300),
+             (self.inter_stimulus, 300)]) for _ in range(12)]
 
     # ----------------------------------------------------------------------
-# @DeliveryInstance.both
-    def activate(self, chars, duration=100):
-        """"""
-        self.send_marker(chars[1:].upper())
-        [setattr(element, 'style', {'opacity': ON})
-         for element in document.select(chars)]
-
-        def turn_off(): return [setattr(element, 'style', {
-            'opacity': OFF}) for element in document.select(chars)]
-        timer.set_timeout(turn_off, duration)
+    def target_notice(self, target: str, array: List[str]) -> None:
+        """Highlight the character that's subject must focus on."""
+        target = document.select_one(f".p300-{target}-")
+        target.style = {'color': '#00ff00',
+                        'opacity': 0.5, 'font-weight': 'bold'}
 
     # ----------------------------------------------------------------------
-    def build_grid(self):
-        """"""
+    def inter_stimulus(self, **kwargs) -> None:
+        """Remove the highlight over the focus character."""
+        for element in document.select('.p300-char'):
+            element.style = {'opacity': 0.3,
+                             'color': '#ffffff',
+                             'font-weight': 'normal',
+                             }
+
+    # ----------------------------------------------------------------------
+    def activate(self, target: str, array: List[str]) -> None:
+        """Highlight a column or a row."""
+        elements = [document.select_one(
+            f".p300-{char}-") for char in array.pop(0)]
+        for element in elements:
+            element.style = {'opacity': 1,
+                             'font-weight': 'bold',
+                             }
+
+    # ----------------------------------------------------------------------
+    def build_grid(self) -> None:
+        """Create the grid with the letters."""
         table = html.TABLE(CLass='p300')
         tr = html.TR()
         table <= tr
@@ -171,11 +176,20 @@ class P300Speller(StimuliAPI):
         for i, char in enumerate(CHARACTERS):
             col = i // 6
             row = i % 6
-            tr <= html.TD(char, Class=f'p300-char col-{col} row-{row}')
+            tr <= html.TD(
+                char, Class=f'p300-char p300-{char}- col-{col} row-{row}')
             if i != 0 and not (i + 1) % 6:
                 tr = html.TR()
                 table <= tr
         self.stimuli_area <= table
+
+    # ----------------------------------------------------------------------
+    def synchronizer(self, value: bool) -> None:
+        """Show or hide synchronizer."""
+        if value:
+            self.show_synchronizer()
+        else:
+            self.hide_synchronizer()
 
 
 if __name__ == '__main__':

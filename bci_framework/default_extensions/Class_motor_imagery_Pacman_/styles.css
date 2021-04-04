@@ -9,11 +9,13 @@
 
 }
 
+.bci_dashboard button {
+    margin: 10px;
+}
 
 .bci_stimuli {
   background: #000000;
   overflow: hidden;
- 
 } 
    
 .pacman {
@@ -87,9 +89,7 @@
   
 }
 
-
 .pacman__tail {
-
   position: absolute;
   width: 1000px;
   height: 50px;
@@ -97,11 +97,7 @@
   right: 100px;
   background: #000000;
   z-index:  70;
-
 }
-
-
-
 
 @keyframes food {
   0% {

@@ -10,6 +10,7 @@ word-wrap: normal;
 position: absolute;
 width: 100%;
 top: 20vh;
+display: block !important;
 
 }
 
@@ -22,13 +23,13 @@ line-height: 2vw;
 word-wrap: normal;
 position: absolute;
 width: 80%;
-margin-left: 10%;
 top: 55vh;
+display: block !important;
 
 }
 
 
-#user-button{
+#syncrhonous-button{
 
 bottom: 15px;
 width: 50%;
@@ -36,6 +37,9 @@ right: 25%;
 position: absolute;
 color: #2ca02c;
 border-color: #2ca02c;
-display: none;
+}
 
+
+.bci_dashboard button {
+    margin: 10px;
 }

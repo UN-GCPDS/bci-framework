@@ -1,3 +1,10 @@
+"""
+=====================
+Visual working memory
+=====================
+
+"""
+
 from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import keypress
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
@@ -9,11 +16,10 @@ from points import get_points
 
 import time
 import random
-
+from typing import Literal
 import logging
 
 COLORS = [
-
     '#1f77b4',
     '#ff7f0e',
     '#2ca02c',
@@ -24,7 +30,6 @@ COLORS = [
     '#7f7f7f',
     '#bcbd22',
     '#17becf',
-
 ]
 
 UNICODE_CUES = {
@@ -35,6 +40,7 @@ UNICODE_CUES = {
 
 ########################################################################
 class Memory(StimuliAPI):
+    """Visual working memory: change detection task."""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -43,14 +49,15 @@ class Memory(StimuliAPI):
         self.add_stylesheet('styles.css')
         self.build_areas()
         self.show_cross()
-        
-        self.dashboard <= w.label('Visual working memory - Change detection task', 'headline4')
-        self.dashboard <=  html.BR()
+
+        self.dashboard <= w.label(
+            'Visual working memory - Change detection task', 'headline4')
+        self.dashboard <= html.BR()
 
         # Markers
-        self.dashboard <= w.label('Markers', 'headline4')
+        self.dashboard <= w.label('Squares', 'headline4')
         self.dashboard <= w.slider(
-            label='Shape size:',
+            label='Squares size:',
             min=0.1,
             max=5,
             step=0.01,
@@ -59,7 +66,7 @@ class Memory(StimuliAPI):
             id='size'
         )
         self.dashboard <= w.slider(
-            label='Minimum distance between markers:',
+            label='Minimum distance between Squares:',
             min=1,
             max=10,
             step=0.01,
@@ -119,7 +126,7 @@ class Memory(StimuliAPI):
             options=[[f'{i} squares', i in [1, 2, 4]] for i in range(1, 7)],
             on_change=None,
             id='task_level',
-        )        
+        )
         self.dashboard <= w.slider(
             label='Numbers of trials per level:',
             min=1,
@@ -129,7 +136,7 @@ class Memory(StimuliAPI):
             markers=True,
             id='trials'
         )
-        
+
         # Presentation
         self.dashboard <= w.label('Presentation', 'headline4')
         self.dashboard <= w.slider(
@@ -162,85 +169,115 @@ class Memory(StimuliAPI):
             on_change=self.synchronizer,
             id='record',
         )
-        
-        self.dashboard <= w.button('Test shapes', raised=False, outlined=True, on_click=self.test_shapes)
+
+        self.dashboard <= w.button(
+            'Test shapes', raised=False, outlined=True, on_click=self.test_shapes)
         self.dashboard <= w.button('Start run', on_click=self.start)
         self.dashboard <= w.button('Stop run', on_click=self.stop)
-        
+
     # ----------------------------------------------------------------------
-    def test_shapes(self):
-        """"""
+    def test_shapes(self) -> None:
+        """Preview the size and distribution of the squares."""
         self.clear()
         keypress(self.handle_response)
         u(d=w.get_value('d'), dpi=w.get_value('dpi'))
-        self.build_markers_area()
+        self.build_squares_area()
         self.soa(cue='Right', shapes=4, change=True)
         self.memory_array()
-        
-    # ----------------------------------------------------------------------
-    def handle_response(self, response):
-        """"""
-        if response == 'q':
-            print("DIFFFERENT")
-        elif response == 'p':
-            print("IDENTICAL")
-        else:
-            print("NO RESPONSE")
 
     # ----------------------------------------------------------------------
-    def soa(self, cue, shapes, change):
-        """"""
+    def start(self):
+        """Start the run.
+
+        A run consist in a consecutive trials execution.
+        """
+        if w.get_value('record'):
+            self.start_record()
+
+        self.build_trials()
+        timer.set_timeout(lambda: self.run_pipeline(
+            self.pipeline_trial, self.trials, callback=self.clear), 2000)
+
+    # ----------------------------------------------------------------------
+    def stop(self):
+        """Stop pipeline execution."""
+        self.stop_pipeline()
+        self.clear()
+        if w.get_value('record'):
+            timer.set_timeout(self.stop_record, 2000)
+
+    # ----------------------------------------------------------------------
+    def build_trials(self) -> None:
+        """Define the `trials` and `pipeline trials`.
+
+        The `trials` consist (in this case) in a list of cues.
+        The `pipeline trials` is a set of couples `(callable, duration)` that
+        define a single trial, this list of functions are executed asynchronously
+        and repeated for each trial.
+        """
+        levels = [int(v[:1]) for v in w.get_value('task_level')]
+        trials = levels * w.get_value('trials')
+        cues = [random.choice(['Right', 'Left']) for _ in trials]
+        changes = [random.choice([0, 1]) for _ in trials]
+
+        trials = list(zip(trials, cues, changes))
+
+        self.trials = [{'cue': cue,
+                        'shapes': shapes,
+                        'change': bool(change),
+                        } for shapes, cue, change in trials]
+        random.shuffle(self.trials)
+
+        self.pipeline_trial = [
+
+            (self.soa, w.get_value('break')),
+            (self.cue, w.get_value('cue')),
+            (self.memory_array, w.get_value('memory_array')),
+            (self.retention, w.get_value('retention')),
+            (self.test_array, w.get_value('test_array')),
+        ]
+
+    # ----------------------------------------------------------------------
+    def soa(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
+        """Stimulus onset asynchronously."""
         self.clear()
         u(d=w.get_value('d'), dpi=w.get_value('dpi'))
-        self.build_markers_area()
+        self.build_squares_area()
         self.build_markers(shapes)
         if change:
             self.prepare_shuffle(cue)
 
     # ----------------------------------------------------------------------
-    def cue(self, cue, **kwargs):
-        """"""
+    def cue(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
+        """Show the cue to indicate the hemifield target."""
         if not hasattr(self, 'cue_placeholder'):
             self.cue_placeholder = html.SPAN('', id='cue', style={
                 'font-size': u.dva(8),
                 'padding-top': f'calc(50vh - {u.dva(8, scale=1/50)})',
-                })
+            })
             self.stimuli_area <= self.cue_placeholder
 
-        # self.send_marker(cue)
         self.cue_placeholder.html = UNICODE_CUES[cue]
         self.cue_placeholder.style = {'display': 'flex'}
 
     # ----------------------------------------------------------------------
-    def memory_array(self, **kwargs):
-        """"""
+    def memory_array(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
+        """Show the initial array."""
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.style = {'display': 'none'}
         self._set_visible_markers(True)
 
     # ----------------------------------------------------------------------
-    def _set_visible_markers(self, visible):
-        """"""
-        if hasattr(self, 'markers_r'):
-            right = [marker for marker, color in self.markers_r]
-            left = [marker for marker, color in self.markers_l]
-            for marker in right + left:
-                if visible:
-                    marker.style = {'display': 'block'}
-                else:
-                    marker.style = {'display': 'none'}
-
-    # ----------------------------------------------------------------------
-    def retention(self, **kwargs):
-        """"""
+    def retention(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
+        """Remove the array."""
         self._set_visible_markers(False)
 
     # ----------------------------------------------------------------------
-    def test_array(self, cue, change, **kwargs):
-        """"""
-        if change:
+    def test_array(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
+        """Show the array again."""
+
+        if change:  # Show an array with differences
             f = self.shuffled_colors
-            keypress(self.handle_response)
             for i, color in enumerate(f):
                 if cue == 'Right':
                     self.markers_r[i][0].style = {'background-color': color}
@@ -260,34 +297,33 @@ class Memory(StimuliAPI):
 
         self.button_identical.style = {'display': 'block'}
         self.button_different.style = {'display': 'block'}
+        keypress(self.handle_response)
 
     # ----------------------------------------------------------------------
-    def build_trials(self):
-        """"""
-    
-        levels = [int(v[:1]) for v in w.get_value('task_level')]        
-        trials = levels * w.get_value('trials')
-        cues = [random.choice(['Right', 'Left']) for _ in trials]
-        changes = [random.choice([0, 1]) for _ in trials]
-        
-        trials = list(zip(trials, cues, changes))
-        
-        self.trials = [{'cue': cue, 'shapes': shapes, 'change': bool(change) } for shapes, cue, change in trials]
-        random.shuffle(self.trials)
-        
-        self.pipeline_trial = [
-
-            (self.soa, w.get_value('break')),
-            (self.cue, w.get_value('cue')),
-            (self.memory_array, w.get_value('memory_array')),
-            (self.retention, w.get_value('retention')),
-            (self.test_array, w.get_value('test_array')),
-
-        ]
+    def handle_response(self, response: str) -> None:
+        """Capture the subject keyboard response."""
+        if response == 'q':
+            print("DIFFFERENT")
+        elif response == 'p':
+            print("IDENTICAL")
+        else:
+            print("NO RESPONSE")
 
     # ----------------------------------------------------------------------
-    def clear(self):
-        """"""
+    def _set_visible_markers(self, visible: bool) -> None:
+        """Toggle the squares visibility."""
+        if hasattr(self, 'markers_r'):
+            right = [marker for marker, color in self.markers_r]
+            left = [marker for marker, color in self.markers_l]
+            for marker in right + left:
+                if visible:
+                    marker.style = {'display': 'block'}
+                else:
+                    marker.style = {'display': 'none'}
+
+    # ----------------------------------------------------------------------
+    def clear(self) -> None:
+        """Remove all elements from view."""
         self._set_visible_markers(False)
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.style = {'display': 'none'}
@@ -296,32 +332,13 @@ class Memory(StimuliAPI):
             self.button_different.style = {'display': 'none'}
 
     # ----------------------------------------------------------------------
-    def start(self):
-        """"""
-        if w.get_value('record'):
-            self.start_record()
-
-        self.build_trials()
-        timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback=self.clear), 2000)
-
-    # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
-        self.stop_pipeline()
-        self.clear()
-        if w.get_value('record'):
-            timer.set_timeout(self.stop_record, 2000)
-
-    # ----------------------------------------------------------------------
-    def build_markers(self, shapes):
-        """"""
-        boxes = shapes
+    def build_markers(self, shapes: int) -> None:
+        """Display the squares."""
         size = w.get_value('size')
         distance = w.get_value('distance')
 
-        points_r = get_points(boxes, distance, size)
-        points_l = get_points(boxes, distance, size)
+        points_r = get_points(shapes, distance, size)
+        points_l = get_points(shapes, distance, size)
 
         colors = COLORS + COLORS
         random.shuffle(colors)
@@ -340,24 +357,26 @@ class Memory(StimuliAPI):
                 'position': 'absolute',
                 'display': 'none',
             }), colors[i]])
-            document.select_one('.markers_r-placeholder') <= self.markers_r[-1][0]
+            document.select_one(
+                '.markers_r-placeholder') <= self.markers_r[-1][0]
 
         self.markers_l = []
         for j, point in enumerate(points_l):
             self.markers_l.append([html.DIV('', Class='bci-marker', id=f'left_{i}', style={
                 'background-color': colors[i + j + 1],
                 'width': u.dva(size),
-                'height': u.dva(size),                
+                'height': u.dva(size),
                 'left': f'calc({u.dva(point[0])} - {u.dva(size, scale=0.5)})',
                 'top': f'calc({u.dva(point[1])} - {u.dva(size, scale=0.5)})',
                 'position': 'absolute',
                 'display': 'none',
             }), colors[i + j + 1]])
-            document.select_one('.markers_l-placeholder') <= self.markers_l[-1][0]
+            document.select_one(
+                '.markers_l-placeholder') <= self.markers_l[-1][0]
 
     # ----------------------------------------------------------------------
-    def prepare_shuffle(self, cue, d=1):
-        """"""
+    def prepare_shuffle(self, cue: Literal['Right', 'Left'], differences: int = 1) -> None:
+        """Makes sure of changing the color of the squares."""
         right = [color for marker, color in self.markers_r]
         left = [color for marker, color in self.markers_l]
 
@@ -365,58 +384,54 @@ class Memory(StimuliAPI):
         usable = list(set(COLORS) - set(right + left)) + single
 
         if cue == 'Right':
-            original = right[:d]
+            original = right[:differences]
         elif cue == 'Left':
-            original = left[:d]
+            original = left[:differences]
 
         mix = original + usable
-        while [a == b for a, b in zip(original, mix[:d])].count(True):
+        while [a == b for a, b in zip(original, mix[:differences])].count(True):
             random.shuffle(mix)
 
-        self.shuffled_colors = mix[:d]
+        self.shuffled_colors = mix[:differences]
 
     # ----------------------------------------------------------------------
-    def synchronizer(self, value):
-        """"""
+    def synchronizer(self, value: bool) -> None:
+        """Show or hide synchronizer."""
         if value:
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
-            
+
     # ----------------------------------------------------------------------
-    def build_markers_area(self):
-        """"""
-        
+    def build_squares_area(self) -> None:
+        """Create a space to positioning the squares."""
         if element := document.select_one('.markers_l-placeholder'):
             element.remove()
-            
+
         if element := document.select_one('.markers_r-placeholder'):
             element.remove()
 
         self.stimuli_area <= html.DIV(Class='markers_l-placeholder',
-        style={
-        'width': u.dva(7.2),
-        'height': u.dva(13.15),
-        'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
-        'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} - {u.dva(5.4)})',
-        'background-color': '#f3f3f3',
-        'position': 'absolute',
-        'z-index': 10,
-        })
+                                      style={
+                                          'width': u.dva(7.2),
+                                          'height': u.dva(13.15),
+                                          'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
+                                          'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} - {u.dva(5.4)})',
+                                          'background-color': '#f3f3f3',
+                                          'position': 'absolute',
+                                          'z-index': 10,
+                                      })
 
-  
         self.stimuli_area <= html.DIV(Class='markers_r-placeholder',
-        
-        style={
-        'width': u.dva(7.2),
-        'height': u.dva(13.15),
-        'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
-        'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} + {u.dva(5.4)})',
-        'background-color': '#f3f3f3',
-        'position': 'absolute',        
-        'z-index': 10,
-        })
-
+                                      style={
+                                          'width': u.dva(7.2),
+                                          'height': u.dva(13.15),
+                                          'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
+                                          'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} + {u.dva(5.4)})',
+                                          'background-color': '#f3f3f3',
+                                          'position': 'absolute',
+                                          'z-index': 10,
+                                      })
 
 
 if __name__ == '__main__':

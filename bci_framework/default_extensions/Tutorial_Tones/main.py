@@ -1,4 +1,4 @@
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 from bci_framework.extensions.stimuli_delivery.utils import Tone as t
 
@@ -34,20 +34,8 @@ class TonesExample(StimuliAPI):
         """"""
         super().__init__(*args, **kwargs)
 
-        self.build_areas()
+        self.show_cross()
 
-        # self.widgets = Widgets()
-        # self.tone = Tone()
-
-        self.add_cross()
-        # self.add_run_progressbar()
-        # self.add_blink_area()
-
-        self.build_dashboard()
-
-    # ----------------------------------------------------------------------
-    def build_dashboard(self):
-        """"""
         self.dashboard <= w.label('Tones', 'headline4', style={'margin-bottom': '15px', 'display': 'flex', })
         self.dashboard <= html.BR()
 
@@ -79,7 +67,7 @@ class TonesExample(StimuliAPI):
             for i in range(1, n):
                 timer.set_timeout(lambda: t(note, duration, gain), (duration + 50) * i)
 
-    if __name__ == '__main__':
-        StimuliServer('TonesExample')
+if __name__ == '__main__':
+    TonesExample()
 
 

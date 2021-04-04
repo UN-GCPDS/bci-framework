@@ -45,7 +45,8 @@ class Pipelines(StimuliAPI):
             unit='ms',
             id='range',
         )
-
+        
+        self.continue_= False
         self.dashboard <= w.button('Start pipeline', on_click=self.start)
 
     # ----------------------------------------------------------------------
@@ -68,10 +69,13 @@ class Pipelines(StimuliAPI):
         # Each method in pipeline will receibe as argument the on turn trial argument
         pipeline_trial = [
             (self.view1, 500),  # Execute `self.view1` and wait 500 ms
+            
             # Execute `self.view2` and wait a random (uniform) time selected between 500 and 1500
             (self.view2, [500, 1500]),
+            
             # Execute `self.view3` and wait the time defined in the slider
             (self.view3, w.get_value('slider')),
+            
             # Execute `self.view4` and wait a random (uniform) time selected between the range of the slider
             (self.view4, w.get_value('range')),
 
@@ -80,7 +84,6 @@ class Pipelines(StimuliAPI):
         self.run_pipeline(pipeline_trial, trials)
 
     # ----------------------------------------------------------------------
-
     def view1(self, s1, r1):
         """"""
         print(f'On view1: {s1=}, {r1=}')
@@ -99,6 +102,8 @@ class Pipelines(StimuliAPI):
     def view4(self, s1, r1):
         """"""
         print(f'On view4: {s1=}, {r1=}\n')
+
+
 
 
 if __name__ == '__main__':

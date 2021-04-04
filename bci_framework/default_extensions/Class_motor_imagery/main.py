@@ -1,6 +1,6 @@
 """
 =====================
-4-Class Motor Imagery
+4-Class motor imagery
 =====================
 
 """
@@ -11,6 +11,7 @@ from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 from browser import html, timer
 import random
 import logging
+from typing import Literal
 
 UNICODE_CUES = {
     'Right': '&#x1f86a;',
@@ -30,13 +31,11 @@ class FourClassMotorImagery(StimuliAPI):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
-        self.build_areas()
         self.show_cross()
 
-        self.dashboard <= w.label('4-Class motor imagery<br>', 'headline4')
-
+        self.dashboard <= w.label('4-Class motor imagery', 'headline4')
         self.dashboard <= w.checkbox(
-            'Cues',
+            label='Cues',
             options=[[cue, True] for cue in UNICODE_CUES],
             on_change=None,
             id='cues',
@@ -89,7 +88,7 @@ class FourClassMotorImagery(StimuliAPI):
     def start(self) -> None:
         """Start the run.
 
-        A run consist in a consecutive pipeline trials execution.
+        A run consist in a consecutive trials execution.
         """
         if w.get_value('record'):
             self.start_record()
@@ -127,13 +126,13 @@ class FourClassMotorImagery(StimuliAPI):
     def soa(self, *args) -> None:
         """Stimulus onset asynchronously.
 
-        This is a pipeline method, that explains the `*args` arguments.
+        This is a pipeline method, that explains the unused `*args` arguments.
         """
         if element := getattr(self, 'cue_placeholder', None):
             element.html = ''
 
     # ----------------------------------------------------------------------
-    def trial(self, cue: str) -> None:
+    def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom']) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial
@@ -148,9 +147,8 @@ class FourClassMotorImagery(StimuliAPI):
         self.cue_placeholder.style = {'display': 'flex'}
 
     # ----------------------------------------------------------------------
-
-    def synchronizer(self, value):
-        """"""
+    def synchronizer(self, value: bool) -> None:
+        """Show or hide synchronizer."""
         if value:
             self.show_synchronizer()
         else:

@@ -1,5 +1,14 @@
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.extensions.stimuli_delivery.utils import Widgets, Tone
+"""
+===================================
+Resting state and noise acquisition
+===================================
+
+"""
+
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
+from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
+from bci_framework.extensions.stimuli_delivery.utils import Tone as t
+from bci_framework.extensions.stimuli_delivery.utils import keypress
 
 from browser import document, timer, html
 
@@ -8,13 +17,13 @@ TASKS = {
     'resting_open': ['Resting with open eyes',
                      '<p>Resting with <b>open</b> eyes</p>',
                      '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
-                     
+
     'resting_close': ['Resting with close eyes',
                       '<p>Resting with <b>close</b> eyes</p>',
                       '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
 
     'eye_blinking': ['Eye blinking',
-                    '<p>Eyes <b>blinking</b></p>',
+                     '<p>Eyes <b>blinking</b></p>',
                      '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
 
     'eyeball_up_down': ['Eyeball movement up/down',
@@ -38,119 +47,150 @@ TASKS = {
 
 ########################################################################
 class Resting(StimuliAPI):
+    """Resting state and noise acquisition"""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
-
-
         self.add_stylesheet('styles.css')
 
-        self.stimuli_area
-        self.dashboard
+        self.show_cross()
 
-        self.on_trial = False
-
-        self.widgets = Widgets()
-        self.tone = Tone()
-
-        self.build_dashboard()
-
-        self.add_cross()
-        self.run_progressbar = self.add_run_progressbar()
-
-        self.add_blink_area()
-
-        # self.show_hint('eye')
-
-    # ----------------------------------------------------------------------
-    def build_dashboard(self):
-        """"""
-        self.dashboard <= self.widgets.label('Resting state and noise acquisition', 'headline4', style={'margin-bottom': '15px', 'display': 'flex', })
+        self.dashboard <= w.label(
+            'Resting state and noise acquisition<br><br>', 'headline4')
 
         for task_id in TASKS:
             title = TASKS[task_id][0]
-            self.dashboard <= self.widgets.switch(title, True, id=f'{task_id}_switch')
-            self.dashboard <= self.widgets.slider('Duration', min=0.1, max=5, step=0.1, value=1, unit='minutes', id=task_id)
-            self.dashboard <= html.BR()
+            self.dashboard <= w.slider(
+                title, min=0, max=5, step=0.1, value=1, unit='minutes', id=task_id)
 
-        self.dashboard <= self.widgets.switch('Record EEG', checked=False, on_change=None, id='record')
-        self.dashboard <= self.widgets.button('Start run', on_click=self.start, style={'margin': '0 15px'})
-        self.dashboard <= self.widgets.button('Stop run', on_click=self.stop, style={'margin': '0 15px'})
-        
-        self.button_start = self.widgets.button('Start (space)', unelevated=False, outlined=True, id='user-button', on_click=self.execute)
-        self.stimuli_area <= self.button_start        
-        
-        
+        self.dashboard <= w.switch(
+            label='Record EEG',
+            checked=False,
+            id='record',
+        )
+        self.dashboard <= w.switch(
+            label='External marker synchronizer',
+            checked=False,
+            on_change=self.synchronizer,
+            id='record',
+        )
+
+        self.dashboard <= w.button('Start run', on_click=self.start)
+        self.dashboard <= w.button('Stop run', on_click=self.stop)
+
+        self.button_start = w.button(
+            'Start (space)', outlined=True, on_click=self.syncrhonous_trial, id='syncrhonous-button')
+
     # ----------------------------------------------------------------------
-    def start(self):
-        """"""
-        self.tasks = []
-        for task_id in TASKS:
-            if self.widgets.get_value(f'{task_id}_switch'):
-                self.tasks.append(task_id)
+    def start(self) -> None:
+        """Start the run.
 
-        if self.widgets.get_value('record'):
+        A run consist in a consecutive pipeline trials execution.
+        """
+        if w.get_value('record'):
             self.start_record()
-        timer.set_timeout(self.show_instructions, 2000)
-        
+        self.build_trials()
+
     # ----------------------------------------------------------------------
-    def stop(self):
-        """"""
-        self.clear_hint()
-        self.button_start.style = {'display': 'none',}
-        [timer.clear_timeout(getattr(self, f't{i}')) for i in range(1, 6)]
-        if self.widgets.get_value('record'):
+    def stop(self) -> None:
+        """Stop pipeline execution."""
+        self.stop_pipeline()
+        if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
     # ----------------------------------------------------------------------
-    def show_instructions(self):
-        """"""
-        if len(self.tasks):
-            self.button_start.style = {'display': 'block',}
-            self.task = self.tasks.pop(0)
-            self.show_hint(self.task)
+    def build_trials(self) -> None:
+        """Define the `trials` and `pipeline trials`.
+
+        The `trials` consist (in this case) in a list of cues.
+        The `pipeline trials` is a set of couples `(callable, duration)` that
+        define a single trial, this list of functions are executed asynchronously
+        and repeated for each trial.
+        """
+        self.trials = []
+        self.pipeline_trial = []
+
+        for trial in TASKS:
+
+            if w.get_value(trial):
+                self.trials.append([{'title': TASKS[trial][0],
+                                     'label': TASKS[trial][1],
+                                     'instruction': TASKS[trial][2],
+                                     }])
+
+            self.pipeline_trial.append([
+                (self.prepare, 1500),
+                (self.trial, w.get_value(trial) * 60 * 1000),
+                (self.end_trial, 1000),
+            ])
+
+        self.trial_instruction(**self.trials[0][0])
+
+    # ----------------------------------------------------------------------
+    def syncrhonous_trial(self) -> None:
+        """Start a trial after subject decision."""
+        pipeline_trial = self.pipeline_trial.pop(0)
+        trial = self.trials.pop(0)
+        self.run_pipeline(pipeline_trial, trial, callback=lambda: self.trial_instruction(
+            **self.trials[0][0]))
+
+    # ----------------------------------------------------------------------
+    def trial_instruction(self, title: str, label: str, instruction: str) -> None:
+        """Show the trial instructions to the subject."""
+        self.stimuli_area.clear()
+        self.show_cross()
+        self.stimuli_area <= w.label(label, 'headline2', id='hint')
+        self.stimuli_area <= w.label(instruction, 'headline2', id='hint2')
+        self.stimuli_area <= self.button_start
+        keypress(self.handle_response, timeout=None)
+
+    # ----------------------------------------------------------------------
+    def handle_response(self, response: str) -> None:
+        """Key pressed."""
+        if response == ' ':
+            self.syncrhonous_trial()
+
+    # ----------------------------------------------------------------------
+    def prepare(self, title: str, label: str, instruction: str) -> None:
+        """A small pause before acquisition."""
+        self.stimuli_area.clear()
+        self.show_cross()
+
+    # ----------------------------------------------------------------------
+    def trial(self, title: str, label: str, instruction: str) -> None:
+        """Full trial."""
+        self.beep(1)
+
+    # ----------------------------------------------------------------------
+    def end_trial(self, title, label, instruction) -> None:
+        """End of trial."""
+        self.beep(2)
+
+    # ----------------------------------------------------------------------
+    def synchronizer(self, value: bool) -> None:
+        """Show or hide synchronizer."""
+        if value:
+            self.show_synchronizer()
         else:
-            self.stop()
+            self.hide_synchronizer()
 
     # ----------------------------------------------------------------------
-    def execute(self):
-        """"""
-        duration = self.widgets.get_value(self.task) * 60 * 1000
-        self.button_start.style = {'display': 'none',}
+    def beep(self, n=1) -> None:
+        """Play `n` beeps."""
+        note = 'C#6'
+        gain = 1
+        duration = 100
 
-        # start
-        timer.set_timeout(lambda: self.tone("C#6", 200), 2000)
-        timer.set_timeout(lambda: self.send_marker(f'{self.task.upper()}-START', 100), 2000)
+        t(note, duration, gain)
+        if n > 1:
+            for i in range(1, n):
+                timer.set_timeout(
+                    lambda: t(note, duration, gain), (duration + 50) * i)
 
-        # execution
-        self.t1 = timer.set_timeout(lambda: self.tone("C#6", 100), duration + 2000)
-        self.t2 = timer.set_timeout(lambda: self.tone("C#6", 100), duration + 2000 + 150)
-        self.t3 = timer.set_timeout(self.clear_hint, duration + 2000 + 150)
-        self.t4 = timer.set_timeout(lambda: self.send_marker(f'{self.task.upper()}-END', 100), duration + 2000)
-
-        # next
-        self.t5 = timer.set_timeout(self.show_instructions, duration + 2250 + 2000)
-
-    # ----------------------------------------------------------------------
-    def show_hint(self, task):
-        """"""
-        label = TASKS[task][1]
-        message = TASKS[task][2]
-
-        self.hint = self.widgets.label(label, 'headline2', id='hint')
-        self.stimuli_area <= self.hint
-        self.hint2 = self.widgets.label(message, 'headline2', id='hint2')
-        self.stimuli_area <= self.hint2
-        
-    # ----------------------------------------------------------------------
-    def clear_hint(self):
-        """"""
-        self.hint.html = ''
-        self.hint2.html = ''
 
 if __name__ == '__main__':
-    StimuliServer('Resting')
+    Resting()
 
 

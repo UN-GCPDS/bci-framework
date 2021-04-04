@@ -1,4 +1,11 @@
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+"""
+=======================================
+4-Class motor imagery using Pacman cues
+=======================================
+
+"""
+
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 import logging
 from pacman import create_pacman
@@ -7,8 +14,7 @@ from browser import html, timer
 
 import random
 
-
-HINTS = [
+CUES = [
     'Right',
     'Left',
     'Up',
@@ -17,101 +23,116 @@ HINTS = [
 
 
 ########################################################################
-class StimuliDelivery(StimuliAPI):
-    """"""
+class PacmanMotorImagery(StimuliAPI):
+    """4-Class motor imagery with Pacman cues."""
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
-        # self.add_run_progressbar()
         self.show_cross()
-
         self.stimuli_area <= create_pacman()
 
-        self.dashboard <= w.label('Pacman (motor imagery)<br>', 'headline4')
-
+        self.dashboard <= w.label('4-Class motor imagery (Pacman)', 'headline4')
         self.dashboard <= w.checkbox(
-            'Cues', [[cue, True] for cue in HINTS], on_change=None, id='cues')
-
-        self.dashboard <= w.slider(label='Repetitions by class:', min=1, max=40,
-                                   value=10, step=1, discrete=True, marks=True, id='repetitions')
-        # self.dashboard <= w.slider(label='Stimulus duration', min=1000, max=8000, value=4000, step=100, unit='ms', id='duration')
+            label='Cues',
+            options=[[cue, True] for cue in CUES],
+            on_change=None,
+            id='cues',
+        )
+        self.dashboard <= w.slider(
+            label='Repetitions per class:',
+            min=1,
+            max=100,
+            value=10,
+            step=1,
+            discrete=True,
+            marks=True,
+            id='repetitions',
+        )
         self.dashboard <= w.range_slider(
-            'Delay duration', min=500, max=2000, value_lower=700, value_upper=1500, step=100, unit='ms', id='pause')
-
+            label='Inter trial',
+            min=1000,
+            max=3000,
+            value_lower=2000,
+            value_upper=3000,
+            step=100,
+            unit='ms',
+            id='soa',
+        )
         self.dashboard <= w.switch(
-            'Record EEG', checked=False, on_change=None, id='record')
-        # self.dashboard <= w.button('Test Left', on_click=lambda: self.trial('Left', 1000), style={'margin': '0 15px'})
-        # self.dashboard <= w.button('Test Right', on_click=lambda: self.trial('Right', 1000), style={'margin': '0 15px'})
-        self.dashboard <= w.button(
-            'Start run', on_click=self.start, style={'margin': '0 15px'})
-        self.dashboard <= w.button(
-            'Stop run', on_click=self.stop, style={'margin': '0 15px'})
+            label='Record EEG',
+            checked=False,
+            id='record',
+        )
+        self.dashboard <= w.switch(
+            label='External marker synchronizer',
+            checked=False,
+            on_change=self.synchronizer,
+            id='record',
+        )
+
+        self.dashboard <= w.button('Start run', on_click=self.start)
+        self.dashboard <= w.button('Stop run', on_click=self.stop)
 
     # ----------------------------------------------------------------------
+    def start(self) -> None:
+        """Start the run.
 
-    def start(self):
-        """"""
+        A run consist in a consecutive pipeline trials execution.
+        """
         if w.get_value('record'):
             self.start_record()
-        timer.set_timeout(self.run, 2000)
+
+        self.build_trials()
+        timer.set_timeout(lambda: self.run_pipeline(
+            self.pipeline_trial, self.trials, callback=self.soa), 2000)
 
     # ----------------------------------------------------------------------
-
-    def stop(self):
-        """"""
-        timer.clear_timeout(self.timer_cue)
-        self.set_progress(0)
+    def stop(self) -> None:
+        """Stop pipeline execution."""
+        self.stop_pipeline()
+        self.cue_placeholder.html = ''
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
-     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def build_trials(self) -> None:
+        """Define the `trials` and `pipeline trials`.
 
-    def run(self):
-        repetitions = w.get_value('repetitions')
-        self.duration = 4010
-        self.pause = w.get_value('pause')
-        cues = w.get_value('cues')
+        The `trials` consist (in this case) in a list of cues.
+        The `pipeline trials` is a set of couples `(callable, duration)` that
+        define a single trial, this list of functions are executed asynchronously
+        and repeated for each trial.
+        """
+        self.trials = w.get_value('cues') * w.get_value('repetitions')
+        random.shuffle(self.trials)
 
-        self.hints = []
-        for cue in cues:
-            self.hints.extend([cue] * repetitions)
-
-        self.total_hints = len(self.hints)
-        random.shuffle(self.hints)
-
-        self.show_hints()
+        self.pipeline_trial = [
+            (self.soa, 'soa'),  # `soa` is a range reference
+            (self.trial, 4000),
+        ]
 
     # ----------------------------------------------------------------------
+    def soa(self, *args) -> None:
+        """Stimulus onset asynchronously.
 
-    def show_hints(self):
-        if self.hints:
-            hint = self.hints.pop(0)
-
-            self.set_progress(1 - len(self.hints) / self.total_hints)
-
-            self.trial(hint)
-            pause = random.randint(*self.pause)
-            self.timer_cue = timer.set_timeout(
-                self.show_hints, self.duration + pause)
-        else:
-            self.stop()
+        This is a pipeline method, that explains the `*args` arguments.
+        """
+        if element := getattr(self, 'cue_placeholder', None):
+            element.html = ''
 
     # ----------------------------------------------------------------------
-
-    @DeliveryInstance.both
-    def trial(self, hint):
-
+    def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom']) -> None:
+        """"""
         self.send_marker(hint)
-
         self.to_center()
         timer.set_timeout(getattr(self, f'on_{hint.lower()}'), 10)
 
     # ----------------------------------------------------------------------
-
-    def on_right(self):
+    def on_right(self) -> None:
+        """Start Pacman right walk animation."""
         pacman = document.select_one('.pacman')
         pacman.class_name += ' pacman-walk_right'
 
@@ -125,9 +146,8 @@ class StimuliDelivery(StimuliAPI):
             self.stimuli_area <= html.DIV(Class='food food__float', style=style)
 
     # ----------------------------------------------------------------------
-
-    def on_left(self):
-        """"""
+    def on_left(self) -> None:
+        """Start Pacman left walk animation."""
         pacman = document.select_one('.pacman')
         pacman.class_name += ' pacman-walk_left'
 
@@ -141,8 +161,8 @@ class StimuliDelivery(StimuliAPI):
             self.stimuli_area <= html.DIV(Class='food food__float', style=style)
 
     # ----------------------------------------------------------------------
-
-    def on_up(self):
+    def on_up(self) -> None:
+        """Start Pacman up walk animation."""
         pacman = document.select_one('.pacman')
         pacman.class_name += ' pacman-walk_top'
 
@@ -156,9 +176,8 @@ class StimuliDelivery(StimuliAPI):
             self.stimuli_area <= html.DIV(Class='food food__float', style=style)
 
     # ----------------------------------------------------------------------
-
-    def on_bottom(self):
-        """"""
+    def on_bottom(self) -> None:
+        """Start Pacman bottom walk animation."""
         pacman = document.select_one('.pacman')
         pacman.class_name += ' pacman-walk_bottom'
 
@@ -172,16 +191,24 @@ class StimuliDelivery(StimuliAPI):
             self.stimuli_area <= html.DIV(Class='food food__float', style=style)
 
     # ----------------------------------------------------------------------
-
-    def to_center(self):
+    def to_center(self) -> None:
+        """Reset Pacman position."""
         pacman = document.select_one('.pacman')
         pacman.class_name = 'pacman'
 
         for element in document.select('.food__float'):
             element.remove()
 
+    # ----------------------------------------------------------------------
+    def synchronizer(self, value: bool) -> None:
+        """Show or hide synchronizer."""
+        if value:
+            self.show_synchronizer()
+        else:
+            self.hide_synchronizer()
+
 
 if __name__ == '__main__':
-    StimuliServer('StimuliDelivery')
+    PacmanMotorImagery()
 
 

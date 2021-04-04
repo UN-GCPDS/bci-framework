@@ -1,16 +1,25 @@
 import random
 from math import sqrt
+from typing import TypeVar, Union, List
+
+POINT = TypeVar("(p1, p2) point")
 
 
-def distance(p1, p2):
+# ----------------------------------------------------------------------
+def distance(p1: POINT, p2: POINT) -> float:
+    """Euclidean distance."""
     return sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
 
-def point(margin):
-    return [random.uniform(0 + margin/2, 7.2 - margin/2),  random.uniform(0 + margin/2, 13.5 - margin/2)]
+# ----------------------------------------------------------------------
+def point(margin: Union[float, int]) -> POINT:
+    """Generate a random point, inside a fixed area."""
+    return [random.uniform(0 + margin / 2, 7.2 - margin / 2), random.uniform(0 + margin / 2, 13.5 - margin / 2)]
 
 
-def add_point(points, d, margin):
+# ----------------------------------------------------------------------
+def add_point(points: List[POINT], d: Union[float, int], margin: Union[float, int]) -> None:
+    """Add a point that comply with the rule of minimum distance."""
     M = 100
     done = False
     c = 0
@@ -26,10 +35,11 @@ def add_point(points, d, margin):
     if c < M:
         p[0] = p[0]
         points.append(p)
-    # return points
 
 
-def get_points(N, d=10, margin=10):
+# ----------------------------------------------------------------------
+def get_points(N: int, d: Union[float, int], margin: Union[float, int]) -> List[POINT]:
+    """Generate N points that comply with the rule of minimum distance."""
     points = []
     c = 0
     while len(points) != N and c < 50:
