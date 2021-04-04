@@ -19,11 +19,13 @@ def keypress(callback, timeout=3000):
         capture_key.unbind('keypress')
         capture_key.remove()
         callback(key)
-        timer.clear_timeout(t)
+        if timeout:
+            timer.clear_timeout(t)
 
     def handle(evt):
         key = chr(evt.charCode)
         process(key)
 
     capture_key.bind('keypress', handle)
-    t = timer.set_timeout(process, timeout)
+    if timeout:
+        t = timer.set_timeout(process, timeout)

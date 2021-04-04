@@ -197,10 +197,11 @@ class Pipeline:
         pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
         trial = trials.pop(0)
 
-        self.wrap_fn(pipeline_m[0], trial)()
+        self.wrap_fn(pipeline_m[0], trial)()  # First pipeline
         self._timeouts = []
         for i in range(1, len(pipeline_m)):
 
+            # Others pipelines
             t = timer.set_timeout(self.wrap_fn(
                 pipeline_m[i], trial), sum(timeouts[:i]))
             self._timeouts.append(t)
