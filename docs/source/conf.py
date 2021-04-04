@@ -42,6 +42,7 @@ extensions = [
 
     'nbsphinx',
     'sphinx.ext.mathjax',
+
 ]
 
 naoleon_google_docstring = False

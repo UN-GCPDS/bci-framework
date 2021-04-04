@@ -253,6 +253,7 @@ class StimuliAPI(Pipeline):
     def __init__(self, *args, **kwargs):
         """"""
         self._latency = 0
+        self.build_areas()
 
     # ----------------------------------------------------------------------
     def connect(self, port=5000):
@@ -410,7 +411,7 @@ class StimuliAPI(Pipeline):
     def set_progress(self, p=0):
         """"""
         if not hasattr(self, 'run_progressbar'):
-            self.add_run_progressbar()
+            self.show_progressbar()
         self.run_progressbar.mdc.set_progress(p)
         self._progressbar_value = p
 

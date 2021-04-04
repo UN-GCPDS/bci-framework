@@ -7,7 +7,7 @@ main.py
 
 """
 
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 from bci_framework.extensions.stimuli_delivery.utils import Tone as t
 
@@ -31,10 +31,9 @@ class P300Speller(StimuliAPI):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
-        self.build_areas()
-        self.add_run_progressbar()
+# self.show_progressbar()
 
-        self.listen_feedbacks(self.command)
+# self.listen_feedbacks(self.command)
 
         self.stimuli_area.style = {'background-color': 'black'}
         self.build_grid()
@@ -119,7 +118,7 @@ class P300Speller(StimuliAPI):
         timer.set_timeout(lambda: self.show_trial(isi, duration, trials), 3000)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+# @DeliveryInstance.both
     def show_target(self, target):
         """"""
         target = document.select_one(f'.col-{target[0]}.row-{target[1]}')
@@ -131,7 +130,7 @@ class P300Speller(StimuliAPI):
         timer.set_timeout(target_off, 1000)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+# @DeliveryInstance.both
     def show_trial(self, isi, duration, trials):
         """"""
         if self.stimuli_array:
@@ -151,7 +150,7 @@ class P300Speller(StimuliAPI):
             timer.set_timeout(self.stop, 2000)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+# @DeliveryInstance.both
     def activate(self, chars, duration=100):
         """"""
         self.send_marker(chars[1:].upper())
@@ -180,6 +179,6 @@ class P300Speller(StimuliAPI):
 
 
 if __name__ == '__main__':
-    StimuliServer('P300Speller')
+    P300Speller()
 
 

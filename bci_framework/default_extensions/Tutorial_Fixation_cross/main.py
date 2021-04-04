@@ -1,6 +1,5 @@
 from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
-import logging
 
 
 ########################################################################
@@ -12,16 +11,16 @@ class StimuliDelivery(StimuliAPI):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
 
-        self.show_cross()
-        self.show_synchronizer()
-
-        self.dashboard <= w.button('Button', on_click=self.on_button)
+        self.dashboard <= w.button('Show fixation cross', on_click=self.show_fixation_cross)
+        self.dashboard <= w.button('Hide fixation cross', on_click=self.hide_fixation_cross)
 
     # ----------------------------------------------------------------------
-    def on_button(self):
-        logging.warning("Warning")
-        self.send_marker('Marker', blink=100)
-
+    def show_fixation_cross(self):
+        self.show_cross()
+        
+    # ----------------------------------------------------------------------
+    def hide_fixation_cross(self):
+        self.hide_cross()
 
 if __name__ == '__main__':
     StimuliDelivery()

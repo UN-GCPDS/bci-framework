@@ -194,10 +194,10 @@ class Projects:
                     widget, icon_name = modules[LINE_ANALYSIS]
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
-            item.previous_name = project_dir
+            item.previous_name = project
             item.path = project_dir
 
             icon = QIcon()
@@ -277,8 +277,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -304,8 +304,9 @@ class Projects:
 
             self.load_script_in_textedit(os.path.join(path, 'main.py'))
             for file in files:
-                if os.path.exists(os.path.join(path, file)):
-                    self.load_script_in_textedit(os.path.join(path, file))
+                if file.endswith('.py') or file.endswith('.css'):
+                    if os.path.exists(os.path.join(path, file)):
+                        self.load_script_in_textedit(os.path.join(path, file))
             self.core.show_interface('Development')
         else:
             if os.path.exists(os.path.join(path, 'main.py')):
@@ -420,8 +421,8 @@ class Projects:
             default_project = '_default_data_analysis'
             self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
         item.path = self.normalize_path(project_name)
@@ -544,7 +545,7 @@ class Projects:
             ext += 1
             new_path = f"{self.normalize_path(new_name)}{ext}"
 
-        name = evt.previous_name
+        # name = evt.previous_name
         # if name := getattr(evt, 'previous_name', False):
             # if name.strip() != new_name:
         shutil.move(os.path.join(self.projects_dir, evt.path),
