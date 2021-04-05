@@ -240,6 +240,10 @@ autodoc_mock_imports = [
     'browser',
     'seaborn',
     'simple_pid',
+
+    'pacman',
+    'points',
+
 ]
 
 todo_include_todos = True
