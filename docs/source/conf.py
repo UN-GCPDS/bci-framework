@@ -43,6 +43,8 @@ extensions = [
     'nbsphinx',
     'sphinx.ext.mathjax',
 
+    'sphinxcontrib.bibtex',
+
 ]
 
 naoleon_google_docstring = False
@@ -327,3 +329,6 @@ Indices and tables
 * :ref:`search`
 
     """)
+
+
+bibtex_bibfiles = ['refs.bib']

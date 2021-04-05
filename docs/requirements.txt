@@ -1,6 +1,7 @@
 ipython==6.4.0
 ipykernel
 nbsphinx
+sphinxcontrib-bibtex
 pygments>=2.4.1
 mne==0.22.0
 scipy==1.6.1

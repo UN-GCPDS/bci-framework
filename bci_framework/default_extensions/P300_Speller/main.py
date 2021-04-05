@@ -34,8 +34,8 @@ class P300Speller(StimuliAPI):
         self.dashboard <= w.slider(
             label='Trials:',
             min=1,
-            max=20,
-            value=15,
+            max=15,
+            value=5,
             step=1,
             discrete=True,
             marks=True,
@@ -133,7 +133,7 @@ class P300Speller(StimuliAPI):
         self.pipeline_trial = [
             (lambda ** kwargs: None, 500),
             (self.target_notice, w.get_value('notice')),
-            (self.inter_stimulus, 300)
+            (self.inter_stimulus, 3000)
         ]
 
         [self.pipeline_trial.extend(
