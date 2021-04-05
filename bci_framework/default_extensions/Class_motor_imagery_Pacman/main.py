@@ -11,6 +11,7 @@ import logging
 from pacman import create_pacman
 from browser import document
 from browser import html, timer
+from typing import Literal
 
 import random
 
@@ -42,7 +43,7 @@ class PacmanMotorImagery(StimuliAPI):
             id='cues',
         )
         self.dashboard <= w.slider(
-            label='Repetitions per class:',
+            label='Trials per class:',
             min=1,
             max=100,
             value=10,
@@ -52,7 +53,7 @@ class PacmanMotorImagery(StimuliAPI):
             id='repetitions',
         )
         self.dashboard <= w.range_slider(
-            label='Inter trial',
+            label='Stimulus onset asynchronously',
             min=1000,
             max=3000,
             value_lower=2000,
@@ -93,7 +94,6 @@ class PacmanMotorImagery(StimuliAPI):
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
-        self.cue_placeholder.html = ''
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
@@ -126,9 +126,9 @@ class PacmanMotorImagery(StimuliAPI):
     # ----------------------------------------------------------------------
     def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom']) -> None:
         """"""
-        self.send_marker(hint)
+        self.send_marker(cue)
         self.to_center()
-        timer.set_timeout(getattr(self, f'on_{hint.lower()}'), 10)
+        timer.set_timeout(getattr(self, f'on_{cue.lower()}'), 10)
 
     # ----------------------------------------------------------------------
     def on_right(self) -> None:

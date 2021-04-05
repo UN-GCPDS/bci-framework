@@ -41,7 +41,7 @@ class FourClassMotorImagery(StimuliAPI):
             id='cues',
         )
         self.dashboard <= w.slider(
-            label='Repetitions per class:',
+            label='Trials per class:',
             min=1,
             max=100,
             value=10,
@@ -60,7 +60,7 @@ class FourClassMotorImagery(StimuliAPI):
             id='duration',
         )
         self.dashboard <= w.range_slider(
-            label='Inter trial',
+            label='Stimulus onset asynchronously',
             min=1000,
             max=3000,
             value_lower=2000,

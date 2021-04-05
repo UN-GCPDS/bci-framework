@@ -39,7 +39,7 @@ UNICODE_CUES = {
 
 
 ########################################################################
-class Memory(StimuliAPI):
+class VisualWorkingMemory(StimuliAPI):
     """Visual working memory: change detection task."""
 
     # ----------------------------------------------------------------------
@@ -130,8 +130,8 @@ class Memory(StimuliAPI):
         self.dashboard <= w.slider(
             label='Numbers of trials per level:',
             min=1,
-            max=8,
-            value=4,
+            max=500,
+            value=100,
             discrete=True,
             markers=True,
             id='trials'
@@ -183,7 +183,7 @@ class Memory(StimuliAPI):
         u(d=w.get_value('d'), dpi=w.get_value('dpi'))
         self.build_squares_area()
         self.soa(cue='Right', shapes=4, change=True)
-        self.memory_array()
+        self.memory_array(cue='Right', shapes=4, change=True)
 
     # ----------------------------------------------------------------------
     def start(self):
@@ -435,6 +435,6 @@ class Memory(StimuliAPI):
 
 
 if __name__ == '__main__':
-    Memory()
+    VisualWorkingMemory()
 
 

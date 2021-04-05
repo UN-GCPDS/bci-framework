@@ -16,37 +16,53 @@ TASKS = {
 
     'resting_open': ['Resting with open eyes',
                      '<p>Resting with <b>open</b> eyes</p>',
-                     '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                     '<p>Press the button and center your gace on the fixation \
+                     cross, the acquisition begins with the single beep, \
+                     <b>keep this position until listen two beeps</b>.</p>'],
 
     'resting_close': ['Resting with close eyes',
                       '<p>Resting with <b>close</b> eyes</p>',
-                      '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                      '<p>Press the button and close the eyes, the acquisition \
+                      begins with the single beep, <b>keep eyes closed until \
+                      listen two beeps</b>.</p>'],
 
     'eye_blinking': ['Eye blinking',
                      '<p>Eyes <b>blinking</b></p>',
-                     '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                     '<p>Press the button and starts to blink periodically, \
+                     the acquisition begins with the single beep, <b>keep this \
+                     action until listen two beeps</b>.</p>'],
 
     'eyeball_up_down': ['Eyeball movement up/down',
                         '<p>Eyeball movement <b>Up</b> and <b>Down</b></p>',
-                        '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                        '<p>Press the button and move your eyes up and down \
+                        periodically, the acquisition begins with the single \
+                        beep, <b>keep this action until listen two beeps</b>.</p>'],
 
     'eyeball_left_right': ['Eyeball movement left/right',
                            '<p>Eyeball movement <b>Left</b> and <b>Right</b></p>',
-                           '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                           '<p>Press the button and move your eyes right and \
+                           left periodically, the acquisition begins with the \
+                           single beep, <b>keep this action until listen two \
+                           beeps</b>.</p>'],
 
     'head_left_right': ['Head movement left/right',
                         '<p>Head movement <b>Left</b> and <b>Right</b></p>',
-                        '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                        '<p>Press the button and move your head from left to \
+                        right and right to left periodically, the acquisition \
+                        begins with the single beep, <b>keep this action until \
+                        listen two beeps</b>.</p>'],
 
     'jaw_clenching': ['Jaw clenching',
                       '<p>Jaw <b>clenching</b></p>',
-                      '<p>Press the button and close the eyes, the acquisition begins with the single beep, <b>keep eyes closed until two beeps</b>.</p>'],
+                      '<p>Press the button and clench the jaw periodically, the \
+                      acquisition begins with the single beep, <b>keep this \
+                      action until listen two beeps</b>.</p>'],
 
 }
 
 
 ########################################################################
-class Resting(StimuliAPI):
+class RestingNoiseAcquisition(StimuliAPI):
     """Resting state and noise acquisition"""
 
     # ----------------------------------------------------------------------
@@ -67,7 +83,7 @@ class Resting(StimuliAPI):
 
         self.dashboard <= w.switch(
             label='Record EEG',
-            checked=False,
+            checked=False, 
             id='record',
         )
         self.dashboard <= w.switch(
@@ -191,6 +207,6 @@ class Resting(StimuliAPI):
 
 
 if __name__ == '__main__':
-    Resting()
+    RestingNoiseAcquisition()
 
 

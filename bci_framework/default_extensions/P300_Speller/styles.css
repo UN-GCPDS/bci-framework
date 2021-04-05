@@ -16,6 +16,11 @@
 }
 
 
+.bci_dashboard button {
+    margin: 10px;
+}
+
+
 .p300-char {
 
     opacity: 0.3;
