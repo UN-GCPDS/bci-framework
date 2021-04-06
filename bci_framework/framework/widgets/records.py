@@ -295,7 +295,7 @@ class Records:
                      }
             self.start_streaming = end_streaming
 
-            if produser := getattr(self.core.thread_kafka, 'consumer', False):
+            if produser := getattr(self.core.thread_kafka, 'produser', False):
                 produser.send('eeg', data_)
 
     # ----------------------------------------------------------------------
@@ -322,5 +322,5 @@ class Records:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
-            self.load_records()
+            QTimer().singleShot(500, self.load_records)
 

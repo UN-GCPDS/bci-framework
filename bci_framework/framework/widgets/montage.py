@@ -238,8 +238,10 @@ class TopoplotImpedances(TopoplotBase):
 
         q = matplotlib.cm.get_cmap(self.cmap)
 
-        index = [l.get_marker() for l in self.ax.axes.lines].index('')
-        line = self.ax.axes.lines[index]
+        markers = [l.get_marker() for l in self.ax.axes.lines]
+        if not '' in markers:
+            return
+        line = self.ax.axes.lines[markers.index('')]
 
         channels = np.array(channels_names)[channels_mask]
         for i, (x, y) in enumerate(zip(*line.get_data())):

@@ -536,8 +536,10 @@ class BCIFramework(QMainWindow):
             if last.seconds > 3:
                 self.status_bar(right_message=('No streaming', False))
                 self.annotations.set_enable(False)
+                self.main.pushButton_record.setEnabled(False)
             else:
                 self.annotations.set_enable(True)
+                self.main.pushButton_record.setEnabled(True)
 
     # ----------------------------------------------------------------------
     @Slot()

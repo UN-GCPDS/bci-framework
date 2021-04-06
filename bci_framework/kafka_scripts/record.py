@@ -38,7 +38,8 @@ class RecordTransformer:
         now = datetime.now()
 
         filename = now.strftime('%x-%X').replace('/', '_').replace(':', '_')
-        records_dir = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
+        records_dir = os.path.join(os.environ.get(
+            'BCISTREAM_HOME', '~/.bciframework'), 'records')
         os.makedirs(records_dir, exist_ok=True)
         self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
@@ -59,7 +60,7 @@ class RecordTransformer:
         self.save_data()
 
     # ----------------------------------------------------------------------
-    @loop_consumer
+    @loop_consumer('eeg', 'marker', 'annotation')
     def save_data(self, data: KafkaStream, topic: str, **kwargs) -> None:
         """Write data on every strem package.
 
