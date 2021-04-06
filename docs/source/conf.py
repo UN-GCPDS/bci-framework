@@ -299,6 +299,7 @@ nbsphinx_prolog = """
     </style>
 """
 
+
 notebooks_dir = 'notebooks'
 
 notebooks_list = os.listdir(os.path.join(
