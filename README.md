@@ -1,6 +1,14 @@
-# BCI-Framework
-A distributed processing tool, stimuli delivery, psychophysiological experiments designer and real-time visualizations for OpenBCI.
+> Developed by [Yeison Nolberto Cardona Álvarez](https://github.com/yeisonCardona)  
+> [Andrés Marino Álvarez Meza, PhD.](https://github.com/amalvarezme)  
+> César Germán Castellanos Dominguez, PhD.  
+> _Digital Signal Processing and Control Group_  | _Grupo de Control y Procesamiento Digital de Señales ([GCPDS](https://github.com/UN-GCPDS/))_  
+> _National University of Colombia at Manizales_ | _Universidad Nacional de Colombia sede Manizales_
 
+----
+
+# BCI-Framework
+
+A distributed processing tool, stimuli delivery, psychophysiological experiments designer and real-time data visualizations for OpenBCI.
 
 ![GitHub top language](https://img.shields.io/github/languages/top/un-gcpds/bci-framework)
 ![PyPI - License](https://img.shields.io/pypi/l/bci-framework)
