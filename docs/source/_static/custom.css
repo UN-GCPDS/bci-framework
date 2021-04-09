@@ -98,3 +98,10 @@ dl:not(.docutils) dl dt {
     background: none;
 
 }
+
+
+p > img {
+
+text-align: center;
+
+}

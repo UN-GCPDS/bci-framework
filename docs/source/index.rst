@@ -11,17 +11,13 @@ Navigation
    notebooks/00-installation
    notebooks/01-configuration
    notebooks/02-interface
-   notebooks/10-montage
-   notebooks/11-connection
-   notebooks/12-records
-   notebooks/13-annotations
    notebooks/70-develop_data_analysis
-   notebooks/71-default_data_analysis
    notebooks/75-develop_visualizations
    notebooks/76-default_visualizations
    notebooks/80-develop_stimuli_delivery
    notebooks/81-default_stimuli_delivery_paradigms
-   notebooks/82-data-handler
+   notebooks/90-properties
+   notebooks/91-data-handler
    notebooks/99-troubleshoots
 
 Indices and tables
