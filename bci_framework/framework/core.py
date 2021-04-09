@@ -440,12 +440,16 @@ class BCIFramework(QMainWindow):
 
         about.tabWidget.setCurrentIndex(0)
 
-        about.plainTextEdit_license.setStyleSheet("""
-        *{
+        about.setStyleSheet(f"""
+        QPlainTextEdit {{
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
         font-size: 13px;
-        }
+        }}
+
+        QTextEdit {{
+        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
+        }}
         """)
 
         center = QDesktopWidget().availableGeometry().center()
@@ -455,8 +459,8 @@ class BCIFramework(QMainWindow):
 
         about.show()
 
-    @Slot()
     # ----------------------------------------------------------------------
+    @Slot()
     def on_kafka_event(self, value: KAFKA_STREAM) -> None:
         """Register annotations and markers."""
         # self.main.pushButton_connect.setChecked(True)
