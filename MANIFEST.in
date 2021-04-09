@@ -1,5 +1,5 @@
 recursive-include bci_framework/ *
-
+include CHANGELOG
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 recursive-exclude local/ *
