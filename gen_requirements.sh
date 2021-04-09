@@ -2,4 +2,5 @@ pipreqs --ignore bci_framework/default_projects,bci_framework/documentation,bci_
 rm requirements.txt
 sed '/kafka==/d' requirements.tmp >> requirements.txt
 rm requirements.tmp
+sed -i 's/==/>=/' requirements.txt
 cat requirements.txt
