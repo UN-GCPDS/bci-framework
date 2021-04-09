@@ -11,3 +11,7 @@
 .run_progressbar {
     width: 100vw;
 }
+
+.bci_dashboard button {
+    margin: 10px;
+}
