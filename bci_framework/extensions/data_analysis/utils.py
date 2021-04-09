@@ -8,10 +8,10 @@ This module define usefull decorators to use with data analysis.
 
 import time
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from multiprocessing import Process
 from threading import Thread
-from typing import Callable
+from typing import Callable, Union, List
 
 import numpy as np
 from openbci_stream.acquisition import OpenBCIConsumer
@@ -20,7 +20,9 @@ from ...extensions import properties as prop
 
 
 class data:
-    value = {}
+    value = {
+        'context': {},
+    }
 
 
 # ----------------------------------------------------------------------
@@ -47,13 +49,13 @@ def thread_this(fn: Callable) -> Callable:
 def timeit(fn: Callable) -> Callable:
     """Decorator to calculate the execution time of a method."""
 
-    def wrap(self, *args, **kwargs):
+    def wraper(self, *args, **kwargs):
         t0 = time.time()
         r = fn(self, *args, **kwargs)
         t1 = time.time()
         print(f"[timeit] {fn.__name__}: {(t1-t0)*1000:.2f} ms")
         return r
-    return wrap
+    return wraper
 
 
 # ----------------------------------------------------------------------
@@ -62,7 +64,6 @@ def loop_consumer(*topics) -> Callable:
 
     This decorator will call a method on every new data streamming input.
     """
-    # ----------------------------------------------------------------------
     def wrap_wrap(fn: Callable) -> Callable:
 
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
@@ -76,13 +77,16 @@ def loop_consumer(*topics) -> Callable:
                         if hasattr(cls, 'buffer_eeg'):
                             cls.update_buffer(
                                 *data.value['data'], data.value['context']['binary_created'])
+                        # latency calculated with `binary_created`
                         latency = (datetime.now() - datetime.fromtimestamp(
                             data.value['context']['binary_created'])).total_seconds() * 1000
                     else:
+                        # latency calculated with kafka timestamp
                         latency = (datetime.now(
                         ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
 
-                    kwargs = {'data': data,
+                    kwargs = {'data': data.value['data'],
+                              'kafka_stream': data,
                               'topic': data.topic,
                               'frame': frame,
                               'latency': latency,
@@ -143,7 +147,8 @@ def fake_loop_consumer(*topics) -> Callable:
                         cls.update_buffer(
                             *data.value['data'], data.value['timestamp'].timestamp())
 
-                    kwargs = {'data': data,
+                    kwargs = {'data': data.value['data'],
+                              'kafka_stream': data,
                               'topic': 'eeg',
                               'frame': frame,
                               'latency': 0,
@@ -153,10 +158,14 @@ def fake_loop_consumer(*topics) -> Callable:
                 if 'marker' in topics:
                     if np.random.random() > 0.9:
                         data.value['timestamp'] = datetime.now()
-                        data.value['data'] = chr(
-                            np.random.choice(range(ord('A'), ord('Z') + 1)))
+                        data.value['context']['binary_created'] = datetime.now()
+                        # data.value['data'] = chr(
+                            # np.random.choice(range(ord('A'), ord('Z') + 1)))
+                        data.value['data'] = random.choice(
+                            ['Right', 'Left', 'Up', 'Bottom'])
 
-                        kwargs = {'data': data,
+                        kwargs = {'data': data.value['data'],
+                                  'kafka_stream': data,
                                   'topic': 'marker',
                                   'frame': frame,
                                   'latency': 0,
@@ -166,5 +175,57 @@ def fake_loop_consumer(*topics) -> Callable:
                 while time.time() < (t0 + 1 / (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):
                     time.sleep(0.0001)
 
+        return wrap
+    return wrap_wrap
+
+
+# ----------------------------------------------------------------------
+def marker_slicing(marker, t0, duration):
+    """"""
+    if isinstance(marker, str):
+        marker = [marker]
+
+    def wrap_wrap(fn):
+
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+
+        def wrap(cls):
+            cls._target_marker = []
+
+            @fake_loop_consumer('eeg', 'marker')
+            def marker_slicing_(cls, topic, data, kafka_stream, latency):
+
+                if topic == 'marker':
+                    if data in marker:
+                        cls._target_marker.append(
+                            [data, kafka_stream.value['timestamp'].timestamp()])
+
+                if target := getattr(cls, '_target_marker', False):
+
+                    # marker, target = target
+                    if cls.buffer_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
+
+                        _marker, _target = target.pop(0)
+
+                        argmin = np.abs(cls.buffer_timestamp
+                                        - _target).argmin()
+
+                        start = (prop.SAMPLE_RATE) * t0
+                        stop = (prop.SAMPLE_RATE) * (duration + t0)
+
+                        t = cls.buffer_timestamp[argmin + start:argmin + stop]
+                        eeg = cls.buffer_eeg[:, argmin + start:argmin + stop]
+                        aux = cls.buffer_aux[:, argmin + start:argmin + stop]
+
+                        kwargs = {'eeg': eeg,
+                                  'aux': aux,
+                                  'timestamp': t,
+                                  'marker': _marker,
+                                  'latency': latency,
+                                  }
+
+                        fn(*[cls] + [kwargs[v] for v in arguments])
+
+            marker_slicing_(cls)
         return wrap
     return wrap_wrap
