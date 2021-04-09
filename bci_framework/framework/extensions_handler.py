@@ -197,7 +197,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
                     os.getenv('BCISTREAM_ROOT'), 'default_extensions')
             else:
                 self.projects_dir = os.path.join(
-                    os.getenv('BCISTREAM_HOME'), 'projects')
+                    os.getenv('BCISTREAM_HOME'), 'default_extensions')
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWidget(self.main)

@@ -16,7 +16,7 @@ from PySide2.QtCore import Qt, QSize
 from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QDesktopWidget
 from PySide2.QtUiTools import QUiLoader
 
-from ..editor import BCIEditor, Autocompleter
+from ..editor import BCIEditor  # , Autocompleter
 
 PATH = TypeVar('path')
 
@@ -195,8 +195,8 @@ class Projects:
                     widget, icon_name = modules[LINE_ANALYSIS]
 
             item = QListWidgetItem(widget)
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                          Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                          | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setText(project)
             item.previous_name = project
             item.path = project_dir
@@ -278,8 +278,8 @@ class Projects:
                 # if 'main.py' == file:
                 # self.open_script(tree)
 
-                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                              Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                tree.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                              | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
 
                 files_count += 1
 
@@ -342,15 +342,15 @@ class Projects:
             editor.path = module
             editor.module = module
 
-            if LINE_DELIVERY in content:
-                completer = Autocompleter(mode='stimuli')
-                editor.set_completer(completer)
-            elif LINE_VISUALIZATION in content:
-                completer = Autocompleter(mode='visualization')
-                editor.set_completer(completer)
-            elif LINE_ANALYSIS in content:
-                completer = Autocompleter(mode='analysis')
-                editor.set_completer(completer)
+            # if LINE_DELIVERY in content:
+                # completer = Autocompleter(mode='stimuli')
+                # editor.set_completer(completer)
+            # elif LINE_VISUALIZATION in content:
+                # completer = Autocompleter(mode='visualization')
+                # editor.set_completer(completer)
+            # elif LINE_ANALYSIS in content:
+                # completer = Autocompleter(mode='analysis')
+                # editor.set_completer(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
                 tab, f"{self.parent_frame.tabWidget_project.tabText(tab).strip('*')}*"))
@@ -422,8 +422,8 @@ class Projects:
             default_project = '_default_data_analysis'
             self.mode = 'analysis'
 
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
-                      Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable
+                      | Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
         item.setText(project_name)
         item.previous_name = project_name
         item.path = self.normalize_path(project_name)

@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -129,7 +129,7 @@
           </widget>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
-            <string>Latency correction</string>
+            <string>Event synchronization</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0,0">
             <item row="2" column="0">
@@ -1366,7 +1366,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>83</width>
+                  <width>96</width>
                   <height>95</height>
                  </rect>
                 </property>
@@ -1408,8 +1408,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>83</width>
-                      <height>83</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1459,7 +1459,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>485</width>
-                  <height>495</height>
+                  <height>527</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -2578,7 +2578,8 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset theme="edit-delete-remove"/>
+                    <iconset theme="edit-delete-remove">
+                     <normaloff>.</normaloff>.</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -2754,7 +2755,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>485</width>
-              <height>571</height>
+              <height>605</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2891,8 +2892,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>485</width>
-              <height>531</height>
+              <width>159</width>
+              <height>181</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3224,7 +3225,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3273,7 +3274,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3322,7 +3323,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>

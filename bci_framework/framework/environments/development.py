@@ -14,7 +14,7 @@ from PySide2.QtCore import QTimer
 from PySide2.QtGui import QTextCursor
 
 from ..extensions_handler import ExtensionWidget
-from ..editor import Autocompleter
+# from ..editor import Autocompleter
 
 
 PATH = TypeVar('Path')
@@ -103,12 +103,12 @@ class Development:
     # ----------------------------------------------------------------------
     def start_preview(self) -> None:
         """Initialize the previsualization and the debugger."""
+        self.log_timer.start()
         self.show_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
         self.save_all_files()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
         self.sub.load_extension(self.get_project(), debugger=self)
-        self.log_timer.start()
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()
@@ -163,31 +163,34 @@ class Development:
         Logging messages could be from Python or JavaScript (Bryhon).
         """
 
-        if not hasattr(self.sub, 'stream_subprocess'):
-            # self.timer.singleShot(50, self.update_log)
-            return
+        # if not hasattr(self.sub, 'stream_subprocess'):
+            # # self.timer.singleShot(50, self.update_log)
+            # return
 
         if not hasattr(self.sub.stream_subprocess, 'stdout'):
             self.sub.stream_subprocess.start_debug()
-            return
+            # return
 
         loglevel = self.parent_frame.comboBox_log_level.currentText()
         levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
         lines = []
 
-        if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
-            if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
-                if hasattr(line, 'decode'):
-                    lines.append(line.decode())
-                else:
-                    lines.append(line)
+        try:
+            if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
+                if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
+                    if hasattr(line, 'decode'):
+                        lines.append(line.decode())
+                    else:
+                        lines.append(line)
 
-        if self.mode == 'stimuli':
-            if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
-                if hasattr(line, 'decode'):
-                    lines.append(line.decode())
-                else:
-                    lines.append(line)
+            if self.mode == 'stimuli':
+                if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+                    if hasattr(line, 'decode'):
+                        lines.append(line.decode())
+                    else:
+                        lines.append(line)
+        except:
+            pass
 
         # if hasattr(self.sub.stream_subprocess, 'subprocess_script'):
             # if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
@@ -209,6 +212,7 @@ class Development:
             '* Environment:',
             '* Debug mode:',
             'This is a development server',
+            'selenium',
         ]
 
         for line in lines:
@@ -260,16 +264,16 @@ class Development:
                     content = editor.toPlainText()
                     file.write(content)
 
-                    if not editor.completer:
-                        if 'bci_framework.extensions.stimuli_delivery' in content:
-                            completer = Autocompleter(mode='stimuli')
-                            editor.set_completer(completer)
-                        elif 'bci_framework.extensions.data_analysis' in content:
-                            completer = Autocompleter(mode='visualization')
-                            editor.set_completer(completer)
-                        elif 'bci_framework.extensions.visualizations' in content:
-                            completer = Autocompleter(mode='visualization')
-                            editor.set_completer(completer)
+                    # if not editor.completer:
+                        # if 'bci_framework.extensions.stimuli_delivery' in content:
+                            # completer = Autocompleter(mode='stimuli')
+                            # editor.set_completer(completer)
+                        # elif 'bci_framework.extensions.data_analysis' in content:
+                            # completer = Autocompleter(mode='visualization')
+                            # editor.set_completer(completer)
+                        # elif 'bci_framework.extensions.visualizations' in content:
+                            # completer = Autocompleter(mode='visualization')
+                            # editor.set_completer(completer)
 
                     self.parent_frame.tabWidget_project.setTabText(
                         i, tab_text.strip('*'))
