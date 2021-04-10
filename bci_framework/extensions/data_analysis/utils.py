@@ -80,12 +80,15 @@ def loop_consumer(*topics) -> Callable:
                         # latency calculated with `binary_created`
                         latency = (datetime.now() - datetime.fromtimestamp(
                             data.value['context']['binary_created'])).total_seconds() * 1000
+                        data_ = data.value['data']
                     else:
                         # latency calculated with kafka timestamp
                         latency = (datetime.now(
                         ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
 
-                    kwargs = {'data': data.value['data'],
+                        data_ = data.value
+
+                    kwargs = {'data': data_,
                               'kafka_stream': data,
                               'topic': data.topic,
                               'frame': frame,
@@ -192,13 +195,13 @@ def marker_slicing(marker, t0, duration):
         def wrap(cls):
             cls._target_marker = []
 
-            @fake_loop_consumer('eeg', 'marker')
+            @loop_consumer('eeg', 'marker')
             def marker_slicing_(cls, topic, data, kafka_stream, latency):
 
                 if topic == 'marker':
-                    if data in marker:
+                    if data['marker'] in marker:
                         cls._target_marker.append(
-                            [data, kafka_stream.value['timestamp'].timestamp()])
+                            [data['marker'], kafka_stream.value['datetime']])
 
                 if target := getattr(cls, '_target_marker', False):
 
@@ -207,11 +210,10 @@ def marker_slicing(marker, t0, duration):
 
                         _marker, _target = target.pop(0)
 
-                        argmin = np.abs(cls.buffer_timestamp
-                                        - _target).argmin()
+                        argmin = np.abs(cls.buffer_timestamp - _target).argmin()
 
-                        start = (prop.SAMPLE_RATE) * t0
-                        stop = (prop.SAMPLE_RATE) * (duration + t0)
+                        start = int((prop.SAMPLE_RATE) * t0)
+                        stop = int((prop.SAMPLE_RATE) * (duration + t0))
 
                         t = cls.buffer_timestamp[argmin + start:argmin + stop]
                         eeg = cls.buffer_eeg[:, argmin + start:argmin + stop]
@@ -220,6 +222,7 @@ def marker_slicing(marker, t0, duration):
                         kwargs = {'eeg': eeg,
                                   'aux': aux,
                                   'timestamp': t,
+                                  'marker_datetime': _target,
                                   'marker': _marker,
                                   'latency': latency,
                                   }

@@ -23,7 +23,7 @@ from figurestream import FigureStream
 from typing import Optional, Tuple, Literal
 
 from ...extensions import properties as prop
-from ... extensions.data_analysis import DataAnalysis, loop_consumer, fake_loop_consumer, thread_this, subprocess_this
+from ... extensions.data_analysis import DataAnalysis
 
 # Consigure matplotlib
 if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):

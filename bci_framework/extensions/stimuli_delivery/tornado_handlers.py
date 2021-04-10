@@ -140,7 +140,7 @@ class WSHandler(WebSocketHandler):
 
         marker = kwargs['marker']
         marker['datetime'] = (
-            datetime.now() - timedelta(milliseconds=marker['latency'] - prop.SYNCLATENCY)).timestamp()
+            datetime.now() - timedelta(milliseconds=marker['latency'] + prop.SYNCLATENCY)).timestamp()
         del marker['latency']
         # marker['datetime'] = datetime.now().timestamp()
 
@@ -155,7 +155,7 @@ class WSHandler(WebSocketHandler):
 
         annotation = kwargs['annotation']
         annotation['onset'] = (
-            datetime.now() - timedelta(milliseconds=marker['latency'] - prop.SYNCLATENCY)).timestamp()
+            datetime.now() - timedelta(milliseconds=marker['latency'] + prop.SYNCLATENCY)).timestamp()
         del marker['latency']
 
         if hasattr(self, 'kafka_producer'):
