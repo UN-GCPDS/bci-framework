@@ -316,8 +316,13 @@ class Records:
             self.timer.setInterval(1000 / 1)
             self.timer.timeout.connect(self.update_timer_record)
             self.timer.start()
-            self.subprocess_script = run_subprocess([sys.executable, os.path.join(
-                os.environ['BCISTREAM_ROOT'], 'kafka_scripts', 'record.py')])
+
+            if '--local' in sys.argv:
+                self.subprocess_script = run_subprocess([sys.executable, os.path.join(
+                    os.environ['BCISTREAM_ROOT'], 'kafka_scripts', 'record.py')])
+            else:
+                self.subprocess_script = run_subprocess([sys.executable, os.path.join(
+                    os.environ['BCISTREAM_HOME'], 'kafka_scripts', 'record.py')])
         else:
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")

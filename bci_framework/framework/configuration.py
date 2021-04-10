@@ -9,7 +9,6 @@ import shutil
 
 from PySide2.QtWidgets import QDesktopWidget, QMainWindow
 from PySide2.QtUiTools import QUiLoader
-from PySide2 import QtCore
 
 from .config_manager import ConfigManager
 
@@ -51,7 +50,7 @@ class ConfigurationFrame(QMainWindow):
         """Connect events."""
         self.main.lineEdit_user_directory.setText(os.environ['BCISTREAM_HOME'])
         self.main.lineEdit_projects_directory.setText(
-            os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
+            os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'))
         self.main.lineEdit_records_directory.setText(
             os.path.join(os.environ['BCISTREAM_HOME'], 'records'))
 
@@ -72,14 +71,23 @@ class ConfigurationFrame(QMainWindow):
     def restore_projects(self, *args, **kwargs) -> None:
         """Copy defautl project into the user projects directory."""
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
-                        os.path.join(os.environ['BCISTREAM_HOME'], 'projects'), dirs_exist_ok=True)
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'), dirs_exist_ok=True)
+
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
     def reset_projects(self, *args, **kwargs) -> None:
         """Remove user projects nad copy the default projects."""
-        shutil.rmtree(os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
+        shutil.rmtree(os.path.join(
+            os.environ['BCISTREAM_HOME'], 'default_extensions'))
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
-                        os.path.join(os.environ['BCISTREAM_HOME'], 'projects'))
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'))
+
+        shutil.rmtree(os.path.join(
+            os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
 
     # ----------------------------------------------------------------------
     def remove_records(self, *args, **kwargs) -> None:
