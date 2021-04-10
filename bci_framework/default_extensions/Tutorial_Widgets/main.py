@@ -12,8 +12,7 @@ class TutorialWidgets(StimuliAPI):
         """"""
         super().__init__(*args, **kwargs)
 
-        self.build_areas()
-        self.add_cross()
+        self.show_cross()
 
         flex = {'margin-bottom': '15px', 'display': 'flex', }
         flex_title = {'margin-top': '50px',
