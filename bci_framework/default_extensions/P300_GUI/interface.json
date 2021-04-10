@@ -23,8 +23,14 @@
     "type": "boolean",
     "label": "Boolean",
     "id": "id-2",
-    "options": ["option-1", "option-2", "option-3", "option-4", "option-5"],
-    "value": [true, true, false, false, true]
+    "values": [
+    ["boolean-1", "Name Option 1", true],
+    ["boolean-2", "Name Option 2", true],
+    ["boolean-3", "Name Option 3", false],
+    ["boolean-4", "Name Option 4", false],
+    ["boolean-5", "Name Option 5", true]
+    ]    
+    
 }
 
 ]

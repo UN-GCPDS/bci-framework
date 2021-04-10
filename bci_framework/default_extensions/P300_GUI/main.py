@@ -4,8 +4,8 @@ P300 GUI
 ========
 """
 
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
-from bci_framework.extensions.stimuli_delivery.utils import Widgets
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
+from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 
 from browser import document, html, timer
 import json
@@ -69,8 +69,7 @@ class P300GUI(StimuliAPI):
                         increase_area <= html.BUTTON(
                             increase, Class=f'cue show slider secondary primary-{key}')
 
-                    value_area <= html.BUTTON(
-                        element['value'], Class=f'cue secondary slider-value show primary-{key}')
+                    value_area <= html.BUTTON(element['value'], Class=f'secondary gui-value show primary-{key}')
 
                     for decrease in element['decrease_modifiers']:
                         decrease_area <= html.BUTTON(
@@ -78,14 +77,21 @@ class P300GUI(StimuliAPI):
 
                     self.secondary_area <= increase_area + value_area + decrease_area
 
-            # elif element['type'] == 'boolean':
-                # boolean_area = html.DIV(Class='boolean-area')
-
-                # # boolean_area <= w..switch('', checked=True, on_change=None, id='')
-
-                # # boolean_area <= html.BUTTON('Hola', Class=f'cue show slider secondary primary-{key}')
-
-                # self.secondary_area <= boolean_area
+            elif element['type'] == 'boolean':
+                boolean_area = html.DIV(Class='boolean-area')
+                
+                for label, name, value in element['values']:
+                    boolean_row = html.DIV(Class='boolean-row')
+                    boolean_row <= html.BUTTON('True', Class=f'cue show boolean secondary primary-{key}')
+                    # boolean_row <= w.label(f'{name}: {value}', typo='body1', Class=f'boolean-text cue show secondary primary-{key}')
+                    
+                    boolean_row <= html.BUTTON(f'{name}: {value}', Class=f'secondary gui-value show primary-{key}')
+                    
+                    boolean_row <= html.BUTTON('False', Class=f'cue show boolean secondary primary-{key}')
+                    boolean_area <= boolean_row
+                boolean_area <= boolean_row
+                
+                self.secondary_area <= boolean_area
 
         button_back = html.BUTTON(
             BACK_ARROW, Class=f'cue show secondary back-arrow')
@@ -95,11 +101,13 @@ class P300GUI(StimuliAPI):
         self.stimuli_area <= self.primary_area
         self.stimuli_area <= self.secondary_area
 
-        self.dashboard <= w..label('P300 GUI', typo='headline4')
-        self.dashboard <= w..slider('Stimuli duration', min=50, max=300, step=10, value=100, id='stimuli_duration')
-        self.dashboard <= w..slider('Stimuli interval', min=100, max=1000, step=10, value=350, id='stimuli_interval')
+        self.dashboard <= w.label('P300 GUI', typo='headline4')
+        self.dashboard <= w.slider(
+            'Stimuli duration', min=50, max=300, step=10, value=100, id='stimuli_duration')
+        self.dashboard <= w.slider(
+            'Stimuli interval', min=100, max=1000, step=10, value=350, id='stimuli_interval')
 
-        self.dashboard <= w..button('Start stimlui', on_click=self.blink)
+        self.dashboard <= w.button('Start stimlui', on_click=self.blink)
         self.show('primary')
 
     # ----------------------------------------------------------------------
@@ -110,18 +118,18 @@ class P300GUI(StimuliAPI):
         if frame == 'primary':
             a1, a2 = 'expand', 'contract'
             w1, w2 = '85%', '15%'
-            for item in self.secondary_area.select(f'.cue.secondary'):
+            for item in self.secondary_area.select(f'.secondary'):
                 item.style = {'opacity': 0.2}
-            for item in self.primary_area.select(f'.cue.primary'):
+            for item in self.primary_area.select(f'.primary'):
                 item.style = {'opacity': 1}
 
         elif frame == 'secondary':
             a2, a1 = 'expand', 'contract'
             w2, w1 = '85%', '15%'
 
-            for item in self.secondary_area.select(f'.cue.secondary'):
+            for item in self.secondary_area.select(f'.secondary'):
                 item.style = {'opacity': 1}
-            for item in self.primary_area.select(f'.cue.primary'):
+            for item in self.primary_area.select(f'.primary'):
                 item.style = {'opacity': 0.2}
 
         self.frame = frame
@@ -138,15 +146,15 @@ class P300GUI(StimuliAPI):
             """"""
             self.show('secondary')
 
-            for item in self.secondary_area.select(f'.cue.secondary'):
+            for item in self.secondary_area.select(f'.secondary'):
                 item.class_name += ' hide'
                 item.class_name = item.class_name.replace('show', '')
 
-            for item in self.secondary_area.select(f'.cue.secondary.primary-{key}'):
+            for item in self.secondary_area.select(f'.secondary.primary-{key}'):
                 item.class_name += ' show'
                 item.class_name = item.class_name.replace('hide', '')
 
-            if item := self.secondary_area.select_one(f'.cue.secondary.back-arrow'):
+            if item := self.secondary_area.select_one(f'.secondary.back-arrow'):
                 item.class_name += ' show'
                 item.class_name = item.class_name.replace('hide', '')
 
@@ -168,13 +176,14 @@ class P300GUI(StimuliAPI):
         self.item = item
         if self.stimuli:
             self.blink_element(item)
-        timer.set_timeout(self.blink, w..get_value('stimuli_interval'))
+        timer.set_timeout(self.blink, w.get_value('stimuli_interval'))
 
     # ----------------------------------------------------------------------
     def blink_element(self, item):
         """"""
         item.class_name += ' blink'
-        timer.set_timeout(lambda: self.blink_element_off(item), w..get_value('stimuli_duration'))
+        timer.set_timeout(lambda: self.blink_element_off(
+            item), w.get_value('stimuli_duration'))
 
     # ----------------------------------------------------------------------
     def blink_element_off(self, item):
@@ -183,6 +192,6 @@ class P300GUI(StimuliAPI):
 
 
 if __name__ == '__main__':
-    StimuliServer('P300GUI')
+    P300GUI()
 
 
