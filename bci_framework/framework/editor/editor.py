@@ -340,10 +340,11 @@ class BCIEditor(QTextEdit):
 
         else:
             tc.select(tc.LineUnderCursor)
-            if line := tc.selectedText().strip():
-                tc.removeSelectedText()
-                start = line.find(line.replace(' ', '')[0])
-                tc.insertText(" " * start + f'{char}' + line[start:])
+            if line := tc.selectedText():
+                if line.strip():
+                    tc.removeSelectedText()
+                    start = line.find(line.replace(' ', '')[0])
+                    tc.insertText(" " * start + f'{char}' + line[start:])
 
     # ----------------------------------------------------------------------
     def set_completer(self, completer: AUTOCOMPLETER) -> None:
