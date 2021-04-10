@@ -35,8 +35,8 @@ on non-real-time acquisition systems and consists on delegate the board
 handle to a dedicated environ and stream out the data in real-time.
 `Write custom visualization <70-develop_visualizations.ipynb>`__ for raw
 or processed time series and `design custom neurophysiological
-experiments <80-develop_stimuli_delivery.ipynb>`__ are the mayor
-features available in this application.
+experiments <80-stimuli_delivery.ipynb>`__ are the mayor features
+available in this application.
 
 BCI-Framework consists of a graphical user interface (GUI) with a set of
 individual computational processes (distributed or in a single machine),

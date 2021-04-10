@@ -20,3 +20,5 @@ Subpackages
    bci_framework.default_extensions.Tutorial_Objects_measurement
    bci_framework.default_extensions.Tutorial_Pipelines
    bci_framework.default_extensions.Visual_working_memory
+   bci_framework.default_extensions.latency_synchronization_stimuli_marker
+   bci_framework.default_extensions.latency_synchronization_visualization
