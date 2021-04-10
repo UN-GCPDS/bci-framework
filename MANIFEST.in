@@ -5,3 +5,4 @@ recursive-exclude * *.py[co]
 recursive-exclude local/ *
 recursive-exclude docs/ *
 recursive-exclude bci_framework/default_projects/*/captures *
+recursive-exclude bci_framework/default_extensions/latency_synchronization_*
