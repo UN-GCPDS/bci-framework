@@ -18,7 +18,7 @@ class EventMarkerSynchronization(StimuliAPI):
         self.add_stylesheet('styles.css')
 
         self.show_cross()
-        self.show_blink_area()
+        self.show_synchronizer()
 
         self.dashboard <= w.label(
             'Latency measurement<br><br>', typo='headline4')
