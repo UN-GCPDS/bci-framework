@@ -48,6 +48,11 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'default_extens
     shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
                     os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'))
 
+# Copy kafka_scripts if not exists
+if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts')):
+    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
+                    os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
+
 
 from .framework.qtgui.icons import generate_icons
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
