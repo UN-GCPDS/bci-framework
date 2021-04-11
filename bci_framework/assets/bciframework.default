@@ -1,10 +1,13 @@
 [montages]
 montage1 = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,T5,P3,Pz,P4,T6,O1,Oz,O2
-last_montage = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,T5,P3,Pz,P4,T6,O1,Oz,O2
+last_montage = standard_1020|Fp1,Fp2,T3,C3,C4,T4,O1,O2
 montage2 = standard_1020|Fp1,Fp2,T3,C3,C4,T4,O1,O2
-montage3 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2,Off
-montage4 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2,Off
 montage5 = standard_1020|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,P3,Pz,P4,O1,O2
+montage6 = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,T5,P3,Pz,P4,T6,O1,Oz,O2
+montage4 = standard_1020|Fp1,Fp2,F7,F3,F4,F8,T3,C3,C4,T4,T5,P3,P4,T6,O1,O2
+montage3 = standard_1020|F3,Fz,F4,C3,C4,P3,Pz,P4
+montage7 = standard_1005|Fp1,Fp2,F7,Fz,F8,T3,C3,Cz,C4,T4,T5,Pz,T6,O1,O2
+
 
 [connection]
 mode = WiFi Module
