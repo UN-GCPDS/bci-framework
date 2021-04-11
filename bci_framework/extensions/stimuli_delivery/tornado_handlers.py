@@ -155,8 +155,8 @@ class WSHandler(WebSocketHandler):
 
         annotation = kwargs['annotation']
         annotation['onset'] = (
-            datetime.now() - timedelta(milliseconds=marker['latency'] + prop.SYNCLATENCY)).timestamp()
-        del marker['latency']
+            datetime.now() - timedelta(milliseconds=annotation['latency'] + prop.SYNCLATENCY)).timestamp()
+        del annotation['latency']
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('annotation', annotation)

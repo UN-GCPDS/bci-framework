@@ -59,7 +59,7 @@ class DataAnalysis:
     # ----------------------------------------------------------------------
     def __init__(self, enable_produser=False):
         """"""
-        self.boundary = False
+        self._pivot = None
         if enable_produser:
             self._enable_commands()
 
@@ -141,7 +141,7 @@ class DataAnalysis:
 
         c = eeg.shape[1]
 
-        if self.boundary is False:
+        if self._pivot is None:
             self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
             self.buffer_eeg[:, -c:] = eeg
 
@@ -159,44 +159,44 @@ class DataAnalysis:
 
         else:
             roll = 0
-            if self.boundary + c >= self.buffer_eeg.shape[1]:
-                roll = self.buffer_eeg.shape[1] - (self.boundary + c)
+            if self._pivot + c >= self.buffer_eeg.shape[1]:
+                roll = self.buffer_eeg.shape[1] - (self._pivot + c)
                 self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
                 self.buffer_eeg[:, -eeg.shape[1]:] = eeg
                 self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
 
             else:
-                self.buffer_eeg[:, self.boundary:self.boundary + c] = eeg
+                self.buffer_eeg[:, self._pivot:self._pivot + c] = eeg
 
-            self.boundary += c
-            self.boundary = self.boundary % self.buffer_eeg.shape[1]
+            self._pivot += c
+            self._pivot = self._pivot % self.buffer_eeg.shape[1]
 
             if not aux is None:
                 d = aux.shape[1]
 
                 roll = 0
-                if self.boundary_aux + d >= self.buffer_aux.shape[1]:
-                    roll = self.boundary_aux + d
+                if self._pivot_aux + d >= self.buffer_aux.shape[1]:
+                    roll = self._pivot_aux + d
 
                 if roll:
                     self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
 
-                if (self.buffer_aux[:, self.boundary_aux:self.boundary_aux + d]).shape != aux.shape:
+                if (self.buffer_aux[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
                     l = self.buffer_aux[:,
-                                        self.boundary_aux:self.boundary_aux + d].shape[1]
-                    logging.warning([l, aux.shape[1]])
+                                        self._pivot_aux:self._pivot_aux + d].shape[1]
+                    # logging.warning([l, aux.shape[1]])
 
                     self.buffer_aux[:,
-                                    self.boundary_aux:self.boundary_aux + d] = aux[:, :l]
+                                    self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
                 else:
                     self.buffer_aux[:,
-                                    self.boundary_aux:self.boundary_aux + d] = aux
+                                    self._pivot_aux:self._pivot_aux + d] = aux
 
                 if roll:
                     self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)
 
-                self.boundary_aux += d
-                self.boundary_aux = self.boundary_aux % self.buffer_aux.shape[1]
+                self._pivot_aux += d
+                self._pivot_aux = self._pivot_aux % self.buffer_aux.shape[1]
 
     # ----------------------------------------------------------------------
     def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:

@@ -188,11 +188,12 @@ class Pipeline:
     # ----------------------------------------------------------------------
     def run_pipeline(self, pipeline, trials, callback=None):
         """"""
+        self._callback = callback
         self.show_progressbar(len(trials) * len(pipeline))
-        self._run_pipeline(pipeline, trials, callback)
+        self._run_pipeline(pipeline, trials)
 
     # ----------------------------------------------------------------------
-    def _run_pipeline(self, pipeline, trials, callback):
+    def _run_pipeline(self, pipeline, trials):
         """"""
         pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
         trial = trials.pop(0)
@@ -211,15 +212,15 @@ class Pipeline:
 
         if trials:
             t = timer.set_timeout(lambda: self._run_pipeline(
-                pipeline, trials, callback), sum(timeouts))
+                pipeline, trials), sum(timeouts))
             self._timeouts.append(t)
             if t_ := timer.set_timeout(self.increase_progress, sum(timeouts)):
                 self._timeouts.append(t_)
 
-        elif callback:
-                t = timer.set_timeout(lambda: DeliveryInstance.both(
-                    callback)(self), sum(timeouts))
-                self._timeouts.append(t)
+        elif self._callback:
+            t = timer.set_timeout(lambda: DeliveryInstance.both(
+                self._callback)(self), sum(timeouts))
+            self._timeouts.append(t)
 
     # ----------------------------------------------------------------------
     def wrap_fn(self, fn, trial):
@@ -243,6 +244,13 @@ class Pipeline:
         for t in self._timeouts:
             timer.clear_timeout(t)
         self.set_progress(0)
+        if self._callback:
+            self.call_callback()
+
+    # ----------------------------------------------------------------------
+    def call_callback(self):
+        """"""
+        DeliveryInstance.both(self._callback)(self)
 
 
 ########################################################################
@@ -293,13 +301,13 @@ class StimuliAPI(Pipeline):
         # print(f'MARKER: {marker["marker"]}')
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.remote
+    # @DeliveryInstance.remote
     def start_record(self):
         """"""
         self.send_annotationn('start_record')
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.remote
+    # @DeliveryInstance.remote
     def stop_record(self):
         """"""
         self.send_annotationn('stop_record')

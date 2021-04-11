@@ -104,7 +104,7 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         """"""
         port = 5000
         super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
-        self.boundary = False
+        self._pivot = None
         if enable_produser:
             self._enable_commands()
 
@@ -215,30 +215,32 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def create_boundary(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
+    def reverse_buffer(self, axis: Optional[matplotlib.axes.Axes] = None, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
         """Add the boundary line to some visualizations."""
 
-        self.boundary = 0
-        self.boundary_aux = 0
+        self._pivot = 0
+        self._pivot_aux = 0
 
-        self.boundary_line = axis.vlines(0, min, max, color=color, zorder=99)
-        self.boundary_aux_line = axis.vlines(
-            0, max, max, color=color, zorder=99)
+        if axis:
+            self.boundary_line = axis.vlines(
+                0, min, max, color=color, zorder=99)
 
     # ----------------------------------------------------------------------
-    def plot_boundary(self, eeg: Optional[bool] = True, aux: Optional[bool] = False):
+    def plot_pivot(self):
         """Update the position of the boundary line."""
 
-        if eeg and hasattr(self, 'boundary_line'):
+        if hasattr(self, 'boundary_line'):
             segments = self.boundary_line.get_segments()
-            segments[0][:, 0] = [self.boundary / prop.SAMPLE_RATE,
-                                 self.boundary / prop.SAMPLE_RATE]
+            segments[0][:, 0] = [self._pivot / prop.SAMPLE_RATE,
+                                 self._pivot / prop.SAMPLE_RATE]
             self.boundary_line.set_segments(segments)
-        elif aux and hasattr(self, 'boundary_aux_line'):
-            segments = self.boundary_aux_line.get_segments()
-            segments[0][:, 0] = [self.boundary_aux
-                                 / prop.SAMPLE_RATE, self.boundary_aux / prop.SAMPLE_RATE]
-            self.boundary_aux_line.set_segments(segments)
 
         else:
             logging.warning('No "boundary" to plot')
+
+    # ----------------------------------------------------------------------
+    def feed(self):
+        """"""
+        if hasattr(self, 'boundary_line'):
+            self.plot_pivot()
+        super().feed()
