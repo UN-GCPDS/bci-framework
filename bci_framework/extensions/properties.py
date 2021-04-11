@@ -29,11 +29,15 @@ class Properties:
     """
     # HOST = 'localhost'
     HOST = '192.168.1.1'
+    # CHANNELS = {i + 1: ch for i,
+                # ch in enumerate('Fp1,Fp2,T3,C3,C4,T4,O1,O2'.split(','))}
     CHANNELS = {i + 1: ch for i,
-                ch in enumerate('Fp1,Fp2,T3,C3,C4,T4,O1,O2'.split(','))}
+                ch in enumerate('Fp1,Fp2,F7,F3,F4,F8,T3,C3,C4,T4,T5,P3,P4,T6,O1,O2'.split(','))}
+
     SAMPLE_RATE = 1000
     STREAMING_PACKAGE_SIZE = 100
-    BOARDMODE = 'analog'
+    BOARDMODE = 'digital'
+    CONNECTION = 'wifi'
 
     # ----------------------------------------------------------------------
     def __getattr__(self, attr: str):

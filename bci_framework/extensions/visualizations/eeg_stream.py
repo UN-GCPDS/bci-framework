@@ -209,7 +209,8 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         # if mode != 'eeg':
             # axis.legend()
 
-        axis.grid(True, color='#ffffff', alpha=0.25, zorder=0)
+        axis.grid(True, color=os.environ.get(
+            'QTMATERIAL_SECONDARYLIGHTCOLOR', '#ff0000'), zorder=0)
         lines = np.array(lines)
 
         return axis, time, lines

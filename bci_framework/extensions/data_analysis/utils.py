@@ -126,18 +126,21 @@ def fake_loop_consumer(*topics) -> Callable:
                     len(prop.CHANNELS), num_data))
 
                 if prop.BOARDMODE == 'default':
-                    aux = np.random.normal(0, 0.2, size=(
-                        3, num_data))
+                    aux = np.random.normal(0, 0.2, size=(3, num_data))
                 elif prop.BOARDMODE == 'analog':
-                    aux = np.random.normal(0, 0.07, size=(
-                        3, num_data))
+                    if prop.CONNECTION == 'wifi':
+                        aux = np.random.normal(0, 0.07, size=(2, num_data))
+                    else:
+                        aux = np.random.normal(0, 0.07, size=(3, num_data))
 
                     if (time.time() // 1) % 2:
                         aux += 1
 
                 elif prop.BOARDMODE == 'digital':
-                    aux = np.random.normal(0, 0.2, size=(
-                        5, num_data))
+                    if prop.CONNECTION == 'wifi':
+                        aux = np.random.normal(0, 0.2, size=(3, num_data))
+                    else:
+                        aux = np.random.normal(0, 0.2, size=(5, num_data))
                 else:
                     aux = None
 
