@@ -82,7 +82,7 @@ class StimuliDelivery:
             if item.text().startswith('Tutorial |'):
                 continue
 
-            self.stimuli_list.append(item.text())
+            self.stimuli_list.append([item.text(), item.path])
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:

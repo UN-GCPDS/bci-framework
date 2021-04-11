@@ -69,6 +69,8 @@ class Records:
     def remove_record(self) -> None:
         """Remove file from records directory."""
         row = self.parent_frame.tableWidget_records.currentRow()
+        if row < 0:
+            return
         filename = self.parent_frame.tableWidget_records.item(
             row, 2).previous_name
 

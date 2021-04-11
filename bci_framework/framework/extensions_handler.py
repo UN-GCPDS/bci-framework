@@ -106,10 +106,10 @@ class ExtensionMenu:
             else:
                 menu_stimuli = QMenu('Stimuli' + ' 🞃')
 
-        for viz in self.extensions_list:
+        for viz, path in self.extensions_list:
             if viz != visualization:
                 menu_stimuli.addAction(QAction(viz, menu_stimuli,
-                                               triggered=self.set_extension(viz)))
+                                               triggered=self.set_extension(path)))
         # self.menubar.addMenu(menu_stimuli)
         self.accent_menubar.addMenu(menu_stimuli)
 
@@ -288,7 +288,8 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         if os.path.exists(f'{filename}'):
             os.remove(f'{filename}')
 
-        self.stream_subprocess.main.web_engine.grab().save(filename, 'JPG')
+        if web_engine := getattr(self.stream_subprocess.main, 'web_engine', False):
+            web_engine.grab().save(filename, 'JPG')
         return filename
 
     # ----------------------------------------------------------------------
