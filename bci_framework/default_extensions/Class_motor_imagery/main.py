@@ -95,13 +95,17 @@ class FourClassMotorImagery(StimuliAPI):
 
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback=self.soa), 2000)
+            self.pipeline_trial, self.trials, callback=self.stop_run), 2000)
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
-        self.cue_placeholder.html = ''
+        
+    # ----------------------------------------------------------------------
+    def stop_run(self) -> None:
+        """Stop pipeline execution."""  
+        self.soa()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 

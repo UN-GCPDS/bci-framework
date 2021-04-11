@@ -1,4 +1,5 @@
-from bci_framework.extensions.visualizations import EEGStream, loop_consumer, fake_loop_consumer, thread_this, subprocess_this
+from bci_framework.extensions.visualizations import EEGStream, 
+from bci_framework.extensions.analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 import mne
 
@@ -13,7 +14,6 @@ class Stream(EEGStream):
         super().__init__(*args, **kwargs)
 
         self.axis = self.add_subplot(1, 1, 1)
-        # self.tight_layout()
         self.info = self.get_mne_info()
 
         self.stream()
