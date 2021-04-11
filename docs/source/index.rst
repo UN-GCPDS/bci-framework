@@ -17,6 +17,7 @@ Navigation
    notebooks/80-stimuli_delivery
    notebooks/81-default_stimuli_delivery_paradigms
    notebooks/90-event_marker_synchronization
+   notebooks/91-eeg_records_exploring
    notebooks/99-troubleshoots
 
 Indices and tables
