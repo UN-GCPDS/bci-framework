@@ -61,12 +61,12 @@ class RecordTransformer:
 
     # ----------------------------------------------------------------------
     @loop_consumer('eeg', 'marker', 'annotation')
-    def save_data(self, data: KafkaStream, topic: str, **kwargs) -> None:
+    def save_data(self, kafka_stream: KafkaStream, topic: str, **kwargs) -> None:
         """Write data on every strem package.
 
         Parameters
         ----------
-        data
+        kafka_stream
             Kafka stream with deserialized data.
         topic
             The topic of the stream.
@@ -76,21 +76,21 @@ class RecordTransformer:
             return
 
         if topic == 'eeg':
-            dt = data.value['context']['binary_created']
-            eeg, aux = data.value['data']
+            dt = kafka_stream.value['context']['binary_created']
+            eeg, aux = kafka_stream.value['data']
             self.writer.add_eeg(eeg, dt)
             self.writer.add_aux(aux)
             # print(dt)
 
         elif topic == 'marker':
-            dt = data.value['datetime']
-            marker = data.value['marker']
+            dt = kafka_stream.value['datetime']
+            marker = kafka_stream.value['marker']
             self.writer.add_marker(marker, dt)
 
         elif topic == 'annotation':
-            onset = data.value['onset']
-            duration = data.value['duration']
-            description = data.value['description']
+            onset = kafka_stream.value['onset']
+            duration = kafka_stream.value['duration']
+            description = kafka_stream.value['description']
             self.writer.add_annotation(onset, duration, description)
 
     # ----------------------------------------------------------------------

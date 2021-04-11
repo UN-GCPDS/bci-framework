@@ -11,11 +11,15 @@ from scipy.signal import savgol_filter
 
 from simple_pid import PID
 
-MAX_LATENCY = 200
+MAX_LATENCY = 150
 BUFFER = 15
 
-pid = PID(Kp=2, Ki=0, Kd=0, setpoint=0,
+pid = PID(Kp=1, Ki=0.07, Kd=0.0001, setpoint=0,
           sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
+# pid = PID(Kp=1, Ki=0.4, Kd=0.05, setpoint=0,
+          # sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
+# pid = PID(Kp=1, Ki=0.07, Kd=0.01, setpoint=0,
+          # sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
 
 
 ########################################################################
@@ -106,7 +110,7 @@ class Stream(EEGStream):
 
     # ----------------------------------------------------------------------
     # @loop_consumer('eeg', 'marker')
-    @marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
+    @ marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
     # data, topic, frame, kafka_stream):
     def stream(self, aux, timestamp, marker, marker_datetime):
         """"""
@@ -154,7 +158,8 @@ class Stream(EEGStream):
             print(self.timestamp_rises)
 
             v = np.argmin(np.abs(timestamp - self.timestamp_rises[0]))
-            window = aux[int(v - prop.SAMPLE_RATE * 0.3):int(v + prop.SAMPLE_RATE * 0.3)]
+            window = aux[int(v - prop.SAMPLE_RATE * 0.3)
+                             : int(v + prop.SAMPLE_RATE * 0.3)]
             t = np.linspace(-300, 300, window.shape[0])
             self.axis_wave.plot(t, window, label='input signal')[0]
 
@@ -172,7 +177,8 @@ class Stream(EEGStream):
         if latencies.size > 5:
             self.axis_hist.clear()
             self.axis_hist.grid(True, zorder=0)
-            snb.histplot(latencies, kde=True, ax=self.axis_hist, zorder=10)
+            snb.histplot(latencies, kde=True,
+                         ax=self.axis_hist, zorder=10)
             self.axis_hist.set(
                 xlabel='Latency [ms]', ylabel='Count', title='Latency histogram')
 
@@ -223,11 +229,11 @@ class Stream(EEGStream):
 
         self.feed()
 
-        try:
-            self.latency_correction = -pid(np.mean(latencies_filtered[-6:]))
-            # self.latency_correction = pid(latency)
-        except:
-            self.latency_correction = -pid(np.mean(self.latencies[-6:]))
+        # try:
+            # self.latency_correction = pid(np.mean(latencies_filtered[-6:]))
+            # # self.latency_correction = pid(latency)
+        # except:
+        self.latency_correction = pid(np.mean(self.latencies[-8:]))
 
         # self.latency_correction -= (np.mean(self.latencies) * 0.5)
 
