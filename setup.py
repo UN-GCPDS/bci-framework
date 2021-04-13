@@ -7,10 +7,6 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 version_str = open(os.path.join(
     'bci_framework', '_version.txt'), 'r').read().strip()
-
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
-
 setup(
     name='bci-framework',
     version=version_str,
@@ -23,7 +19,24 @@ setup(
 
     download_url='https://github.com/UN-GCPDS/bci_framework',
 
-    install_requires=requirements,
+    install_requires=['simple_pid>=1.0.0',
+                      'mne>=0.22.1',
+                      'kafka_python>=2.0.2',
+                      'tornado>=6.1',
+                      'seaborn>=0.11.1',
+                      'numpy>=1.20.1',
+                      'matplotlib>=3.4.1',
+                      'psutil>=5.8.0',
+                      'cycler>=0.10.0',
+                      'scipy>=1.6.2',
+                      'qt_material>=2.8',
+                      'browser>=0.0.1',
+                      'figurestream>=1.1',
+                      'gcpds>=0.1a1',
+                      'openbci_stream>=1.0.0rc3',
+                      'PySide2>=5.15.2',
+                      'radiant>=3.1',
+                      ],
 
     include_package_data=True,
     license='BSD-2-Clause',
