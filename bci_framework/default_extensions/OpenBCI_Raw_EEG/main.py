@@ -1,5 +1,5 @@
 from bci_framework.extensions.visualizations import EEGStream
-from bci_framework.extensions.data_analysis import fake_loop_consumer
+from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 import numpy as np
 
@@ -34,7 +34,7 @@ class RawEEG(EEGStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer('eeg')
+    @loop_consumer('eeg')
     def stream(self):
         eeg = self.buffer_eeg_resampled
         for i, line in enumerate(self.lines):
