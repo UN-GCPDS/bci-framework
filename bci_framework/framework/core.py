@@ -13,7 +13,7 @@ from typing import TypeVar, Optional
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
-from PySide2.QtGui import QPixmap, QIcon
+from PySide2.QtGui import QPixmap, QIcon, QFontDatabase
 from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
 
 from kafka import KafkaProducer, KafkaConsumer
@@ -96,6 +96,7 @@ class BCIFramework(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.load_fonts()
         self.main = QUiLoader().load(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'qtgui', 'main.ui'))
         self.set_icons()
@@ -205,6 +206,17 @@ class BCIFramework(QMainWindow):
                            for ch in children}, file_, indent=2)
         except:  # psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists
             pass
+
+    # ----------------------------------------------------------------------
+    def load_fonts(self) -> None:
+        """Load custom fonts."""
+        fonts_path = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'assets', 'fonts')
+
+        for font_dir in [os.path.join('dejavu', 'ttf')]:
+            for font in filter(lambda s: s.endswith('.ttf'), os.listdir(os.path.join(fonts_path, font_dir))):
+                QFontDatabase.addApplicationFont(
+                    os.path.join(fonts_path, font_dir, font))
 
     # ----------------------------------------------------------------------
     def build_collapse_button(self) -> None:
