@@ -119,6 +119,9 @@ def main() -> None:
     extra = {'danger': '#dc3545',
              'warning': '#e2a963',
              'success': '#17a2b8',
+
+             'font_family': 'Roboto',
+             'font_size': 'unset',
              }
 
     if ConfigManager().get('framework', 'theme', 'light') == 'light':
