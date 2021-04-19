@@ -271,7 +271,6 @@ class StimuliAPI(Pipeline):
         self.ws.main = self
 
         if self.listen_feedback_:
-            print('CONSUMMING')
             timer.set_timeout(lambda: self.ws.send(
                 {'action': 'consumer', }), 1000)
 
