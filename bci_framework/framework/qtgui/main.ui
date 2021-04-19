@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -479,6 +479,9 @@ p, li { white-space: pre-wrap; }
                <layout class="QHBoxLayout" name="horizontalLayout_23">
                 <item>
                  <widget class="QPushButton" name="pushButton_show_configurations">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">text-align: left</string>
                   </property>
@@ -630,10 +633,8 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_15">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;for the data acquisition and the external stimuli synchronization.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Python&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -732,10 +733,8 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_16">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new kind of data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -831,10 +830,8 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_20">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be modified and configured according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -930,13 +927,11 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_21">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. All annotations are stored along the EEG data in the &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;record file&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. All annotations are stored along the EEG data in the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;record file&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -1029,10 +1024,8 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="label_22">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. All annotations are stored along the EEG data in the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;records&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1128,10 +1121,8 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="label_17">
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;remote stimuli delivery experiments&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with real-time feedback and events synchronization.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1209,7 +1200,7 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QToolBar" name="toolBar_environs">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Environments</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -2174,6 +2165,32 @@ p, li { white-space: pre-wrap; }
                        </item>
                       </layout>
                      </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_latency">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The time in microseconds (us) between packet sends. The higher the OpenBCI sample rate, the higher the latency needed. Default is &lt;span style=&quot; font-weight:600;&quot;&gt;1000us&lt;/span&gt;, minimum stable is &lt;span style=&quot; font-weight:600;&quot;&gt;50us&lt;/span&gt;. For upper limit sample rates such as 4kHz/8kHz/16kHz, latency around &lt;span style=&quot; font-weight:600;&quot;&gt;20000us&lt;/span&gt; seems to really stabilize the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Latency (under TCP)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSpinBox" name="spinBox_tcp_latency">
+                       <property name="suffix">
+                        <string> us</string>
+                       </property>
+                       <property name="minimum">
+                        <number>10</number>
+                       </property>
+                       <property name="maximum">
+                        <number>100000</number>
+                       </property>
+                       <property name="value">
+                        <number>50000</number>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="3" column="0">
                       <widget class="QLabel" name="label_7">
                        <property name="toolTip">
@@ -2342,32 +2359,6 @@ p, li { white-space: pre-wrap; }
                          <string>MARKER</string>
                         </property>
                        </item>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_latency">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The time in microseconds (us) between packet sends. The higher the OpenBCI sample rate, the higher the latency needed. Default is &lt;span style=&quot; font-weight:600;&quot;&gt;1000us&lt;/span&gt;, minimum stable is &lt;span style=&quot; font-weight:600;&quot;&gt;50us&lt;/span&gt;. For upper limit sample rates such as 4kHz/8kHz/16kHz, latency around &lt;span style=&quot; font-weight:600;&quot;&gt;20000us&lt;/span&gt; seems to really stabilize the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Latency (under TCP)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QSpinBox" name="spinBox_tcp_latency">
-                       <property name="suffix">
-                        <string> us</string>
-                       </property>
-                       <property name="minimum">
-                        <number>10</number>
-                       </property>
-                       <property name="maximum">
-                        <number>100000</number>
-                       </property>
-                       <property name="value">
-                        <number>50000</number>
-                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -3671,7 +3662,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar_Documentation">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Places</string>
    </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
