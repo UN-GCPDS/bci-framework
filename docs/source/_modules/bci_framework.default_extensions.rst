@@ -16,6 +16,7 @@ Subpackages
    bci_framework.default_extensions.OpenBCI_Raw_EEG
    bci_framework.default_extensions.OpenBCI_Raw_topoplot
    bci_framework.default_extensions.P300_Speller
+   bci_framework.default_extensions.P300_online_classifier
    bci_framework.default_extensions.Resting_state_and_noise_acquisition
    bci_framework.default_extensions.Tutorial_Fourier_stream_consumer
    bci_framework.default_extensions.Tutorial_Fourier_stream_produser
