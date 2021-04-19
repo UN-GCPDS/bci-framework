@@ -13,8 +13,8 @@ from typing import TypeVar, Optional
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
-from PySide2.QtGui import QPixmap, QIcon, QFontDatabase
-from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
+from PySide2.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence
+from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel, QShortcut
 
 from kafka import KafkaProducer, KafkaConsumer
 
@@ -115,8 +115,18 @@ class BCIFramework(QMainWindow):
         self.main.actionDocumentation.triggered.connect(
             lambda evt: self.show_interface('Documentation'))
 
-        self.show_interface('Home')
+        shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
+        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
+        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
 
+        shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
+        shortcut_docs.activated.connect(
+            lambda: self.show_interface('Documentation'))
+
+        shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
+        shortcut_docs.activated.connect(self.toggle_dock_collapsed)
+
+        self.show_interface('Home')
         self.config = ConfigManager()
 
         for i in range(self.main.toolBar_environs.layout().count()):
@@ -221,7 +231,8 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def build_collapse_button(self) -> None:
         """Custom collapsible widgets area."""
-        # And with the space is possible to add ad custom widget
+        # This dockWidget has empy name so,
+        # with in that space is possible to add a custom widget
         self.pushButton_collapse_dock = QPushButton(
             self.main.dockWidget_global)
         self.pushButton_collapse_dock.clicked.connect(
@@ -257,6 +268,14 @@ class BCIFramework(QMainWindow):
         if not collapsed:
             self.main.dockWidget_global.setMaximumWidth(9999)
             self.main.dockWidget_global.setMinimumWidth(100)
+
+    # ----------------------------------------------------------------------
+    def toggle_dock_collapsed(self) -> None:
+        """"""
+        if self.main.dockWidget_global.maximumWidth() >= 9999:
+            self.set_dock_collapsed(True)
+        else:
+            self.set_dock_collapsed(False)
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
@@ -421,7 +440,6 @@ class BCIFramework(QMainWindow):
         *{
         font-family: "Roboto Light";
         font-weight: 300;
-        font-size: 18px;
         }
         """
 
@@ -440,7 +458,7 @@ class BCIFramework(QMainWindow):
         about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 
-        about.buttonBox.button(QDialogButtonBox.Close).clicked.connect(
+        about.pushButton_close.clicked.connect(
             lambda evt: about.destroy())
 
         about.label.setMinimumSize(QSize(720, 200))

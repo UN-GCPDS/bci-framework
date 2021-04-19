@@ -10,8 +10,9 @@ extensions.
 import os
 from typing import TypeVar
 
-from PySide2.QtCore import QTimer
-from PySide2.QtGui import QTextCursor
+from PySide2.QtCore import QTimer, Qt
+from PySide2.QtGui import QTextCursor, QKeySequence
+from PySide2.QtWidgets import QShortcut
 
 from ..extensions_handler import ExtensionWidget
 # from ..editor import Autocompleter
@@ -32,6 +33,13 @@ class Development:
         self.core = core
 
         self.parent_frame.pushButton_stop_preview.hide()
+
+        shortcut_docs = QShortcut(QKeySequence('F5'), self.parent_frame)
+        shortcut_docs.activated.connect(self.start_preview)
+        shortcut_docs = QShortcut(QKeySequence('Ctrl+F5'), self.parent_frame)
+        shortcut_docs.activated.connect(self.stop_preview)
+        shortcut_docs = QShortcut(QKeySequence('Ctrl+S'), self.parent_frame)
+        shortcut_docs.activated.connect(self.save_all_files)
 
         self.log_timer = QTimer()
         self.log_timer.timeout.connect(self.update_log)
@@ -103,6 +111,8 @@ class Development:
     # ----------------------------------------------------------------------
     def start_preview(self) -> None:
         """Initialize the previsualization and the debugger."""
+        if not self.parent_frame.pushButton_script_preview.isVisible():
+            return
         self.log_timer.start()
         self.show_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
@@ -148,6 +158,8 @@ class Development:
     # ----------------------------------------------------------------------
     def stop_preview(self) -> None:
         """Stop subprocess."""
+        if not self.parent_frame.pushButton_stop_preview.isVisible():
+            return
         self.log_timer.stop()
         if hasattr(self, 'sub'):
             self.sub.stop_preview()

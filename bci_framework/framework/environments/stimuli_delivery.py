@@ -13,9 +13,10 @@ import logging
 import sys
 import json
 
-from PySide2.QtCore import QTimer
+from PySide2.QtCore import QTimer, Qt
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QPixmap
+from PySide2.QtGui import QPixmap, QKeySequence
+from PySide2.QtWidgets import QShortcut
 
 from ..extensions_handler import ExtensionWidget
 from ..subprocess_handler import run_subprocess
@@ -75,13 +76,10 @@ class StimuliDelivery:
         """Update the experiments selector."""
         for i in range(self.parent_frame.listWidget_projects_delivery.count()):
             item = self.parent_frame.listWidget_projects_delivery.item(i)
-
             if item.text().startswith('_'):
                 continue
-
-            if item.text().startswith('Tutorial |'):
+            if item.text().startswith('Tutorial :'):
                 continue
-
             self.stimuli_list.append([item.text(), item.path])
 
     # ----------------------------------------------------------------------
@@ -147,6 +145,11 @@ class StimuliDelivery:
             frame = os.path.join(
                 os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'stimuli_delivery_subwindow.ui')
             self.sub_window_delivery = QUiLoader().load(frame, self.parent_frame)
+
+            shortcut_fullscreen = QShortcut(
+                QKeySequence('F11'), self.sub_window_delivery)
+            shortcut_fullscreen.activated.connect(lambda: self.sub_window_delivery.showNormal() if self.sub_window_delivery.windowState(
+            ) & Qt.WindowFullScreen else self.sub_window_delivery.showFullScreen())
 
         self.sub_window_delivery.show()
 
