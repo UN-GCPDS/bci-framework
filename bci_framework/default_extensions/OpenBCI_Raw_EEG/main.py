@@ -34,7 +34,7 @@ class RawEEG(EEGStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @loop_consumer('eeg')
+    @fake_loop_consumer('eeg')
     def stream(self):
         eeg = self.buffer_eeg_resampled
         for i, line in enumerate(self.lines):

@@ -14,7 +14,14 @@ import random
 import logging
 from typing import List
 
-CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+CHARACTERS = "ABCDEF😂GHIJKL😍MNOPQR😘STUVWX😭YZ0123⎵456789⌫", 7
+
+CHARACTERS_SRLZ = ["A","B","C","D","E","F","aa",
+                   "G","H","I","J","K","L","bb",
+                   "M","N","O","P","Q","R","cc",
+                   "S","T","U","V","W","X","dd",
+                   "Y","Z","0","1","2","3","ee",
+                   "4","5","6","7","8","9","ff"]
 
 
 ########################################################################
@@ -28,12 +35,21 @@ class P300Speller(StimuliAPI):
         self.add_stylesheet('styles.css')
 
         self.stimuli_area.style = {'background-color': 'black'}
+        
+        self.build_speller()
         self.build_grid()
+        self.listen_feedbacks(self.on_feedback)
 
         self.dashboard <= w.label('P300 Speller', 'headline4')
+        self.dashboard <= w.switch(
+            label='Activate feedback speller',
+            checked=False,
+            on_change=self.show_speller,
+            id='speller',
+        )
         self.dashboard <= w.slider(
             label='Trials:',
-            min=1,
+            min=-1,
             max=15,
             value=5,
             step=1,
@@ -95,6 +111,11 @@ class P300Speller(StimuliAPI):
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
             self.pipeline_trial, self.trials), 2000)
+            
+        timer.set_timeout(lambda: self.on_feedback('H'), 2000+8000*1)
+        timer.set_timeout(lambda: self.on_feedback('O'), 2000+8000*2)
+        timer.set_timeout(lambda: self.on_feedback('L'), 2000+8000*3)
+        timer.set_timeout(lambda: self.on_feedback('A'), 2000+8000*4)
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -114,31 +135,41 @@ class P300Speller(StimuliAPI):
         """
         inter_stimulus = w.get_value('inter_stimulus')
         duration = w.get_value('duration')
+        chars, ncols = CHARACTERS
+        nrows = len(chars) // ncols
 
         self.trials = []
-        for _ in range(w.get_value('trials')):
+        trials = w.get_value('trials')
+        if trials == -1:
+            trials = 99
+        for _ in range(trials):
             stimuli_array = []
-            for i in range(6):
+            for i in range(ncols):
                 stimuli_array.append(
-                    [e.text for e in document.select(f'.col-{i}')])
+                    [e.attrs['char'] for e in document.select(f'.col-{i}')])                
+            for i in range(nrows):
                 stimuli_array.append(
-                    [e.text for e in document.select(f'.row-{i}')])
+                    [e.attrs['char'] for e in document.select(f'.row-{i}')])
+                
             random.shuffle(stimuli_array)
 
-            self.trials.append({'target': random.choice(CHARACTERS),
+            self.trials.append({'target': random.choice(CHARACTERS_SRLZ),
                                 'array': stimuli_array})
 
         random.shuffle(self.trials)
 
-        self.pipeline_trial = [
-            (lambda ** kwargs: None, 500),
-            (self.target_notice, w.get_value('notice')),
-            (self.inter_stimulus, 3000)
-        ]
+        if not w.get_value('speller'):
+            self.pipeline_trial = [
+                (lambda ** kwargs: None, 500),
+                (self.target_notice, w.get_value('notice')),
+                (self.inter_stimulus, 3000)
+            ]
+        else:
+            self.pipeline_trial = []
 
         [self.pipeline_trial.extend(
             [(self.activate, 300),
-             (self.inter_stimulus, 300)]) for _ in range(12)]
+             (self.inter_stimulus, 300)]) for _ in range(nrows+ncols)]
 
     # ----------------------------------------------------------------------
     def target_notice(self, target: str, array: List[str]) -> None:
@@ -165,20 +196,50 @@ class P300Speller(StimuliAPI):
             element.style = {'opacity': 1,
                              'font-weight': 'bold',
                              }
-
+                             
+    # ----------------------------------------------------------------------                                                         
+    def show_speller(self, visible) -> None:
+        """"""
+        if visible:
+            self.speller.style = {'display': 'block'}
+            self.last_value = w.component['trials'].mdc.getValue()
+            w.component['trials'].mdc.setValue(-1)
+            document.select_one('#value_trials').html = ' infinite'
+            
+        else:
+            self.speller.style = {'display': 'none'}
+            w.component['trials'].mdc.setValue(self.last_value)
+            document.select_one('#value_trials').html = f' {self.last_value}'
+                              
+    # ----------------------------------------------------------------------                             
+    def build_speller(self) -> None:
+        """"""
+        self.speller = html.INPUT(Class="p300-speller", readonly=True, style={'display': 'none'})
+        self.speller.value = '_'
+        self.stimuli_area <= self.speller
+        
     # ----------------------------------------------------------------------
     def build_grid(self) -> None:
         """Create the grid with the letters."""
         table = html.TABLE(CLass='p300')
         tr = html.TR()
         table <= tr
-
-        for i, char in enumerate(CHARACTERS):
-            col = i // 6
-            row = i % 6
-            tr <= html.TD(
-                char, Class=f'p300-char p300-{char}- col-{col} row-{row}')
-            if i != 0 and not (i + 1) % 6:
+        
+        characters_train, ncols = CHARACTERS
+        
+        for i, char in enumerate(characters_train):
+            char_print = CHARACTERS_SRLZ[i]
+            row = i // ncols
+            col = i % ncols
+            if row == 6:
+                style = {"font-size": "6vh"}
+            else:
+                style = {}
+            td = html.TD(
+                char, Class=f'p300-char p300-{char_print}- col-{col} row-{row}', style=style)
+            td.attrs['char'] = char_print
+            tr <= td
+            if i != 0 and not (i + 1) % ncols:
                 tr = html.TR()
                 table <= tr
         self.stimuli_area <= table
@@ -190,6 +251,12 @@ class P300Speller(StimuliAPI):
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
+            
+    # ----------------------------------------------------------------------            
+    def on_feedback(self, value) -> None:
+        """"""
+        if w.get_value('speller'):
+            self.speller.value = self.speller.value[:-1] + value + '_'
 
 
 if __name__ == '__main__':
