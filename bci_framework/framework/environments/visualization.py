@@ -63,7 +63,11 @@ class Visualization:
         self.visualizations_list = []
         for i in range(self.parent_frame.listWidget_projects_visualizations.count()):
             item = self.parent_frame.listWidget_projects_visualizations.item(i)
-            self.visualizations_list.append(item.text())
+            if item.text().startswith('_'):
+                continue
+            if item.text().startswith('Tutorial :'):
+                continue
+            self.visualizations_list.append([item.text(), item.path])
         self.build_analysis()
 
     # ----------------------------------------------------------------------
@@ -166,8 +170,8 @@ class Visualization:
                 if 0 < j < 4:
                     item.setTextAlignment(Qt.AlignCenter)
 
-                item.setFlags(item.flags() & ~Qt.ItemIsEditable &
-                              ~Qt.ItemIsSelectable)
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable
+                              & ~Qt.ItemIsSelectable)
                 self.parent_frame.tableWidget_anlaysis.setItem(
                     start_index + i, j, item)
 
