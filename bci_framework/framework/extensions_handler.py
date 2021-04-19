@@ -40,10 +40,10 @@ class ExtensionMenu:
                 menu_stimuli = QMenu('Data analysis 🞃')
 
         # Add visualizations
-        for viz in self.extensions_list:
+        for viz, path in self.extensions_list:
             if viz != visualization:
                 menu_stimuli.addAction(QAction(viz, menu_stimuli,
-                                               triggered=self.set_extension(viz)))
+                                               triggered=self.set_extension(path)))
 
         self.accent_menubar.addMenu(menu_stimuli)
 
