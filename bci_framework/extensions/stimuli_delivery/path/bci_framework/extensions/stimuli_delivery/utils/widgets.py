@@ -13,6 +13,7 @@ class Widgets:
     def __init__(self):
         """"""
         self.widgets = {}
+        self.component = {}
 
     # ----------------------------------------------------------------------
     def _fix_value(self, value):
@@ -48,12 +49,15 @@ class Widgets:
         return self.get_value(id)
 
     # ----------------------------------------------------------------------
-
-    def label(self, text, typo='body1', style={}, *args, **kwargs):
+    def label(self, text, typo='body1', style={}, id=None, *args, **kwargs):
         """"""
         label = MDCComponent(html.SPAN(f'{text}'), style={
                              **style, **{'width': '100%', 'display': 'flex'}}, *args, **kwargs)
         label.mdc.typography(typo)
+
+        if id:
+            self.component[id] = label
+
         return label
 
     # ----------------------------------------------------------------------
@@ -74,6 +78,7 @@ class Widgets:
 
         if id:
             self.widgets[id] = self._fix_value(value)
+            self.component[id] = slider_
 
             def set_value(id, value):
                 self.widgets[id] = self._round(value)
@@ -104,6 +109,7 @@ class Widgets:
         if id:
             self.widgets[id] = [self._fix_value(
                 value_lower), self._fix_value(value_upper)]
+            self.component[id] = slider_
 
             def set_value(id, value):
                 self.widgets[id] = [self._round(
@@ -131,6 +137,7 @@ class Widgets:
 
         if id:
             self.widgets[id] = options[0][1]
+            self.component[id] = radios_
 
             def set_value(value):
                 def wrap(evt):
@@ -168,6 +175,7 @@ class Widgets:
 
         if id:
             self.widgets[id] = [ch[0] for ch in options if ch[1]]
+            self.component[id] = checkbox_
 
             def set_value():
                 def wrap(evt):
@@ -196,6 +204,7 @@ class Widgets:
 
         if id:
             self.widgets[id] = value
+            self.component[id] = select_
 
             def set_value():
                 def wrap(evt):
@@ -211,12 +220,16 @@ class Widgets:
         return form
 
     # ----------------------------------------------------------------------
-    def button(self, label, unelevated=True, on_click=None, style={}, *args, **kwargs):
+    def button(self, label, unelevated=True, on_click=None, style={}, id=None, *args, **kwargs):
         """"""
         btn = MDCButton(label, unelevated=unelevated,
                         style=style, *args, **kwargs)
         if on_click:
             btn.bind('click', lambda evt: on_click())
+
+        if id:
+            self.component[id] = btn
+
         return btn
 
     # ----------------------------------------------------------------------
@@ -232,6 +245,7 @@ class Widgets:
 
         if id:
             self.widgets[id] = checked
+            self.component[id] = switch_
 
             def set_value():
                 def wrap(evt):
