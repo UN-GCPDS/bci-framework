@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1350,15 +1350,15 @@ p, li { white-space: pre-wrap; }
               </widget>
               <widget class="QToolBox" name="toolBox">
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="page_5">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
-                  <height>95</height>
+                  <width>485</width>
+                  <height>527</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1399,8 +1399,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>100</width>
-                      <height>30</height>
+                      <width>485</width>
+                      <height>515</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1454,7 +1454,7 @@ p, li { white-space: pre-wrap; }
                  </rect>
                 </property>
                 <attribute name="label">
-                 <string>Predefined montages</string>
+                 <string>Preconfigured montages</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_30" rowstretch="0,0">
                  <property name="leftMargin">
