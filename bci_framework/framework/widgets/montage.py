@@ -589,7 +589,7 @@ class Montage:
                         self.update_impedance(z / 1000)
 
                         if not self.measuring_impedance:
-                            self.core.connection.session_settings()
+                            self.core.connection.openbci.session_settings()
                             break
 
         else:
