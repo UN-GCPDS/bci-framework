@@ -186,10 +186,10 @@ def fake_loop_consumer(*topics) -> Callable:
 
 
 # ----------------------------------------------------------------------
-def marker_slicing(marker, t0, duration):
+def marker_slicing(markers, t0, duration):
     """"""
-    if isinstance(marker, str):
-        marker = [marker]
+    if isinstance(markers, str):
+        markers = [markers]
 
     def wrap_wrap(fn):
 
@@ -202,7 +202,11 @@ def marker_slicing(marker, t0, duration):
             def marker_slicing_(cls, topic, data, kafka_stream, latency):
 
                 if topic == 'marker':
-                    if data['marker'] in marker:
+                    # if data['marker'] in markers:
+                        # cls._target_marker.append(
+                            # [data['marker'], kafka_stream.value['datetime']])
+
+                    if any([bool(re.match(mkr, data['marker'])) for mkr in markers]):
                         cls._target_marker.append(
                             [data['marker'], kafka_stream.value['datetime']])
 
