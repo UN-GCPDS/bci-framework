@@ -49,7 +49,7 @@ class OpenBCIThread(QThread):
             self.connection_fail.emit([])
             return
 
-        if self.openbci.is_recycled:
+        if getattr(self.openbci, 'is_recycled', False):
             self.connected = True
             self.connection_ok.emit()
             return
