@@ -4,7 +4,7 @@ import random
 import logging
 from browser import timer, html, document
 from datetime import datetime
-
+import copy
 from radiant.utils import WebSocket
 
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
@@ -30,15 +30,15 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'dashboard':
-                try:  # To call as decorator and as function
-                    method(self, *args, **kwargs)
-                except TypeError:
-                    method(*args, **kwargs)
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
                               'kwargs': dict(kwargs),
                               })
+                try:  # To call as decorator and as function
+                    method(self, *args, **kwargs)
+                except TypeError:
+                    method(*args, **kwargs)
 
         wrap.no_decorator = method
         return wrap
@@ -54,15 +54,16 @@ class DeliveryInstance_:
         def wrap(self, *args, **kwargs):
 
             if self._bci_mode == 'stimuli':
-                try:  # To call as decorator and as function
-                    method(self, *args, **kwargs)
-                except TypeError:
-                    method(*args, **kwargs)
+                # First the remote call, because the local call could modify the arguments
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
                               'kwargs': dict(kwargs),
                               })
+                try:  # To call as decorator and as function
+                    method(self, *args, **kwargs)
+                except TypeError:
+                    method(*args, **kwargs)
 
         wrap.no_decorator = method
         return wrap
@@ -190,6 +191,7 @@ class Pipeline:
         """"""
         self._callback = callback
         self.show_progressbar(len(trials) * len(pipeline))
+        self.iteration = 0
         self._run_pipeline(pipeline, trials)
 
     # ----------------------------------------------------------------------
@@ -197,8 +199,11 @@ class Pipeline:
         """"""
         pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
         trial = trials.pop(0)
+        trial['trial_n'] = self.iteration
 
-        self.wrap_fn(pipeline_m[0], trial)()  # First pipeline
+        timer.set_timeout(self.wrap_fn(
+            pipeline_m[0], trial), 0)  # First pipeline
+
         self._timeouts = []
         for i in range(1, len(pipeline_m)):
 
@@ -222,19 +227,17 @@ class Pipeline:
                 self._callback)(self), sum(timeouts))
             self._timeouts.append(t)
 
+        self.iteration += 1
+
     # ----------------------------------------------------------------------
     def wrap_fn(self, fn, trial):
         """"""
         fn_ = fn
         trial_ = trial
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
 
         def inner():
-            if isinstance(trial, list):
-                DeliveryInstance.both(fn_)(self, *trial_)
-            elif isinstance(trial, dict):
-                DeliveryInstance.both(fn_)(self, **trial_)
-            else:
-                DeliveryInstance.both(fn_)(self, trial_)
+            DeliveryInstance.both(fn_)(self, *[trial_[v] for v in arguments])
 
         return inner
 
