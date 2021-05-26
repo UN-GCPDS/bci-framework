@@ -737,7 +737,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new kind of data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -834,7 +834,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be modified and configured according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be edited according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -931,7 +931,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. All annotations are stored along the EEG data in the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;record file&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform automatic &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;latency corrections&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; algorithms in order to improve the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;markers synchronization&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -1028,7 +1028,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. All annotations are stored along the EEG data in the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;records&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. The system store all annotations along with the EEG data in a custom &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;records &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;format&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1357,8 +1357,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>485</width>
-                  <height>527</height>
+                  <width>412</width>
+                  <height>491</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1399,8 +1399,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>485</width>
-                      <height>515</height>
+                      <width>412</width>
+                      <height>479</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1449,8 +1449,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>485</width>
-                  <height>527</height>
+                  <width>303</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1705,7 +1705,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>485</width>
+                 <width>412</width>
                  <height>659</height>
                 </rect>
                </property>
@@ -2745,7 +2745,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>485</width>
+              <width>412</width>
               <height>605</height>
              </rect>
             </property>

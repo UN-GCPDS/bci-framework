@@ -11,13 +11,6 @@ from typing import Literal
 import numpy as np
 import os
 
-CHARACTERS_SRLZ = ["A", "B", "C", "D", "E", "F", "aa",
-                   "G", "H", "I", "J", "K", "L", "bb",
-                   "M", "N", "O", "P", "Q", "R", "cc",
-                   "S", "T", "U", "V", "W", "X", "dd",
-                   "Y", "Z", "0", "1", "2", "3", "ee",
-                   "4", "5", "6", "7", "8", "9", "ff"]
-
 
 ########################################################################
 class OnlineClassifier(DataAnalysis):
@@ -34,7 +27,7 @@ class OnlineClassifier(DataAnalysis):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @marker_slicing(CHARACTERS_SRLZ, t0=0, duration=0.3)
+    @marker_slicing("ERP:(.+)*", t0=0, duration=0.3)
     def stream(self, eeg, aux, timestamp, marker):
         """"""
         if self.erp_classifier(eeg):

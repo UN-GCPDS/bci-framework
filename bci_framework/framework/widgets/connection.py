@@ -45,7 +45,8 @@ class OpenBCIThread(QThread):
                                  montage=self.montage,
                                  streaming_package_size=self.streaming_package_size)
 
-        except:
+        except Exception as msg:
+            logging.warning(msg)
             self.connection_fail.emit([])
             return
 

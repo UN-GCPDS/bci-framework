@@ -111,11 +111,7 @@ class P300Speller(StimuliAPI):
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
             self.pipeline_trial, self.trials), 2000)
-            
-        timer.set_timeout(lambda: self.on_feedback('H'), 2000+8000*1)
-        timer.set_timeout(lambda: self.on_feedback('O'), 2000+8000*2)
-        timer.set_timeout(lambda: self.on_feedback('L'), 2000+8000*3)
-        timer.set_timeout(lambda: self.on_feedback('A'), 2000+8000*4)
+
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -133,11 +129,12 @@ class P300Speller(StimuliAPI):
         define a single trial, this list of functions are executed asynchronously
         and repeated for each trial.
         """
+        self.propagate_seed()
         inter_stimulus = w.get_value('inter_stimulus')
         duration = w.get_value('duration')
         chars, ncols = CHARACTERS
         nrows = len(chars) // ncols
-
+        
         self.trials = []
         trials = w.get_value('trials')
         if trials == -1:
@@ -145,11 +142,9 @@ class P300Speller(StimuliAPI):
         for _ in range(trials):
             stimuli_array = []
             for i in range(ncols):
-                stimuli_array.append(
-                    [e.attrs['char'] for e in document.select(f'.col-{i}')])                
+                stimuli_array.append(f'.col-{i}')                
             for i in range(nrows):
-                stimuli_array.append(
-                    [e.attrs['char'] for e in document.select(f'.row-{i}')])
+                stimuli_array.append(f'.row-{i}')
                 
             random.shuffle(stimuli_array)
 
@@ -172,14 +167,15 @@ class P300Speller(StimuliAPI):
              (self.inter_stimulus, 300)]) for _ in range(nrows+ncols)]
 
     # ----------------------------------------------------------------------
-    def target_notice(self, target: str, array: List[str]) -> None:
+    def target_notice(self, target: str) -> None:
         """Highlight the character that's subject must focus on."""
+        # self.send_marker(f"TARGET:{target}")
         target = document.select_one(f".p300-{target}-")
         target.style = {'color': '#00ff00',
                         'opacity': 0.5, 'font-weight': 'bold'}
 
     # ----------------------------------------------------------------------
-    def inter_stimulus(self, **kwargs) -> None:
+    def inter_stimulus(self) -> None:
         """Remove the highlight over the focus character."""
         for element in document.select('.p300-char'):
             element.style = {'opacity': 0.3,
@@ -188,10 +184,18 @@ class P300Speller(StimuliAPI):
                              }
 
     # ----------------------------------------------------------------------
-    def activate(self, target: str, array: List[str]) -> None:
+    def activate(self, array: List[str], target: str) -> None:
         """Highlight a column or a row."""
-        elements = [document.select_one(
-            f".p300-{char}-") for char in array.pop(0)]
+        
+        selector = array.pop(0)
+        elements = document.select(selector)
+        # self.send_marker(f"ERP:{selector[1:]}")
+        
+        if target in [e.attrs['char'] for e in elements]:
+            self.send_marker("TARGET")
+        else:
+            self.send_marker("NO-TARGET")
+        
         for element in elements:
             element.style = {'opacity': 1,
                              'font-weight': 'bold',
@@ -255,8 +259,9 @@ class P300Speller(StimuliAPI):
     # ----------------------------------------------------------------------            
     def on_feedback(self, value) -> None:
         """"""
-        if w.get_value('speller'):
-            self.speller.value = self.speller.value[:-1] + value + '_'
+        print(value)
+        # if w.get_value('speller'):
+            # self.speller.value = self.speller.value[:-1] + value + '_'
 
 
 if __name__ == '__main__':

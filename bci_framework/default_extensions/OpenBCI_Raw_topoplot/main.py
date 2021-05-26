@@ -1,5 +1,11 @@
+"""
+============
+Raw topoplot
+============
+"""
+
 from bci_framework.extensions.visualizations import EEGStream
-from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
+from bci_framework.extensions.data_analysis import loop_consumer
 from bci_framework.extensions import properties as prop
 import mne
 
@@ -19,13 +25,14 @@ class Stream(EEGStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer('eeg')
+    @loop_consumer('eeg')
     def stream(self, data, frame):
         """"""
         if (frame % 5) == 0:
             eeg, _ = data
             self.axis.clear()
-            mne.viz.plot_topomap(eeg.mean(axis=1) - eeg.mean(), self.info, axes=self.axis, show=False, outlines='skirt', cmap='cool')
+            mne.viz.plot_topomap(eeg.mean(axis=1) - eeg.mean(), 
+                self.info, axes=self.axis, show=False, outlines='skirt', cmap='cool')
 
             self.feed()
 
