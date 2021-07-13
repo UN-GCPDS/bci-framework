@@ -11,7 +11,8 @@ import random
 from datetime import datetime, timedelta
 from multiprocessing import Process
 from threading import Thread
-from typing import Callable, Union, List
+from typing import Callable
+import re
 
 import numpy as np
 from openbci_stream.acquisition import OpenBCIConsumer
@@ -76,10 +77,10 @@ def loop_consumer(*topics) -> Callable:
                         frame += 1
                         if hasattr(cls, 'buffer_eeg'):
                             cls.update_buffer(
-                                *data.value['data'], data.value['context']['binary_created'])
-                        # latency calculated with `binary_created`
+                                *data.value['data'], data.value['context']['timestamp.binary'])
+                        # latency calculated with `timestamp.binary`
                         latency = (datetime.now() - datetime.fromtimestamp(
-                            data.value['context']['binary_created'])).total_seconds() * 1000
+                            data.value['context']['timestamp.binary'])).total_seconds() * 1000
                         data_ = data.value['data']
                     else:
                         # latency calculated with kafka timestamp
@@ -164,7 +165,7 @@ def fake_loop_consumer(*topics) -> Callable:
                 if 'marker' in topics:
                     if np.random.random() > 0.9:
                         data.value['timestamp'] = datetime.now()
-                        data.value['context']['binary_created'] = datetime.now()
+                        data.value['context']['timestamp.binary'] = datetime.now()
                         # data.value['data'] = chr(
                             # np.random.choice(range(ord('A'), ord('Z') + 1)))
                         data.value['data'] = random.choice(
@@ -214,6 +215,8 @@ def marker_slicing(markers, t0, duration):
 
                     # marker, target = target
                     if cls.buffer_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
+                    # if True:
+
 
                         _marker, _target = target.pop(0)
 

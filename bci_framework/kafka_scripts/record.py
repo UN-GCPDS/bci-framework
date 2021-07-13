@@ -76,7 +76,7 @@ class RecordTransformer:
             return
 
         if topic == 'eeg':
-            dt = kafka_stream.value['context']['binary_created']
+            dt = kafka_stream.value['context']['timestamp.binary']
             eeg, aux = kafka_stream.value['data']
             self.writer.add_eeg(eeg, dt)
             self.writer.add_aux(aux)

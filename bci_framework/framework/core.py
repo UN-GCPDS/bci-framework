@@ -511,13 +511,13 @@ class BCIFramework(QMainWindow):
             self.handle_feedback(value['value'])
 
         elif value['topic'] == 'eeg':
-            # self.status_bar('Incoming streaming detected')
+            # Use only remote times to make the calculation, so the
+            # differents clocks not affect the measure
             eeg, aux = value['value']['data']
             binary_created = datetime.fromtimestamp(
-                value['value']['context']['binary_created'])
+                value['value']['context']['timestamp.binary'])
             message_created = datetime.fromtimestamp(
                 value['value']['timestamp'])
-            # since = (datetime.now() - binary_created).total_seconds()
             since = (message_created - binary_created).total_seconds()
             count = value['value']['context']['samples']
             channels = eeg.shape[0]

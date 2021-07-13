@@ -119,7 +119,7 @@ class Stream(EEGStream):
             # if len(self.latencies) <= 1 and (frame % 3) == 0:
                 # self.feed()
             # return
-
+        print('Hola')
         latencies = np.array(self.latencies)
 
         if latencies.size > 5:
@@ -206,10 +206,13 @@ class Stream(EEGStream):
                 ('median', f'{np.median(latencies):.3f} ms'),
                 # ('std', f'{np.std(latencies):.3f}'),
                 ('range', f'{latencies.max()-latencies.min():.3f} ms'),
-                ('var', f'{latencies.var():.3f}'),
+                # ('var', f'{latencies.var():.3f}'),
                 ('min', f'{latencies.min():.3f} ms'),
                 ('max', f'{latencies.max():.3f} ms'),
                 ('latency correction', f'{self.latency_correction:.3f} ms'),
+                # ('jitter', f'{np.std(latencies)}:.3f} ms'),
+
+                ('jitter', f'{np.std(latencies):.3f} ms'),
                 ('error',
                  f'$\pm${abs(latencies.max()-latencies.min())/2:.3f} ms'),
             ]):

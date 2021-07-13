@@ -185,7 +185,7 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         self.current_viz = None
 
         if autostart:
-            self.extensions_list = [autostart]
+            self.extensions_list = [('name', autostart)]
         else:
             self.extensions_list = extensions_list
 

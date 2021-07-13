@@ -14,6 +14,8 @@ from PySide2.QtCore import Qt, Signal, QThread, Slot
 from PySide2.QtGui import QCursor
 from PySide2.QtWidgets import QApplication
 
+import ntplib
+
 from ..dialogs import Dialogs
 from ...extensions import properties as prop
 
@@ -369,6 +371,17 @@ class Connection:
         self.parent_frame.pushButton_connect.setText('Disconnect')
         self.parent_frame.pushButton_connect.setEnabled(True)
         self.parent_frame.pushButton_connect.setChecked(True)
+
+
+        # try:
+            # client = ntplib.NTPClient()
+            # ntp_offset = client.request(prop.HOST).offset * 1000
+            # Dialogs.critical_message(self.parent_frame, 'Clock offset',
+                                     # f'Detected serius clock desynchonization of {ntp_offset :.2f} ms')
+            # # print(f" NTP offset: {ntp_offset :.2f} ms")
+        # except:
+            # pass
+
 
     # ----------------------------------------------------------------------
     @Slot()

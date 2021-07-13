@@ -286,7 +286,7 @@ class Records:
             samples = int(samples)
 
             context = {
-                'binary_created': datetime.now().timestamp(),
+                'timestamp.binary': datetime.now().timestamp(),
                 'created': datetime.now().timestamp(),
                 'samples': samples,
             }
