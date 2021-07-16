@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -2600,20 +2600,7 @@ p, li { white-space: pre-wrap; }
                <property name="horizontalSpacing">
                 <number>0</number>
                </property>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_records_path">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
+               <item row="3" column="0" colspan="2">
                 <widget class="QTableWidget" name="tableWidget_records">
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
@@ -2659,7 +2646,7 @@ p, li { white-space: pre-wrap; }
                  </column>
                 </widget>
                </item>
-               <item row="0" column="0">
+               <item row="0" column="0" colspan="2">
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <item>
                   <widget class="QPushButton" name="pushButton_record">
@@ -2714,6 +2701,42 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="class" stdset="0">
                     <string>danger icon_button</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_36" stretch="1,0">
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_records_path">
+                   <property name="text">
+                    <string>...</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_open_records_folder">
+                   <property name="toolTip">
+                    <string>Open folder</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset theme="folder-open"/>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -3120,19 +3143,6 @@ p, li { white-space: pre-wrap; }
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="checkBox_projects_show_tutorials">
-               <property name="layoutDirection">
-                <enum>Qt::RightToLeft</enum>
-               </property>
-               <property name="text">
-                <string>Show tutorials</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
@@ -3196,28 +3206,28 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_projects_path">
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="checkBox_projects_show_tutorials">
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
                <property name="text">
-                <string>...</string>
+                <string>Show tutorials</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="wordWrap">
+               <property name="checked">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QToolBox" name="toolBox_3">
                <widget class="QWidget" name="toolBoxPage1">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
-                  <height>93</height>
+                  <width>412</width>
+                  <height>491</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3265,7 +3275,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3314,7 +3324,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3360,10 +3370,46 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </item>
+             <item row="1" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_37" stretch="1,0">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_projects_path">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_open_extension_folder">
+                 <property name="toolTip">
+                  <string>Open folder</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="folder-open"/>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
             </layout>
             <zorder>toolBox_3</zorder>
             <zorder>checkBox_projects_show_tutorials</zorder>
-            <zorder>label_projects_path</zorder>
+            <zorder>horizontalLayoutWidget_2</zorder>
            </widget>
            <widget class="QWidget" name="page_projects_files">
             <layout class="QGridLayout" name="gridLayout">
@@ -3379,7 +3425,7 @@ p, li { white-space: pre-wrap; }
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
+             <item row="0" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
                 <spacer name="horizontalSpacer_20">
@@ -3485,7 +3531,7 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="1" column="0">
+             <item row="1" column="0" colspan="2">
               <widget class="QSplitter" name="splitter">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>

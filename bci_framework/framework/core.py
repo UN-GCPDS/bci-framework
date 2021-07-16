@@ -8,6 +8,8 @@ import os
 import json
 import psutil
 import pickle
+import platform
+import subprocess
 from datetime import datetime
 from typing import TypeVar, Optional
 
@@ -298,7 +300,7 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_show_visualization.clicked.connect(
             lambda evt: self.show_interface('Visualizations'))
         self.main.pushButton_show_stimuli_delivery.clicked.connect(
-            lambda evt: self.show_interface('Stimuli_delivery'))
+            lambda evt: self.show_interface('Stimuli_delivery', 0))
 
         self.main.pushButton_show_documentation.clicked.connect(
             lambda evt: self.show_interface('Documentation'))
@@ -314,6 +316,19 @@ class BCIFramework(QMainWindow):
             lambda evt: self.main.tabWidget_widgets.setCurrentIndex(3))
 
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
+
+        self.main.pushButton_open_extension_folder.clicked.connect(lambda:self.open_folder_in_system(self.main.label_projects_path.text()))
+        self.main.pushButton_open_records_folder.clicked.connect(lambda:self.open_folder_in_system(self.main.label_records_path.text()))
+
+    # ----------------------------------------------------------------------
+    def open_folder_in_system(self, path) -> None:
+        """"""
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        else:
+            subprocess.Popen(["xdg-open", path])
 
     # ----------------------------------------------------------------------
     def show_interface(self, interface: str, sub_widget: Optional[int] = None) -> None:
