@@ -24,6 +24,7 @@ PATH = TypeVar('path')
 LINE_DELIVERY = 'bci_framework.extensions.stimuli_delivery'
 LINE_VISUALIZATION = 'bci_framework.extensions.visualizations'
 LINE_ANALYSIS = 'bci_framework.extensions.data_analysis'
+BCIFR_FILE = 'bcifr'
 
 
 ########################################################################
@@ -163,17 +164,17 @@ class Projects:
 
         for project_dir in projects:
             project = project_dir
-            if os.path.exists(os.path.join(self.projects_dir, project_dir, '.bcifr')):
+            if os.path.exists(os.path.join(self.projects_dir, project_dir, BCIFR_FILE)):
                 bcifr = pickle.load(
-                    open(os.path.join(self.projects_dir, project_dir, '.bcifr'), 'rb'))
+                    open(os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'rb'))
                 if isinstance(bcifr, set):
                     pickle.dump({'name': project, 'files': bcifr}, open(
-                        os.path.join(self.projects_dir, project_dir, '.bcifr'), 'wb'))
+                        os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'wb'))
                 elif isinstance(bcifr, dict):
                     project = bcifr.get('name', project)
             else:
                 pickle.dump({'name': project, 'files': []}, open(
-                    os.path.join(self.projects_dir, project_dir, '.bcifr'), 'wb'))
+                    os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'wb'))
 
             if project.startswith('Tutorial |') and not self.parent_frame.checkBox_projects_show_tutorials.isChecked():
                 continue
@@ -257,6 +258,9 @@ class Projects:
                 if file.endswith('.png'):
                     continue
 
+                if file == BCIFR_FILE:
+                    continue
+
                 tree = QTreeWidgetItem(parent)
                 tree.setText(0, file)
                 tree.path = os.path.join(path, file)
@@ -294,8 +298,8 @@ class Projects:
         parent.setHeaderLabel(
             f"{os.path.split(path)[1]} [{files_count} files / {dir_count} dirs]")
 
-        if os.path.exists(os.path.join(path, '.bcifr')):
-            bcifr = pickle.load(open(os.path.join(path, '.bcifr'), 'rb'))
+        if os.path.exists(os.path.join(path, BCIFR_FILE)):
+            bcifr = pickle.load(open(os.path.join(path, BCIFR_FILE), 'rb'))
             files = list(bcifr['files'])
             parent.setHeaderLabel(
                 f"{bcifr['name']} [{files_count} files / {dir_count} dirs]")
@@ -307,7 +311,8 @@ class Projects:
             for file in files:
                 if file.endswith('.py') or file.endswith('.css'):
                     if os.path.exists(os.path.join(path, file)):
-                        self.load_script_in_textedit(os.path.join(path, file))
+                        self.load_script_in_textedit(
+                            os.path.join(path, file))
             self.core.show_interface('Development')
         else:
             if os.path.exists(os.path.join(path, 'main.py')):
@@ -343,14 +348,14 @@ class Projects:
             editor.module = module
 
             # if LINE_DELIVERY in content:
-                # completer = Autocompleter(mode='stimuli')
-                # editor.set_completer(completer)
+            # completer = Autocompleter(mode='stimuli')
+            # editor.set_completer(completer)
             # elif LINE_VISUALIZATION in content:
-                # completer = Autocompleter(mode='visualization')
-                # editor.set_completer(completer)
+            # completer = Autocompleter(mode='visualization')
+            # editor.set_completer(completer)
             # elif LINE_ANALYSIS in content:
-                # completer = Autocompleter(mode='analysis')
-                # editor.set_completer(completer)
+            # completer = Autocompleter(mode='analysis')
+            # editor.set_completer(completer)
 
             editor.textChanged.connect(lambda: self.parent_frame.tabWidget_project.setTabText(
                 tab, f"{self.parent_frame.tabWidget_project.tabText(tab).strip('*')}*"))
@@ -361,9 +366,9 @@ class Projects:
         for i in range(self.parent_frame.tabWidget_project.count()):
             files.append(self.parent_frame.tabWidget_project.tabText(i))
 
-        bcifr = pickle.load(open(os.path.join(parent, '.bcifr'), 'rb'))
+        bcifr = pickle.load(open(os.path.join(parent, BCIFR_FILE), 'rb'))
         bcifr['files'] = set(files)
-        pickle.dump(bcifr, open(os.path.join(parent, '.bcifr'), 'wb'))
+        pickle.dump(bcifr, open(os.path.join(parent, BCIFR_FILE), 'wb'))
 
         if module not in self.project_files:
             self.project_files.append(module)
@@ -444,7 +449,7 @@ class Projects:
         shutil.copytree(source, target)
 
         pickle.dump({'name': project_name, 'files': []}, open(
-            os.path.join(self.projects_dir, item.path, '.bcifr'), 'wb'))
+            os.path.join(self.projects_dir, item.path, BCIFR_FILE), 'wb'))
         self.open_project(item.path)
 
     # ----------------------------------------------------------------------
@@ -555,10 +560,10 @@ class Projects:
         evt.path = new_path
 
         bcifr = pickle.load(
-            open(os.path.join(self.projects_dir, new_path, '.bcifr'), 'rb'))
+            open(os.path.join(self.projects_dir, new_path, BCIFR_FILE), 'rb'))
         bcifr['name'] = new_name
         pickle.dump(bcifr, open(os.path.join(
-            self.projects_dir, new_path, '.bcifr'), 'wb'))
+            self.projects_dir, new_path, BCIFR_FILE), 'wb'))
 
     # ----------------------------------------------------------------------
     def project_file_renamed(self, evt) -> None:
