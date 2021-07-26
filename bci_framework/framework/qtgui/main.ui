@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -2328,7 +2328,7 @@ p, li { white-space: pre-wrap; }
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Default:&lt;/span&gt; Sends accelerometer data in aux bytes&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Debug:&lt;/span&gt; Sends serial output over the external serial port which is helpful for debugging.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Analog:&lt;/span&gt; Reads from analog pins A5(D11), A6(D12) and if no wifi shield is present, then A7(D13) as well.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Digital:&lt;/span&gt; Reads from analog pins D11, D12 and D17. If no wifi present then also D13 and D18.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Marker:&lt;/span&gt; Turns accel off and injects markers into the stream by sending `X where X is any char to add to the first AUX byte.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="text">
-                        <string>Boardmode</string>
+                        <string>Board mode</string>
                        </property>
                       </widget>
                      </item>
@@ -2733,7 +2733,8 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset theme="folder-open"/>
+                    <iconset theme="folder-open">
+                     <normaloff>.</normaloff>.</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -3226,8 +3227,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
-                  <height>491</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3275,7 +3276,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3324,7 +3325,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3397,7 +3398,8 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset theme="folder-open"/>
+                  <iconset theme="folder-open">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -3409,7 +3411,6 @@ p, li { white-space: pre-wrap; }
             </layout>
             <zorder>toolBox_3</zorder>
             <zorder>checkBox_projects_show_tutorials</zorder>
-            <zorder>horizontalLayoutWidget_2</zorder>
            </widget>
            <widget class="QWidget" name="page_projects_files">
             <layout class="QGridLayout" name="gridLayout">

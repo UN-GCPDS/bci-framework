@@ -1,0 +1,34 @@
+.bci_dashboard button {
+    margin: 10px;
+}
+
+.mdc-typography--headline3,
+.mdc-typography--headline4 {
+    line-height: 60px;
+}
+
+#cue {
+    color: #4dd0e1;
+    justify-content: center;
+    line-height: 0;
+    z-index: 15;
+    position: relative;
+}
+
+.test-button {
+    bottom: 15px;
+    width: 35%;
+    position: absolute;
+}
+
+.test-button#different {
+    left: 10%;
+    color: #d62728;
+    border-color: #d62728;
+}
+
+.test-button#identical {
+    right: 10%;
+    color: #2ca02c;
+    border-color: #2ca02c;
+}

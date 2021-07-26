@@ -1,0 +1,45 @@
+
+
+#hint {
+
+font-size: 3vw;
+color: #4dd0e1;
+text-align: center;
+line-height: 3vw;
+word-wrap: normal;
+position: absolute;
+width: 100%;
+top: 20vh;
+display: block !important;
+
+}
+
+#hint2 {
+
+font-size: 1.5vw;
+color: #5e5e5e;
+text-align: center;
+line-height: 2vw;
+word-wrap: normal;
+position: absolute;
+width: 80%;
+top: 55vh;
+display: block !important;
+
+}
+
+
+#syncrhonous-button{
+
+bottom: 15px;
+width: 50%;
+right: 25%;
+position: absolute;
+color: #2ca02c;
+border-color: #2ca02c;
+}
+
+
+.bci_dashboard button {
+    margin: 10px;
+}

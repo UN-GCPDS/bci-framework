@@ -101,10 +101,10 @@ class FourClassMotorImagery(StimuliAPI):
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
-        
+
     # ----------------------------------------------------------------------
     def stop_run(self) -> None:
-        """Stop pipeline execution."""  
+        """Stop pipeline execution."""
         self.soa()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
@@ -120,6 +120,7 @@ class FourClassMotorImagery(StimuliAPI):
         """
         self.trials = w.get_value('cues') * w.get_value('repetitions')
         random.shuffle(self.trials)
+        self.trials = [{'cue': trial} for trial in self.trials]
 
         self.pipeline_trial = [
             (self.soa, 'soa'),  # `soa` is a range reference

@@ -158,7 +158,8 @@ class Connection:
 
         # self.parent.pushButton_disconnect.hide()
         self.openbci = OpenBCIThread()
-        self.openbci.streaming = lambda: getattr(self.core, 'streaming', False)
+        self.openbci.streaming = lambda: getattr(
+            self.core, 'streaming', False)
 
         self.openbci.connection_ok.connect(self.connection_ok)
         self.openbci.connection_fail.connect(self.connection_fail)
@@ -213,7 +214,8 @@ class Connection:
         self.parent_frame.pushButton_connect.clicked.connect(self.on_connect)
         self.parent_frame.comboBox_connection_mode.activated.connect(
             self.update_connections)
-        self.parent_frame.comboBox_host.textActivated.connect(self.load_config)
+        self.parent_frame.comboBox_host.textActivated.connect(
+            self.load_config)
 
     # ----------------------------------------------------------------------
     def update_connections(self) -> None:

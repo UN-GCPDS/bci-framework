@@ -86,5 +86,7 @@ def StimuliServer(class_, *args, **kwargs):
                              os.path.dirname(__file__), 'colors.xml')),
                          # callbacks=[(os.path.realpath(os.path.join(
                          # os.path.dirname(__file__), 'tornado_handlers.py')), 'consumer')]
+                         debug_level=0,
+                         brython_version='3.9.1',
                          )
 

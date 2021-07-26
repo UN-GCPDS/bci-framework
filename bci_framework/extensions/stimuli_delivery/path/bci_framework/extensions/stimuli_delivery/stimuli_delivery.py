@@ -192,6 +192,12 @@ class Pipeline:
         self._callback = callback
         self.show_progressbar(len(trials) * len(pipeline))
         self.iteration = 0
+
+        # print('#' + '-' * 50)
+        # print('# Trials')
+        # print(trials)
+        # print('#' + '-' * 50)
+
         self._run_pipeline(pipeline, trials)
 
     # ----------------------------------------------------------------------
@@ -238,7 +244,6 @@ class Pipeline:
 
         def inner():
             DeliveryInstance.both(fn_)(self, *[trial_[v] for v in arguments])
-
         return inner
 
     # ----------------------------------------------------------------------

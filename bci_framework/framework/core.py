@@ -34,6 +34,28 @@ KAFKA_STREAM = TypeVar('Kafka')
 
 
 ########################################################################
+class ClockOffset(QThread):
+    """"""
+    offset = Signal(object)
+
+    # ----------------------------------------------------------------------
+    def set_host(self, host: str) -> None:
+        """Set the host for kafka."""
+        self.host = host
+
+    # ----------------------------------------------------------------------
+    def run(self):
+        """"""
+        try:
+            client = ntplib.NTPClient()
+            clock_offset = client.request(self.host).offset * 1000
+        except:
+            clock_offset = 0
+
+        self.offset.emit(clock_offset)
+
+
+########################################################################
 class Kafka(QThread):
     """Kafka run on a thread."""
     over = Signal(object)
@@ -175,6 +197,9 @@ class BCIFramework(QMainWindow):
         self.subprocess_timer.setInterval(5000)
         self.subprocess_timer.start()
 
+        self.clock_offset = 0
+        QTimer().singleShot(7200, self.get_desynchonization)
+
         self.status_bar(message='', right_message=('disconnected', None))
 
     # ----------------------------------------------------------------------
@@ -196,10 +221,12 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_latency.setIcon(icon("latency2"))
         self.main.pushButton_annotations.setIcon(icon("annotation"))
 
-        self.main.pushButton_stop_preview.setIcon(icon('media-playback-stop'))
+        self.main.pushButton_stop_preview.setIcon(
+            icon('media-playback-stop'))
         self.main.pushButton_script_preview.setIcon(
             icon('media-playback-start'))
-        self.main.pushButton_play_signal.setIcon(icon('media-playback-start'))
+        self.main.pushButton_play_signal.setIcon(
+            icon('media-playback-start'))
         self.main.pushButton_clear_debug.setIcon(icon('edit-delete'))
         self.main.pushButton_record.setIcon(icon('media-record'))
 
@@ -317,8 +344,10 @@ class BCIFramework(QMainWindow):
 
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
-        self.main.pushButton_open_extension_folder.clicked.connect(lambda:self.open_folder_in_system(self.main.label_projects_path.text()))
-        self.main.pushButton_open_records_folder.clicked.connect(lambda:self.open_folder_in_system(self.main.label_records_path.text()))
+        self.main.pushButton_open_extension_folder.clicked.connect(
+            lambda: self.open_folder_in_system(self.main.label_projects_path.text()))
+        self.main.pushButton_open_records_folder.clicked.connect(
+            lambda: self.open_folder_in_system(self.main.label_records_path.text()))
 
     # ----------------------------------------------------------------------
     def open_folder_in_system(self, path) -> None:
@@ -348,7 +377,8 @@ class BCIFramework(QMainWindow):
 
         if sub_widget != None:
             if interface == 'Stimuli_delivery':
-                self.main.tabWidget_stimuli_delivery.setCurrentIndex(sub_widget)
+                self.main.tabWidget_stimuli_delivery.setCurrentIndex(
+                    sub_widget)
 
     # ----------------------------------------------------------------------
     def show_widget(self, index: int) -> None:
@@ -379,8 +409,8 @@ class BCIFramework(QMainWindow):
     # def remove_widgets_from_layout(self, layout) -> None:
         # """"""
         # for i in reversed(range(layout.count())):
-            # if item := layout.takeAt(i):
-                # item.widget().deleteLater()
+        # if item := layout.takeAt(i):
+        # item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
     def status_bar(self, message: str = None, right_message: str = None) -> None:
@@ -551,7 +581,18 @@ class BCIFramework(QMainWindow):
             else:
                 color = '#3fc55e'  # recent data
 
-            message = f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG ({channels},{count})'
+            message = ''
+
+            if self.clock_offset:
+
+                if abs(self.clock_offset) < 300:
+                    color_offset = '#3fc55e'
+                else:
+                    color_offset = '#ffc107'
+
+                message += f'Acquisition server clock is <b style="color:{color_offset};">{self.clock_offset:0.2f} ms </b> offset | '
+
+            message += f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG ({channels},{count})'
 
             if aux.size:
                 message += f' | AUX ({aux.shape[0]},{aux.shape[1]})'
@@ -574,7 +615,6 @@ class BCIFramework(QMainWindow):
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
-
         self.timer = QTimer()
         self.timer.setInterval(5000)
         self.timer.timeout.connect(self.keep_updated)
@@ -585,14 +625,24 @@ class BCIFramework(QMainWindow):
     def show_desynchonization(self) -> None:
         """"""
         try:
-            client = ntplib.NTPClient()
-            ntp_offset = client.request(self.thread_kafka.host).offset * 1000
-            if ntp_offset > 3000:
+            ntp_offset = self.get_desynchonization()
+            if abs(ntp_offset) > 10000:
                 Dialogs.critical_message(self.main, 'Clock offset',
-            f"Detected serius clock offset of {ntp_offset/1000 :.2f} s.\nThis may affect the markers synchonization.\nIs recommended to configure this system with a real time clock server running on {self.thread_kafka.host}."""
-            )
+                                         f"Detected serius clock offset of {ntp_offset/1000 :.2f} s.\nThis may affect the markers synchonization.\nIs recommended to configure this system with a real time clock server running on {self.thread_kafka.host}."""
+                                         )
         except:
             pass
+
+    # ----------------------------------------------------------------------
+    def get_desynchonization(self):
+        """"""
+
+        offset_thread = ClockOffset()
+        offset_thread.set_host(self.thread_kafka.host)
+        offset_thread.start()
+        offset_thread.offset.connect(
+            lambda offset: setattr(self, 'clock_offset', offset))
+        QTimer().singleShot(7200, self.get_desynchonization)
 
     # ----------------------------------------------------------------------
     def stop_kafka(self) -> None:

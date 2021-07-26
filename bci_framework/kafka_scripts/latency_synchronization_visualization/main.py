@@ -14,8 +14,10 @@ from simple_pid import PID
 MAX_LATENCY = 150
 BUFFER = 15
 
-pid = PID(Kp=1, Ki=0.07, Kd=0.0001, setpoint=0,
+pid = PID(Kp=0.5, Ki=0.07, Kd=0.0001, setpoint=0,
           sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
+# pid = PID(Kp=1, Ki=0.07, Kd=0.0001, setpoint=0,
+          # sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
 # pid = PID(Kp=1, Ki=0.4, Kd=0.05, setpoint=0,
           # sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
 # pid = PID(Kp=1, Ki=0.07, Kd=0.01, setpoint=0,
@@ -119,7 +121,6 @@ class Stream(EEGStream):
             # if len(self.latencies) <= 1 and (frame % 3) == 0:
                 # self.feed()
             # return
-        print('Hola')
         latencies = np.array(self.latencies)
 
         if latencies.size > 5:
@@ -155,7 +156,7 @@ class Stream(EEGStream):
 
         if self.timestamp_rises.size > 0:
 
-            print(self.timestamp_rises)
+            # print(self.timestamp_rises)
 
             v = np.argmin(np.abs(timestamp - self.timestamp_rises[0]))
             window = aux[int(v - prop.SAMPLE_RATE * 0.3)
@@ -172,6 +173,8 @@ class Stream(EEGStream):
                                   label='last latency')
             self.axis_wave.legend(loc=4)
             self.axis_wave.set_xlim(-150, +150)
+            if t.size>0:
+                logging.warning((t[0], t[-1]))
 
         # Histogram
         if latencies.size > 5:
@@ -203,6 +206,7 @@ class Stream(EEGStream):
             for i, text in enumerate([
                 ('count', f'{len(self.latencies)}'),
                 ('mean', f'{np.mean(latencies):.3f} ms'),
+                ('jitter', f'{np.std(latencies):.3f} ms'),
                 ('median', f'{np.median(latencies):.3f} ms'),
                 # ('std', f'{np.std(latencies):.3f}'),
                 ('range', f'{latencies.max()-latencies.min():.3f} ms'),
@@ -210,9 +214,6 @@ class Stream(EEGStream):
                 ('min', f'{latencies.min():.3f} ms'),
                 ('max', f'{latencies.max():.3f} ms'),
                 ('latency correction', f'{self.latency_correction:.3f} ms'),
-                # ('jitter', f'{np.std(latencies)}:.3f} ms'),
-
-                ('jitter', f'{np.std(latencies):.3f} ms'),
                 ('error',
                  f'$\pm${abs(latencies.max()-latencies.min())/2:.3f} ms'),
             ]):
@@ -227,8 +228,8 @@ class Stream(EEGStream):
         self.axis_log.set_ylim(0, 30)
 
         if self.timestamp_rises.size > 0:
-            latency = (self.timestamp_rises[0] - marker_datetime) * 1000
-            self.latencies.append(latency)
+            latency = (self.timestamp_rises - marker_datetime) * 1000
+            self.latencies.append(latency.min())
 
         self.feed()
 
@@ -240,7 +241,6 @@ class Stream(EEGStream):
 
         # self.latency_correction -= (np.mean(self.latencies) * 0.5)
 
-        # self.latency_correction = 0
         self.send_feedback({'name': 'set_latency',
                             'value': self.latency_correction,
                             })
