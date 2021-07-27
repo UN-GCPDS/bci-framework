@@ -249,16 +249,7 @@ class Projects:
                 if file == '__pycache__':
                     continue
 
-                if file.startswith('.'):
-                    continue
-
-                if file.endswith('.ipynb'):
-                    continue
-
-                if file.endswith('.png'):
-                    continue
-
-                if file == BCIFR_FILE:
+                if self.ignore_file(file):
                     continue
 
                 tree = QTreeWidgetItem(parent)
@@ -268,11 +259,9 @@ class Projects:
                 add_leaves(tree, os.path.join(path, file))
                 dir_count += 1
 
-                # print(file)
-
             for file in files:
 
-                if file.startswith('.'):
+                if self.ignore_file(file):
                     continue
 
                 tree = QTreeWidgetItem(parent)
@@ -320,6 +309,26 @@ class Projects:
 
         self.core.development.build_preview()
         self.core.show_interface('Development')
+
+    # ----------------------------------------------------------------------
+    def ignore_file(self, file: str) -> bool:
+        """Evaluate if the file must be showed on the interface."""
+        if file == '__pycache__':
+            return True
+
+        elif file.startswith('.'):
+            return True
+
+        elif file.endswith('.ipynb'):
+            return True
+
+        elif file.endswith('.png'):
+            return True
+
+        elif file == BCIFR_FILE:
+            return True
+
+        return False
 
     # ----------------------------------------------------------------------
     def show_script_in_textedit(self, module: PATH) -> None:
