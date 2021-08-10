@@ -118,7 +118,7 @@ import json
 from browser import window
 window.brython_environ = {{brython_environ}}
 arr = {{class_}}(None, {{python_}})
-arr.connect(f'{{port}}')
+arr.connect(f'{{ip}}', f'{{port}}')
 arr._bci_mode = '{{mode}}'
 arr._last_init()
 {% end %}

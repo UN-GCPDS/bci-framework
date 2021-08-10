@@ -12,8 +12,20 @@ import os
 import sys
 import logging
 import json
+import socket
 
 from radiant.server import RadiantAPI, RadiantServer, RadiantHandler
+
+
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    local_ip_address = s.getsockname()[0]
+    s.close()
+    ip = local_ip_address
+
+except:
+    ip = 'localhost'
 
 if len(sys.argv) > 1:
     port = sys.argv[1]
@@ -64,6 +76,7 @@ def StimuliServer(class_, *args, **kwargs):
     brython_environ = {k: os.environ.get(k) for k in dict(
         os.environ) if k.startswith('BCISTREAM_')}
     environ = {'port': port,
+               'ip': ip,
                'mode': 'stimuli',
                'brython_environ': str(brython_environ),
                }

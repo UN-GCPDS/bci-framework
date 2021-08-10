@@ -273,9 +273,9 @@ class StimuliAPI(Pipeline):
         self.build_areas()
 
     # ----------------------------------------------------------------------
-    def connect(self, port=5000):
+    def connect(self, ip='localhost', port=5000):
         """"""
-        self.ws = BCIWebSocket(f'ws://localhost:{port}/ws')
+        self.ws = BCIWebSocket(f'ws://{ip}:{port}/ws')
         self.ws.main = self
 
         if self.listen_feedback_:
