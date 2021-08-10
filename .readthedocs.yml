@@ -21,3 +21,8 @@ python:
 
 build:
   image: testing
+
+formats:
+  - epub
+  - pdf
+  - html
