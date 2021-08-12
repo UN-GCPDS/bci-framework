@@ -237,7 +237,7 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_remove_project.setIcon(icon('edit-delete'))
         self.main.pushButton_remove_montage.setIcon(icon('edit-delete'))
 
-        self.main.pushButton_projects.setIcon(icon('go-up'))
+        self.main.pushButton_projects.setIcon(icon('go-previous'))
         self.main.pushButton_load_visualizarion.setIcon(icon('list-add'))
 
         self.main.setWindowIcon(icon("logo"))

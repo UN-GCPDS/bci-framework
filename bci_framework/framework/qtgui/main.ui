@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -3227,8 +3227,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
-                  <height>93</height>
+                  <width>412</width>
+                  <height>491</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3276,7 +3276,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3325,7 +3325,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3429,6 +3429,19 @@ p, li { white-space: pre-wrap; }
              <item row="0" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
+                <widget class="QPushButton" name="pushButton_projects">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="go-previous"/>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="horizontalSpacer_20">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -3440,20 +3453,6 @@ p, li { white-space: pre-wrap; }
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_projects">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="go-up">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_projects_add_file">
