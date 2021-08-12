@@ -14,10 +14,10 @@ import logging
 from typing import Literal
 
 UNICODE_CUES = {
-    'Right': '&#x1f86a;',
-    'Left': '&#x1f868;',
-    'Up': '&#x1f869;',
-    'Bottom': '&#x1f86b;',
+    'Right': 'arrow-right-short',
+    'Left': 'arrow-left-short',
+    'Up': 'arrow-up-short',
+    'Bottom': 'arrow-down-short',
 }
 
 
@@ -134,7 +134,7 @@ class FourClassMotorImagery(StimuliAPI):
         This is a pipeline method, that explains the unused `*args` arguments.
         """
         if element := getattr(self, 'cue_placeholder', None):
-            element.html = ''
+            element.class_name = ''
 
     # ----------------------------------------------------------------------
     def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom']) -> None:
@@ -144,11 +144,11 @@ class FourClassMotorImagery(StimuliAPI):
         as argument each time is called.
         """
         if not hasattr(self, 'cue_placeholder'):
-            self.cue_placeholder = html.SPAN('', id='cue')
+            self.cue_placeholder = html.I('', id='cue')
             self.stimuli_area <= self.cue_placeholder
 
         self.send_marker(cue)
-        self.cue_placeholder.html = UNICODE_CUES[cue]
+        self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]}'
         self.cue_placeholder.style = {'display': 'flex'}
 
     # ----------------------------------------------------------------------

@@ -33,8 +33,8 @@ COLORS = [
 ]
 
 UNICODE_CUES = {
-    'Right': '&#x1f86a;',
-    'Left': '&#x1f868;',
+    'Right': 'arrow-right-short',
+    'Left': 'arrow-left-short',
 }
 
 
@@ -251,20 +251,24 @@ class VisualWorkingMemory(StimuliAPI):
     def cue(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
         """Show the cue to indicate the hemifield target."""
         if not hasattr(self, 'cue_placeholder'):
-            self.cue_placeholder = html.SPAN('', id='cue', style={
+            self.cue_placeholder = html.I('', id='cue', style={
                 'font-size': u.dva(8),
-                'padding-top': f'calc(50vh - {u.dva(8, scale=1/50)})',
+                'padding-top': f'calc(50vh - {u.dva(8, scale=1/2)})',
             })
             self.stimuli_area <= self.cue_placeholder
 
-        self.cue_placeholder.html = UNICODE_CUES[cue]
-        self.cue_placeholder.style = {'display': 'flex'}
+        self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]}'
+        print('show')
+        # self.cue_placeholder.style = {'display': 'flex'}
 
     # ----------------------------------------------------------------------
     def memory_array(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
         """Show the initial array."""
         if hasattr(self, 'cue_placeholder'):
-            self.cue_placeholder.style = {'display': 'none'}
+            self.cue_placeholder.class_name = ''
+            print('hide')
+        else:
+            print('no cue')
         self._set_visible_markers(True)
 
     # ----------------------------------------------------------------------
@@ -326,7 +330,8 @@ class VisualWorkingMemory(StimuliAPI):
         """Remove all elements from view."""
         self._set_visible_markers(False)
         if hasattr(self, 'cue_placeholder'):
-            self.cue_placeholder.style = {'display': 'none'}
+            self.cue_placeholder.class_name = ''
+            print('hide')
         if hasattr(self, 'button_different'):
             self.button_identical.style = {'display': 'none'}
             self.button_different.style = {'display': 'none'}
