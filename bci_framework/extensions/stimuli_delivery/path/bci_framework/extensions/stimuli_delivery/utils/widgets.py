@@ -223,7 +223,7 @@ class Widgets:
     def button(self, label, unelevated=True, on_click=None, style={}, id=None, *args, **kwargs):
         """"""
         btn = MDCButton(label, unelevated=unelevated,
-                        style=style, *args, **kwargs)
+                        style=style, id=id, *args, **kwargs)
         if on_click:
             btn.bind('click', lambda evt: on_click())
 
