@@ -29,7 +29,8 @@ class DeliveryInstance_:
 
         def wrap(self, *args, **kwargs):
 
-            if self._bci_mode == 'dashboard':
+            # if self._bci_mode == 'dashboard':
+            if getattr(self, '_bci_mode', None) == 'dashboard':
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
@@ -53,7 +54,8 @@ class DeliveryInstance_:
 
         def wrap(self, *args, **kwargs):
 
-            if self._bci_mode == 'stimuli':
+            # if self._bci_mode == 'stimuli':
+            if getattr(self, '_bci_mode', None) == 'stimuli':
                 # First the remote call, because the local call could modify the arguments
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
@@ -78,7 +80,8 @@ class DeliveryInstance_:
 
         def wrap(self, *args, **kwargs):
 
-            if self._bci_mode == 'dashboard':
+            # if self._bci_mode == 'dashboard':
+            if getattr(self, '_bci_mode', None) == 'dashboard':
                 self.ws.send({'action': 'feed',
                               'method': method.__name__,
                               'args': list(args),  # prevent ellipsis objects
@@ -97,7 +100,8 @@ class DeliveryInstance_:
         """
 
         def wrap(self, *args, **kwargs):
-            if self._bci_mode == 'dashboard':
+            # if self._bci_mode == 'dashboard':
+            if getattr(self, '_bci_mode', None) == 'dashboard':
                 try:  # To call as decorator and as function
                     method(self, *args, **kwargs)
                 except TypeError:
@@ -182,25 +186,39 @@ class Pipeline:
                 var = w.get_value(var)
             if isinstance(var, [list, tuple, set]):
                 var = random.randint(*var)
-            explicit_pipeline.append([method, var])
+            if isinstance(method, str):
+                explicit_pipeline.append([getattr(self, method), var])
+            else:
+                explicit_pipeline.append([method, var])
 
         return explicit_pipeline
 
     # ----------------------------------------------------------------------
     def run_pipeline(self, pipeline, trials, callback=None):
         """"""
-        self._callback = callback
+        # self._callback = callback
         self.show_progressbar(len(trials) * len(pipeline))
-        self.iteration = 0
+        # self.iteration = 0
 
-        # print('#' + '-' * 50)
-        # print('# Trials')
-        # print(trials)
-        # print('#' + '-' * 50)
-
-        self._run_pipeline(pipeline, trials)
+        if self.DEBUG:
+            self._prepare.no_decorator(self, callback)
+            self._run_pipeline.no_decorator(self, pipeline, trials)
+        else:
+            self._prepare(callback)
+            self._run_pipeline(pipeline, trials)
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.both
+    def _prepare(self, callback):
+        """"""
+        self.iteration = 0
+        if callback:
+            self._callback = getattr(self, callback)
+        else:
+            self._callback = None
+
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.remote
     def _run_pipeline(self, pipeline, trials):
         """"""
         pipeline_m, timeouts = zip(*self._build_pipeline(pipeline))
@@ -222,13 +240,13 @@ class Pipeline:
                 self._timeouts.append(t_)
 
         if trials:
-            t = timer.set_timeout(lambda: self._run_pipeline(
-                pipeline, trials), sum(timeouts))
+            t = timer.set_timeout(lambda: self._run_pipeline.no_decorator(self,
+                                                                          pipeline, trials), sum(timeouts))
             self._timeouts.append(t)
             if t_ := timer.set_timeout(self.increase_progress, sum(timeouts)):
                 self._timeouts.append(t_)
 
-        elif self._callback:
+        elif getattr(self, '_callback', None):
             t = timer.set_timeout(lambda: DeliveryInstance.both(
                 self._callback)(self), sum(timeouts))
             self._timeouts.append(t)
@@ -243,22 +261,33 @@ class Pipeline:
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
 
         def inner():
-            DeliveryInstance.both(fn_)(self, *[trial_[v] for v in arguments])
+            if self.DEBUG:
+                DeliveryInstance.both(fn_)(
+                    self, *[trial_[v] for v in arguments])
+            else:
+                DeliveryInstance.rboth(fn_)(
+                    self, *[trial_[v] for v in arguments])
         return inner
 
     # ----------------------------------------------------------------------
+    # @DeliveryInstance.remote
     def stop_pipeline(self):
+        """"""
+        if self.DEBUG:
+            self._stop_pipeline()
+            if getattr(self, '_callback', None):
+                DeliveryInstance.both(self._callback)(self)
+        else:
+            DeliveryInstance.remote(self._stop_pipeline)(self)
+            if getattr(self, '_callback', None):
+                DeliveryInstance.both(self._callback)(self)
+
+    # ----------------------------------------------------------------------
+    def _stop_pipeline(self):
         """"""
         for t in self._timeouts:
             timer.clear_timeout(t)
         self.set_progress(0)
-        if self._callback:
-            self.call_callback()
-
-    # ----------------------------------------------------------------------
-    def call_callback(self):
-        """"""
-        DeliveryInstance.both(self._callback)(self)
 
 
 ########################################################################
@@ -390,13 +419,15 @@ class StimuliAPI(Pipeline):
         self.set_seed(seed)
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.both
     def show_cross(self):
         """"""
-        self.hide_cross()
+        self.hide_cross.no_decorator(self)
         self.stimuli_area <= html.DIV(Class='bci_cross cross_contrast')
         self.stimuli_area <= html.DIV(Class='bci_cross cross')
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.both
     def hide_cross(self):
         """"""
         for element in document.select('.bci_cross'):
@@ -420,10 +451,9 @@ class StimuliAPI(Pipeline):
 
         self._progressbar_increment = 1 / (steps - 1)
         self.set_progress(0)
-        return self.run_progressbar
+        # return self.run_progressbar
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
     def set_progress(self, p=0):
         """"""
         if not hasattr(self, 'run_progressbar'):
@@ -436,12 +466,18 @@ class StimuliAPI(Pipeline):
         """"""
         if hasattr(self, 'run_progressbar'):
             self._progressbar_value += self._progressbar_increment
-            self.set_progress(self._progressbar_value)
+            if self.DEBUG:
+                DeliveryInstance.both(self.set_progress)(
+                    self, self._progressbar_value)
+            else:
+                DeliveryInstance.rboth(self.set_progress)(
+                    self, self._progressbar_value)
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.both
     def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
         """"""
-        self.hide_synchronizer()
+        self.hide_synchronizer.no_decorator(self)
         if 'upper' in position:
             top = '15px'
         elif 'lower' in position:
@@ -470,9 +506,10 @@ class StimuliAPI(Pipeline):
         self._blink_area.color_on = color_on
         self._blink_area.color_off = color_off
 
-        return self._blink_area
+        # return self._blink_area
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.both
     def hide_synchronizer(self):
         """"""
         if element := getattr(self, '_blink_area', None):

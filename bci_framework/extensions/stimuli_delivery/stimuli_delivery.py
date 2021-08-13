@@ -32,6 +32,11 @@ if len(sys.argv) > 1:
 else:
     port = '5000'
 
+if len(sys.argv) > 2:
+    debug = sys.argv[2]
+else:
+    debug = '--no-debug'
+
 logging.root.name = "StimuliDelivery:Python"
 logging.getLogger().setLevel(logging.WARNING)
 
@@ -78,6 +83,7 @@ def StimuliServer(class_, *args, **kwargs):
     environ = {'port': port,
                'ip': ip,
                'mode': 'stimuli',
+               'debug': debug,
                'brython_environ': str(brython_environ),
                }
 

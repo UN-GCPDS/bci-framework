@@ -120,5 +120,6 @@ window.brython_environ = {{brython_environ}}
 arr = {{class_}}(None, {{python_}})
 arr.connect(f'{{ip}}', f'{{port}}')
 arr._bci_mode = '{{mode}}'
+arr.DEBUG = '{{debug}}' == '--debug'
 arr._last_init()
 {% end %}

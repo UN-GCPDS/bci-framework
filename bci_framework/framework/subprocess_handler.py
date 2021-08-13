@@ -163,8 +163,13 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.port = self.get_free_port()
         else:
             self.port = ''
+
+        if self.debugger:
+            extra = '--debug'
+        else:
+            extra = ''
         self.subprocess_script = run_subprocess(
-            [sys.executable, path, self.port])
+            [sys.executable, path, self.port, extra])
 
         if self.is_analysis:
             self.is_visualization = False
@@ -209,6 +214,12 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.load_webview()
 
     # ----------------------------------------------------------------------
+    def clear_subprocess_script(self) -> None:
+        """"""
+        if hasattr(self, 'subprocess_script'):
+            self.__delattr__('subprocess_script')
+
+    # ----------------------------------------------------------------------
     def stop_preview(self) -> None:
         """Kill the subprocess and crear the webview."""
         self.timer.stop()
@@ -217,8 +228,10 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.subprocess_script.nb_stdout.stop()
             self.subprocess_script.terminate()
             if hasattr(self, 'subprocess_script'):
-                self.timer.singleShot(
-                    300, lambda: self.__delattr__('subprocess_script'))
+                self.timer.singleShot(300, self.clear_subprocess_script)
+
+                # self.timer.singleShot(
+                    # 300, lambda: delattr(self, 'subprocess_script'))
 
         if hasattr(self, 'web_engine_page'):
             try:
