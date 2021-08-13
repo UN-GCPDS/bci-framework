@@ -9,7 +9,7 @@ Pipelines consist in asynchronous controlled method execution
 
 """
 
-from bci_framework.extensions.stimuli_delivery import StimuliAPI
+from bci_framework.extensions.stimuli_delivery import StimuliAPI, DeliveryInstance
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 import logging
 
@@ -50,6 +50,7 @@ class Pipelines(StimuliAPI):
         self.dashboard <= w.button('Start pipeline', on_click=self.start)
 
     # ----------------------------------------------------------------------
+    @DeliveryInstance.remote
     def start(self):
         """"""
         trials = [

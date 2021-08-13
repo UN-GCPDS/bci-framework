@@ -155,16 +155,19 @@ class P300Speller(StimuliAPI):
 
         if not w.get_value('speller'):
             self.pipeline_trial = [
-                (lambda ** kwargs: None, 500),
-                (self.target_notice, w.get_value('notice')),
-                (self.inter_stimulus, 3000)
+                ['none', 500],
+                ['target_notice', w.get_value('notice')],
+                ['inter_stimulus', 3000]
             ]
         else:
             self.pipeline_trial = []
 
         [self.pipeline_trial.extend(
-            [(self.activate, 300),
-             (self.inter_stimulus, 300)]) for _ in range(nrows+ncols)]
+            [['activate', 300],
+             ['inter_stimulus', 300]]) for _ in range(nrows+ncols)]
+             
+    def none(self):
+        pass
 
     # ----------------------------------------------------------------------
     def target_notice(self, target: str) -> None:

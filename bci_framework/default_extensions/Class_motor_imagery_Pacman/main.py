@@ -89,7 +89,7 @@ class PacmanMotorImagery(StimuliAPI):
 
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback=self.soa), 2000)
+            self.pipeline_trial, self.trials, callback='soa'), 2000)
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -112,8 +112,8 @@ class PacmanMotorImagery(StimuliAPI):
         self.trials = [{'cue': trial} for trial in self.trials]
 
         self.pipeline_trial = [
-            (self.soa, 'soa'),  # `soa` is a range reference
-            (self.trial, 4000),
+            ['soa', 'soa'],  # `soa` is a range reference
+            ['trial', 4000],
         ]
 
     # ----------------------------------------------------------------------

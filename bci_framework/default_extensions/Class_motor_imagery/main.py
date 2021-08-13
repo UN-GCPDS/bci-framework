@@ -4,7 +4,6 @@
 =====================
 
 """
-
 from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 
@@ -95,7 +94,7 @@ class FourClassMotorImagery(StimuliAPI):
 
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback=self.stop_run), 2000)
+            self.pipeline_trial, self.trials, callback='stop_run'), 2000)
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -108,7 +107,7 @@ class FourClassMotorImagery(StimuliAPI):
         self.soa()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
-
+        
     # ----------------------------------------------------------------------
     def build_trials(self) -> None:
         """Define the `trials` and `pipeline trials`.
@@ -123,8 +122,10 @@ class FourClassMotorImagery(StimuliAPI):
         self.trials = [{'cue': trial} for trial in self.trials]
 
         self.pipeline_trial = [
-            (self.soa, 'soa'),  # `soa` is a range reference
-            (self.trial, 'duration'),  # `duration` is a slider reference
+            # (self.soa, 'soa'),  # `soa` is a range reference
+            # (self.trial, 'duration'),  # `duration` is a slider reference
+            ['soa', 'soa'],  # `soa` is a range reference
+            ['trial', 'duration'],  # `duration` is a slider reference
         ]
 
     # ----------------------------------------------------------------------
