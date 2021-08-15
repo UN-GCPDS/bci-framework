@@ -145,7 +145,8 @@ class DataAnalysis:
             self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
             self.buffer_eeg[:, -c:] = eeg
 
-            self.buffer_timestamp_ = np.roll(self.buffer_timestamp_, -c, axis=0)
+            self.buffer_timestamp_ = np.roll(
+                self.buffer_timestamp_, -c, axis=0)
             self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
             self.buffer_timestamp_[-1] = timestamp
 
@@ -216,7 +217,8 @@ class DataAnalysis:
         int
             Factor.
         """
-        a = np.array([(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
+        a = np.array(
+            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
         a[a % 1 != 0] = 0
         return int(a[np.argmin(np.abs(a - n))])
 
@@ -232,8 +234,8 @@ class DataAnalysis:
     def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, resampling: Optional[int] = 1000):
         """Create a buffer with fixed time length.
 
-        Since the `loop_consumer` iteraror only return the last data package, the
-        object `buffer_eeg` and `buffer_aux` will retain a longer (in time) data.
+        Since the `loop_consumer` iterator only return the last data package, the
+        object `buffer_eeg` and `buffer_aux` will retain a old data.
 
         Parameters
         ----------
