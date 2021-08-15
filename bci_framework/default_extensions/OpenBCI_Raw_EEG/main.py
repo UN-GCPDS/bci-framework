@@ -10,7 +10,7 @@ from bci_framework.extensions import properties as prop
 import numpy as np
 
 
-REVERSE_PLOT = False
+REVERSE_PLOT = True
 
 
 ########################################################################
@@ -21,13 +21,14 @@ class RawEEG(EEGStream):
         """"""
         super().__init__(*args, **kwargs)
         DATAWIDTH = 1000
+        BUFFER = 30
 
         if REVERSE_PLOT:
-            axis, self.time, self.lines = self.create_lines(
-                time=30, window=DATAWIDTH)
+            axis, self.time, self.lines = self.create_lines(mode='eeg',
+                time=BUFFER, window=DATAWIDTH)
         else:
             axis, self.time, self.lines = self.create_lines(
-                time=-30, window=DATAWIDTH)
+                time=-BUFFER, window=DATAWIDTH)
         axis.set_title('Raw EEG')
         axis.set_xlabel('Time')
         axis.set_ylabel('Channels')
@@ -36,7 +37,7 @@ class RawEEG(EEGStream):
         axis.set_yticks(range(1, len(prop.CHANNELS) + 1))
         axis.set_yticklabels(prop.CHANNELS.values())
 
-        self.create_buffer(30, resampling=DATAWIDTH, fill=0)
+        self.create_buffer(BUFFER, aux_shape=3, resampling=DATAWIDTH, fill=0)
         if REVERSE_PLOT:
             self.reverse_buffer(axis)
         
@@ -50,7 +51,7 @@ class RawEEG(EEGStream):
         return data
     
     # ----------------------------------------------------------------------
-    @fake_loop_consumer('eeg')
+    @loop_consumer('eeg')
     def stream(self):
         eeg = self.buffer_eeg_resampled
         
