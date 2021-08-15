@@ -5,6 +5,7 @@ Core
 """
 
 import os
+import sys
 import json
 import psutil
 import pickle
@@ -27,6 +28,7 @@ from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
 from ..extensions import properties as prop
 from .dialogs import Dialogs
+from .subprocess_handler import run_subprocess
 
 import numpy as np
 
@@ -199,6 +201,7 @@ class BCIFramework(QMainWindow):
 
         self.clock_offset = 0
         QTimer().singleShot(7200, self.get_desynchonization)
+        QTimer().singleShot(3000, self.start_stimuli_server)
 
         self.status_bar(message='', right_message=('disconnected', None))
 
@@ -701,3 +704,12 @@ class BCIFramework(QMainWindow):
         """"""
         os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(value)
 
+    # ----------------------------------------------------------------------
+    def start_stimuli_server(self):
+        """"""
+        if '--local' in sys.argv:
+            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'python_scripts', 'bciframework_server', 'main.py')])
+        else:
+            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
+                os.environ['BCISTREAM_HOME'], 'python_scripts', 'bciframework_server', 'main.py')])

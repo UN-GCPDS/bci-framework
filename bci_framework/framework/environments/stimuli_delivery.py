@@ -234,7 +234,6 @@ class StimuliDelivery:
         self.parent_frame.pushButton_stop_calibration.setVisible(False)
 
     # ----------------------------------------------------------------------
-
     def get_free_port(self) -> str:
         """Get any free port available."""
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:

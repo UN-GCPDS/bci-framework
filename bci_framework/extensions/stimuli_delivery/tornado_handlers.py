@@ -48,6 +48,12 @@ JSON = TypeVar('json')
 class ModeHandler(RequestHandler):
     """`/mode` endpoint to differentiate between `Data analysis` and `Stimuli Delivery`."""
 
+    def set_default_headers(self):
+        print("setting headers!!!")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
     # ----------------------------------------------------------------------
     def get(self):
         self.write('stimuli')

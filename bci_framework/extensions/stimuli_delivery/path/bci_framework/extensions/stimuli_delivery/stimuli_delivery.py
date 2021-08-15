@@ -2,7 +2,7 @@ import os
 import json
 import random
 import logging
-from browser import timer, html, document
+from browser import timer, html, document, window
 from datetime import datetime
 import copy
 from radiant.utils import WebSocket
@@ -152,6 +152,7 @@ class BCIWebSocket(WebSocket):
     def on_open(self, evt):
         """"""
         self.send({'action': 'register'})
+        print('Connected with dashboard.')
 
     # ----------------------------------------------------------------------
     def on_message(self, evt):
@@ -168,9 +169,20 @@ class BCIWebSocket(WebSocket):
     # ----------------------------------------------------------------------
     def on_close(self, evt):
         """"""
-        getattr(self.main, 'stop', lambda: None)()
-        # print('on_close', self.ip_)
-        timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
+        print('on_close', self.ip_)
+        # timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
+        # getattr(self.main, 'stop', lambda: None)()
+        window.location.replace(self.ip_.replace('/ws', '').replace(
+            'ws', 'http'))
+
+    # ----------------------------------------------------------------------
+    def on_error(self, evt):
+        """"""
+        print('on_error', self.ip_)
+        # timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
+        # getattr(self.main, 'stop', lambda: None)()
+        window.location.replace(self.ip_.replace('/ws', '').replace(
+            'ws', 'http'))
 
 
 ########################################################################

@@ -23,9 +23,11 @@ from ..extensions import properties as prop
 
 COMMAND = TypeVar('Command')
 PATH = TypeVar('Path')
-
+DEFAULT_LOCAL_IP = 'localhost'
 
 # ----------------------------------------------------------------------
+
+
 def run_subprocess(call: COMMAND) -> subprocess.Popen:
     """Run a python script with non blocking debugger installed."""
     my_env = os.environ.copy()
@@ -130,6 +132,29 @@ class StimuliSubprocess:
     def stm_start(self) -> None:
         """"""
         self.main.web_engine.setUrl(self.url)
+        with open(os.path.join(os.getenv('BCISTREAM_HOME'), 'stimuli.ip'), 'w') as file:
+            file.write(self.url.replace(
+                '/dashboard', '').replace('localhost', self.get_local_ip_address()))
+
+    # ----------------------------------------------------------------------
+
+    def get_local_ip_address(self) -> str:
+        """Connect to internet for get the local IP."""
+
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            local_ip_address = s.getsockname()[0]
+            s.close()
+            return local_ip_address
+
+        except:
+            logging.warning('Impossible to detect a network connection, the WiFi'
+                            'module and this machine must share the same network.')
+            logging.warning(f'If you are using this machine as server (access point) '
+                            f'the address {DEFAULT_LOCAL_IP} will be used.')
+
+            return DEFAULT_LOCAL_IP
 
 
 ########################################################################
@@ -159,6 +184,18 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
 
         self.is_analysis = self.file_is_analysis(path)
 
+        # if self.file_is_stimuli(path):
+            # if self.debugger:
+                # self.port = '9999'
+            # else:
+                # self.port = '999'
+        # elif self.file_is_visualization(path):
+            # self.port = self.get_free_port()
+        # elif self.file_is_analysis(path):
+            # self.port = ''
+        # else:
+            # self.port = '9999'
+
         if not self.is_analysis:
             self.port = self.get_free_port()
         else:
@@ -184,6 +221,18 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         """"""
         with open(path, 'r') as file:
             return 'data_analysis import DataAnalysis' in file.read()
+
+    # ----------------------------------------------------------------------
+    def file_is_stimuli(self, path):
+        """"""
+        with open(path, 'r') as file:
+            return 'stimuli_delivery import StimuliAPI' in file.read()
+
+    # ----------------------------------------------------------------------
+    def file_is_visualization(self, path):
+        """"""
+        with open(path, 'r') as file:
+            return 'visualizations import EEGStream' in file.read()
 
     # ----------------------------------------------------------------------
     def prepare_webview(self) -> None:
