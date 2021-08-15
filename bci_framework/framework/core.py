@@ -639,11 +639,10 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def get_desynchonization(self):
         """"""
-
-        offset_thread = ClockOffset()
-        offset_thread.set_host(self.thread_kafka.host)
-        offset_thread.start()
-        offset_thread.offset.connect(
+        self.offset_thread = ClockOffset()
+        self.offset_thread.set_host(self.thread_kafka.host)
+        self.offset_thread.start()
+        self.offset_thread.offset.connect(
             lambda offset: setattr(self, 'clock_offset', offset))
         QTimer().singleShot(7200, self.get_desynchonization)
 
