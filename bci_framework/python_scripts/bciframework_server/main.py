@@ -13,6 +13,8 @@ class BareMinimum(RadiantAPI):
         """"""
         super().__init__(*args, **kwargs)
         self.add_css_file('styles.css')
+        document.select_one('body') <= html.TITLE(
+            'BCI-Framework | Stimuli Delivery Server')
 
         self.current_stimuli_url = self.LocalInterpreter.get_url()
         document.select_one('body') <= html.IFRAME(Class='stimuli-delivery',
@@ -44,6 +46,8 @@ class BareMinimum(RadiantAPI):
     def stand_by(self):
         """"""
         document.select_one('body').clear()
+        document.select_one('body') <= html.TITLE(
+            'BCI-Framework | Stimuli Delivery Server')
 
         label = MDCComponent(html.SPAN(f'BCI-Framework', Class='bcif-title'))
         label.mdc.typography('headline1')
