@@ -116,7 +116,7 @@ class DeliveryInstance_:
         """Decorator for execute method in both environs, dashboard and delivery.
 
 
-        This decorator only works in both environs.
+        This decorator works in both environs.
         """
 
         def wrap(self, *args, **kwargs):
@@ -153,6 +153,9 @@ class BCIWebSocket(WebSocket):
         """"""
         self.send({'action': 'register'})
         print('Connected with dashboard.')
+
+        if on_connect := getattr(self.main, 'on_connect', False):
+            on_connect()
 
     # ----------------------------------------------------------------------
     def on_message(self, evt):
@@ -259,8 +262,7 @@ class Pipeline:
                 self._timeouts.append(t_)
 
         elif getattr(self, '_callback', None):
-            t = timer.set_timeout(lambda: DeliveryInstance.both(
-                self._callback)(self), sum(timeouts))
+            t = timer.set_timeout(self.on_callback, sum(timeouts))
             self._timeouts.append(t)
 
         self.iteration += 1
@@ -282,24 +284,27 @@ class Pipeline:
         return inner
 
     # ----------------------------------------------------------------------
-    # @DeliveryInstance.remote
     def stop_pipeline(self):
         """"""
         if self.DEBUG:
-            self._stop_pipeline()
-            if getattr(self, '_callback', None):
-                DeliveryInstance.both(self._callback)(self)
+            self._stop_pipeline()  # kill timed trials
         else:
-            DeliveryInstance.remote(self._stop_pipeline)(self)
-            if getattr(self, '_callback', None):
-                DeliveryInstance.both(self._callback)(self)
+            DeliveryInstance.remote(self._stop_pipeline)(
+                self)  # kill timed trials
 
     # ----------------------------------------------------------------------
     def _stop_pipeline(self):
         """"""
         for t in self._timeouts:
             timer.clear_timeout(t)
-        self.set_progress(0)
+        self.on_callback()
+
+    # ----------------------------------------------------------------------
+    def on_callback(self):
+        """"""
+        DeliveryInstance.event(self.set_progress)(self, 0)
+        if getattr(self, '_callback', None):
+            DeliveryInstance.event(self._callback)(self)
 
 
 ########################################################################
@@ -330,7 +335,7 @@ class StimuliAPI(Pipeline):
         return getattr(self, '_bci_mode', None)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.both
+    # @DeliveryInstance.event
     def send_marker(self, marker, blink=100, force=False):
         """"""
         marker = {
@@ -339,7 +344,7 @@ class StimuliAPI(Pipeline):
             # 'datetime': datetime.now().timestamp(),
         }
 
-        if self.mode == 'stimuli' or force:
+        if self.mode == 'stimuli' or force or self.DEBUG:
             self.ws.send({
                 'action': 'marker',
                 'marker': marker,
@@ -349,28 +354,29 @@ class StimuliAPI(Pipeline):
         # print(f'MARKER: {marker["marker"]}')
 
     # ----------------------------------------------------------------------
-    # @DeliveryInstance.remote
+    @DeliveryInstance.event
     def start_record(self):
         """"""
-        self.send_annotationn('start_record')
+        self.send_annotation('start_record')
 
     # ----------------------------------------------------------------------
-    # @DeliveryInstance.remote
+    @DeliveryInstance.event
     def stop_record(self):
         """"""
-        self.send_annotationn('stop_record')
+        self.send_annotation('stop_record')
 
     # ----------------------------------------------------------------------
-    def send_annotationn(self, description, duration=0):
+    def send_annotation(self, description, duration=0, force=False):
         """"""
-        self.ws.send({
-            'action': 'annotation',
-            'annotation': {'duration': duration,
-                           # 'onset': datetime.now().timestamp(),
-                           'description': description,
-                           'latency': self._latency,
-                           },
-        })
+        if self.mode == 'stimuli' or force or self.DEBUG:
+            self.ws.send({
+                'action': 'annotation',
+                'annotation': {'duration': duration,
+                               # 'onset': datetime.now().timestamp(),
+                               'description': description,
+                               'latency': self._latency,
+                               },
+            })
 
     # ----------------------------------------------------------------------
     def listen_feedbacks(self, handler):
