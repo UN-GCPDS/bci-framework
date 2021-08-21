@@ -1,4 +1,4 @@
-from bci_framework.extensions.stimuli_delivery import StimuliAPI
+from bci_framework.extensions.stimuli_delivery import StimuliAPI, DeliveryInstance
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 
 from browser import timer
@@ -14,11 +14,8 @@ class EventMarkerSynchronization(StimuliAPI):
         """"""
         super().__init__(*args, **kwargs)
 
-        self.listen_feedbacks(self.on_feedback)
+        # self.listen_feedbacks(self.on_feedback)
         self.add_stylesheet('styles.css')
-
-        self.show_cross()
-        self.show_synchronizer()
 
         self.dashboard <= w.label(
             'Latency measurement<br><br>', typo='headline4')
@@ -46,12 +43,34 @@ class EventMarkerSynchronization(StimuliAPI):
 
         self.dashboard <= w.button(label='Start run', on_click=self.start)
         self.dashboard <= w.button(label='Stop run', on_click=self.stop)
-        self.start()
+        self.stimuli_area <= w.select(label='', hide_label=False,
+                                      value='lower left',
+                                      on_change=self.move_synchronizer,
+                                      id='move_synchronizer',
+                                      options=[
+                                          ('lower left', 'lower left'),
+                                          ('lower right', 'lower right'),
+                                          ('upper left', 'upper left'),
+                                          ('upper right', 'upper right'),
+                                      ])
+        # self.start()
 
     # ----------------------------------------------------------------------
     def _last_init(self):
         """"""
-        self._bci_mode = 'dashboard'
+
+    # ----------------------------------------------------------------------
+    def move_synchronizer(self, position):
+        """"""
+        DeliveryInstance.rboth(self.show_synchronizer.no_decorator)(
+            self, position=position)
+
+    # ----------------------------------------------------------------------
+    def on_connect(self):
+        """"""
+        if self._bci_mode == 'stimuli':
+            DeliveryInstance.rboth(self.show_synchronizer.no_decorator)(self)
+            self.start()
 
     # ----------------------------------------------------------------------
     def on_feedback(self, name, value):
