@@ -27,15 +27,12 @@ try:
 except:
     ip = 'localhost'
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and sys.argv[1].isdecimal():
     port = sys.argv[1]
 else:
     port = '5000'
 
-if len(sys.argv) > 2:
-    debug = sys.argv[2]
-else:
-    debug = '--no-debug'
+debug = '--debug' in sys.argv
 
 logging.root.name = "StimuliDelivery:Python"
 logging.getLogger().setLevel(logging.WARNING)
