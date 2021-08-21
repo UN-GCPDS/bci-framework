@@ -77,7 +77,6 @@ class FourClassMotorImagery(StimuliAPI):
             label='External marker synchronizer',
             checked=False,
             on_change=self.synchronizer,
-            id='record',
         )
 
         self.dashboard <= w.button('Start run', on_click=self.start)
@@ -107,7 +106,7 @@ class FourClassMotorImagery(StimuliAPI):
         self.soa()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
-        
+
     # ----------------------------------------------------------------------
     def build_trials(self) -> None:
         """Define the `trials` and `pipeline trials`.

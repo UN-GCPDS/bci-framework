@@ -72,7 +72,6 @@ class PacmanMotorImagery(StimuliAPI):
             label='External marker synchronizer',
             checked=False,
             on_change=self.synchronizer,
-            id='record',
         )
 
         self.dashboard <= w.button('Start run', on_click=self.start)
@@ -89,12 +88,17 @@ class PacmanMotorImagery(StimuliAPI):
 
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback='soa'), 2000)
+            self.pipeline_trial, self.trials, callback='stop_run'), 2000)
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
+
+    # ----------------------------------------------------------------------
+    def stop_run(self) -> None:
+        """Stop pipeline execution."""
+        self.soa()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
