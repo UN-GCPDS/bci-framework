@@ -161,7 +161,9 @@ class TopoplotImpedances(TopoplotBase):
         super().__init__()
         self.ax = self.figure.add_subplot(111)
         self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
-        self.cmap = 'RdYlGn'
+        self.cmap = matplotlib.cm.get_cmap('YlGn')
+        self.cmap = self.truncate_colormap(
+            self.cmap, minval=0, maxal=0.66)
 
         self.band_2737 = filters.GenericButterBand(27, 37, fs=250)
         self.reset_plot()
@@ -184,6 +186,14 @@ class TopoplotImpedances(TopoplotBase):
         self.figure.subplots_adjust(
             left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0)
         self.add_colorbar()
+
+    # ----------------------------------------------------------------------
+    def truncate_colormap(self, cmap, minval=0, maxal=1, n=100):
+        """"""
+        new_cmap = LinearSegmentedColormap.from_list(
+            f'trunc({cmap.name}, {minval:.2f}, {maxal:.2f})',
+            cmap(np.linspace(minval, maxal, n)))
+        return new_cmap
 
     # ----------------------------------------------------------------------
     def update_impedances(self, montage: mne.channels.DigMontage, electrodes: List[str], impedances: Dict[str, float]) -> None:
@@ -236,7 +246,7 @@ class TopoplotImpedances(TopoplotBase):
                              mask=channels_mask,
                              )
 
-        q = matplotlib.cm.get_cmap(self.cmap)
+        q = self.cmap
 
         markers = [l.get_marker() for l in self.ax.axes.lines]
         if not '' in markers:
@@ -247,7 +257,11 @@ class TopoplotImpedances(TopoplotBase):
         for i, (x, y) in enumerate(zip(*line.get_data())):
             try:
                 if impedances[channels[i]] == '??':
-                    color = q(0)
+                    color = '#da4453'
+                elif impedances[channels[i]] >= 15:
+                    color = '#da4453'
+                elif impedances[channels[i]] <= 0.1:
+                    color = '#da4453'
                 else:
                     color = q(impedances[channels[i]] / 20)
                 self.ax.plot([x], [y], marker='o', markerfacecolor=color,
