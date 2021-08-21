@@ -193,14 +193,16 @@ class Widgets:
         return form
 
     # ----------------------------------------------------------------------
-    def select(self, label, options, value=None, on_change=None, id=None):
+    def select(self, label, options, value=None, on_change=None, id=None, hide_label=False):
         """"""
         label_ = MDCComponent(html.SPAN(f'{label}'))
         label_ .mdc.typography('subtitle1')
         form = MDCForm(formfield_style={
                        'width': '100px', 'min-height': '90px', 'margin-left': '15px'})
-        form <= label_
-        select_ = form.mdc.Select('', options=options, selected=value)
+        if not hide_label:
+            form <= label_
+
+        select_ = form.mdc.Select('', options=options, selected=value, id=id)
 
         if id:
             self.widgets[id] = value
