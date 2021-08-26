@@ -20,16 +20,13 @@ from typing import Literal
 import logging
 
 COLORS = [
-    '#1f77b4',
-    '#ff7f0e',
-    '#2ca02c',
-    '#d62728',
-    '#9467bd',
-    '#8c564b',
-    '#e377c2',
-    '#7f7f7f',
-    '#bcbd22',
-    '#17becf',
+    '#ff0000',
+    '#0000ff',
+    '#ff00ff',
+    '#00ff00',
+    '#ffff00',
+    '#ffffff',
+    '#000000',
 ]
 
 UNICODE_CUES = {
@@ -196,12 +193,16 @@ class VisualWorkingMemory(StimuliAPI):
 
         self.build_trials()
         timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback=self.clear), 2000)
+            self.pipeline_trial, self.trials, callback='stop_run'), 2000)
 
     # ----------------------------------------------------------------------
     def stop(self):
         """Stop pipeline execution."""
         self.stop_pipeline()
+
+    # ----------------------------------------------------------------------
+    def stop_run(self):
+        """"""
         self.clear()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
@@ -230,11 +231,11 @@ class VisualWorkingMemory(StimuliAPI):
 
         self.pipeline_trial = [
 
-            (self.soa, w.get_value('break')),
-            (self.cue, w.get_value('cue')),
-            (self.memory_array, w.get_value('memory_array')),
-            (self.retention, w.get_value('retention')),
-            (self.test_array, w.get_value('test_array')),
+            ['soa', w.get_value('break')],
+            ['cue', w.get_value('cue')],
+            ['memory_array', w.get_value('memory_array')],
+            ['retention', w.get_value('retention')],
+            ['test_array', w.get_value('test_array')],
         ]
 
     # ----------------------------------------------------------------------
@@ -258,18 +259,15 @@ class VisualWorkingMemory(StimuliAPI):
             self.stimuli_area <= self.cue_placeholder
 
         self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]}'
-        print('show')
-        # self.cue_placeholder.style = {'display': 'flex'}
+        self.send_marker(cue)
 
     # ----------------------------------------------------------------------
     def memory_array(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
         """Show the initial array."""
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.class_name = ''
-            print('hide')
-        else:
-            print('no cue')
         self._set_visible_markers(True)
+        self.send_marker(f'{shapes}')
 
     # ----------------------------------------------------------------------
     def retention(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
@@ -301,17 +299,24 @@ class VisualWorkingMemory(StimuliAPI):
 
         self.button_identical.style = {'display': 'block'}
         self.button_different.style = {'display': 'block'}
-        keypress(self.handle_response)
+        keypress(self.handle_response, timeout=w.get_value('test_array'))
+        if change:
+            self.send_marker('Changed')
+        else:
+            self.send_marker('No-changed')
 
     # ----------------------------------------------------------------------
     def handle_response(self, response: str) -> None:
         """Capture the subject keyboard response."""
-        if response == 'q':
-            print("DIFFFERENT")
-        elif response == 'p':
-            print("IDENTICAL")
-        else:
-            print("NO RESPONSE")
+        if self.mode == 'stimuli':
+            if response == 'q':
+                # print("DIFFFERENT")
+                self.send_marker(f'Different')
+            elif response == 'p':
+                # print("IDENTICAL")
+                self.send_marker(f'Identical')
+            else:
+                self.send_marker(f'No-response')
 
     # ----------------------------------------------------------------------
     def _set_visible_markers(self, visible: bool) -> None:
@@ -331,7 +336,6 @@ class VisualWorkingMemory(StimuliAPI):
         self._set_visible_markers(False)
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.class_name = ''
-            print('hide')
         if hasattr(self, 'button_different'):
             self.button_identical.style = {'display': 'none'}
             self.button_different.style = {'display': 'none'}
@@ -422,7 +426,7 @@ class VisualWorkingMemory(StimuliAPI):
                                           'height': u.dva(13.15),
                                           'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
                                           'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} - {u.dva(5.4)})',
-                                          'background-color': '#f3f3f3',
+                                          'background-color': '#818181',
                                           'position': 'absolute',
                                           'z-index': 10,
                                       })
@@ -433,7 +437,7 @@ class VisualWorkingMemory(StimuliAPI):
                                           'height': u.dva(13.15),
                                           'margin-top': f'calc(50vh - {u.dva(13.15, scale=0.5)})',
                                           'margin-left': f'calc(50% - {u.dva(7.2, scale=0.5)} + {u.dva(5.4)})',
-                                          'background-color': '#f3f3f3',
+                                          'background-color': '#818181',
                                           'position': 'absolute',
                                           'z-index': 10,
                                       })

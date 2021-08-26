@@ -1,3 +1,7 @@
+.bci_stimuli {
+    background-color: #808080;
+}
+
 .bci_dashboard button {
     margin: 10px;
 }
@@ -25,12 +29,12 @@
 
 .test-button#different {
     left: 10%;
-    color: #d62728;
-    border-color: #d62728;
+    color: #ffffff;
+    border-color: #ffffff;
 }
 
 .test-button#identical {
     right: 10%;
-    color: #2ca02c;
-    border-color: #2ca02c;
+    color: #ffffff;
+    border-color: #ffffff;
 }
