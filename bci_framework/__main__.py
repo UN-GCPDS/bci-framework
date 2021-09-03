@@ -14,7 +14,8 @@ import logging
 from pathlib import Path
 from multiprocessing import freeze_support
 
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QSplashScreen
+from PySide2.QtGui import QPixmap
 from PySide2.QtCore import Qt, QCoreApplication
 from qt_material import apply_stylesheet
 
@@ -102,12 +103,23 @@ def kill_childs() -> None:
 # ----------------------------------------------------------------------
 def main() -> None:
     """"""
+    QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
+    app = QApplication(sys.argv)
+
+    # ------------------------------------------------------------
+    # Splash
+    splash_file = os.path.join(
+        os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png')
+    pixmap = QPixmap(splash_file)
+    splash = QSplashScreen(
+        pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+    splash.setMask(pixmap.mask())
+    splash.show()
+    # ------------------------------------------------------------
+
     kill_subprocess()
     freeze_support()
 
-    QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
-
-    app = QApplication(sys.argv)
     app.processEvents()
     app.setQuitOnLastWindowClosed(False)
     app.lastWindowClosed.connect(kill_subprocess)
@@ -127,11 +139,17 @@ def main() -> None:
     if ConfigManager().get('framework', 'theme', 'light') == 'light':
         apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True,
                          extra=extra, parent='bci_framework_qt_material')
-        # apply_stylesheet(app, theme='light_amber.xml', invert_secondary=True,
+        # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True,
+                         # extra=extra, parent='bci_framework_qt_material')
+        # apply_stylesheet(app, theme='light_teal.xml', invert_secondary=True,
+                         # extra=extra, parent='bci_framework_qt_material')
+        # apply_stylesheet(app, theme='light_pink.xml', invert_secondary=True,
                          # extra=extra, parent='bci_framework_qt_material')
     else:
         apply_stylesheet(app, theme='dark_cyan.xml', extra=extra,
                          parent='bci_framework_qt_material')
+        # apply_stylesheet(app, theme='dark_pink.xml', extra=extra,
+                         # parent='bci_framework_qt_material')
 
     stylesheet = app.styleSheet()
     with open(os.path.join(os.path.dirname(__file__), 'custom.css')) as file:
@@ -141,7 +159,7 @@ def main() -> None:
 
     frame = BCIFramework()
     frame.main.showMaximized()
-
+    splash.finish(frame)  # Hide Splash
     app.exec_()
 
 
