@@ -231,6 +231,11 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_play_signal.setIcon(
             icon('media-playback-start'))
         self.main.pushButton_clear_debug.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_record.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_annotations.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_markers.setIcon(icon('edit-delete'))
+        self.main.pushButton_remove_commands.setIcon(icon('edit-delete'))
+        self.main.pushButton_projects_remove.setIcon(icon('edit-delete'))
         self.main.pushButton_record.setIcon(icon('media-record'))
 
         self.main.pushButton_projects_add_file.setIcon(icon('document-new'))
