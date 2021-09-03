@@ -120,7 +120,7 @@ window.brython_environ = {{brython_environ}}
 arr = {{class_}}(None, {{python_}})
 arr.connect(f'{{ip}}', f'{{port}}')
 arr._bci_mode = '{{mode}}'
-arr.DEBUG = '{{debug}}' == 'True'
+if not hasattr(arr, 'DEBUG'): arr.DEBUG = '{{debug}}' == 'True'
 arr._last_init()
 {% end %}
 <!--if arr.DEBUG: print('Debug mode: on')-->

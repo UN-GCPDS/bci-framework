@@ -6,6 +6,8 @@ Stream handlers
 
 import os
 import sys
+import json
+import pickle
 from datetime import datetime
 from typing import Optional, Literal, List, Callable
 
@@ -16,13 +18,16 @@ from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar
 from .subprocess_handler import LoadSubprocess
 from .config_manager import ConfigManager
 
+BCIFR_FILE = 'bcifr'
 
 ########################################################################
+
+
 class ExtensionMenu:
     """MDIArea menu for extensions."""
 
     # ----------------------------------------------------------------------
-    def build_menu_visualization(self, visualization: bool, debugger: Optional[bool] = False) -> None:
+    def build_menu_visualization(self, visualization: bool, debugger: Optional[bool] = False, interact_content: Optional[list] = []) -> None:
         """Menu for visualizations."""
         self.menubar = QMenuBar(self)
         self.menubar.clear()
@@ -78,6 +83,7 @@ class ExtensionMenu:
         # DPI
         menu_dpi = QMenu("DPI (60)")
         if visualization:
+
             for dpi in [60, 70, 80, 90, 100, 110, 120, 130]:
                 menu_dpi.addAction(QAction(
                     f'{dpi}', menu_dpi, checkable=True, triggered=self.set_dpi(menu_dpi, f'{dpi}', dpi)))
@@ -86,6 +92,36 @@ class ExtensionMenu:
         else:
             menu_dpi.setEnabled(False)
         self.menubar.addMenu(menu_dpi)
+
+        self.main.INTERACTIVE = {}
+        if interact_content:
+            self.build_interactive(interact_content)
+
+    # ----------------------------------------------------------------------
+    def build_interactive(self, items):
+        """"""
+        for item in items:
+            name, values, default = item
+            menu_ = QMenu(f'{name} ({default})')
+            for value in values:
+                action = QAction(
+                    f'{value}', menu_, checkable=True, triggered=self.set_interactive(menu_, name, value))
+                menu_.addAction(action)
+                if value == default:
+                    action.setChecked(True)
+                self.main.INTERACTIVE[name] = default
+            self.menubar.addMenu(menu_)
+
+    # ----------------------------------------------------------------------
+    def set_interactive(self, menu_, name: str, value: int) -> Callable:
+        """Set the DPI value for matplotlib figures."""
+        def wrap():
+            [action.setChecked(False) for action in menu_.actions()]
+            [action.setChecked(
+                True) for action in menu_.actions() if action.text() == f'{value}']
+            self.main.INTERACTIVE[name] = value
+            menu_.setTitle(f'{name} ({value})')
+        return wrap
 
     # ----------------------------------------------------------------------
     def build_menu_stimuli(self, visualization: bool, debugger: Optional[bool] = False) -> None:
@@ -245,7 +281,20 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         module = os.path.join(self.projects_dir, extension, 'main.py')
         self.stream_subprocess = LoadSubprocess(
             self.main, module, use_webview=not self.is_analysis, debugger=debugger)
-        self.update_menu_bar(extension, debugger)
+
+        interact = os.path.join(self.projects_dir, extension, 'interact')
+        if os.path.exists(interact):
+            with open(interact, 'r') as file:
+                interact_contet = [json.loads(c)
+                                   for c in file.read().split('\n') if c]
+        else:
+            interact_contet = None
+
+        bcifr = pickle.load(
+            open(os.path.join(self.projects_dir, extension, BCIFR_FILE), 'rb'))
+        bcifr['name']
+
+        self.update_menu_bar(bcifr['name'], debugger, interact_contet)
         # self.update_ip(self.stream_subprocess.port)
         self.update_ip('9999')
         self.loaded()
@@ -294,10 +343,11 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         return filename
 
     # ----------------------------------------------------------------------
-    def update_menu_bar(self, visualization: Optional[bool] = None, debugger: Optional[bool] = False) -> None:
+    def update_menu_bar(self, visualization: Optional[bool] = None, debugger: Optional[bool] = False, interact_content: Optional[list] = []) -> None:
         """Create menubar."""
         if self.is_visualization:
-            self.build_menu_visualization(visualization, debugger)
+            self.build_menu_visualization(
+                visualization, debugger, interact_content)
         elif self.is_stimuli:
             self.build_menu_stimuli(visualization, debugger)
 

@@ -7,11 +7,13 @@ Connections
 import os
 import json
 import time
+import types
 import logging
+import requests
 
-from openbci_stream.acquisition import Cyton, CytonBase
+from openbci_stream.acquisition import Cyton, CytonBase, CytonR
 from PySide2.QtCore import Qt, Signal, QThread, Slot
-from PySide2.QtGui import QCursor
+from PySide2.QtGui import QCursor, QIcon
 from PySide2.QtWidgets import QApplication
 
 from ..dialogs import Dialogs
@@ -37,21 +39,27 @@ class OpenBCIThread(QThread):
         """Connect and configure OpenBCI board."""
 
         try:
-            self.openbci = Cyton(self.mode,
-                                 self.endpoint,
-                                 host=self.host,
-                                 capture_stream=False,
-                                 daisy=prop.DAISY,
-                                 montage=self.montage,
-                                 streaming_package_size=self.streaming_package_size)
+            self.openbci = CytonR(self.mode,
+                                  self.endpoint,
+                                  host=self.host,
+                                  capture_stream=False,
+                                  daisy=self.daisy,
+                                  montage=self.montage,
+                                  streaming_package_size=self.streaming_package_size,
+                                  number_of_channels=self.channels_assignations,
+                                  )
 
         except Exception as msg:
             logging.warning(msg)
             self.connection_fail.emit([])
             return
 
+        self.session_settings(self.montage, self.bias,
+                              self.gain, self.srb1, self.adsinput, self.srb2, self.sample_rate)
+
         if getattr(self.openbci, 'is_recycled', False):
             self.connected = True
+            self.start_stream_()
             self.connection_ok.emit()
             return
 
@@ -76,8 +84,8 @@ class OpenBCIThread(QThread):
         boardmode = self.openbci.boardmode
         if not boardmode_setted:
             logging.warning('Boardmode not setted!')
-        self.session_settings(self.montage, self.bias,
-                              self.gain, self.srb1, self.adsinput, self.srb2)
+        # self.session_settings(self.montage, self.bias,
+                              # self.gain, self.srb1, self.adsinput, self.srb2, self.sample_rate)
 
         if not self.checkBox_send_leadoff:
             self.openbci.leadoff_impedance(
@@ -90,14 +98,19 @@ class OpenBCIThread(QThread):
             self.openbci.command(test_signal)
 
         else:
-            all_channels = set(range(1, 17 if prop.DAISY else 9))
             used_channels = set(self.montage.keys())
-            deactivated = all_channels.difference(used_channels)
-            if deactivated:
-                self.openbci.deactivate_channel(deactivated)
             if used_channels:
                 self.openbci.activate_channel(used_channels)
+            # all_channels = set(range(1, 17 if prop.DAISY else 9))
+            # deactivated = all_channels.difference(used_channels)
+            # if deactivated:
+                # self.openbci.deactivate_channel(deactivated)
 
+        self.start_stream_()
+
+    # ----------------------------------------------------------------------
+    def start_stream_(self):
+        """"""
         if not self.streaming():
             try:
                 self.openbci.start_stream()
@@ -117,16 +130,17 @@ class OpenBCIThread(QThread):
     def session_settings(self, *args) -> None:
         """Create a session setting to reuse it after an impedance measurement."""
         if hasattr(self, 'last_settings'):
-            channels, bias, gain, srb1, adsinput, srb2 = self.last_settings
+            channels, bias, gain, srb1, adsinput, srb2, sample_rate = self.last_settings
         elif args:
             self.last_settings = args
-            channels, bias, gain, srb1, adsinput, srb2 = args
+            channels, bias, gain, srb1, adsinput, srb2, sample_rate = args
         else:
             return
 
         if self.checkBox_default_settings:
             self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
         else:
+            self.openbci.command(sample_rate)
             self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
                                           gain=gain,
                                           input_type=adsinput,
@@ -164,11 +178,22 @@ class Connection:
         self.openbci.connection_ok.connect(self.connection_ok)
         self.openbci.connection_fail.connect(self.connection_fail)
         self.openbci.disconnected_ok.connect(self.disconnected_ok)
+        self.channels_assignations = {}
 
         self.config = {
             'mode': self.parent_frame.comboBox_connection_mode,
-            'port': self.parent_frame.comboBox_port,
-            'ip': self.parent_frame.comboBox_ip,
+            'check1': self.parent_frame.checkBox_board1,
+            'check2': self.parent_frame.checkBox_board2,
+            'check3': self.parent_frame.checkBox_board3,
+            'check4': self.parent_frame.checkBox_board4,
+            'port1': self.parent_frame.comboBox_port1,
+            'port2': self.parent_frame.comboBox_port2,
+            'port3': self.parent_frame.comboBox_port3,
+            'port4': self.parent_frame.comboBox_port4,
+            'ip1': self.parent_frame.comboBox_ip1,
+            'ip2': self.parent_frame.comboBox_ip2,
+            'ip3': self.parent_frame.comboBox_ip3,
+            'ip4': self.parent_frame.comboBox_ip4,
             'host': self.parent_frame.comboBox_host,
             'acquisition_sample_rate': self.parent_frame.comboBox_sample_rate,
             'streaming_sample_rate': self.parent_frame.comboBox_streaming_sample_rate,
@@ -194,10 +219,18 @@ class Connection:
     # ----------------------------------------------------------------------
     def on_focus(self) -> None:
         """Try to autoconnect."""
-        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
-            self.openbci_connect()
+        # if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            # self.openbci_connect()
+
+        for i in range(1, 5):
+            combo = getattr(self.parent_frame, f'comboBox_ip{i}')
+            target = getattr(self.parent_frame, f'pushButton_ip{i}')
+            check = getattr(self.parent_frame, f'checkBox_board{i}')
+            if check.isChecked():
+                self.request_wifi(i, target, combo)()
 
     # ----------------------------------------------------------------------
+
     def load_config(self) -> None:
         """Load widgets."""
         self.core.config.load_widgets('connection', self.config)
@@ -217,6 +250,79 @@ class Connection:
         self.parent_frame.comboBox_host.textActivated.connect(
             self.load_config)
 
+        # CheckWiFiModule
+        for i in range(1, 5):
+            combo = getattr(self.parent_frame, f'comboBox_ip{i}')
+            target = getattr(self.parent_frame, f'pushButton_ip{i}')
+            combo.textActivated.connect(
+                self.request_wifi(i, target, combo))
+            target.setStyleSheet("""*{
+                background-color: transparent !important;
+                 }""")
+
+            getattr(self.parent_frame, f'pushButton_update_wifi{i}').clicked.connect(
+                self.request_wifi(i, target, combo))
+
+            getattr(self.parent_frame, f'checkBox_board{i}').stateChanged.connect(
+                self.wrap_clear_text(target))
+
+            # check = getattr(self.parent_frame, f'checkBox_board{i}')
+            # if check.isChecked():
+                # self.request_wifi(i, target, combo)()
+
+    # ----------------------------------------------------------------------
+    def wrap_clear_text(self, target):
+        """"""
+        def wrapped():
+            target.setText('')
+        return wrapped
+
+    # ----------------------------------------------------------------------
+    def request_wifi(self, board, target, combo):
+        """"""
+        target.setText('')
+
+        def inset():
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            ip = combo.currentText()
+            combo.valid = False
+
+            try:
+                target.setStyleSheet("""*{
+                background-color: transparent !important;
+                 }""")
+                response = requests.get(f'http://{ip}/board', timeout=0.3)
+                if response.json()['board_connected']:
+                    target.setText(
+                        f"connected ({response.json()['num_channels']} ch)")
+                    target.setProperty('class', 'success icon_button')
+                    combo.valid = True
+                    self.channels_assignations[board] = response.json()[
+                        'num_channels']
+                else:
+                    target.setText('connected (no board detected)')
+                    target.setProperty('class', 'danger icon_button')
+                    if board in self.channels_assignations:
+                        del self.channels_assignations[board]
+
+                target.style().unpolish(target)
+                target.style().polish(target)
+                target.update()
+
+            except:
+                target.setStyleSheet("""*{
+                background-color: transparent !important;
+                 }""")
+                target.setText('No WiFi module found')
+                target.setProperty('class', 'danger icon_button')
+                target.style().unpolish(target)
+                target.style().polish(target)
+                target.update()
+                if board in self.channels_assignations:
+                    del self.channels_assignations[board]
+            QApplication.restoreOverrideCursor()
+        return inset
+
     # ----------------------------------------------------------------------
     def update_connections(self) -> None:
         """Set widgets for connection modes."""
@@ -234,9 +340,16 @@ class Connection:
                 self.parent_frame.comboBox_streaming_sample_rate.setCurrentIndex(
                     2)
 
-            self.parent_frame.label_port_ip.setText('Port')
-            self.parent_frame.comboBox_ip.hide()
-            self.parent_frame.comboBox_port.show()
+            # self.parent_frame.label_port_ip.setText('Port')
+            for i in range(1, 5):
+                getattr(self.parent_frame, f'comboBox_ip{i}').hide()
+                getattr(self.parent_frame, f'comboBox_port{i}').show()
+                getattr(self.parent_frame,
+                        f'pushButton_update_wifi{i}').hide()
+                getattr(self.parent_frame,
+                        f'pushButton_ip{i}').hide()
+            # self.parent_frame.comboBox_ip.hide()
+            # self.parent_frame.comboBox_port.show()
             self.parent_frame.label_latency.setEnabled(False)
             self.parent_frame.spinBox_tcp_latency.setEnabled(False)
 
@@ -248,34 +361,47 @@ class Connection:
             for index in range(3, self.parent_frame.comboBox_streaming_sample_rate.count()):
                 self.parent_frame.comboBox_streaming_sample_rate.model().item(index).setEnabled(True)
 
-            self.parent_frame.label_port_ip.setText('IP')
-            self.parent_frame.comboBox_ip.show()
-            self.parent_frame.comboBox_port.hide()
+            # self.parent_frame.label_port_ip.setText('IP')
+            for i in range(1, 5):
+                getattr(self.parent_frame, f'comboBox_ip{i}').show()
+                getattr(self.parent_frame, f'comboBox_port{i}').hide()
+                getattr(self.parent_frame,
+                        f'pushButton_update_wifi{i}').show()
+                getattr(self.parent_frame,
+                        f'pushButton_ip{i}').show()
+            # self.parent_frame.comboBox_ip.show()
+            # self.parent_frame.comboBox_port.hide()
             self.parent_frame.label_latency.setEnabled(True)
             self.parent_frame.spinBox_tcp_latency.setEnabled(True)
 
     # ----------------------------------------------------------------------
     def on_connect(self, toggled: bool) -> None:
         """Event to handle connection."""
-        if toggled:  # Connect
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.core.update_kafka(
-                self.parent_frame.comboBox_host.currentText())
-            self.openbci_connect()
 
-        else:   # Disconnect
-            self.openbci.disconnect()
+        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            self.openbci_connect()
+        else:
+            if toggled:  # Connect
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                self.core.update_kafka(
+                    self.parent_frame.comboBox_host.currentText())
+                self.openbci_connect()
+
+            else:   # Disconnect
+                self.openbci.disconnect()
 
     # ----------------------------------------------------------------------
     def openbci_connect(self) -> None:
         """Recollect values from GUI."""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
             mode = 'serial'
-            endpoint = self.parent_frame.comboBox_port.currentText()
+            endpoint = [getattr(self.parent_frame, f'comboBox_port{i}').currentText() for i in range(
+                1, 5) if getattr(getattr(self.parent_frame, f'comboBox_ip{i}'), 'valid', False)]
             os.environ['BCISTREAM_CONNECTION'] = json.dumps('serial')
         else:
             mode = 'wifi'
-            endpoint = self.parent_frame.comboBox_ip.currentText()
+            endpoint = [getattr(self.parent_frame, f'comboBox_ip{i}').currentText() for i in range(
+                1, 5) if getattr(getattr(self.parent_frame, f'comboBox_ip{i}'), 'valid', False)]
             os.environ['BCISTREAM_CONNECTION'] = json.dumps('wifi')
 
         host = self.parent_frame.comboBox_host.currentText()
@@ -329,10 +455,24 @@ class Connection:
         self.openbci.adsinput = adsinput
         self.openbci.bias = bias
         self.openbci.srb1 = srb1
-        self.openbci.srb2 = srb2
+        # self.openbci.srb2 = srb2
+        self.openbci.srb2 = prop.MONTAGE_TYPE
         self.openbci.pchan = pchan
         self.openbci.nchan = nchan
         self.openbci.gain = gain
+
+        for i in range(1, 5):
+            check = getattr(self.parent_frame, f'checkBox_board{i}')
+            # combo = getattr(self.parent_frame, f'comboBox_ip{i}')
+            # target = getattr(self.parent_frame, f'pushButton_ip{i}')
+            if (not check.isChecked()) and (i in self.channels_assignations):
+                del self.channels_assignations[i]
+
+        self.openbci.channels_assignations = [
+            e[1] for e in sorted(list(self.channels_assignations.items()))]
+
+        self.openbci.daisy = [
+            True if chs == 16 else False for chs in self.openbci.channels_assignations]
 
         self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
         self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()
@@ -389,7 +529,7 @@ class Connection:
                                '* Verify serial permissions.',
                                ])
             else:
-                checks.extend([f'* The WiFi moudule could be running in a different IP that {self.parent_frame.comboBox_ip.currentText()}',
+                checks.extend([f"* The WiFi moudule could be running in a different IP",
                                ])
 
             if self.parent_frame.comboBox_host.currentText() != 'localhost':

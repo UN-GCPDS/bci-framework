@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1175</width>
+    <width>1406</width>
     <height>818</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -43,7 +43,7 @@
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -131,11 +131,8 @@
            <attribute name="title">
             <string>Event synchronization</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0,0">
+           <layout class="QGridLayout" name="gridLayout_49" rowstretch="0,0,0">
             <item row="2" column="0">
-             <widget class="QMdiArea" name="mdiArea_latency"/>
-            </item>
-            <item row="3" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_28">
               <item>
                <widget class="QPushButton" name="pushButton_start_calibration">
@@ -166,69 +163,10 @@
               </item>
              </layout>
             </item>
-            <item row="0" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_18">
-              <item>
-               <widget class="QLineEdit" name="lineEdit_stimuli_ip_lat">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>200</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>200</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_22">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_stimuli_browser_lat">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Open in browser</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_stimuli_subwindow_lat">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Open in subwindow</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item row="1" column="0">
+             <widget class="QMdiArea" name="mdiArea_latency"/>
+            </item>
+            <item row="0" column="0">
              <widget class="QLabel" name="label_calibration_image">
               <property name="text">
                <string/>
@@ -1212,7 +1150,7 @@ p, li { white-space: pre-wrap; }
     </size>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonFollowStyle</enum>
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1263,7 +1201,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1292,7 +1230,30 @@ p, li { white-space: pre-wrap; }
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0,1">
+             <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0,0">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="comboBox_montages">
+                <property name="currentIndex">
+                 <number>-1</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QSpinBox" name="spinBox_montage_channels">
+                <property name="suffix">
+                 <string> channels</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>256</number>
+                </property>
+                <property name="value">
+                 <number>8</number>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="1">
                <spacer name="horizontalSpacer_9">
                 <property name="orientation">
@@ -1308,16 +1269,6 @@ p, li { white-space: pre-wrap; }
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item row="0" column="2">
-               <widget class="QComboBox" name="comboBox_montage_channels"/>
-              </item>
-              <item row="0" column="0">
-               <widget class="QComboBox" name="comboBox_montages">
-                <property name="currentIndex">
-                 <number>-1</number>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -1357,7 +1308,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
+                  <width>502</width>
                   <height>491</height>
                  </rect>
                 </property>
@@ -1399,7 +1350,7 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>412</width>
+                      <width>502</width>
                       <height>479</height>
                      </rect>
                     </property>
@@ -1470,6 +1421,9 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="editTriggers">
                     <set>QAbstractItemView::NoEditTriggers</set>
+                   </property>
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::SingleSelection</enum>
                    </property>
                    <property name="selectionBehavior">
                     <enum>QAbstractItemView::SelectRows</enum>
@@ -1590,8 +1544,11 @@ p, li { white-space: pre-wrap; }
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <property name="spacing">
+            <property name="horizontalSpacing">
              <number>0</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>6</number>
             </property>
             <item row="1" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,1,1,0">
@@ -1705,8 +1662,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>412</width>
-                 <height>659</height>
+                 <width>501</width>
+                 <height>782</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -1985,6 +1942,524 @@ p, li { white-space: pre-wrap; }
                   </property>
                  </spacer>
                 </item>
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_configuration">
+                  <property name="title">
+                   <string>Basic configuration</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_7">
+                   <item row="0" column="0">
+                    <layout class="QFormLayout" name="formLayout">
+                     <property name="labelAlignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="formAlignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_6">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Serial device through USB dongle and WiFi through WiFi shield.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Connection</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_41">
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_connection_mode">
+                         <property name="currentIndex">
+                          <number>1</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>RFduino (Serial)</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>WiFi Module</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QCheckBox" name="checkBox_board1">
+                       <property name="text">
+                        <string>Board 1</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,0,1,1">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port1">
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB0</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi1">
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>.</normaloff>.</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip1">
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.113</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip1">
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QCheckBox" name="checkBox_board2">
+                       <property name="text">
+                        <string>Board 2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_42" stretch="1,0,1,1">
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB1</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>.</normaloff>.</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.114</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip2">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QCheckBox" name="checkBox_board3">
+                       <property name="text">
+                        <string>Board 3</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_46" stretch="1,0,1,1">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB2</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>.</normaloff>.</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.115</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip3">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QCheckBox" name="checkBox_board4">
+                       <property name="text">
+                        <string>Board 4</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_45" stretch="1,0,1,1">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB3</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>.</normaloff>.</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.116</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip4">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="label_latency">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The time in microseconds (us) between packet sends. The higher the OpenBCI sample rate, the higher the latency needed. Default is &lt;span style=&quot; font-weight:600;&quot;&gt;1000us&lt;/span&gt;, minimum stable is &lt;span style=&quot; font-weight:600;&quot;&gt;50us&lt;/span&gt;. For upper limit sample rates such as 4kHz/8kHz/16kHz, latency around &lt;span style=&quot; font-weight:600;&quot;&gt;20000us&lt;/span&gt; seems to really stabilize the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Latency (under TCP)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QSpinBox" name="spinBox_tcp_latency">
+                       <property name="suffix">
+                        <string> us</string>
+                       </property>
+                       <property name="minimum">
+                        <number>10</number>
+                       </property>
+                       <property name="maximum">
+                        <number>100000</number>
+                       </property>
+                       <property name="value">
+                        <number>50000</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="label_7">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;On &lt;a href=&quot;https://openbci-stream.readthedocs.io/en/latest/notebooks/A4-server-based_acquisition.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;distributed acquisition&lt;/span&gt;&lt;/a&gt; this is the IP from machine where Cyton board is connected, if the board is connected in this same machine, the the IP is just &lt;span style=&quot; font-style:italic;&quot;&gt;localhost&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Host</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QComboBox" name="comboBox_host">
+                       <property name="editable">
+                        <bool>true</bool>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>localhost</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>192.168.1.1</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="label_10">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Over serial connections only is available 250 samples per second, over WiFi up to 16k with 8 channels, and 8k for 16 channels.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Acquisition sample rate</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QComboBox" name="comboBox_sample_rate">
+                       <property name="currentIndex">
+                        <number>2</number>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>250</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>500</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1K</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2K</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>4K</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>8K</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>16K</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="label_9">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The stream will attempt to write packages of this size, a lower value will reduce the latency for real-time but increase the computational processing. A high value will be easy to proceess but will have a big delay.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Streaming package size</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QComboBox" name="comboBox_streaming_sample_rate">
+                       <property name="currentIndex">
+                        <number>4</number>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>50</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>100</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>250</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>500</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1000</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2000</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>4000</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="label">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Default:&lt;/span&gt; Sends accelerometer data in aux bytes&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Debug:&lt;/span&gt; Sends serial output over the external serial port which is helpful for debugging.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Analog:&lt;/span&gt; Reads from analog pins A5(D11), A6(D12) and if no wifi shield is present, then A7(D13) as well.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Digital:&lt;/span&gt; Reads from analog pins D11, D12 and D17. If no wifi present then also D13 and D18.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Marker:&lt;/span&gt; Turns accel off and injects markers into the stream by sending `X where X is any char to add to the first AUX byte.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Board mode</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QComboBox" name="comboBox_boardmode">
+                       <item>
+                        <property name="text">
+                         <string>DEFAULT</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>DEBUG</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>ANALOG</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>DIGITAL</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>MARKER</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
                 <item row="2" column="0">
                  <widget class="QGroupBox" name="groupBox_leadoff_impedance">
                   <property name="enabled">
@@ -2082,286 +2557,6 @@ p, li { white-space: pre-wrap; }
                       <bool>true</bool>
                      </property>
                     </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QGroupBox" name="groupBox_configuration">
-                  <property name="title">
-                   <string>Basic configuration</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_7">
-                   <item row="0" column="0">
-                    <layout class="QFormLayout" name="formLayout">
-                     <property name="labelAlignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                     </property>
-                     <property name="formAlignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                     </property>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_6">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Serial device through USB dongle and WiFi through WiFi shield.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Connection</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QComboBox" name="comboBox_connection_mode">
-                       <property name="currentIndex">
-                        <number>1</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>RFduino (Serial)</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>WiFi Module</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_port_ip">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Port:&lt;/span&gt; Serial port address, like &lt;span style=&quot; font-style:italic;&quot;&gt;/dev/ttyUSB0&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;COM0&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;IP:&lt;/span&gt; Ip address for WiFi shield, it could be in master or slave mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>IP</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_10">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_port">
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>/dev/ttyUSB0</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_ip">
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>192.168.1.113</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_latency">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The time in microseconds (us) between packet sends. The higher the OpenBCI sample rate, the higher the latency needed. Default is &lt;span style=&quot; font-weight:600;&quot;&gt;1000us&lt;/span&gt;, minimum stable is &lt;span style=&quot; font-weight:600;&quot;&gt;50us&lt;/span&gt;. For upper limit sample rates such as 4kHz/8kHz/16kHz, latency around &lt;span style=&quot; font-weight:600;&quot;&gt;20000us&lt;/span&gt; seems to really stabilize the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Latency (under TCP)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QSpinBox" name="spinBox_tcp_latency">
-                       <property name="suffix">
-                        <string> us</string>
-                       </property>
-                       <property name="minimum">
-                        <number>10</number>
-                       </property>
-                       <property name="maximum">
-                        <number>100000</number>
-                       </property>
-                       <property name="value">
-                        <number>50000</number>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="label_7">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;On &lt;a href=&quot;https://openbci-stream.readthedocs.io/en/latest/notebooks/A4-server-based_acquisition.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;distributed acquisition&lt;/span&gt;&lt;/a&gt; this is the IP from machine where Cyton board is connected, if the board is connected in this same machine, the the IP is just &lt;span style=&quot; font-style:italic;&quot;&gt;localhost&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Host</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QComboBox" name="comboBox_host">
-                       <property name="editable">
-                        <bool>true</bool>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>localhost</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>192.168.1.1</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="label_10">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Over serial connections only is available 250 samples per second, over WiFi up to 16k with 8 channels, and 8k for 16 channels.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Acquisition sample rate</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QComboBox" name="comboBox_sample_rate">
-                       <property name="currentIndex">
-                        <number>2</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>250</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>500</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>1K</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>2K</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>4K</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>8K</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>16K</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="label_9">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The stream will attempt to write packages of this size, a lower value will reduce the latency for real-time but increase the computational processing. A high value will be easy to proceess but will have a big delay.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Streaming package size</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QComboBox" name="comboBox_streaming_sample_rate">
-                       <property name="currentIndex">
-                        <number>4</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>50</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>100</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>250</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>500</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>1000</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>2000</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>4000</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="6" column="0">
-                      <widget class="QLabel" name="label">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Default:&lt;/span&gt; Sends accelerometer data in aux bytes&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Debug:&lt;/span&gt; Sends serial output over the external serial port which is helpful for debugging.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Analog:&lt;/span&gt; Reads from analog pins A5(D11), A6(D12) and if no wifi shield is present, then A7(D13) as well.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Digital:&lt;/span&gt; Reads from analog pins D11, D12 and D17. If no wifi present then also D13 and D18.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Marker:&lt;/span&gt; Turns accel off and injects markers into the stream by sending `X where X is any char to add to the first AUX byte.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>Board mode</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="1">
-                      <widget class="QComboBox" name="comboBox_boardmode">
-                       <item>
-                        <property name="text">
-                         <string>DEFAULT</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>DEBUG</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>ANALOG</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>DIGITAL</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>MARKER</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
                    </item>
                   </layout>
                  </widget>
@@ -2769,7 +2964,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>412</width>
+              <width>502</width>
               <height>605</height>
              </rect>
             </property>
@@ -3227,8 +3422,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>412</width>
-                  <height>491</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3276,7 +3471,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3325,7 +3520,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3434,7 +3629,8 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset theme="go-previous"/>
+                  <iconset theme="go-previous">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -3813,15 +4009,13 @@ p, li { white-space: pre-wrap; }
   <tabstop>scrollArea</tabstop>
   <tabstop>pushButton_add_project</tabstop>
   <tabstop>pushButton_remove_project</tabstop>
-  <tabstop>comboBox_connection_mode</tabstop>
   <tabstop>comboBox_srb1</tabstop>
   <tabstop>comboBox_srb2</tabstop>
   <tabstop>comboBox_gain</tabstop>
   <tabstop>comboBox_input_type</tabstop>
   <tabstop>tabWidget_widgets</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>comboBox_port</tabstop>
-  <tabstop>comboBox_ip</tabstop>
+  <tabstop>comboBox_port1</tabstop>
   <tabstop>comboBox_host</tabstop>
   <tabstop>horizontalSlider_record</tabstop>
   <tabstop>pushButton_play_signal</tabstop>
@@ -3835,8 +4029,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>725</x>
-     <y>686</y>
+     <x>939</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
      <x>1162</x>
@@ -3851,12 +4045,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>809</x>
-     <y>528</y>
+     <x>1023</x>
+     <y>624</y>
     </hint>
    </hints>
   </connection>
@@ -3867,12 +4061,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>675</y>
+     <x>1254</x>
+     <y>763</y>
     </hint>
     <hint type="destinationlabel">
-     <x>936</x>
-     <y>752</y>
+     <x>994</x>
+     <y>848</y>
     </hint>
    </hints>
   </connection>
@@ -3883,28 +4077,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
      <x>1162</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>952</x>
-     <y>565</y>
+     <y>143</y>
     </hint>
    </hints>
   </connection>
@@ -3915,12 +4093,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
-     <x>760</x>
-     <y>278</y>
+     <x>1393</x>
+     <y>500</y>
     </hint>
    </hints>
   </connection>
@@ -3931,8 +4109,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>725</x>
-     <y>686</y>
+     <x>939</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
      <x>1162</x>
@@ -3947,12 +4125,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
-     <x>932</x>
-     <y>740</y>
+     <x>1154</x>
+     <y>774</y>
     </hint>
    </hints>
   </connection>
@@ -3963,28 +4141,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>952</x>
-     <y>527</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_srb2</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1076</x>
-     <y>566</y>
+     <x>1185</x>
+     <y>623</y>
     </hint>
    </hints>
   </connection>
@@ -3995,8 +4157,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>776</x>
-     <y>735</y>
+     <x>990</x>
+     <y>769</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4011,12 +4173,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
-     <x>972</x>
-     <y>154</y>
+     <x>996</x>
+     <y>114</y>
     </hint>
    </hints>
   </connection>
@@ -4027,8 +4189,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4043,12 +4205,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
-     <x>822</x>
-     <y>739</y>
+     <x>991</x>
+     <y>702</y>
     </hint>
    </hints>
   </connection>
@@ -4059,12 +4221,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
-     <x>776</x>
-     <y>735</y>
+     <x>990</x>
+     <y>769</y>
     </hint>
    </hints>
   </connection>
@@ -4075,12 +4237,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>750</x>
-     <y>565</y>
+     <x>964</x>
+     <y>661</y>
     </hint>
    </hints>
   </connection>
@@ -4091,28 +4253,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
      <y>721</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_connect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_montage_channels</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1161</x>
-     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -4123,8 +4269,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>725</x>
-     <y>686</y>
+     <x>939</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
      <x>1162</x>
@@ -4139,8 +4285,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4155,12 +4301,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>675</y>
+     <x>1254</x>
+     <y>763</y>
     </hint>
     <hint type="destinationlabel">
-     <x>936</x>
-     <y>714</y>
+     <x>994</x>
+     <y>810</y>
     </hint>
    </hints>
   </connection>
@@ -4171,12 +4317,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>857</x>
-     <y>566</y>
+     <x>1071</x>
+     <y>662</y>
     </hint>
    </hints>
   </connection>
@@ -4187,8 +4333,8 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1159</x>
-     <y>745</y>
+     <x>1390</x>
+     <y>779</y>
     </hint>
     <hint type="destinationlabel">
      <x>1160</x>
@@ -4203,12 +4349,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>675</y>
+     <x>1254</x>
+     <y>763</y>
     </hint>
     <hint type="destinationlabel">
-     <x>732</x>
-     <y>751</y>
+     <x>946</x>
+     <y>847</y>
     </hint>
    </hints>
   </connection>
@@ -4219,12 +4365,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>715</x>
-     <y>527</y>
+     <x>929</x>
+     <y>623</y>
     </hint>
    </hints>
   </connection>
@@ -4235,12 +4381,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>849</x>
-     <y>604</y>
+     <x>1063</x>
+     <y>700</y>
     </hint>
    </hints>
   </connection>
@@ -4251,12 +4397,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>776</x>
-     <y>735</y>
+     <x>990</x>
+     <y>769</y>
     </hint>
     <hint type="destinationlabel">
-     <x>932</x>
-     <y>740</y>
+     <x>1154</x>
+     <y>774</y>
     </hint>
    </hints>
   </connection>
@@ -4267,12 +4413,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>675</y>
+     <x>1254</x>
+     <y>763</y>
     </hint>
     <hint type="destinationlabel">
-     <x>730</x>
-     <y>713</y>
+     <x>944</x>
+     <y>809</y>
     </hint>
    </hints>
   </connection>
@@ -4283,12 +4429,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1076</x>
-     <y>528</y>
+     <x>1309</x>
+     <y>624</y>
     </hint>
    </hints>
   </connection>
@@ -4299,12 +4445,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>489</y>
+     <x>1254</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
-     <x>712</x>
-     <y>603</y>
+     <x>926</x>
+     <y>699</y>
     </hint>
    </hints>
   </connection>
@@ -4315,8 +4461,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>776</x>
-     <y>735</y>
+     <x>990</x>
+     <y>769</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4331,8 +4477,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>722</x>
-     <y>111</y>
+     <x>1387</x>
+     <y>775</y>
     </hint>
     <hint type="destinationlabel">
      <x>1150</x>
@@ -4347,12 +4493,204 @@ p, li { white-space: pre-wrap; }
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1125</x>
-     <y>622</y>
+     <x>1392</x>
+     <y>675</y>
     </hint>
     <hint type="destinationlabel">
      <x>1031</x>
      <y>652</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1170</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1329</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board4</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port4</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>977</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1170</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board4</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip4</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>977</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1329</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1170</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1329</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board4</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_update_wifi4</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>977</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1207</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_update_wifi3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1207</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_update_wifi1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1207</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1328</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1168</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_update_wifi2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>976</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1205</x>
+     <y>238</y>
     </hint>
    </hints>
   </connection>

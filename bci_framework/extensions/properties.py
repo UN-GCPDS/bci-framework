@@ -32,7 +32,7 @@ class Properties:
                 # ch in enumerate('Fp1,Fp2,T3,C3,C4,T4,O1,O2'.split(','))}
     # SAMPLE_RATE = 1000
     # STREAMING_PACKAGE_SIZE = 100
-    # BOARDMODE = 'analog'
+    # BOARDMODE = 'default'
     # CONNECTION = 'wifi'
     # SYNCLATENCY = 0
 

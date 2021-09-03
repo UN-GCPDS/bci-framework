@@ -90,10 +90,10 @@ class StimuliDelivery:
         self.parent_frame.pushButton_stimuli_subwindow.clicked.connect(
             self.open_subwindow)
 
-        self.parent_frame.pushButton_stimuli_browser_lat.clicked.connect(
-            self.open_browser)
-        self.parent_frame.pushButton_stimuli_subwindow_lat.clicked.connect(
-            self.open_subwindow)
+        # self.parent_frame.pushButton_stimuli_browser_lat.clicked.connect(
+            # self.open_browser)
+        # self.parent_frame.pushButton_stimuli_subwindow_lat.clicked.connect(
+            # self.open_subwindow)
 
         self.parent_frame.pushButton_start_calibration.clicked.connect(
             self.start_calibration)
@@ -125,8 +125,8 @@ class StimuliDelivery:
 
         if address := self.parent_frame.lineEdit_stimuli_ip.text():
             webbrowser.open_new_tab(address)
-        elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
-            webbrowser.open_new_tab(address)
+        # elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
+            # webbrowser.open_new_tab(address)
 
     # ----------------------------------------------------------------------
     def open_subwindow(self, url=None) -> None:
@@ -135,8 +135,8 @@ class StimuliDelivery:
             # url = self.parent_frame.lineEdit_stimuli_ip.text()
             if address := self.parent_frame.lineEdit_stimuli_ip.text():
                 url = address
-            elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
-                url = address
+            # elif address := self.parent_frame.lineEdit_stimuli_ip_lat.text():
+                # url = address
 
         if not url:
             return
@@ -188,9 +188,9 @@ class StimuliDelivery:
         kafka_scripts_dir = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'kafka_scripts')
 
-        port_viz = self.get_free_port()
-        self.latency_calibration = run_subprocess([sys.executable, os.path.join(
-            kafka_scripts_dir, 'latency_synchronization_stimuli_marker', 'main.py'), port_viz])
+        # port_viz = self.get_free_port()
+        # self.latency_calibration = run_subprocess([sys.executable, os.path.join(
+            # kafka_scripts_dir, 'latency_synchronization_stimuli_marker', 'main.py'), port_viz])
 
         if not hasattr(self, 'latency_visualization'):
             self.latency_visualization = ExtensionWidget(
@@ -206,11 +206,11 @@ class StimuliDelivery:
         self.parent_frame.mdiArea_latency.tileSubWindows()
         # self.latency_visualization.update_menu_bar()
 
-        self.parent_frame.lineEdit_stimuli_ip_lat.setText(
-            f'{self.get_local_ip_address()}:{port_viz}')
-        self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(True)
-        self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(True)
-        self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(True)
+        # self.parent_frame.lineEdit_stimuli_ip_lat.setText(
+            # f'{self.get_local_ip_address()}:{port_viz}')
+        # self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(True)
+        # self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(True)
+        # self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(True)
         self.parent_frame.pushButton_start_calibration.setVisible(False)
         self.parent_frame.pushButton_stop_calibration.setVisible(True)
 
@@ -221,15 +221,15 @@ class StimuliDelivery:
         self.parent_frame.label_calibration_image.setPixmap(QPixmap(capture))
 
         self.latency_visualization.stop_preview()
-        self.latency_calibration.terminate()
+        # self.latency_calibration.terminate()
 
         self.parent_frame.mdiArea_latency.hide()
         self.parent_frame.label_calibration_image.show()
 
-        self.parent_frame.lineEdit_stimuli_ip_lat.setText('')
-        self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(False)
-        self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(False)
-        self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(False)
+        # self.parent_frame.lineEdit_stimuli_ip_lat.setText('')
+        # self.parent_frame.lineEdit_stimuli_ip_lat.setEnabled(False)
+        # self.parent_frame.pushButton_stimuli_browser_lat.setEnabled(False)
+        # self.parent_frame.pushButton_stimuli_subwindow_lat.setEnabled(False)
         self.parent_frame.pushButton_start_calibration.setVisible(True)
         self.parent_frame.pushButton_stop_calibration.setVisible(False)
 

@@ -10,6 +10,7 @@ preconfigured server.
 
 import os
 import sys
+import json
 import pickle
 import logging
 
@@ -20,7 +21,7 @@ from matplotlib import pyplot
 from cycler import cycler
 from kafka import KafkaProducer
 from figurestream import FigureStream
-from typing import Optional, Tuple, Literal
+from typing import Optional, Tuple, Literal, Callable
 
 from ...extensions import properties as prop
 from ... extensions.data_analysis import DataAnalysis
@@ -86,7 +87,7 @@ class MNEObjects:
 
         comment = "bcistream"
         evoked = mne.EvokedArray(
-            self.buffer_eeg, self.get_mne_info(), 0, comment=comment, nave=0
+            self.buffer_eeg_, self.get_mne_info(), 0, comment=comment, nave=0
         )
         return evoked
 
@@ -104,9 +105,13 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         """"""
         port = 5000
         super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
+
         self._pivot = None
         if enable_produser:
             self._enable_commands()
+
+        self.transformers_ = {}
+        self.transformers_aux_ = {}
 
     # ----------------------------------------------------------------------
     def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
@@ -216,15 +221,19 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         return axis, time, lines
 
     # ----------------------------------------------------------------------
-    def reverse_buffer(self, axis: Optional[matplotlib.axes.Axes] = None, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
+    def reverse_buffer(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
         """Add the boundary line to some visualizations."""
 
-        self._pivot = 0
-        self._pivot_aux = 0
+        if hasattr(self, 'boundary_line'):
+            self.boundary_line.remove()
+            start = self._pivot / prop.SAMPLE_RATE
+        else:
+            self._pivot = 0
+            self._pivot_aux = 0
+            start = 0
 
-        if axis:
-            self.boundary_line = axis.vlines(
-                0, min, max, color=color, zorder=99)
+        self.boundary_line = axis.vlines(
+            start, min, max, color=color, zorder=99)
 
     # ----------------------------------------------------------------------
     def plot_pivot(self):
@@ -245,3 +254,27 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         if hasattr(self, 'boundary_line'):
             self.plot_pivot()
         super().feed()
+
+
+#  Create interact file with custom widgets
+
+if os.path.exists(os.path.join(sys.path[0], 'interact')):
+    os.remove(os.path.join(sys.path[0], 'interact'))
+
+
+# ----------------------------------------------------------------------
+def interact(*topics) -> Callable:
+    """"""
+
+    with open(os.path.join(sys.path[0], 'interact'), 'a+') as file:
+        file.write(json.dumps(topics) + '\n')
+
+    def wrap_wrap(fn: Callable) -> Callable:
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+
+        arguments
+
+        def wrap(cls, *args, **kwargs):
+            fn(*([cls] + list(args)), **kwargs)
+        return wrap
+    return wrap_wrap

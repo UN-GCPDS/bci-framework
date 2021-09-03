@@ -51,7 +51,7 @@ class Widgets:
     # ----------------------------------------------------------------------
     def label(self, text, typo='body1', style={}, id=None, *args, **kwargs):
         """"""
-        label = MDCComponent(html.SPAN(f'{text}'), style={
+        label = MDCComponent(html.SPAN(f'{text}'), id=id, style={
                              **style, **{'width': '100%', 'display': 'flex'}}, *args, **kwargs)
         label.mdc.typography(typo)
 

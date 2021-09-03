@@ -72,7 +72,7 @@ class Stream(EEGStream):
         # self.axis.set_ylim(-0.5, 1.5)
 
         self.create_buffer(BUFFER, resampling=1000, fill=-1)
-
+        
         self.stream()
 
     # ----------------------------------------------------------------------
@@ -91,7 +91,6 @@ class Stream(EEGStream):
         return timestamp[np.nonzero(diff)[0]], diff
 
     # ----------------------------------------------------------------------
-
     def frames_names(self):
         """"""
         self.axis_wave.set_title('Event synchronization')
@@ -111,11 +110,11 @@ class Stream(EEGStream):
         self.axis_hist.grid(True)
 
     # ----------------------------------------------------------------------
-    # @loop_consumer('eeg', 'marker')
-    @ marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
-    # data, topic, frame, kafka_stream):
+    @marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
     def stream(self, aux, timestamp, marker, marker_datetime):
         """"""
+        
+        logging.warning('WTF')
 
         # if topic != 'marker':
             # if len(self.latencies) <= 1 and (frame % 3) == 0:

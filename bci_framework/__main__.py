@@ -127,6 +127,8 @@ def main() -> None:
     if ConfigManager().get('framework', 'theme', 'light') == 'light':
         apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True,
                          extra=extra, parent='bci_framework_qt_material')
+        # apply_stylesheet(app, theme='light_amber.xml', invert_secondary=True,
+                         # extra=extra, parent='bci_framework_qt_material')
     else:
         apply_stylesheet(app, theme='dark_cyan.xml', extra=extra,
                          parent='bci_framework_qt_material')

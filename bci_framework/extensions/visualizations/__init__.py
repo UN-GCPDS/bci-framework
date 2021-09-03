@@ -7,6 +7,6 @@ Independent set of scripts for develop data analysis and real-time visualization
 with fast streaming plotting based on web applications.
 """
 
-from .eeg_stream import EEGStream
+from .eeg_stream import EEGStream, interact
 
 

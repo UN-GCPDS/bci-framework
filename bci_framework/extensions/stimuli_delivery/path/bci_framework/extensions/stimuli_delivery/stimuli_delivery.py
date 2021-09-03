@@ -545,3 +545,13 @@ class StimuliAPI(Pipeline):
     def _last_init(self):
         """"""
 
+    # ----------------------------------------------------------------------
+    def start_marker_synchronization(self, blink=500, pause=1000):
+        """"""
+        if hasattr(self, '_timer_marker_synchronization'):
+            timer.clear_interval(self._timer_marker_synchronization)
+            del self._timer_marker_synchronization
+            return
+        self._timer_marker_synchronization = timer.set_interval(
+            lambda: self.send_marker('MARKER', blink=blink, force=True), pause)
+

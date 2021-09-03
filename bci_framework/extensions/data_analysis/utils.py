@@ -123,7 +123,7 @@ def fake_loop_consumer(*topics) -> Callable:
                 num_data = int(prop.STREAMING_PACKAGE_SIZE)
                 num_data = random.randint(num_data - 10, num_data + 10)
 
-                eeg = np.random.normal(0, 0.2, size=(
+                eeg = 150 * np.random.normal(0, 0.2, size=(
                     len(prop.CHANNELS), num_data))
 
                 if prop.BOARDMODE == 'default':
@@ -217,17 +217,20 @@ def marker_slicing(markers, t0, duration):
                     if cls.buffer_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
                     # if True:
 
-
                         _marker, _target = target.pop(0)
 
-                        argmin = np.abs(cls.buffer_timestamp - _target).argmin()
+                        argmin = np.abs(
+                            cls.buffer_timestamp - _target).argmin()
 
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * (duration + t0))
 
-                        t = cls.buffer_timestamp[argmin + start:argmin + stop]
-                        eeg = cls.buffer_eeg[:, argmin + start:argmin + stop]
-                        aux = cls.buffer_aux[:, argmin + start:argmin + stop]
+                        t = cls.buffer_timestamp[argmin
+                                                 + start:argmin + stop]
+                        eeg = cls.buffer_eeg_[
+                            :, argmin + start:argmin + stop]
+                        aux = cls.buffer_aux_[
+                            :, argmin + start:argmin + stop]
 
                         kwargs = {'eeg': eeg,
                                   'aux': aux,
@@ -238,6 +241,10 @@ def marker_slicing(markers, t0, duration):
                                   }
 
                         fn(*[cls] + [kwargs[v] for v in arguments])
+
+                    else:
+                        import logging
+                        logging.warning('Date too old to synchronize')
 
             marker_slicing_(cls)
         return wrap

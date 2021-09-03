@@ -243,6 +243,10 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_projects.setIcon(icon('go-previous'))
         self.main.pushButton_load_visualizarion.setIcon(icon('list-add'))
 
+        for i in range(1, 5):
+            getattr(self.main, f'pushButton_update_wifi{i}').setIcon(
+                icon('gtk-convert'))
+
         self.main.setWindowIcon(icon("logo"))
 
     # ----------------------------------------------------------------------
@@ -570,9 +574,9 @@ class BCIFramework(QMainWindow):
         elif value['topic'] == 'eeg':
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
-            eeg, aux = value['value']['data']
+            eeg = value['value']['data']
             binary_created = datetime.fromtimestamp(
-                value['value']['context']['timestamp.binary'])
+                min(value['value']['context']['timestamp.binary']))
             message_created = datetime.fromtimestamp(
                 value['value']['timestamp'])
             since = (message_created - binary_created).total_seconds()
@@ -597,8 +601,8 @@ class BCIFramework(QMainWindow):
 
             message += f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG ({channels},{count})'
 
-            if aux.size:
-                message += f' | AUX ({aux.shape[0]},{aux.shape[1]})'
+            # if aux.size:
+                # message += f' | AUX ({aux.shape[0]},{aux.shape[1]})'
 
             self.status_bar(right_message=(message, True))
 

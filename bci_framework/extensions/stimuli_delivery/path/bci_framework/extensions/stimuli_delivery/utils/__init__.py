@@ -10,8 +10,8 @@ Tone = t()
 # ----------------------------------------------------------------------
 def keypress(callback, timeout=3000):
     """"""
-    capture_key = html.INPUT(type="text", name="capture", value="", style={
-                             'position': 'absolute', 'opacity': 0})
+    capture_key = html.INPUT(type="text", name="capture", Class='hidden-input', value="", style={
+                             'position': 'absolute', 'opacity': 0, 'top': 0})
     document <= capture_key
     capture_key.focus()
 

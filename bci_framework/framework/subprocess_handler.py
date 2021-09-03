@@ -86,14 +86,17 @@ class VisualizationSubprocess:
         f = dpi / self.main.DPI
         try:
             size = self.main.web_engine.size()
-            if self.plot_size != size or self.plot_dpi != self.main.DPI:
+
+            # reload if changes
+            if self.plot_size != size or self.plot_dpi != self.main.DPI or self.input_interact():
                 if 'light' in os.environ.get('QTMATERIAL_THEME'):
                     background = 'ffffff'
                 else:
                     background = '000000'
 
-                self.main.web_engine.setUrl(
-                    self.url + f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}&background={background}')
+                url = self.url + \
+                    f'/?width={f * size.width() / dpi:.2f}&height={f * size.height() / dpi:.2f}&dpi={dpi/f:.2f}&background={background}&{self.update_interact()}'
+                self.main.web_engine.setUrl(url)
                 self.plot_dpi = self.main.DPI
                 self.plot_size = size
         except:
@@ -101,6 +104,25 @@ class VisualizationSubprocess:
 
         if timer:
             self.timer.singleShot(1000, self.viz_auto_size)
+
+    # ----------------------------------------------------------------------
+    def input_interact(self):
+        """"""
+        if not hasattr(self, 'interactive_copy'):
+            self.interactive_copy = self.main.INTERACTIVE.copy()
+            return False
+        differents_items = {
+            k: self.interactive_copy[k] for k in self.interactive_copy if k in self.main.INTERACTIVE and self.interactive_copy[k] != self.main.INTERACTIVE[k]}
+
+        self.interactive_copy = self.main.INTERACTIVE.copy()
+        return bool(len(differents_items))
+
+    # ----------------------------------------------------------------------
+    def update_interact(self):
+        """"""
+        get_args = [
+            f'{k}={self.main.INTERACTIVE[k]}' for k in self.main.INTERACTIVE]
+        return '&'.join(get_args)
 
     # ----------------------------------------------------------------------
     def viz_debug(self) -> None:

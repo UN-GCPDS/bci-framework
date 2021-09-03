@@ -63,6 +63,9 @@ class DataAnalysis:
         if enable_produser:
             self._enable_commands()
 
+        self.transformers_ = {}
+        self.transformers_aux_ = {}
+
     # ----------------------------------------------------------------------
     def _enable_commands(self):
         """"""
@@ -142,8 +145,8 @@ class DataAnalysis:
         c = eeg.shape[1]
 
         if self._pivot is None:
-            self.buffer_eeg = np.roll(self.buffer_eeg, -c, axis=1)
-            self.buffer_eeg[:, -c:] = eeg
+            self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
+            self.buffer_eeg_[:, -c:] = eeg
 
             self.buffer_timestamp_ = np.roll(
                 self.buffer_timestamp_, -c, axis=0)
@@ -155,49 +158,51 @@ class DataAnalysis:
 
             if not aux is None:
                 d = aux.shape[1]
-                self.buffer_aux = np.roll(self.buffer_aux, -d, axis=1)
-                self.buffer_aux[:, -d:] = aux
+                self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
+                self.buffer_aux_[:, -d:] = aux
 
         else:
             roll = 0
-            if self._pivot + c >= self.buffer_eeg.shape[1]:
-                roll = self.buffer_eeg.shape[1] - (self._pivot + c)
-                self.buffer_eeg = np.roll(self.buffer_eeg, -roll, axis=1)
-                self.buffer_eeg[:, -eeg.shape[1]:] = eeg
-                self.buffer_eeg = np.roll(self.buffer_eeg, roll, axis=1)
+            if self._pivot + c >= self.buffer_eeg_.shape[1]:
+                roll = self.buffer_eeg_.shape[1] - (self._pivot + c)
+                self.buffer_eeg_ = np.roll(self.buffer_eeg_, -roll, axis=1)
+                self.buffer_eeg_[:, -eeg.shape[1]:] = eeg
+                self.buffer_eeg_ = np.roll(self.buffer_eeg_, roll, axis=1)
 
             else:
-                self.buffer_eeg[:, self._pivot:self._pivot + c] = eeg
+                self.buffer_eeg_[:, self._pivot:self._pivot + c] = eeg
 
             self._pivot += c
-            self._pivot = self._pivot % self.buffer_eeg.shape[1]
+            self._pivot = self._pivot % self.buffer_eeg_.shape[1]
 
             if not aux is None:
                 d = aux.shape[1]
 
                 roll = 0
-                if self._pivot_aux + d >= self.buffer_aux.shape[1]:
+                if self._pivot_aux + d >= self.buffer_aux_.shape[1]:
                     roll = self._pivot_aux + d
 
                 if roll:
-                    self.buffer_aux = np.roll(self.buffer_aux, -roll, axis=1)
+                    self.buffer_aux_ = np.roll(
+                        self.buffer_aux_, -roll, axis=1)
 
-                if (self.buffer_aux[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
-                    l = self.buffer_aux[:,
-                                        self._pivot_aux:self._pivot_aux + d].shape[1]
+                if (self.buffer_aux_[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
+                    l = self.buffer_aux_[:,
+                                         self._pivot_aux:self._pivot_aux + d].shape[1]
                     # logging.warning([l, aux.shape[1]])
 
-                    self.buffer_aux[:,
-                                    self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
+                    self.buffer_aux_[:,
+                                     self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
                 else:
-                    self.buffer_aux[:,
-                                    self._pivot_aux:self._pivot_aux + d] = aux
+                    self.buffer_aux_[:,
+                                     self._pivot_aux:self._pivot_aux + d] = aux
 
                 if roll:
-                    self.buffer_aux = np.roll(self.buffer_aux, roll, axis=1)
+                    self.buffer_aux_ = np.roll(
+                        self.buffer_aux_, roll, axis=1)
 
                 self._pivot_aux += d
-                self._pivot_aux = self._pivot_aux % self.buffer_aux.shape[1]
+                self._pivot_aux = self._pivot_aux % self.buffer_aux_.shape[1]
 
     # ----------------------------------------------------------------------
     def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:
@@ -255,14 +260,69 @@ class DataAnalysis:
         self._create_resampled_buffer(
             prop.SAMPLE_RATE * np.abs(seconds), resampling=resampling)
 
-        self.buffer_eeg = np.empty((chs, time))
-        self.buffer_eeg.fill(fill)
-        self.buffer_aux = np.empty((aux_shape, time))
-        self.buffer_aux.fill(fill)
+        self.buffer_eeg_ = np.empty((chs, time))
+        self.buffer_eeg_.fill(fill)
+        self.buffer_aux_ = np.empty((aux_shape, time))
+        self.buffer_aux_.fill(fill)
         self.buffer_timestamp_ = np.zeros(time)
 
     # ----------------------------------------------------------------------
+    def set_transformers(self, transformers):
+        """"""
+        self.transformers_ = transformers
 
+    # ----------------------------------------------------------------------
+    def add_transformers(self, transformers):
+        """"""
+        for name in transformers:
+            self.transformers_[name] = transformers[name]
+
+    # ----------------------------------------------------------------------
+    def remove_transformers(self, transformers):
+        """"""
+        for tr in transformers:
+            if tr in self.transformers_:
+                self.transformers_.pop(tr)
+
+    # ----------------------------------------------------------------------
+    def clear_transformers(self):
+        """"""
+        self.transformers_ = {}
+
+    # ----------------------------------------------------------------------
+    def set_transformers_aux(self, transformers):
+        """"""
+        self.transformers_aux_ = transformers
+
+    # ----------------------------------------------------------------------
+    def add_transformes_aux(self, transformers):
+        """"""
+        self.transformers_aux_.extend(transformers)
+
+    # ----------------------------------------------------------------------
+    def clear_transformers_aux(self):
+        """"""
+        self.transformers_aux_ = []
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_eeg(self):
+        """"""
+        eeg = self.buffer_eeg_.copy()
+        for tr in self.transformers_.copy():
+            eeg = self.transformers_[tr](eeg, fs=prop.SAMPLE_RATE)
+        return eeg
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_aux(self):
+        """"""
+        aux = self.buffer_aux_.copy()
+        for tr in self.transformers_aux_:
+            aux = tr(aux)
+        return aux
+
+    # ----------------------------------------------------------------------
     @property
     def buffer_eeg_resampled(self):
         """"""
