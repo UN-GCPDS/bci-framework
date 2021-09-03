@@ -16,12 +16,12 @@ from typing import List
 
 CHARACTERS = "ABCDEF😂GHIJKL😍MNOPQR😘STUVWX😭YZ0123⎵456789⌫", 7
 
-CHARACTERS_SRLZ = ["A","B","C","D","E","F","aa",
-                   "G","H","I","J","K","L","bb",
-                   "M","N","O","P","Q","R","cc",
-                   "S","T","U","V","W","X","dd",
-                   "Y","Z","0","1","2","3","ee",
-                   "4","5","6","7","8","9","ff"]
+CHARACTERS_SRLZ = ["A", "B", "C", "D", "E", "F", "aa",
+                   "G", "H", "I", "J", "K", "L", "bb",
+                   "M", "N", "O", "P", "Q", "R", "cc",
+                   "S", "T", "U", "V", "W", "X", "dd",
+                   "Y", "Z", "0", "1", "2", "3", "ee",
+                   "4", "5", "6", "7", "8", "9", "ff"]
 
 
 ########################################################################
@@ -35,7 +35,7 @@ class P300Speller(StimuliAPI):
         self.add_stylesheet('styles.css')
 
         self.stimuli_area.style = {'background-color': 'black'}
-        
+
         self.build_speller()
         self.build_grid()
         self.listen_feedbacks(self.on_feedback)
@@ -112,8 +112,8 @@ class P300Speller(StimuliAPI):
         timer.set_timeout(lambda: self.run_pipeline(
             self.pipeline_trial, self.trials), 2000)
 
-
     # ----------------------------------------------------------------------
+
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
@@ -134,7 +134,7 @@ class P300Speller(StimuliAPI):
         duration = w.get_value('duration')
         chars, ncols = CHARACTERS
         nrows = len(chars) // ncols
-        
+
         self.trials = []
         trials = w.get_value('trials')
         if trials == -1:
@@ -142,10 +142,10 @@ class P300Speller(StimuliAPI):
         for _ in range(trials):
             stimuli_array = []
             for i in range(ncols):
-                stimuli_array.append(f'.col-{i}')                
+                stimuli_array.append(f'.col-{i}')
             for i in range(nrows):
                 stimuli_array.append(f'.row-{i}')
-                
+
             random.shuffle(stimuli_array)
 
             self.trials.append({'target': random.choice(CHARACTERS_SRLZ),
@@ -164,8 +164,8 @@ class P300Speller(StimuliAPI):
 
         [self.pipeline_trial.extend(
             [['activate', 300],
-             ['inter_stimulus', 300]]) for _ in range(nrows+ncols)]
-             
+             ['inter_stimulus', 300]]) for _ in range(nrows + ncols)]
+
     def none(self):
         pass
 
@@ -189,22 +189,22 @@ class P300Speller(StimuliAPI):
     # ----------------------------------------------------------------------
     def activate(self, array: List[str], target: str) -> None:
         """Highlight a column or a row."""
-        
+
         selector = array.pop(0)
         elements = document.select(selector)
         # self.send_marker(f"ERP:{selector[1:]}")
-        
+
         if target in [e.attrs['char'] for e in elements]:
             self.send_marker("TARGET")
         else:
             self.send_marker("NO-TARGET")
-        
+
         for element in elements:
             element.style = {'opacity': 1,
                              'font-weight': 'bold',
                              }
-                             
-    # ----------------------------------------------------------------------                                                         
+
+    # ----------------------------------------------------------------------
     def show_speller(self, visible) -> None:
         """"""
         if visible:
@@ -212,28 +212,29 @@ class P300Speller(StimuliAPI):
             self.last_value = w.component['trials'].mdc.getValue()
             w.component['trials'].mdc.setValue(-1)
             document.select_one('#value_trials').html = ' infinite'
-            
+
         else:
             self.speller.style = {'display': 'none'}
             w.component['trials'].mdc.setValue(self.last_value)
             document.select_one('#value_trials').html = f' {self.last_value}'
-                              
-    # ----------------------------------------------------------------------                             
+
+    # ----------------------------------------------------------------------
     def build_speller(self) -> None:
         """"""
-        self.speller = html.INPUT(Class="p300-speller", readonly=True, style={'display': 'none'})
+        self.speller = html.INPUT(
+            Class="p300-speller", readonly=True, style={'display': 'none'})
         self.speller.value = '_'
         self.stimuli_area <= self.speller
-        
+
     # ----------------------------------------------------------------------
     def build_grid(self) -> None:
         """Create the grid with the letters."""
         table = html.TABLE(CLass='p300')
         tr = html.TR()
         table <= tr
-        
+
         characters_train, ncols = CHARACTERS
-        
+
         for i, char in enumerate(characters_train):
             char_print = CHARACTERS_SRLZ[i]
             row = i // ncols
@@ -258,8 +259,8 @@ class P300Speller(StimuliAPI):
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
-            
-    # ----------------------------------------------------------------------            
+
+    # ----------------------------------------------------------------------
     def on_feedback(self, value) -> None:
         """"""
         print(value)

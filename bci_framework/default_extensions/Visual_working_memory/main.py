@@ -164,7 +164,12 @@ class VisualWorkingMemory(StimuliAPI):
             label='External marker synchronizer',
             checked=False,
             on_change=self.synchronizer,
-            id='record',
+            # id='record',
+        )
+        self.dashboard <= w.switch(
+            label='Dummy mode',
+            checked=False,
+            id='dummy',
         )
 
         self.dashboard <= w.button(
@@ -272,6 +277,7 @@ class VisualWorkingMemory(StimuliAPI):
     # ----------------------------------------------------------------------
     def retention(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
         """Remove the array."""
+        self.send_marker('Retention')
         self._set_visible_markers(False)
 
     # ----------------------------------------------------------------------
@@ -283,8 +289,15 @@ class VisualWorkingMemory(StimuliAPI):
             for i, color in enumerate(f):
                 if cue == 'Right':
                     self.markers_r[i][0].style = {'background-color': color}
+                    if w.get_value('record'):
+                        self.markers_r[i][0].style = {
+                            'border-radius': '100%'}
+
                 elif cue == 'Left':
                     self.markers_l[i][0].style = {'background-color': color}
+                    if w.get_value('record'):
+                        self.markers_r[i][0].style = {
+                            'border-radius': '100%'}
 
         self._set_visible_markers(True)
 
@@ -342,7 +355,8 @@ class VisualWorkingMemory(StimuliAPI):
 
     # ----------------------------------------------------------------------
     def build_markers(self, shapes: int) -> None:
-        """Display the squares."""
+        """Display the squares.
+        """
         size = w.get_value('size')
         distance = w.get_value('distance')
 

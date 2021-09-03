@@ -76,6 +76,7 @@ class PacmanMotorImagery(StimuliAPI):
 
         self.dashboard <= w.button('Start run', on_click=self.start)
         self.dashboard <= w.button('Stop run', on_click=self.stop)
+        self.dashboard <= w.button('Marker synchronization', on_click=self.start_marker_synchronization)
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -216,6 +217,9 @@ class PacmanMotorImagery(StimuliAPI):
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
+            
+
+
 
 
 if __name__ == '__main__':
