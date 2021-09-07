@@ -226,6 +226,7 @@ class Widgets:
         """"""
         btn = MDCButton(label, unelevated=unelevated,
                         style=style, id=id, *args, **kwargs)
+
         if on_click:
             btn.bind('click', lambda evt: on_click())
 
@@ -233,6 +234,32 @@ class Widgets:
             self.component[id] = btn
 
         return btn
+
+    # ----------------------------------------------------------------------
+    def toggle_button(self, buttons, style={}, id='', *args, **kwargs):
+        """"""
+        def toggle(btn1, btn2):
+            document.select_one(f'#{btn1}').style = {'display': 'none'}
+            document.select_one(f'#{btn2}').style = {'display': 'flex'}
+
+        def on_btn1():
+            buttons[0][1]()
+            toggle(f'{id}-btnt1', f'{id}-btnt2')
+
+        def on_btn2():
+            buttons[1][1]()
+            toggle(f'{id}-btnt2', f'{id}-btnt1')
+
+        style1 = style
+        style2 = style.copy()
+        style2.update({'background-color': '#da4453', 'display': 'none'})
+
+        area = html.DIV()
+        area <= self.button(
+            buttons[0][0], id=f'{id}-btnt1', style=style1, on_click=on_btn1, *args, **kwargs)
+        area <= self.button(
+            buttons[1][0], id=f'{id}-btnt2', style=style2, on_click=on_btn2, *args, **kwargs)
+        return area
 
     # ----------------------------------------------------------------------
     def switch(self, label, checked=False, on_change=None, id=None):
