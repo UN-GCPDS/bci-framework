@@ -31,7 +31,7 @@ class StimuliDelivery(StimuliAPI):
         self.dashboard <= html.HR()
     
         self.dashboard <= w.label('Fixation cross', 'headline4')
-        self.dashboard <= w.button('Show_cross', on_click=self.show_cross)
+        self.dashboard <= w.button('Show cross', on_click=self.show_cross)
         self.dashboard <= w.button('Hide cross', on_click=self.hide_cross)
         self.dashboard <= html.HR()
         

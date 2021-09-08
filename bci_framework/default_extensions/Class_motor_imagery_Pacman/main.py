@@ -74,9 +74,8 @@ class PacmanMotorImagery(StimuliAPI):
             on_change=self.synchronizer,
         )
 
-        self.dashboard <= w.button('Start run', on_click=self.start)
-        self.dashboard <= w.button('Stop run', on_click=self.stop)
-        self.dashboard <= w.button('Marker synchronization', on_click=self.start_marker_synchronization)
+        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
     def start(self) -> None:

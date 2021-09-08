@@ -9,7 +9,7 @@ Pipelines consist in asynchronous controlled method execution
 
 """
 
-from bci_framework.extensions.stimuli_delivery import StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 import logging
 
@@ -50,12 +50,11 @@ class Pipelines(StimuliAPI):
         self.dashboard <= w.button('Start pipeline', on_click=self.start)
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.remote
     def start(self):
         """"""
         trials = [
             {'s1': 'Hola',  # Trial 1
-                   'r1': 91,
+             'r1': 91,
              },
 
             {'s1': 'Mundo',  # Trial 2
@@ -69,16 +68,16 @@ class Pipelines(StimuliAPI):
 
         # Each method in pipeline will receibe as argument the on turn trial argument
         pipeline_trial = [
-            (self.view1, 500),  # Execute `self.view1` and wait 500 ms
+            ['view1', 50],  # Execute `self.view1` and wait 500 ms
             
             # Execute `self.view2` and wait a random (uniform) time selected between 500 and 1500
-            (self.view2, [500, 1500]),
+            ['view2', [500, 1500]],
             
             # Execute `self.view3` and wait the time defined in the slider
-            (self.view3, w.get_value('slider')),
+            ['view3', w.get_value('slider')],
             
             # Execute `self.view4` and wait a random (uniform) time selected between the range of the slider
-            (self.view4, w.get_value('range')),
+            ['view4', w.get_value('range')],
 
         ]
 

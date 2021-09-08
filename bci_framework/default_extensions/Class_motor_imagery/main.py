@@ -79,8 +79,7 @@ class FourClassMotorImagery(StimuliAPI):
             on_change=self.synchronizer,
         )
 
-        self.dashboard <= w.button('Start run', on_click=self.start)
-        self.dashboard <= w.button('Stop run', on_click=self.stop)
+        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)])
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -121,8 +120,6 @@ class FourClassMotorImagery(StimuliAPI):
         self.trials = [{'cue': trial} for trial in self.trials]
 
         self.pipeline_trial = [
-            # (self.soa, 'soa'),  # `soa` is a range reference
-            # (self.trial, 'duration'),  # `duration` is a slider reference
             ['soa', 'soa'],  # `soa` is a range reference
             ['trial', 'duration'],  # `duration` is a slider reference
         ]

@@ -27,8 +27,16 @@ class TutorialWidgets(StimuliAPI):
             document.select_one('#for_button'), 'html', 'Button 1 pressed!'))
         self.dashboard <= w.button(
             'Button 2', style=flex, on_click=self.on_button2)
-        self.dashboard <= w.label(
-            f'', id='for_button', typo=f'body1', style=flex)
+        self.dashboard <= w.label(f'', id='for_button', typo=f'body1', style=flex)
+            
+        # Toggleable buttons
+        self.dashboard <= w.label('Toggleable buttons', typo='headline4', style=flex_title)
+        self.dashboard <= w.toggle_button([('Start run', self.on_toggle_button1),
+                                         ('Stop run', self.on_toggle_button2)],
+                                         id='toggle_buttons', style=flex
+                                         )
+        self.dashboard <= w.label(f'', id='for_toggle_button', typo=f'body1', style=flex)
+        
 
         # Switch
         self.dashboard <= w.label('Switch', typo='headline4', style=flex_title)
@@ -88,6 +96,14 @@ class TutorialWidgets(StimuliAPI):
     # ----------------------------------------------------------------------
     def on_button2(self):
         document.select_one('#for_button').html = 'Button 2 pressed!'
+        
+    # ----------------------------------------------------------------------
+    def on_toggle_button1(self):
+        document.select_one('#for_toggle_button').html = 'Toggle button 1 pressed!'
+        
+    # ----------------------------------------------------------------------
+    def on_toggle_button2(self):
+        document.select_one('#for_toggle_button').html = 'Toggle button 2 pressed!'
 
     # ----------------------------------------------------------------------
     def on_switch(self, value):

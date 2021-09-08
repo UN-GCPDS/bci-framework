@@ -12,7 +12,7 @@ import numpy as np
 
 import logging
 
-REVERSE_PLOT = True
+REVERSE_PLOT = False
 
 
 notch_filters = ('None', '50 Hz', '60 Hz')
@@ -65,7 +65,7 @@ class RawEEG(EEGStream):
         return data
 
     # ----------------------------------------------------------------------
-    @loop_consumer('eeg')
+    @fake_loop_consumer('eeg')
     def stream(self):
         eeg = self.buffer_eeg_resampled
         

@@ -5,7 +5,7 @@ OpenBCI auxiliar data
 """
 
 from bci_framework.extensions.visualizations import EEGStream
-from bci_framework.extensions.data_analysis import loop_consumer
+from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 import numpy as np
 
@@ -54,7 +54,7 @@ class OpenBCIAuxiliarData(EEGStream):
         
     
     # ----------------------------------------------------------------------
-    @loop_consumer('eeg')
+    @loop_consumer('aux')
     def stream(self):
         aux = self.buffer_aux_resampled
         
@@ -66,8 +66,7 @@ class OpenBCIAuxiliarData(EEGStream):
         
         
 
-        for i, line in enumerate(self.lines):
-            
+        for i, line in enumerate(self.lines[:1]):
             line.set_data(time, aux[i])
             
             

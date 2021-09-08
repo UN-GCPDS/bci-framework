@@ -100,8 +100,7 @@ class RestingNoiseAcquisition(StimuliAPI):
             id='synchronizer',
         )
 
-        self.dashboard <= w.button('Start run', on_click=self.start)
-        self.dashboard <= w.button('Stop run', on_click=self.stop)
+        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
 
         self.button_start = w.button(
             'Start (space)', outlined=True, on_click=self.syncrhonous_trial, id='syncrhonous-button')
