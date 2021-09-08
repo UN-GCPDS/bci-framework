@@ -473,6 +473,7 @@ class Connection:
 
         self.openbci.daisy = [
             True if chs == 16 else False for chs in self.openbci.channels_assignations]
+        os.environ['BCISTREAM_DAISY'] = json.dumps(all(self.openbci.daisy))
 
         self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
         self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()
