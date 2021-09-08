@@ -72,7 +72,7 @@ class Stream(EEGStream):
         # self.axis.set_ylim(-0.5, 1.5)
 
         self.create_buffer(BUFFER, resampling=1000, fill=-1)
-        
+
         self.stream()
 
     # ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ class Stream(EEGStream):
     @marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
     def stream(self, aux, timestamp, marker, marker_datetime):
         """"""
-        
+
         logging.warning('WTF')
 
         # if topic != 'marker':
@@ -158,8 +158,7 @@ class Stream(EEGStream):
             # print(self.timestamp_rises)
 
             v = np.argmin(np.abs(timestamp - self.timestamp_rises[0]))
-            window = aux[int(v - prop.SAMPLE_RATE * 0.3)
-                             : int(v + prop.SAMPLE_RATE * 0.3)]
+            window = aux[int(v - prop.SAMPLE_RATE * 0.3): int(v + prop.SAMPLE_RATE * 0.3)]
             t = np.linspace(-300, 300, window.shape[0])
             self.axis_wave.plot(t, window, label='input signal')[0]
 
@@ -172,7 +171,7 @@ class Stream(EEGStream):
                                   label='last latency')
             self.axis_wave.legend(loc=4)
             self.axis_wave.set_xlim(-150, +150)
-            if t.size>0:
+            if t.size > 0:
                 logging.warning((t[0], t[-1]))
 
         # Histogram
