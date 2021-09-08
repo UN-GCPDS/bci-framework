@@ -77,17 +77,25 @@ def loop_consumer(*topics) -> Callable:
                         frame += 1
                         if hasattr(cls, 'buffer_eeg'):
                             cls.update_buffer(
-                                *data.value['data'], data.value['context']['timestamp.binary'])
-                        # latency calculated with `timestamp.binary`
-                        latency = (datetime.now() - datetime.fromtimestamp(
-                            data.value['context']['timestamp.binary'])).total_seconds() * 1000
+                                eeg=data.value['data'], timestamp=min(data.value['context']['timestamp.binary']) - prop.OFFSET)
                         data_ = data.value['data']
+                    elif data.topic == 'aux':
+                        frame += 1
+                        if hasattr(cls, 'buffer_aux'):
+                            cls.update_buffer(
+                                aux=data.value['data'], timestamp=min(data.value['context']['timestamp.binary']) - prop.OFFSET)
+                        data_ = data.value['data']
+                    else:
+                        data_ = data.value
+
+                    # latency calculated with `timestamp.binary`
+                    if data.topic in ['eeg', 'aux']:
+                        latency = (datetime.now() - datetime.fromtimestamp(
+                            min(data.value['context']['timestamp.binary']) - prop.OFFSET)).total_seconds() * 1000
                     else:
                         # latency calculated with kafka timestamp
                         latency = (datetime.now(
                         ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
-
-                        data_ = data.value
 
                     kwargs = {'data': data_,
                               'kafka_stream': data,
@@ -130,7 +138,11 @@ def fake_loop_consumer(*topics) -> Callable:
                     aux = np.random.normal(0, 0.2, size=(3, num_data))
                 elif prop.BOARDMODE == 'analog':
                     if prop.CONNECTION == 'wifi':
-                        aux = np.random.normal(0, 0.07, size=(2, num_data))
+                        aux = np.random.normal(0, 0.07, size=(3, num_data))
+
+                        if (frame // 10) % 2:
+                            aux += 100
+
                     else:
                         aux = np.random.normal(0, 0.07, size=(3, num_data))
 
@@ -147,14 +159,27 @@ def fake_loop_consumer(*topics) -> Callable:
 
                 data.timestamp = datetime.now().timestamp() * 1000
                 data.value['timestamp'] = datetime.now()
-                data.value['data'] = eeg, aux
+                # data.value['data'] = eeg, aux
 
                 if 'eeg' in topics:
                     if hasattr(cls, 'buffer_eeg'):
                         cls.update_buffer(
-                            *data.value['data'], data.value['timestamp'].timestamp())
+                            eeg=eeg, timestamp=data.value['timestamp'].timestamp())
 
-                    kwargs = {'data': data.value['data'],
+                    kwargs = {'data': eeg,
+                              'kafka_stream': data,
+                              'topic': 'eeg',
+                              'frame': frame,
+                              'latency': 0,
+                              }
+                    fn(*[cls] + [kwargs[v] for v in arguments])
+
+                if 'aux' in topics:
+                    if hasattr(cls, 'buffer_aux'):
+                        cls.update_buffer(
+                            aux=aux, timestamp=data.value['timestamp'].timestamp())
+
+                    kwargs = {'data': aux,
                               'kafka_stream': data,
                               'topic': 'eeg',
                               'frame': frame,
@@ -165,13 +190,15 @@ def fake_loop_consumer(*topics) -> Callable:
                 if 'marker' in topics:
                     if np.random.random() > 0.9:
                         data.value['timestamp'] = datetime.now()
+                        # data.value['datetime'] = datetime.now()
                         data.value['context']['timestamp.binary'] = datetime.now()
                         # data.value['data'] = chr(
                             # np.random.choice(range(ord('A'), ord('Z') + 1)))
-                        data.value['data'] = random.choice(
-                            ['Right', 'Left', 'Up', 'Bottom'])
+                        # data.value['data'] = random.choice(
+                            # ['Right', 'Left', 'Up', 'Bottom'])
+                        data.value['marker'] = random.choice(['MARKER'])
 
-                        kwargs = {'data': data.value['data'],
+                        kwargs = {'data': data.value,
                                   'kafka_stream': data,
                                   'topic': 'marker',
                                   'frame': frame,
@@ -199,7 +226,7 @@ def marker_slicing(markers, t0, duration):
         def wrap(cls):
             cls._target_marker = []
 
-            @loop_consumer('eeg', 'marker')
+            @loop_consumer('aux', 'marker')
             def marker_slicing_(cls, topic, data, kafka_stream, latency):
 
                 if topic == 'marker':
@@ -225,12 +252,12 @@ def marker_slicing(markers, t0, duration):
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * (duration + t0))
 
-                        t = cls.buffer_timestamp[argmin
-                                                 + start:argmin + stop]
+                        t = cls.buffer_timestamp[argmin +
+                                                 start: argmin + stop]
                         eeg = cls.buffer_eeg_[
-                            :, argmin + start:argmin + stop]
+                            :, argmin + start: argmin + stop]
                         aux = cls.buffer_aux_[
-                            :, argmin + start:argmin + stop]
+                            :, argmin + start: argmin + stop]
 
                         kwargs = {'eeg': eeg,
                                   'aux': aux,
@@ -244,7 +271,9 @@ def marker_slicing(markers, t0, duration):
 
                     else:
                         import logging
-                        logging.warning('Date too old to synchronize')
+                        # logging.warning('Date too old to synchronize')
+                        logging.warning(
+                            f'{datetime.fromtimestamp(cls.buffer_timestamp[-1]) > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0))}')
 
             marker_slicing_(cls)
         return wrap
