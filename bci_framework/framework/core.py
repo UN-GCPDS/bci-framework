@@ -50,11 +50,12 @@ class ClockOffset(QThread):
         """"""
         try:
             client = ntplib.NTPClient()
-            clock_offset = client.request(self.host).offset * 1000
-        except:
-            clock_offset = 0
-
-        self.offset.emit(clock_offset)
+            r = client.request(self.host)
+            clock_offset = r.offset  # * 1000
+            self.offset.emit(clock_offset)
+            print(clock_offset)
+        except Exception as e:
+            pass
 
 
 ########################################################################
@@ -92,7 +93,8 @@ class Kafka(QThread):
     def create_consumer(self) -> None:
         """Basic consumer to check stream status and availability."""
         bootstrap_servers = [f'{self.host}:9092']
-        topics = ['annotation', 'marker', 'command', 'eeg', 'feedback']
+        topics = ['annotation', 'marker',
+                  'command', 'eeg', 'aux', 'feedback']
         self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
                                       value_deserializer=pickle.loads,
                                       auto_offset_reset='latest',
@@ -200,7 +202,10 @@ class BCIFramework(QMainWindow):
         self.subprocess_timer.start()
 
         self.clock_offset = 0
-        QTimer().singleShot(7200, self.get_desynchonization)
+        self.eeg_size = 0
+        self.aux_size = 0
+        self.last_update = 0
+        QTimer().singleShot(1000, self.calculate_offset)
         QTimer().singleShot(3000, self.start_stimuli_server)
 
         self.status_bar(message='', right_message=('disconnected', None))
@@ -235,7 +240,6 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_remove_annotations.setIcon(icon('edit-delete'))
         self.main.pushButton_remove_markers.setIcon(icon('edit-delete'))
         self.main.pushButton_remove_commands.setIcon(icon('edit-delete'))
-        self.main.pushButton_projects_remove.setIcon(icon('edit-delete'))
         self.main.pushButton_record.setIcon(icon('media-record'))
 
         self.main.pushButton_projects_add_file.setIcon(icon('document-new'))
@@ -576,38 +580,32 @@ class BCIFramework(QMainWindow):
         elif value['topic'] == 'feedback':
             self.handle_feedback(value['value'])
 
-        elif value['topic'] == 'eeg':
+        elif value['topic'] in ['eeg', 'aux']:
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
-            eeg = value['value']['data']
+
+            if ((value['value']['timestamp'] - self.last_update) < 3) and (self.eeg_size != 0) and (self.aux_size != 0):
+                return
+
+            self.last_update = value['value']['timestamp']
+
             binary_created = datetime.fromtimestamp(
                 min(value['value']['context']['timestamp.binary']))
             message_created = datetime.fromtimestamp(
                 value['value']['timestamp'])
             since = (message_created - binary_created).total_seconds()
-            count = value['value']['context']['samples']
-            channels = eeg.shape[0]
+
+            if value['topic'] == 'eeg':
+                self.eeg_size = value['value']['data'].shape
+            elif value['topic'] == 'aux':
+                self.aux_size = value['value']['data'].shape
 
             if since * 1000 > 2000:
                 color = '#ffc107'  # old data
             else:
                 color = '#3fc55e'  # recent data
 
-            message = ''
-
-            if self.clock_offset:
-
-                if abs(self.clock_offset) < 300:
-                    color_offset = '#3fc55e'
-                else:
-                    color_offset = '#ffc107'
-
-                message += f'Acquisition server clock is <b style="color:{color_offset};">{self.clock_offset:0.2f} ms </b> offset | '
-
-            message += f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG ({channels},{count})'
-
-            # if aux.size:
-                # message += f' | AUX ({aux.shape[0]},{aux.shape[1]})'
+            message = f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG{self.eeg_size} | AUX{self.aux_size}'
 
             self.status_bar(right_message=(message, True))
 
@@ -636,24 +634,32 @@ class BCIFramework(QMainWindow):
     @Slot()
     def show_desynchonization(self) -> None:
         """"""
-        try:
-            ntp_offset = self.get_desynchonization()
-            if abs(ntp_offset) > 10000:
-                Dialogs.critical_message(self.main, 'Clock offset',
-                                         f"Detected serius clock offset of {ntp_offset/1000 :.2f} s.\nThis may affect the markers synchonization.\nIs recommended to configure this system with a real time clock server running on {self.thread_kafka.host}."""
-                                         )
-        except:
-            pass
+        # try:
+            # # TODO
+            # # ntp_offset = self.get_desynchonization()
+            # if abs(ntp_offset) > 10000:
+                # Dialogs.critical_message(self.main, 'Clock offset',
+                                         # f"Detected serius clock offset of {ntp_offset/1000 :.2f} s.\nThis may affect the markers synchonization.\nIs recommended to configure this system with a real time clock server running on {self.thread_kafka.host}."""
+                                         # )
+        # except:
+            # pass
 
     # ----------------------------------------------------------------------
-    def get_desynchonization(self):
+    def calculate_offset(self):
         """"""
-        self.offset_thread = ClockOffset()
-        self.offset_thread.set_host(self.thread_kafka.host)
-        self.offset_thread.start()
-        self.offset_thread.offset.connect(
-            lambda offset: setattr(self, 'clock_offset', offset))
-        QTimer().singleShot(7200, self.get_desynchonization)
+        host = self.thread_kafka.host
+        if host != 'localhost':
+            self.offset_thread = ClockOffset()
+            self.offset_thread.set_host(self.thread_kafka.host)
+            self.offset_thread.start()
+            self.offset_thread.offset.connect(self.set_offset)
+        else:
+            self.set_offset(0)
+
+    # ----------------------------------------------------------------------
+    def set_offset(self, offset):
+        """"""
+        os.environ['BCISTREAM_OFFSET'] = str(offset)
 
     # ----------------------------------------------------------------------
     def stop_kafka(self) -> None:
