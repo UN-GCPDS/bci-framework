@@ -131,7 +131,7 @@ class DataAnalysis:
                 "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
 
     # ----------------------------------------------------------------------
-    def update_buffer(self, eeg: np.ndarray, aux: np.ndarray, timestamp: float) -> None:
+    def update_buffer(self, eeg: np.ndarray = None, aux: np.ndarray = None, timestamp: float = None) -> None:
         """Uppdate the buffers.
 
         Parameters
@@ -142,41 +142,85 @@ class DataAnalysis:
             The new AUX array
         """
 
-        c = eeg.shape[1]
+        if not eeg is None:
 
-        if self._pivot is None:
-            self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
-            self.buffer_eeg_[:, -c:] = eeg
+            c = eeg.shape[1]
 
-            self.buffer_timestamp_ = np.roll(
-                self.buffer_timestamp_, -c, axis=0)
-            self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
-            self.buffer_timestamp_[-1] = timestamp
+            if self._pivot is None:
+                self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
+                self.buffer_eeg_[:, -c:] = eeg
 
-            if hasattr(self, 'buffer_eeg_split'):
-                self.buffer_eeg_split = np.roll(self.buffer_eeg_split, -c)
+                self.buffer_timestamp_ = np.roll(
+                    self.buffer_timestamp_, -c, axis=0)
+                self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
+                self.buffer_timestamp_[-1] = timestamp
 
-            if not aux is None:
-                d = aux.shape[1]
+                if hasattr(self, 'buffer_eeg_split'):
+                    self.buffer_eeg_split = np.roll(
+                        self.buffer_eeg_split, -c)
+
+                # if not aux is None:
+                    # d = aux.shape[1]
+                    # self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
+                    # self.buffer_aux_[:, -d:] = aux
+
+            else:
+                roll = 0
+                if self._pivot + c >= self.buffer_eeg_.shape[1]:
+                    roll = self.buffer_eeg_.shape[1] - (self._pivot + c)
+                    self.buffer_eeg_ = np.roll(
+                        self.buffer_eeg_, -roll, axis=1)
+                    self.buffer_eeg_[:, -eeg.shape[1]:] = eeg
+                    self.buffer_eeg_ = np.roll(
+                        self.buffer_eeg_, roll, axis=1)
+
+                else:
+                    self.buffer_eeg_[:, self._pivot:self._pivot + c] = eeg
+
+                self._pivot += c
+                self._pivot = self._pivot % self.buffer_eeg_.shape[1]
+
+                # if not aux is None:
+                    # d = aux.shape[1]
+
+                    # roll = 0
+                    # if self._pivot_aux + d >= self.buffer_aux_.shape[1]:
+                        # roll = self._pivot_aux + d
+
+                    # if roll:
+                        # self.buffer_aux_ = np.roll(
+                            # self.buffer_aux_, -roll, axis=1)
+
+                    # if (self.buffer_aux_[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
+                        # l = self.buffer_aux_[:,
+                                             # self._pivot_aux:self._pivot_aux + d].shape[1]
+                        # # logging.warning([l, aux.shape[1]])
+
+                        # self.buffer_aux_[:,
+                                         # self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
+                    # else:
+                        # self.buffer_aux_[:,
+                                         # self._pivot_aux:self._pivot_aux + d] = aux
+
+                    # if roll:
+                        # self.buffer_aux_ = np.roll(
+                            # self.buffer_aux_, roll, axis=1)
+
+                    # self._pivot_aux += d
+                    # self._pivot_aux = self._pivot_aux % self.buffer_aux_.shape[1]
+
+        if not aux is None:
+            d = aux.shape[1]
+
+            if self._pivot is None:
                 self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
                 self.buffer_aux_[:, -d:] = aux
 
-        else:
-            roll = 0
-            if self._pivot + c >= self.buffer_eeg_.shape[1]:
-                roll = self.buffer_eeg_.shape[1] - (self._pivot + c)
-                self.buffer_eeg_ = np.roll(self.buffer_eeg_, -roll, axis=1)
-                self.buffer_eeg_[:, -eeg.shape[1]:] = eeg
-                self.buffer_eeg_ = np.roll(self.buffer_eeg_, roll, axis=1)
+                if hasattr(self, 'buffer_aux_split'):
+                    self.buffer_aux_split = np.roll(
+                        self.buffer_aux_split, -d)
 
             else:
-                self.buffer_eeg_[:, self._pivot:self._pivot + c] = eeg
-
-            self._pivot += c
-            self._pivot = self._pivot % self.buffer_eeg_.shape[1]
-
-            if not aux is None:
-                d = aux.shape[1]
 
                 roll = 0
                 if self._pivot_aux + d >= self.buffer_aux_.shape[1]:
@@ -235,6 +279,14 @@ class DataAnalysis:
         index = np.linspace(0, x, f + 1).astype(int)[:-1]
         self.buffer_eeg_split[index] = 1
 
+        if prop.CONNECTION == 'wifi' and prop.DAISY:
+            x = x * 2
+
+        f = self._get_factor_near_to(x, resampling)
+        self.buffer_aux_split = np.zeros(x)
+        index = np.linspace(0, x, f + 1).astype(int)[:-1]
+        self.buffer_aux_split[index] = 1
+
     # ----------------------------------------------------------------------
     def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, resampling: Optional[int] = 1000):
         """Create a buffer with fixed time length.
@@ -257,12 +309,16 @@ class DataAnalysis:
         chs = len(prop.CHANNELS)
         time = prop.SAMPLE_RATE * seconds
 
-        self._create_resampled_buffer(
-            prop.SAMPLE_RATE * np.abs(seconds), resampling=resampling)
+        self._create_resampled_buffer(abs(time), resampling=resampling)
 
         self.buffer_eeg_ = np.empty((chs, time))
         self.buffer_eeg_.fill(fill)
-        self.buffer_aux_ = np.empty((aux_shape, time))
+
+        if prop.CONNECTION == 'wifi' and prop.DAISY:
+            self.buffer_aux_ = np.empty((aux_shape, time * 2))
+        else:
+            self.buffer_aux_ = np.empty((aux_shape, time))
+
         self.buffer_aux_.fill(fill)
         self.buffer_timestamp_ = np.zeros(time)
 
@@ -332,7 +388,7 @@ class DataAnalysis:
     @property
     def buffer_aux_resampled(self):
         """"""
-        return self.buffer_aux[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
+        return self.buffer_aux[:, np.argwhere(self.buffer_aux_split == 1)][:, :, 0]
 
     # ----------------------------------------------------------------------
     @property
