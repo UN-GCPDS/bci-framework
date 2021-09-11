@@ -295,8 +295,9 @@ class Pipeline:
     # ----------------------------------------------------------------------
     def _stop_pipeline(self):
         """"""
-        for t in self._timeouts:
-            timer.clear_timeout(t)
+        if hasattr(self, '_timeouts'):
+            for t in self._timeouts:
+                timer.clear_timeout(t)
         self.on_callback()
 
     # ----------------------------------------------------------------------
@@ -349,7 +350,11 @@ class StimuliAPI(Pipeline):
                 'action': 'marker',
                 'marker': marker,
             })
-        self._blink(blink)
+
+        if force:
+            DeliveryInstance.both(self._blink)(self, blink)
+        else:
+            self._blink(blink)
 
         # print(f'MARKER: {marker["marker"]}')
 
