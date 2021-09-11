@@ -71,7 +71,7 @@ class Stream(EEGStream):
 
         # self.axis.set_ylim(-0.5, 1.5)
 
-        self.create_buffer(BUFFER, resampling=1000, fill=-1)
+        self.create_buffer(BUFFER, resampling=1000, fill=-1, aux_shape=6)
 
         self.stream()
 

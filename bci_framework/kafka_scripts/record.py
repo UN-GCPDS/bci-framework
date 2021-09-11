@@ -18,8 +18,9 @@ if home := os.getenv('BCISTREAM_HOME'):
     sys.stderr = open(os.path.join(home, 'records', 'log.stderr'), 'w')
     sys.stdout = open(os.path.join(home, 'records', 'log.stdout'), 'w')
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from openbci_stream.utils import HDF5Writer
+import numpy as np
 
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import loop_consumer
@@ -39,7 +40,7 @@ class RecordTransformer:
 
         filename = now.strftime('%x-%X').replace('/', '_').replace(':', '_')
         records_dir = os.path.join(os.environ.get(
-            'BCISTREAM_HOME', '~/.bciframework'), 'records')
+            'BCISTREAM_HOME', os.path.expanduser('~/.bciframework')), 'records')
         os.makedirs(records_dir, exist_ok=True)
         self.writer = HDF5Writer(os.path.join(
             records_dir, f'record-{filename}.h5'))
@@ -49,6 +50,7 @@ class RecordTransformer:
                   'datetime': now.timestamp(),
                   'montage': prop.MONTAGE_NAME,
                   'channels': prop.CHANNELS,
+                  'channels_by_board': prop.CHANNELS_BY_BOARD,
                   }
         self.writer.add_header(header, prop.HOST)
 
@@ -60,7 +62,19 @@ class RecordTransformer:
         self.save_data()
 
     # ----------------------------------------------------------------------
-    @loop_consumer('eeg', 'marker', 'annotation')
+    def get_timestamps(self, size, timestamps):
+        """"""
+        timestamp = []
+
+        for dt in timestamps:
+            end_dt = (datetime.fromtimestamp(dt) -
+                      timedelta(seconds=size / prop.SAMPLE_RATE)).timestamp()
+            timestamp.append(np.linspace(end_dt, dt, size, endpoint=False))
+
+        return np.array(timestamp)
+
+    # ----------------------------------------------------------------------
+    @ loop_consumer('eeg', 'aux', 'marker', 'annotation')
     def save_data(self, kafka_stream: KafkaStream, topic: str, **kwargs) -> None:
         """Write data on every strem package.
 
@@ -75,12 +89,12 @@ class RecordTransformer:
         if not self.writer.f.isopen:
             return
 
-        if topic == 'eeg':
-            dt = kafka_stream.value['context']['timestamp.binary']
-            eeg, aux = kafka_stream.value['data']
-            self.writer.add_eeg(eeg, dt)
-            self.writer.add_aux(aux)
-            # print(dt)
+        if topic in ['eeg', 'aux']:
+            data = kafka_stream.value['data']
+            timestamp = self.get_timestamps(data.shape[1],
+                                            kafka_stream.value['context']['timestamp.binary'])
+            getattr(self.writer, f'add_{topic}')(
+                data, timestamp - prop.OFFSET)
 
         elif topic == 'marker':
             dt = kafka_stream.value['datetime']
