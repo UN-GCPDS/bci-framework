@@ -1201,7 +1201,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>3</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -2957,7 +2957,7 @@ p, li { white-space: pre-wrap; }
          <item row="1" column="0">
           <widget class="QToolBox" name="toolBox_2">
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_10">
             <property name="geometry">
@@ -2999,7 +2999,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_remove_annotations">
                  <property name="text">
-                  <string>Remove annotations</string>
+                  <string>Clear annotations</string>
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
@@ -3137,7 +3137,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_remove_markers">
                  <property name="text">
-                  <string>Remove markers</string>
+                  <string>Clear markers</string>
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
@@ -3244,7 +3244,7 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="pushButton_remove_commands">
                  <property name="text">
-                  <string>Remove commands</string>
+                  <string>Clear commands</string>
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">

@@ -38,6 +38,11 @@ class OpenBCIThread(QThread):
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
 
+        if sum(self.channels_assignations) > len(self.montage):
+            self.connection_fail.emit(
+                ['* The number of electrodes defined in montage not correspon with the number of boards available.'])
+            return
+
         try:
             self.openbci = CytonR(self.mode,
                                   self.endpoint,
@@ -230,7 +235,6 @@ class Connection:
                 self.request_wifi(i, target, combo)()
 
     # ----------------------------------------------------------------------
-
     def load_config(self) -> None:
         """Load widgets."""
         self.core.config.load_widgets('connection', self.config)
@@ -378,6 +382,8 @@ class Connection:
     def on_connect(self, toggled: bool) -> None:
         """Event to handle connection."""
 
+        self.core.calculate_offset()
+
         if getattr(self.core, 'streaming', False) and not self.openbci.connected:
             self.openbci_connect()
         else:
@@ -474,6 +480,8 @@ class Connection:
         self.openbci.daisy = [
             True if chs == 16 else False for chs in self.openbci.channels_assignations]
         os.environ['BCISTREAM_DAISY'] = json.dumps(all(self.openbci.daisy))
+        os.environ['BCISTREAM_CHANNELS_BY_BOARD'] = json.dumps(
+            self.openbci.channels_assignations)
 
         self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
         self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()

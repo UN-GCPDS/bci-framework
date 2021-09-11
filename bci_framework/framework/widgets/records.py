@@ -9,11 +9,12 @@ import os
 import shutil
 from datetime import datetime, timedelta
 
-from PySide2.QtWidgets import QTableWidgetItem, QApplication
+from PySide2.QtWidgets import QTableWidgetItem, QApplication, QMenu, QAction
 from PySide2.QtCore import Qt, QTimer
-from PySide2.QtGui import QCursor, QIcon
+from PySide2.QtGui import QCursor, QIcon, QCursor
 
 from openbci_stream.utils import HDF5Reader
+
 from ..subprocess_handler import run_subprocess
 from ..dialogs import Dialogs
 
@@ -119,7 +120,16 @@ class Records:
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                 self.parent_frame.tableWidget_records.setItem(i, j, item)
 
+                # item.setContextMenuPolicy(Qt.CustomContextMenu)
+                # header.customContextMenuRequested.connect(self.handleHeaderMenu)
+
         self.parent_frame.tableWidget_records.sortByColumn(1)
+
+        # header = self.parent_frame.tableWidget_records.horizontalHeader()
+        self.parent_frame.tableWidget_records.setContextMenuPolicy(
+            Qt.CustomContextMenu)
+        self.parent_frame.tableWidget_records.customContextMenuRequested.connect(
+            self.handleHeaderMenu)
 
     # ----------------------------------------------------------------------
     def get_metadata(self, filename: str, light: bool = True) -> None:
@@ -146,7 +156,7 @@ class Records:
 
         if not light:
             annotations = file.annotations
-            markers = file.markers_relative
+            markers = file.markers
         else:
             annotations = []
             markers = []
@@ -331,3 +341,41 @@ class Records:
             self.subprocess_script.terminate()
             QTimer().singleShot(500, self.load_records)
 
+    # ----------------------------------------------------------------------
+    def handleHeaderMenu(self, pos):
+        """"""
+        row = self.parent_frame.tableWidget_records.currentRow()
+        filename = self.parent_frame.tableWidget_records.item(row, 2).text()
+
+        menu = QMenu()
+
+        edf_action = QAction('Export to EDF')
+        edf_action.triggered.connect(lambda: self.export_to_edf(filename))
+        menu.addAction(edf_action)
+
+        numpy_action = QAction('Export to Numpy (npy)')
+        numpy_action.triggered.connect(
+            lambda: self.export_to_numpy(filename))
+        menu.addAction(numpy_action)
+
+        menu.addSeparator()
+
+        rm_action = QAction('Remove')
+        rm_action.triggered.connect(self.remove_record)
+        menu.addAction(rm_action)
+
+        menu.exec_(QCursor.pos())
+
+    # ----------------------------------------------------------------------
+    def export_to_edf(self, filename):
+        """"""
+        h5 = os.path.join(self.records_dir, f'{filename}.h5')
+        with HDF5Reader(h5) as reader:
+            reader.to_edf(h5.replace('.h5', '.edf'))
+
+    # ----------------------------------------------------------------------
+    def export_to_numpy(self, filename):
+        """"""
+        h5 = os.path.join(self.records_dir, f'{filename}.h5')
+        with HDF5Reader(h5) as reader:
+            reader.to_npy(h5.replace('.h5', ''))

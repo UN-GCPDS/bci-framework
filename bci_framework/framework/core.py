@@ -53,7 +53,7 @@ class ClockOffset(QThread):
             r = client.request(self.host)
             clock_offset = r.offset  # * 1000
             self.offset.emit(clock_offset)
-            print(clock_offset)
+            print(f'offset: {clock_offset}')
         except Exception as e:
             pass
 
@@ -621,28 +621,14 @@ class BCIFramework(QMainWindow):
         self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.produser_connected.connect(
             self.kafka_produser_connected)
-        self.thread_kafka.first_consume.connect(self.show_desynchonization)
+        # self.thread_kafka.first_consume.connect(self.show_desynchonization)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
         self.timer = QTimer()
-        self.timer.setInterval(5000)
+        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.keep_updated)
         self.timer.start()
-
-    # ----------------------------------------------------------------------
-    @Slot()
-    def show_desynchonization(self) -> None:
-        """"""
-        # try:
-            # # TODO
-            # # ntp_offset = self.get_desynchonization()
-            # if abs(ntp_offset) > 10000:
-                # Dialogs.critical_message(self.main, 'Clock offset',
-                                         # f"Detected serius clock offset of {ntp_offset/1000 :.2f} s.\nThis may affect the markers synchonization.\nIs recommended to configure this system with a real time clock server running on {self.thread_kafka.host}."""
-                                         # )
-        # except:
-            # pass
 
     # ----------------------------------------------------------------------
     def calculate_offset(self):
@@ -659,7 +645,7 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def set_offset(self, offset):
         """"""
-        os.environ['BCISTREAM_OFFSET'] = str(offset)
+        os.environ['BCISTREAM_OFFSET'] = json.dumps(offset)
 
     # ----------------------------------------------------------------------
     def stop_kafka(self) -> None:
