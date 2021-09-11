@@ -54,9 +54,7 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'
     shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
                     os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
 
-
 from .framework.qtgui.icons import generate_icons
-# sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 
 # ----------------------------------------------------------------------
@@ -108,13 +106,13 @@ def main() -> None:
 
     # ------------------------------------------------------------
     # Splash
-    splash_file = os.path.join(
-        os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png')
-    pixmap = QPixmap(splash_file)
-    splash = QSplashScreen(
-        pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-    splash.setMask(pixmap.mask())
-    splash.show()
+    # splash_file = os.path.join(
+        # os.environ['BCISTREAM_ROOT'], 'assets', 'banner.svg')
+    # pixmap = QPixmap(splash_file, 'svg')
+    # splash = QSplashScreen(
+        # pixmap, Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+    # splash.setMask(pixmap.mask())
+    # splash.show()
     # ------------------------------------------------------------
 
     kill_subprocess()
@@ -128,6 +126,8 @@ def main() -> None:
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
+    # ------------------------------------------------------------
+    # Theme
     extra = {'danger': '#dc3545',
              'warning': '#e2a963',
              'success': '#17a2b8',
@@ -156,10 +156,11 @@ def main() -> None:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
     generate_icons()
+    # ------------------------------------------------------------
 
     frame = BCIFramework()
     frame.main.showMaximized()
-    splash.finish(frame)  # Hide Splash
+    # splash.finish(frame)  # Hide Splash
     app.exec_()
 
 
