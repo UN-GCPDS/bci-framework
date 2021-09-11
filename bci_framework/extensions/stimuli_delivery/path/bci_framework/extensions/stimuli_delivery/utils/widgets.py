@@ -3,7 +3,7 @@ from mdc.MDCButton import MDCButton
 from mdc.MDCFormField import MDCFormField, MDCCheckbox, MDCForm
 from mdc.MDCLinearProgress import MDCLinearProgress
 
-from browser import document, html
+from browser import document, html, timer
 
 
 ########################################################################
@@ -25,6 +25,8 @@ class Widgets:
         elif isinstance(value, float):
             return round(value, 2)
         elif isinstance(value, str):
+            return value
+        else:
             return value
 
     # ----------------------------------------------------------------------
@@ -240,7 +242,11 @@ class Widgets:
         """"""
         def toggle(btn1, btn2):
             document.select_one(f'#{btn1}').style = {'display': 'none'}
-            document.select_one(f'#{btn2}').style = {'display': 'flex'}
+            document.select_one(f'#{btn2}').style = {
+                'display': 'inline-flex'}
+            document.select_one(f'#{btn2}').disabled = True
+            timer.set_timeout(lambda: setattr(document.select_one(
+                f'#{btn2}'), 'disabled', False), 1000)
 
         def on_btn1():
             buttons[0][1]()
@@ -259,6 +265,11 @@ class Widgets:
             buttons[0][0], id=f'{id}-btnt1', style=style1, on_click=on_btn1, *args, **kwargs)
         area <= self.button(
             buttons[1][0], id=f'{id}-btnt2', style=style2, on_click=on_btn2, *args, **kwargs)
+
+        area.on = lambda: toggle(f'{id}-btnt1', f'{id}-btnt2')
+        area.off = lambda: toggle(f'{id}-btnt2', f'{id}-btnt1')
+
+        self.widgets[id] = area
         return area
 
     # ----------------------------------------------------------------------
