@@ -79,7 +79,9 @@ class FourClassMotorImagery(StimuliAPI):
             on_change=self.synchronizer,
         )
 
-        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)])
+        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
+
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -103,6 +105,7 @@ class FourClassMotorImagery(StimuliAPI):
     def stop_run(self) -> None:
         """Stop pipeline execution."""
         self.soa()
+        w.get_value('run').off()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 

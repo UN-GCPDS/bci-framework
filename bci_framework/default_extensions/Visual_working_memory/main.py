@@ -172,10 +172,11 @@ class VisualWorkingMemory(StimuliAPI):
             id='dummy',
         )
 
-        self.dashboard <= w.button(
-            'Test shapes', raised=False, outlined=True, on_click=self.test_shapes)
-        self.dashboard <= w.button('Start run', on_click=self.start)
-        self.dashboard <= w.button('Stop run', on_click=self.stop)
+        self.dashboard <= w.button('Test shapes', on_click=self.test_shapes)
+        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
+
+
 
     # ----------------------------------------------------------------------
     def test_shapes(self) -> None:
@@ -209,6 +210,7 @@ class VisualWorkingMemory(StimuliAPI):
     def stop_run(self):
         """"""
         self.clear()
+        w.get_value('run').off()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 

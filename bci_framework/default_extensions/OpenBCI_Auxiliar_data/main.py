@@ -20,9 +20,10 @@ class OpenBCIAuxiliarData(EEGStream):
         """"""
         super().__init__(*args, **kwargs)
         DATAWIDTH = 1000
+        WINDOW = 10
 
         axis, self.time, self.lines = self.create_lines(
-            time=-30, mode=prop.BOARDMODE, window=DATAWIDTH)
+            time=-DATAWIDTH, mode=prop.BOARDMODE, window=DATAWIDTH)
 
         axis.set_title(f'Raw - {prop.BOARDMODE}')
         axis.set_xlabel('Time')
@@ -36,7 +37,7 @@ class OpenBCIAuxiliarData(EEGStream):
 
             if prop.CONNECTION == 'wifi':
                 # WiFi shield board use A7
-                axis.legend(['A5 (D11)', 'A6 (D12)'])
+                axis.legend(['A5 (D11)', 'A6 (D12)', 'A7 (D13)'])
             else:
                 axis.legend(['A5 (D11)', 'A6 (D12)', 'A7 (D13)'])
 
@@ -49,7 +50,7 @@ class OpenBCIAuxiliarData(EEGStream):
             else:
                 axis.legend(['D11', 'D12', 'D13', 'D17', 'D18'])
 
-        self.create_buffer(30, resampling=DATAWIDTH, fill=np.nan)
+        self.create_buffer(DATAWIDTH, resampling=DATAWIDTH, fill=np.nan, aux_shape=6)
         self.stream()
         
     
@@ -62,7 +63,7 @@ class OpenBCIAuxiliarData(EEGStream):
         
         aux =  aux[:,np.argwhere(q>0.5)]
         
-        time = np.linspace(-30, 0, aux.shape[1])
+        time = np.linspace(-10, 0, aux.shape[1])
         
         
 

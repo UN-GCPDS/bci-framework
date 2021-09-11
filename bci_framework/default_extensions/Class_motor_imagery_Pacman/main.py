@@ -99,6 +99,7 @@ class PacmanMotorImagery(StimuliAPI):
     def stop_run(self) -> None:
         """Stop pipeline execution."""
         self.soa()
+        w.get_value('run').off()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 

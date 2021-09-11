@@ -12,7 +12,7 @@ import numpy as np
 
 import logging
 
-REVERSE_PLOT = False
+REVERSE_PLOT = True
 
 
 notch_filters = ('None', '50 Hz', '60 Hz')
@@ -32,8 +32,8 @@ class RawEEG(EEGStream):
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
-        DATAWIDTH = 1000
-        BUFFER = 30
+        DATAWIDTH = 700
+        BUFFER = 15
 
         if REVERSE_PLOT:
             self.axis, self.time, self.lines = self.create_lines(mode='eeg',
@@ -65,7 +65,7 @@ class RawEEG(EEGStream):
         return data
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer('eeg')
+    @loop_consumer('eeg')
     def stream(self):
         eeg = self.buffer_eeg_resampled
         
@@ -82,11 +82,11 @@ class RawEEG(EEGStream):
             self.remove_transformers(['bandpass'])
         elif bandpass in ['delta', 'theta', 'alpha', 'beta']:
             bandpass = getattr(flt, bandpass)
-            self.add_transformers({'bandpass': bandpass})
+            self.add_transformers({'bandpass': (bandpass, {'fs': prop.SAMPLE_RATE, 'pivot': self._pivot})})
         else:
             bandpass = bandpass.replace(' Hz', '').replace('-', '')
             bandpass = getattr(flt, f'band{bandpass}')
-            self.add_transformers({'bandpass': bandpass})
+            self.add_transformers({'bandpass': (bandpass, {'fs': prop.SAMPLE_RATE, 'pivot': self._pivot})})
 
     # ----------------------------------------------------------------------
     @interact('Notch', notch_filters, 'None')
@@ -97,7 +97,7 @@ class RawEEG(EEGStream):
         else:
             notch = notch.replace(' Hz', '')
             notch = getattr(flt, f'notch{notch}')
-            self.add_transformers({'notch': notch})
+            self.add_transformers({'notch': (notch, {'fs': prop.SAMPLE_RATE, 'pivot': self._pivot})})
             
             
     # ----------------------------------------------------------------------
