@@ -27,6 +27,8 @@ class OpenBCIAuxiliarData(EEGStream):
 
         axis.set_title(f'Raw - {prop.BOARDMODE}')
         axis.set_xlabel('Time')
+        
+        axis.set_xlim(-10, 0)
 
         if prop.BOARDMODE == 'default':
             axis.set_ylabel('G')
@@ -66,8 +68,7 @@ class OpenBCIAuxiliarData(EEGStream):
         time = np.linspace(-10, 0, aux.shape[1])
         
         
-
-        for i, line in enumerate(self.lines[:1]):
+        for i, line in enumerate(self.lines):
             line.set_data(time, aux[i])
             
             

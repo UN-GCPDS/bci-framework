@@ -216,6 +216,11 @@ class DataAnalysis:
                 self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
                 self.buffer_aux_[:, -d:] = aux
 
+                self.buffer_aux_timestamp_ = np.roll(
+                    self.buffer_aux_timestamp_, -d, axis=0)
+                self.buffer_aux_timestamp_[-d:] = np.zeros(aux.shape[1])
+                self.buffer_aux_timestamp_[-1] = timestamp
+
                 if hasattr(self, 'buffer_aux_split'):
                     self.buffer_aux_split = np.roll(
                         self.buffer_aux_split, -d)
@@ -321,6 +326,7 @@ class DataAnalysis:
 
         self.buffer_aux_.fill(fill)
         self.buffer_timestamp_ = np.zeros(time)
+        self.buffer_aux_timestamp_ = np.zeros(time)
 
     # ----------------------------------------------------------------------
     def set_transformers(self, transformers):
@@ -417,4 +423,13 @@ class DataAnalysis:
             return interpolate_datetime(self.buffer_timestamp_)
         except:
             return self.buffer_timestamp_
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_aux_timestamp(self):
+        """"""
+        try:
+            return interpolate_datetime(self.buffer_aux_timestamp_)
+        except:
+            return self.buffer_aux_timestamp_
 

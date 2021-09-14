@@ -241,19 +241,19 @@ def marker_slicing(markers, t0, duration):
                 if target := getattr(cls, '_target_marker', False):
 
                     # marker, target = target
-                    if cls.buffer_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
+                    if cls.buffer_aux_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
                     # if True:
 
                         _marker, _target = target.pop(0)
 
                         argmin = np.abs(
-                            cls.buffer_timestamp - _target).argmin()
+                            cls.buffer_aux_timestamp - _target).argmin()
 
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * (duration + t0))
 
-                        t = cls.buffer_timestamp[argmin +
-                                                 start: argmin + stop]
+                        t = cls.buffer_aux_timestamp[argmin
+                                                     + start: argmin + stop]
                         eeg = cls.buffer_eeg_[
                             :, argmin + start: argmin + stop]
                         aux = cls.buffer_aux_[
@@ -273,7 +273,7 @@ def marker_slicing(markers, t0, duration):
                         import logging
                         # logging.warning('Date too old to synchronize')
                         logging.warning(
-                            f'{datetime.fromtimestamp(cls.buffer_timestamp[-1]) > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0))}')
+                            f'{datetime.fromtimestamp(cls.buffer_aux_timestamp[-1]), (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0))}')
 
             marker_slicing_(cls)
         return wrap

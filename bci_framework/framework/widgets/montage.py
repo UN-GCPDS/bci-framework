@@ -687,12 +687,12 @@ class Montage:
                 prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
 
             self.measuring_impedance = True
-            with OpenBCIConsumer(host=prop.HOST) as stream:
+            with OpenBCIConsumer(host=prop.HOST, topics=['eeg']) as stream:
 
                 for data in stream:
                     if data.topic == 'eeg':
 
-                        V = data.value['data'][0]
+                        V = data.value['data']
                         z = np.array(
                             [self.topoplot_impedance.raw_to_z(v) for v in V])
                         self.update_impedance(z / 1000)
