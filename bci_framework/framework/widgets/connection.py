@@ -80,7 +80,7 @@ class OpenBCIThread(QThread):
         boardmode_setted = False
         for _ in range(10):
             response = self.openbci.command(self.boardmode)
-            if response and b'Success' in response:
+            if response and b'Success: analog\r\n' in response:
                 logging.info(f'Bardmode setted in {self.boardmode} mode')
                 boardmode_setted = True
                 break
@@ -142,16 +142,15 @@ class OpenBCIThread(QThread):
         else:
             return
 
+        self.openbci.command(sample_rate)
         if self.checkBox_default_settings:
             self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
-        else:
-            self.openbci.command(sample_rate)
-            self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
-                                          gain=gain,
-                                          input_type=adsinput,
-                                          bias=bias,
-                                          srb2=srb2,
-                                          srb1=srb1)
+        # self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
+                                      # gain=gain,
+                                      # input_type=adsinput,
+                                      # bias=bias,
+                                      # srb2=[f'{s}'.encode() for s in srb2],
+                                      # srb1=srb1)
 
     # ----------------------------------------------------------------------
     def disconnect(self) -> None:

@@ -204,6 +204,7 @@ class BCIFramework(QMainWindow):
         self.clock_offset = 0
         self.eeg_size = 0
         self.aux_size = 0
+        self.sample_rate = 0
         self.last_update = 0
         QTimer().singleShot(1000, self.calculate_offset)
         QTimer().singleShot(3000, self.start_stimuli_server)
@@ -584,10 +585,10 @@ class BCIFramework(QMainWindow):
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
 
-            if ((value['value']['timestamp'] - self.last_update) < 3) and (self.eeg_size != 0) and (self.aux_size != 0):
-                return
+            # if ((value['value']['timestamp'] - self.last_update) < 3) and (self.eeg_size != 0) and (self.aux_size != 0):
+                # return
 
-            self.last_update = value['value']['timestamp']
+            # self.last_update = value['value']['timestamp']
 
             binary_created = datetime.fromtimestamp(
                 min(value['value']['context']['timestamp.binary']))
@@ -597,6 +598,13 @@ class BCIFramework(QMainWindow):
 
             if value['topic'] == 'eeg':
                 self.eeg_size = value['value']['data'].shape
+
+                # try:
+                    # self.sample_rate = self.eeg_size[1] / \
+                        # (value['value']['timestamp'] - self.last_update)
+                # except:
+                    # self.sample_rate = 0
+
             elif value['topic'] == 'aux':
                 self.aux_size = value['value']['data'].shape
 
@@ -608,6 +616,7 @@ class BCIFramework(QMainWindow):
             message = f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG{self.eeg_size} | AUX{self.aux_size}'
 
             self.status_bar(right_message=(message, True))
+            self.last_update = value['value']['timestamp']
 
     # ----------------------------------------------------------------------
     def update_kafka(self, host) -> None:

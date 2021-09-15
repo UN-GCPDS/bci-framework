@@ -12,7 +12,7 @@ import numpy as np
 
 import logging
 
-REVERSE_PLOT = True
+REVERSE_PLOT = False
 
 
 notch_filters = ('None', '50 Hz', '60 Hz')
@@ -32,8 +32,8 @@ class RawEEG(EEGStream):
     def __init__(self, *args, **kwargs):
         """"""
         super().__init__(*args, **kwargs)
-        DATAWIDTH = 700
-        BUFFER = 15
+        DATAWIDTH = 1000
+        BUFFER = 5
 
         if REVERSE_PLOT:
             self.axis, self.time, self.lines = self.create_lines(mode='eeg',
@@ -70,7 +70,7 @@ class RawEEG(EEGStream):
         eeg = self.buffer_eeg_resampled
         
         for i, line in enumerate(self.lines):
-            line.set_data(self.time, eeg[i] + self.scale*i)
+            line.set_data(self.time, (eeg[i]-np.mean(eeg[i])) + self.scale*i)
             
         self.feed()
 

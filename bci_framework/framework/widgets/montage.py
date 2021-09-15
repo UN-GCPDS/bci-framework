@@ -265,7 +265,7 @@ class TopoplotImpedances(TopoplotBase):
                 if impedances[ch] == '??':
                     label = f'??\,\Omega'
 
-                elif impedances[ch] < 100:
+                elif impedances[ch] < 1000:
 
                     z1 = int(impedances[ch])
                     z2 = int(np.ceil((impedances[ch] % 1) * 10))
@@ -661,7 +661,8 @@ class Montage:
 
         # types = [int(w.currentText() == 'Monopolar')
                  # for w in self.channels_bipolar_widgets]
-        types = [int(w.isChecked()) for w in self.channels_bipolar_widgets]
+        types = [int(not w.isChecked())
+                 for w in self.channels_bipolar_widgets]
 
         os.environ['BCISTREAM_CHANNELS'] = json.dumps(montage)
         os.environ['BCISTREAM_MONTAGE_TYPE'] = json.dumps(types)
@@ -681,9 +682,9 @@ class Montage:
 
             openbci = self.core.connection.openbci.openbci
 
-            openbci.command(openbci.SAMPLE_RATE_250SPS)
-            openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
-            openbci.leadoff_impedance(
+            a = openbci.command(openbci.SAMPLE_RATE_250SPS)
+            b = openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
+            c = openbci.leadoff_impedance(
                 prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
 
             self.measuring_impedance = True
@@ -696,6 +697,7 @@ class Montage:
                         z = np.array(
                             [self.topoplot_impedance.raw_to_z(v) for v in V])
                         self.update_impedance(z / 1000)
+                        # print(np.round(z / 1000, 2))
 
                         if not self.measuring_impedance:
                             self.core.connection.openbci.session_settings()

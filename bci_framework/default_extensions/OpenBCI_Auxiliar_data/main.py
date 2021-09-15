@@ -52,7 +52,7 @@ class OpenBCIAuxiliarData(EEGStream):
             else:
                 axis.legend(['D11', 'D12', 'D13', 'D17', 'D18'])
 
-        self.create_buffer(DATAWIDTH, resampling=DATAWIDTH, fill=np.nan, aux_shape=6)
+        self.create_buffer(DATAWIDTH, resampling=DATAWIDTH, fill=np.nan, aux_shape=3)
         self.stream()
         
     
