@@ -250,7 +250,11 @@ class TopoplotImpedances(TopoplotBase):
         info = mne.create_info(montage.ch_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
-        channels_names = self.remove_overlaping(info, channels_names)
+        # channels_names = self.remove_overlaping(info, channels_names)
+        if montage_name in ['standard_1020', 'standard_1005', None]:
+            for ch in ['T3', 'T5', 'T4', 'T6']:
+                channels_names.pop(channels_names.index(ch))
+
         info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
@@ -392,7 +396,7 @@ class Montage:
         self.topoplot_impedance = TopoplotImpedances()
         self.parent_frame.gridLayout_impedances.addWidget(
             self.topoplot_impedance)
-        self.update_impedance()
+        # self.update_impedance()
 
         self.load_montage()
 
@@ -688,14 +692,20 @@ class Montage:
                 prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
 
             self.measuring_impedance = True
+            V = []
             with OpenBCIConsumer(host=prop.HOST, topics=['eeg']) as stream:
 
                 for data in stream:
                     if data.topic == 'eeg':
 
-                        V = data.value['data']
+                        v = data.value['data']
+                        V.append(v)
+
+                        if len(V) > 10:
+                            V.pop(0)
+
                         z = np.array(
-                            [self.topoplot_impedance.raw_to_z(v) for v in V])
+                            [self.topoplot_impedance.raw_to_z(v) for v in np.concatenate(V, axis=1)])
                         self.update_impedance(z / 1000)
                         # print(np.round(z / 1000, 2))
 

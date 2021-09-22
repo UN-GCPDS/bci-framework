@@ -13,6 +13,7 @@ import sys
 import json
 import pickle
 import logging
+import time
 
 import mne
 import numpy as np
@@ -112,6 +113,8 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
 
         self.transformers_ = {}
         self.transformers_aux_ = {}
+        self.interact = {}
+        self.wait_for_interact()
 
     # ----------------------------------------------------------------------
     def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
@@ -220,61 +223,43 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
 
         return axis, time, lines
 
+    # # ----------------------------------------------------------------------
+    # def reverse_buffer(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
+        # """Add the boundary line to some visualizations."""
+
+        # if hasattr(self, 'boundary_line'):
+            # self.boundary_line.remove()
+            # start = self._pivot / prop.SAMPLE_RATE
+        # else:
+            # self._pivot = 0
+            # self._pivot_aux = 0
+            # start = 0
+
+        # self.boundary_line = axis.vlines(
+            # start, min, max, color=color, zorder=99)
+
+    # # ----------------------------------------------------------------------
+    # def plot_pivot(self):
+        # """Update the position of the boundary line."""
+
+        # if hasattr(self, 'boundary_line'):
+            # segments = self.boundary_line.get_segments()
+            # segments[0][:, 0] = [self._pivot / prop.SAMPLE_RATE,
+                                 # self._pivot / prop.SAMPLE_RATE]
+            # self.boundary_line.set_segments(segments)
+
+        # else:
+            # logging.warning('No "boundary" to plot')
+
+    # # ----------------------------------------------------------------------
+    # def feed(self):
+        # """"""
+        # super().feed()
+
     # ----------------------------------------------------------------------
-    def reverse_buffer(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
-        """Add the boundary line to some visualizations."""
-
-        if hasattr(self, 'boundary_line'):
-            self.boundary_line.remove()
-            start = self._pivot / prop.SAMPLE_RATE
-        else:
-            self._pivot = 0
-            self._pivot_aux = 0
-            start = 0
-
-        self.boundary_line = axis.vlines(
-            start, min, max, color=color, zorder=99)
-
-    # ----------------------------------------------------------------------
-    def plot_pivot(self):
-        """Update the position of the boundary line."""
-
-        if hasattr(self, 'boundary_line'):
-            segments = self.boundary_line.get_segments()
-            segments[0][:, 0] = [self._pivot / prop.SAMPLE_RATE,
-                                 self._pivot / prop.SAMPLE_RATE]
-            self.boundary_line.set_segments(segments)
-
-        else:
-            logging.warning('No "boundary" to plot')
-
-    # ----------------------------------------------------------------------
-    def feed(self):
+    def wait_for_interact(self):
         """"""
-        if hasattr(self, 'boundary_line'):
-            self.plot_pivot()
-        super().feed()
-
-
-#  Create interact file with custom widgets
-
-if os.path.exists(os.path.join(sys.path[0], 'interact')):
-    os.remove(os.path.join(sys.path[0], 'interact'))
-
-
-# ----------------------------------------------------------------------
-def interact(*topics) -> Callable:
-    """"""
-
-    with open(os.path.join(sys.path[0], 'interact'), 'a+') as file:
-        file.write(json.dumps(topics) + '\n')
-
-    def wrap_wrap(fn: Callable) -> Callable:
-        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
-
-        arguments
-
-        def wrap(cls, *args, **kwargs):
-            fn(*([cls] + list(args)), **kwargs)
-        return wrap
-    return wrap_wrap
+        with open(os.path.join(sys.path[0], 'interact'), 'r') as file:
+            for line in file.readlines():
+                l = json.loads(line)
+                self.interact[l[0].lower().replace(' ', '_')] = l[3]

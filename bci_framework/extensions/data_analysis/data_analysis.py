@@ -146,112 +146,32 @@ class DataAnalysis:
 
             c = eeg.shape[1]
 
-            if self._pivot is None:
-                self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
-                self.buffer_eeg_[:, -c:] = eeg
+            self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
+            self.buffer_eeg_[:, -c:] = eeg
 
-                self.buffer_timestamp_ = np.roll(
-                    self.buffer_timestamp_, -c, axis=0)
-                self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
-                self.buffer_timestamp_[-1] = timestamp
+            self.buffer_timestamp_ = np.roll(
+                self.buffer_timestamp_, -c, axis=0)
+            self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
+            self.buffer_timestamp_[-1] = timestamp
 
-                if hasattr(self, 'buffer_eeg_split'):
-                    self.buffer_eeg_split = np.roll(
-                        self.buffer_eeg_split, -c)
-
-                # if not aux is None:
-                    # d = aux.shape[1]
-                    # self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
-                    # self.buffer_aux_[:, -d:] = aux
-
-            else:
-                roll = 0
-                if self._pivot + c >= self.buffer_eeg_.shape[1]:
-                    roll = self.buffer_eeg_.shape[1] - (self._pivot + c)
-                    self.buffer_eeg_ = np.roll(
-                        self.buffer_eeg_, -roll, axis=1)
-                    self.buffer_eeg_[:, -eeg.shape[1]:] = eeg
-                    self.buffer_eeg_ = np.roll(
-                        self.buffer_eeg_, roll, axis=1)
-
-                else:
-                    self.buffer_eeg_[:, self._pivot:self._pivot + c] = eeg
-
-                self._pivot += c
-                self._pivot = self._pivot % self.buffer_eeg_.shape[1]
-
-                # if not aux is None:
-                    # d = aux.shape[1]
-
-                    # roll = 0
-                    # if self._pivot_aux + d >= self.buffer_aux_.shape[1]:
-                        # roll = self._pivot_aux + d
-
-                    # if roll:
-                        # self.buffer_aux_ = np.roll(
-                            # self.buffer_aux_, -roll, axis=1)
-
-                    # if (self.buffer_aux_[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
-                        # l = self.buffer_aux_[:,
-                                             # self._pivot_aux:self._pivot_aux + d].shape[1]
-                        # # logging.warning([l, aux.shape[1]])
-
-                        # self.buffer_aux_[:,
-                                         # self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
-                    # else:
-                        # self.buffer_aux_[:,
-                                         # self._pivot_aux:self._pivot_aux + d] = aux
-
-                    # if roll:
-                        # self.buffer_aux_ = np.roll(
-                            # self.buffer_aux_, roll, axis=1)
-
-                    # self._pivot_aux += d
-                    # self._pivot_aux = self._pivot_aux % self.buffer_aux_.shape[1]
+            if hasattr(self, 'buffer_eeg_split'):
+                self.buffer_eeg_split = np.roll(
+                    self.buffer_eeg_split, -c)
 
         if not aux is None:
             d = aux.shape[1]
 
-            if self._pivot is None:
-                self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
-                self.buffer_aux_[:, -d:] = aux
+            self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
+            self.buffer_aux_[:, -d:] = aux
 
-                self.buffer_aux_timestamp_ = np.roll(
-                    self.buffer_aux_timestamp_, -d, axis=0)
-                self.buffer_aux_timestamp_[-d:] = np.zeros(aux.shape[1])
-                self.buffer_aux_timestamp_[-1] = timestamp
+            self.buffer_aux_timestamp_ = np.roll(
+                self.buffer_aux_timestamp_, -d, axis=0)
+            self.buffer_aux_timestamp_[-d:] = np.zeros(aux.shape[1])
+            self.buffer_aux_timestamp_[-1] = timestamp
 
-                if hasattr(self, 'buffer_aux_split'):
-                    self.buffer_aux_split = np.roll(
-                        self.buffer_aux_split, -d)
-
-            else:
-
-                roll = 0
-                if self._pivot_aux + d >= self.buffer_aux_.shape[1]:
-                    roll = self._pivot_aux + d
-
-                if roll:
-                    self.buffer_aux_ = np.roll(
-                        self.buffer_aux_, -roll, axis=1)
-
-                if (self.buffer_aux_[:, self._pivot_aux:self._pivot_aux + d]).shape != aux.shape:
-                    l = self.buffer_aux_[:,
-                                         self._pivot_aux:self._pivot_aux + d].shape[1]
-                    # logging.warning([l, aux.shape[1]])
-
-                    self.buffer_aux_[:,
-                                     self._pivot_aux:self._pivot_aux + d] = aux[:, :l]
-                else:
-                    self.buffer_aux_[:,
-                                     self._pivot_aux:self._pivot_aux + d] = aux
-
-                if roll:
-                    self.buffer_aux_ = np.roll(
-                        self.buffer_aux_, roll, axis=1)
-
-                self._pivot_aux += d
-                self._pivot_aux = self._pivot_aux % self.buffer_aux_.shape[1]
+            if hasattr(self, 'buffer_aux_split'):
+                self.buffer_aux_split = np.roll(
+                    self.buffer_aux_split, -d)
 
     # ----------------------------------------------------------------------
     def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:

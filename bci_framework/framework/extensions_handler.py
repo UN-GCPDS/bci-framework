@@ -13,16 +13,15 @@ from typing import Optional, Literal, List, Callable
 
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QTimer, Qt
-from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar
+from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar, QActionGroup
 
 from .subprocess_handler import LoadSubprocess
 from .config_manager import ConfigManager
 
 BCIFR_FILE = 'bcifr'
 
+
 ########################################################################
-
-
 class ExtensionMenu:
     """MDIArea menu for extensions."""
 
@@ -101,16 +100,43 @@ class ExtensionMenu:
     def build_interactive(self, items):
         """"""
         for item in items:
-            name, values, default = item
+            name, values, default, _, exclusive = item
             menu_ = QMenu(f'{name} ({default})')
+
             for value in values:
-                action = QAction(
-                    f'{value}', menu_, checkable=True, triggered=self.set_interactive(menu_, name, value))
+
+                if not exclusive:
+                    # ag = QActionGroup(None)
+                    # action = ag.addAction(QAction(
+                        # f'{value}', menu_, checkable=True, checked=True))
+                    action = QAction(
+                        f'{value}', menu_, checkable=True, triggered=self.set_interactive_ne(menu_, name, value))
+                else:
+                    action = QAction(
+                        f'{value}', menu_, checkable=True, triggered=self.set_interactive(menu_, name, value))
                 menu_.addAction(action)
+
                 if value == default:
                     action.setChecked(True)
                 self.main.INTERACTIVE[name] = default
             self.menubar.addMenu(menu_)
+
+    # ----------------------------------------------------------------------
+    def set_interactive_ne(self, menu_, name: str, value: int) -> Callable:
+        """Set the DPI value for matplotlib figures."""
+        def wrap():
+            if value == 'All':
+                [action.setChecked(False) for action in menu_.actions()]
+                [action.setChecked(True) for action in menu_.actions(
+                ) if action.text() == f'{value}']
+
+            else:
+                menu_.actions()[0].setChecked(False)
+
+            self.main.INTERACTIVE[name] = ','.join([
+                action.text() for action in menu_.actions() if action.isChecked()])
+            menu_.setTitle(f'{name} ({value})')
+        return wrap
 
     # ----------------------------------------------------------------------
     def set_interactive(self, menu_, name: str, value: int) -> Callable:

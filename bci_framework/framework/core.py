@@ -366,6 +366,21 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_open_records_folder.clicked.connect(
             lambda: self.open_folder_in_system(self.main.label_records_path.text()))
 
+        self.main.checkBox_board1.toggled.connect(
+            lambda checked: not checked and self.main.checkBox_board1.setChecked(True))
+        # self.main.checkBox_board1.toggled.connect(
+            # lambda b: self.board_handle(self.main.checkBox_board2, b))
+        self.main.checkBox_board2.toggled.connect(
+            lambda b: self.board_handle(self.main.checkBox_board3, b))
+        self.main.checkBox_board3.toggled.connect(
+            lambda b: self.board_handle(self.main.checkBox_board4, b))
+
+    # ----------------------------------------------------------------------
+    def board_handle(self, chbox, b):
+        """"""
+        chbox.setEnabled(b)
+        chbox.setChecked(False)
+
     # ----------------------------------------------------------------------
     def open_folder_in_system(self, path) -> None:
         """"""

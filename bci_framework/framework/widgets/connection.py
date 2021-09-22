@@ -143,14 +143,14 @@ class OpenBCIThread(QThread):
             return
 
         self.openbci.command(sample_rate)
-        if self.checkBox_default_settings:
-            self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
-        # self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
-                                      # gain=gain,
-                                      # input_type=adsinput,
-                                      # bias=bias,
-                                      # srb2=[f'{s}'.encode() for s in srb2],
-                                      # srb1=srb1)
+        # if self.checkBox_default_settings:
+            # self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
+        self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
+                                      gain=gain,
+                                      input_type=adsinput,
+                                      bias=bias,
+                                      srb2=[f'{s}'.encode() for s in srb2],
+                                      srb1=srb1)
 
     # ----------------------------------------------------------------------
     def disconnect(self) -> None:

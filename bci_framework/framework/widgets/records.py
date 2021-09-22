@@ -369,13 +369,21 @@ class Records:
     # ----------------------------------------------------------------------
     def export_to_edf(self, filename):
         """"""
-        h5 = os.path.join(self.records_dir, f'{filename}.h5')
-        with HDF5Reader(h5) as reader:
-            reader.to_edf(h5.replace('.h5', '.edf'))
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            h5 = os.path.join(self.records_dir, f'{filename}.h5')
+            with HDF5Reader(h5) as reader:
+                reader.to_edf(h5.replace('.h5', '.edf'))
+        finally:
+            QApplication.restoreOverrideCursor()
 
     # ----------------------------------------------------------------------
     def export_to_numpy(self, filename):
         """"""
-        h5 = os.path.join(self.records_dir, f'{filename}.h5')
-        with HDF5Reader(h5) as reader:
-            reader.to_npy(h5.replace('.h5', ''))
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            h5 = os.path.join(self.records_dir, f'{filename}.h5')
+            with HDF5Reader(h5) as reader:
+                reader.to_npy(h5.replace('.h5', ''))
+        finally:
+            QApplication.restoreOverrideCursor()
