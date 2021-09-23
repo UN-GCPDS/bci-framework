@@ -100,6 +100,10 @@ class ExtensionMenu:
     def build_interactive(self, items):
         """"""
         for item in items:
+
+            if item[0] == '#':
+                continue
+
             name, values, default, _, exclusive = item
             menu_ = QMenu(f'{name} ({default})')
 

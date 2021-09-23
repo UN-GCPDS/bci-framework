@@ -600,8 +600,8 @@ class BCIFramework(QMainWindow):
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
 
-            # if ((value['value']['timestamp'] - self.last_update) < 3) and (self.eeg_size != 0) and (self.aux_size != 0):
-                # return
+            if ((value['value']['timestamp'] - self.last_update) < 1) and (self.eeg_size != 0) and (self.aux_size != 0):
+                return
 
             # self.last_update = value['value']['timestamp']
 
@@ -629,6 +629,9 @@ class BCIFramework(QMainWindow):
                 color = '#3fc55e'  # recent data
 
             message = f'Last package streamed <b style="color:{color};">{since*1000:0.2f} ms </b> ago | EEG{self.eeg_size} | AUX{self.aux_size}'
+
+            if status := getattr(self.records, 'recording_status', None):
+                message += f' | <b style="color:#dc3545;">{status}</b>'
 
             self.status_bar(right_message=(message, True))
             self.last_update = value['value']['timestamp']

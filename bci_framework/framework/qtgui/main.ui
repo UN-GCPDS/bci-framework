@@ -1309,7 +1309,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>502</width>
-                  <height>491</height>
+                  <height>488</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1351,7 +1351,7 @@ p, li { white-space: pre-wrap; }
                       <x>0</x>
                       <y>0</y>
                       <width>502</width>
-                      <height>479</height>
+                      <height>476</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -2971,7 +2971,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>502</width>
-              <height>605</height>
+              <height>601</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3428,7 +3428,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3477,7 +3477,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3526,7 +3526,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>

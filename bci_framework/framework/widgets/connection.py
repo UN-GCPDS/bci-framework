@@ -11,13 +11,14 @@ import types
 import logging
 import requests
 
-from openbci_stream.acquisition import Cyton, CytonBase, CytonR
+from openbci_stream.acquisition import Cyton, CytonBase, CytonR, wifi
 from PySide2.QtCore import Qt, Signal, QThread, Slot
 from PySide2.QtGui import QCursor, QIcon
 from PySide2.QtWidgets import QApplication
 
 from ..dialogs import Dialogs
 from ...extensions import properties as prop
+from ...extensions.data_analysis.utils import thread_this
 
 
 ########################################################################
@@ -285,6 +286,7 @@ class Connection:
         """"""
         target.setText('')
 
+        @thread_this
         def inset():
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             ip = combo.currentText()
@@ -294,14 +296,16 @@ class Connection:
                 target.setStyleSheet("""*{
                 background-color: transparent !important;
                  }""")
-                response = requests.get(f'http://{ip}/board', timeout=0.3)
-                if response.json()['board_connected']:
+
+                response = wifi(
+                    self.parent_frame.comboBox_host.currentText(), ip)
+
+                if response['board_connected']:
                     target.setText(
-                        f"connected ({response.json()['num_channels']} ch)")
+                        f"connected ({response['num_channels']} ch)")
                     target.setProperty('class', 'success icon_button')
                     combo.valid = True
-                    self.channels_assignations[board] = response.json()[
-                        'num_channels']
+                    self.channels_assignations[board] = response['num_channels']
                 else:
                     target.setText('connected (no board detected)')
                     target.setProperty('class', 'danger icon_button')

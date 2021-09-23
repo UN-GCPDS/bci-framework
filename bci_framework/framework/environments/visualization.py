@@ -62,7 +62,8 @@ class Visualization:
 
         self.visualizations_list = []
         for i in range(self.parent_frame.listWidget_projects_visualizations.count()):
-            item = self.parent_frame.listWidget_projects_visualizations.item(i)
+            item = self.parent_frame.listWidget_projects_visualizations.item(
+                i)
             if item.text().startswith('_'):
                 continue
             if item.text().startswith('Tutorial :'):
@@ -127,7 +128,8 @@ class Visualization:
         if self.parent_frame.tableWidget_anlaysis.rowCount() == 0:
             self.parent_frame.tableWidget_anlaysis.clear()
             self.parent_frame.tableWidget_anlaysis.setRowCount(0)
-            self.parent_frame.tableWidget_anlaysis.setColumnCount(len(columns))
+            self.parent_frame.tableWidget_anlaysis.setColumnCount(
+                len(columns))
             self.parent_frame.tableWidget_anlaysis.setHorizontalHeaderLabels(
                 columns)
             already_items = []
@@ -164,6 +166,8 @@ class Visualization:
                     item = QTableWidgetItem(script_name)
                     item.setCheckState(Qt.Unchecked)
                     item.is_running = False
+                    item.path = self.core.projects.normalize_path(
+                        item.text())
                 else:
                     item = QTableWidgetItem()
 
@@ -216,7 +220,7 @@ class Visualization:
     # ----------------------------------------------------------------------
     def start_script(self, item) -> None:
         """"""
-        script = item.text()
+        script = item.path
         item.setCheckState(Qt.Checked)
         item.subprocess = run_subprocess([sys.executable, os.path.join(
             self.core.projects.projects_dir, script, 'main.py')])
@@ -258,7 +262,8 @@ class Visualization:
             self.process_status_timer.stop()
 
         enable = self.process_status_timer.isActive()
-        self.parent_frame.pushButton_visualizations_stop_all.setEnabled(enable)
+        self.parent_frame.pushButton_visualizations_stop_all.setEnabled(
+            enable)
         self.parent_frame.pushButton_visualizations_restart_all.setEnabled(
             enable)
 

@@ -316,8 +316,8 @@ class Records:
         now = datetime.now()
         delta = now - self.start_record
         n_time = datetime.strptime(str(delta), '%H:%M:%S.%f').time()
-        self.parent_frame.pushButton_record.setText(
-            f"Recording [{n_time.strftime('%H:%M:%S')}]")
+        self.recording_status = f"Recording [{n_time.strftime('%H:%M:%S')}]"
+        self.parent_frame.pushButton_record.setText(self.recording_status)
 
     # ----------------------------------------------------------------------
     def record_signal(self, toggled: bool) -> None:
@@ -336,6 +336,7 @@ class Records:
                 self.subprocess_script = run_subprocess([sys.executable, os.path.join(
                     os.environ['BCISTREAM_HOME'], 'kafka_scripts', 'record.py')])
         else:
+            self.recording_status = None
             self.timer.stop()
             self.parent_frame.pushButton_record.setText(f"Record")
             self.subprocess_script.terminate()
