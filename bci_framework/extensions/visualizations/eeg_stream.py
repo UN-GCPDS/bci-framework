@@ -113,7 +113,7 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
 
         self.transformers_ = {}
         self.transformers_aux_ = {}
-        self.interact = {}
+        self.widget_value = {}
         self.wait_for_interact()
 
     # ----------------------------------------------------------------------
@@ -167,11 +167,11 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         elif mode == 'analog' and not prop.CONNECTION == 'wifi':
             channels = 3
             labels = ['A5(D11)', 'A6(D12)', 'A7(D13)']
-            ylim = 0, 255
+            ylim = 0, 2 ** 10
         elif mode == 'analog' and prop.CONNECTION == 'wifi':
             channels = 2
             labels = ['A5(D11)', 'A6(D12)']
-            ylim = 0, 255
+            ylim = 0, 2 ** 10
         elif mode == 'digital' and not prop.CONNECTION == 'wifi':
             channels = 5
             labels = ['D11', 'D12', 'D13', 'D17', 'D18']
@@ -205,6 +205,9 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
             )[0]
             for i in range(channels)
         ]
+
+        if labels:
+            axis.legend()
 
         if time > 0:
             axis.set_xlim(0, time)
@@ -259,7 +262,12 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
     # ----------------------------------------------------------------------
     def wait_for_interact(self):
         """"""
-        with open(os.path.join(sys.path[0], 'interact'), 'r') as file:
-            for line in file.readlines():
-                l = json.loads(line)
-                self.interact[l[0].lower().replace(' ', '_')] = l[3]
+        if os.path.exists(os.path.join(sys.path[0], 'interact')):
+            with open(os.path.join(sys.path[0], 'interact'), 'r') as file:
+                for line in file.readlines():
+                    l = json.loads(line)
+                    if l[0] == '#':
+                        ll, v = l[1], l[4]
+                    else:
+                        ll, v = l[0], l[3]
+                    self.widget_value[ll] = v

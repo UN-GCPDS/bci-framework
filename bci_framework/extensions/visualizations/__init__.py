@@ -8,4 +8,4 @@ with fast streaming plotting based on web applications.
 """
 
 from .eeg_stream import EEGStream
-
+from .interactive_widgets import Widgets, interact

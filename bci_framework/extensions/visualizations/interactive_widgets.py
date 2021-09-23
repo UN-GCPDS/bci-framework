@@ -1,9 +1,11 @@
 import os
 import sys
 import json
+import logging
 from ...extensions import properties as prop
 from typing import Callable
 
+from functools import wraps
 from gcpds.filters import frequency as flt
 
 import numpy as np
@@ -27,18 +29,18 @@ if os.path.exists(os.path.join(sys.path[0], 'interact')):
 def interact(*topics, exclusive=True) -> Callable:
     """"""
 
-    with open(os.path.join(sys.path[0], 'interact'), 'a+') as file:
-
-        if len(topics) == 3:
-            extra = [topics[-1]]
-        else:
-            extra = []
-        file.write(json.dumps(list(topics) + extra + [exclusive]) + '\n')
-
     def wrap_wrap(fn: Callable) -> Callable:
 
+        with open(os.path.join(sys.path[0], 'interact'), 'a+') as file:
+            if len(topics) == 3:
+                extra = [topics[-1]]
+            else:
+                extra = []
+            file.write(json.dumps(['#'] + list(topics)
+                                  + extra + [exclusive]) + '\n')
+
         def wrap(cls, *args, **kwargs):
-            cls.interact[topics[0].lower().replace(' ', '_')] = topics[2]
+            cls.widget_value[topics[0]] = topics[2]
             fn(*([cls] + list(args)), **kwargs)
         return wrap
     return wrap_wrap
@@ -47,6 +49,7 @@ def interact(*topics, exclusive=True) -> Callable:
 ########################################################################
 class Filters:
     """"""
+
     # ----------------------------------------------------------------------
     @interact('BandPass', bandpass_filters, 'none')
     def interact_bandpass(self, bandpass):
@@ -83,7 +86,7 @@ class Filters:
         self.axis.set_ylim(-scale, scale * len(prop.CHANNELS))
         self.axis.set_yticks(np.linspace(
             0, (len(prop.CHANNELS) - 1) * scale, len(prop.CHANNELS)))
-        self.interact['scale'] = scale
+        self.widget_value['Scale'] = scale
 
 
 ########################################################################
@@ -95,11 +98,11 @@ class Channels:
     def interact_channels(self, channels):
         """"""
         channels = channels.split(',')
-        self.interact['channels'] = [
+        self.widget_value['Channels'] = [
             k - 1 for k in prop.CHANNELS if prop.CHANNELS[k] in channels]
 
-        if not self.interact['channels']:
-            self.interact['channels'] = 'All'
+        if not self.widget_value['Channels']:
+            self.widget_value['Channels'] = 'All'
 
 
 ########################################################################
@@ -110,7 +113,7 @@ class Substract:
     @interact('Substract', substract, 'none')
     def interact_substract(self, substract):
         """"""
-        self.interact['substract'] = substract
+        self.widget_value['Substract'] = substract
 
 
 ########################################################################
@@ -121,4 +124,28 @@ class WindowTime:
     @interact('Window time', window_time, '30 s', 30)
     def interact_window_time(self, window_time):
         """"""
-        self.interact['window_time'] = int(window_time.replace(' s', ''))
+        self.widget_value['Window time'] = int(window_time.replace(' s', ''))
+
+
+########################################################################
+class Widgets(Filters, Channels, Substract, WindowTime):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def enable_widgets(self, *widgets):
+        """"""
+        lines = []
+        with open(os.path.join(sys.path[0], 'interact'), 'r') as file:
+
+            for l in file.readlines():
+                line = json.loads(l)
+                if (line[0] == '#') and (line[1] in widgets):
+                    lines.append(json.dumps(line[1:]) + '\n')
+                else:
+                    lines.append(json.dumps(line) + '\n')
+
+        with open(os.path.join(sys.path[0], 'interact'), 'w') as file:
+            file.writelines(lines)
+
+
+
