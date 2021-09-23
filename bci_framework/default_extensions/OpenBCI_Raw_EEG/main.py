@@ -4,8 +4,7 @@ Raw EEG
 =======
 """
 
-from bci_framework.extensions.visualizations import EEGStream
-from bci_framework.extensions.visualizations.interact import Filters, Channels, Substract, WindowTime, interact
+from bci_framework.extensions.visualizations import EEGStream, Widgets
 from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 
@@ -16,7 +15,7 @@ import logging
 
 
 ########################################################################
-class RawEEG(EEGStream, Filters, Substract, WindowTime, Channels):
+class RawEEG(EEGStream, Widgets):
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
@@ -24,6 +23,14 @@ class RawEEG(EEGStream, Filters, Substract, WindowTime, Channels):
         super().__init__(*args, **kwargs)
         DATAWIDTH = 1000
         BUFFER = 30
+        
+        self.enable_widgets('BandPass',
+                            'Notch',
+                            'Scale',
+                            'Channels',
+                            'Substract',
+                            'Window time',
+                            )
 
         self.axis, self.time, self.lines = self.create_lines(time=-BUFFER, window=DATAWIDTH)
         self.axis.set_title('Raw EEG')
@@ -43,10 +50,10 @@ class RawEEG(EEGStream, Filters, Substract, WindowTime, Channels):
     def stream(self):
         """"""
     
-        scale = self.interact['scale']
-        substract = self.interact['substract']
-        channels = self.interact['channels']
-        window_time = self.interact['window_time']
+        scale = self.widget_value['Scale']
+        substract = self.widget_value['Substract']
+        channels = self.widget_value['Channels']
+        window_time = self.widget_value['Window time']
         
         eeg = self.buffer_eeg[:,-window_time*prop.SAMPLE_RATE:]
         t = np.linspace(-window_time, 0, eeg.shape[1])  
