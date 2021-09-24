@@ -547,8 +547,8 @@ class BCIFramework(QMainWindow):
         about.pushButton_close.clicked.connect(
             lambda evt: about.destroy())
 
-        about.label.setMinimumSize(QSize(720, 200))
-        about.label.setMaximumSize(QSize(720, 200))
+        about.label.setMinimumSize(QSize(600, 200))
+        about.label.setMaximumSize(QSize(600, 200))
 
         banner = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png')
