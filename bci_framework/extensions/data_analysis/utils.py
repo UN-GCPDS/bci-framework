@@ -6,7 +6,10 @@ Utils
 This module define usefull decorators to use with data analysis.
 """
 
+import os
+import json
 import time
+import logging
 import random
 from datetime import datetime, timedelta
 from multiprocessing import Process
@@ -60,11 +63,15 @@ def timeit(fn: Callable) -> Callable:
 
 
 # ----------------------------------------------------------------------
-def loop_consumer(*topics) -> Callable:
+def loop_consumer(*topics, package_size=None) -> Callable:
     """Decorator to iterate methods with new streamming data.
 
     This decorator will call a method on every new data streamming input.
     """
+
+    if json.loads(os.getenv('BCISTREAM_RASPAD')):
+        package_size = 1000
+
     def wrap_wrap(fn: Callable) -> Callable:
 
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
@@ -73,15 +80,16 @@ def loop_consumer(*topics) -> Callable:
             with OpenBCIConsumer(host=prop.HOST, topics=topics) as stream:
                 frame = 0
                 for data in stream:
+
                     if data.topic == 'eeg':
                         frame += 1
-                        if hasattr(cls, 'buffer_eeg'):
+                        if hasattr(cls, 'buffer_eeg_'):
                             cls.update_buffer(
                                 eeg=data.value['data'], timestamp=min(data.value['context']['timestamp.binary']) - prop.OFFSET)
                         data_ = data.value['data']
                     elif data.topic == 'aux':
                         frame += 1
-                        if hasattr(cls, 'buffer_aux'):
+                        if hasattr(cls, 'buffer_aux_'):
                             cls.update_buffer(
                                 aux=data.value['data'], timestamp=min(data.value['context']['timestamp.binary']) - prop.OFFSET)
                         data_ = data.value['data']
@@ -104,7 +112,12 @@ def loop_consumer(*topics) -> Callable:
                               'latency': latency,
                               }
 
-                    fn(*[cls] + [kwargs[v] for v in arguments])
+                    if package_size:
+                        n = (package_size // prop.STREAMING_PACKAGE_SIZE)
+                        if frame % n == 0:
+                            fn(*[cls] + [kwargs[v] for v in arguments])
+                    else:
+                        fn(*[cls] + [kwargs[v] for v in arguments])
         return wrap
     return wrap_wrap
 
@@ -270,7 +283,6 @@ def marker_slicing(markers, t0, duration):
                         fn(*[cls] + [kwargs[v] for v in arguments])
 
                     else:
-                        import logging
                         # logging.warning('Date too old to synchronize')
                         logging.warning(
                             f'{datetime.fromtimestamp(cls.buffer_aux_timestamp[-1]), (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0))}')

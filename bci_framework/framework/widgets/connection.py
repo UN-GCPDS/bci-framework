@@ -11,14 +11,14 @@ import types
 import logging
 import requests
 
-from openbci_stream.acquisition import Cyton, CytonBase, CytonR, wifi
-from PySide2.QtCore import Qt, Signal, QThread, Slot
+from openbci_stream.acquisition import Cyton, CytonBase, wifi, restart_services
+from PySide2.QtCore import Qt, Signal, QThread, Slot, QTimer
 from PySide2.QtGui import QCursor, QIcon
 from PySide2.QtWidgets import QApplication
 
 from ..dialogs import Dialogs
 from ...extensions import properties as prop
-from ...extensions.data_analysis.utils import thread_this
+# from ...extensions.data_analysis.utils import thread_this
 
 
 ########################################################################
@@ -39,21 +39,21 @@ class OpenBCIThread(QThread):
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
 
-        if sum(self.channels_assignations) > len(self.montage):
+        if sum(self.channels_assignations) != len(self.montage):
             self.connection_fail.emit(
                 ['* The number of electrodes defined in montage not correspon with the number of boards available.'])
             return
 
         try:
-            self.openbci = CytonR(self.mode,
-                                  self.endpoint,
-                                  host=self.host,
-                                  capture_stream=False,
-                                  daisy=self.daisy,
-                                  montage=self.montage,
-                                  streaming_package_size=self.streaming_package_size,
-                                  number_of_channels=self.channels_assignations,
-                                  )
+            self.openbci = Cyton(self.mode,
+                                 self.endpoint,
+                                 host=self.host,
+                                 capture_stream=False,
+                                 daisy=self.daisy,
+                                 montage=self.montage,
+                                 streaming_package_size=self.streaming_package_size,
+                                 number_of_channels=self.channels_assignations,
+                                 )
 
         except Exception as msg:
             logging.warning(msg)
@@ -221,6 +221,18 @@ class Connection:
         self.connect()
         self.core.config.connect_widgets(self.update_config, self.config)
 
+        QTimer().singleShot(1000, self.autoconnect)
+
+    # ----------------------------------------------------------------------
+    def restart_services(self):
+        """"""
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            try:
+                restart_services(prop.HOST)
+            except:
+                logging.warning(
+                    f'Impossible to restart services on {prop.HOST}')
+
     # ----------------------------------------------------------------------
     def on_focus(self) -> None:
         """Try to autoconnect."""
@@ -232,7 +244,7 @@ class Connection:
             target = getattr(self.parent_frame, f'pushButton_ip{i}')
             check = getattr(self.parent_frame, f'checkBox_board{i}')
             if check.isChecked():
-                self.request_wifi(i, target, combo)()
+                self.request_wifi(i, target, combo, no_cursor=True)()
 
     # ----------------------------------------------------------------------
     def load_config(self) -> None:
@@ -282,13 +294,15 @@ class Connection:
         return wrapped
 
     # ----------------------------------------------------------------------
-    def request_wifi(self, board, target, combo):
+    def request_wifi(self, board, target, combo, no_cursor=False):
         """"""
         target.setText('')
 
-        @thread_this
+        # @thread_this
         def inset():
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            if not no_cursor:
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
             ip = combo.currentText()
             combo.valid = False
 
@@ -327,7 +341,9 @@ class Connection:
                 target.update()
                 if board in self.channels_assignations:
                     del self.channels_assignations[board]
-            QApplication.restoreOverrideCursor()
+
+            if not no_cursor:
+                QApplication.restoreOverrideCursor()
         return inset
 
     # ----------------------------------------------------------------------
@@ -382,11 +398,18 @@ class Connection:
             self.parent_frame.spinBox_tcp_latency.setEnabled(True)
 
     # ----------------------------------------------------------------------
+    def autoconnect(self) -> None:
+        """"""
+        logging.info('Trying to auto connect')
+        self.core.calculate_offset()
+        if getattr(self.core, 'streaming', False) and not self.openbci.connected:
+            self.openbci_connect()
+
+    # ----------------------------------------------------------------------
     def on_connect(self, toggled: bool) -> None:
         """Event to handle connection."""
 
         self.core.calculate_offset()
-
         if getattr(self.core, 'streaming', False) and not self.openbci.connected:
             self.openbci_connect()
         else:
@@ -394,6 +417,7 @@ class Connection:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 self.core.update_kafka(
                     self.parent_frame.comboBox_host.currentText())
+                self.restart_services()
                 self.openbci_connect()
 
             else:   # Disconnect

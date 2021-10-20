@@ -27,7 +27,7 @@ class Properties:
             ...
     ```
     """
-    # print('WARNING -  USING CUSTOM PROPERTIES')
+    # print('WARNING - USING CUSTOM PROPERTIES')
     # HOST = '192.168.1.1'
     # CHANNELS = {i + 1: f'ch-{i+1}' for i in range(32)}
     # SAMPLE_RATE = 1000
@@ -36,6 +36,7 @@ class Properties:
     # CONNECTION = 'wifi'
     # SYNCLATENCY = 0
     # OFFSET = 0
+    # DAISY = [True]
 
     # ----------------------------------------------------------------------
     def __getattr__(self, attr: str):

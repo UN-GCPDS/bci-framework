@@ -8,15 +8,14 @@ from bci_framework.extensions.visualizations import EEGStream, Widgets
 from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 
-import numpy as np
-
-import logging
-
-
+import numpy as np  
+import logging  
+ 
+ 
 
 ########################################################################
 class RawEEG(EEGStream, Widgets):
-
+ 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
@@ -73,13 +72,9 @@ class RawEEG(EEGStream, Widgets):
                 line.set_data(t, (eeg[i] - np.mean(eeg)) + scale * i)
             elif (substract == 'Cz') and ('Cz' in prop.CHANNELS.values()):
                 index = list(prop.CHANNELS.values()).index('Cz')
-                line.set_data(t, (eeg[i] - eeg[index-1]) + scale * i)
+                line.set_data(t, (eeg[i] - eeg[index-1]) + scale * i)                
                 
         self.feed()
-
-
-
-
 
 
 if __name__ == '__main__':

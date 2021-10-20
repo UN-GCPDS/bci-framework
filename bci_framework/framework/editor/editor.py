@@ -6,6 +6,7 @@ BCIEditor
 """
 
 import os
+import json
 from typing import Literal, TypeVar
 
 from PySide2.QtWidgets import QTextEdit, QCompleter
@@ -43,7 +44,11 @@ class BCIEditor(QTextEdit):
         else:
             font_color = 'white'
 
-        # editor = QTextEdit()
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            font_size = 11
+        else:
+            font_size = 15
+
         self.setStyleSheet(f"""
         QTextEdit {{
         background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
@@ -51,8 +56,8 @@ class BCIEditor(QTextEdit):
         height: 18px;
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
-        font-size: 15px;
-        line-height: 15px;
+        font-size: {font_size}px;
+        line-height: {font_size}px;
         border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
         border-radius: 4px;
         height: 18px;
@@ -87,10 +92,15 @@ class BCIEditor(QTextEdit):
         lines = len(self.toPlainText().split('\n'))
         lines_ln = len(self.linenumber.toPlainText().split('\n'))
 
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            font_size = 11
+        else:
+            font_size = 15
+
         if lines != lines_ln:
             content = [f'{l}' for l in range(1, lines + 1)]
             self.linenumber.setHtml(
-                f'<p style="text-align: right; line-height: 18px">{"<br>".join(content)}</p>')
+                f'<p style="text-align: right; line-height: {font_size}px; font-size: {font_size}px">{"<br>".join(content)}</p>')
         self.linenumber.verticalScrollBar().setValue(self.verticalScrollBar().value())
 
     # ----------------------------------------------------------------------
@@ -113,7 +123,8 @@ class BCIEditor(QTextEdit):
 
         if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
             if self.completer and self.completer.popup().isVisible():
-                self.completer.insertText.emit(self.completer.last_highlighted)
+                self.completer.insertText.emit(
+                    self.completer.last_highlighted)
                 self.completer.popup().hide()
                 return
 
@@ -412,7 +423,8 @@ class BCIEditor(QTextEdit):
         completionPrefix = tc.selectedText()
 
         if completionPrefix.endswith('.') and completionPrefix.count('.') > 1:
-            index = completionPrefix.rfind('.', 0, completionPrefix.rfind('.'))
+            index = completionPrefix.rfind(
+                '.', 0, completionPrefix.rfind('.'))
             completionPrefix = completionPrefix[index + 1:]
             for _ in range(tc.selectedText().count('.') - 1):
                 tc.movePosition(tc.WordRight, tc.KeepAnchor)

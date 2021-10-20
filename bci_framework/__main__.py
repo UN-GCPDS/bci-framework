@@ -28,6 +28,10 @@ logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('kafka').setLevel(logging.ERROR)
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
+# os.environ.setdefault('RASPAD', str('--raspad' in sys.argv))
+os.environ.setdefault('BCISTREAM_RASPAD', json.dumps(
+    str('--raspad' in sys.argv)))
+
 os.environ.setdefault('APP_NAME', 'BCI Framework')
 os.environ.setdefault(
     'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
@@ -53,6 +57,11 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'default_extens
 if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts')):
     shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
                     os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
+
+# Copy python_scripts if not exists
+if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts')):
+    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
+                    os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'))
 
 from .framework.qtgui.icons import generate_icons
 
@@ -136,30 +145,35 @@ def main() -> None:
              'font_size': 'unset',
              }
 
-    if ConfigManager().get('framework', 'theme', 'light') == 'light':
-        apply_stylesheet(app, theme='light_cyan_500.xml', invert_secondary=True,
-                         extra=extra, parent='bci_framework_qt_material')
-        # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True,
-                         # extra=extra, parent='bci_framework_qt_material')
-        # apply_stylesheet(app, theme='light_teal.xml', invert_secondary=True,
-                         # extra=extra, parent='bci_framework_qt_material')
-        # apply_stylesheet(app, theme='light_pink.xml', invert_secondary=True,
-                         # extra=extra, parent='bci_framework_qt_material')
+    if json.loads(os.getenv('BCISTREAM_RASPAD')):
+        light_theme = 'light_teal.xml'
+        dark_theme = 'dark_teal.xml'
+        styles = 'raspad.css'
     else:
-        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra,
+        light_theme = 'light_cyan_500.xml'
+        dark_theme = 'dark_cyan.xml'
+        styles = 'custom.css'
+
+    if ConfigManager().get('framework', 'theme', 'light') == 'light':
+        apply_stylesheet(app, theme=light_theme, invert_secondary=True,
+                         extra=extra, parent='bci_framework_qt_material')
+    else:
+        apply_stylesheet(app, theme=dark_theme, extra=extra,
                          parent='bci_framework_qt_material')
-        # apply_stylesheet(app, theme='dark_pink.xml', extra=extra,
-                         # parent='bci_framework_qt_material')
 
     stylesheet = app.styleSheet()
-    with open(os.path.join(os.path.dirname(__file__), 'custom.css')) as file:
+
+    with open(os.path.join(os.path.dirname(__file__), styles)) as file:
         app.setStyleSheet(stylesheet + file.read().format(**os.environ))
 
     generate_icons()
     # ------------------------------------------------------------
 
     frame = BCIFramework()
-    frame.main.showMaximized()
+    if json.loads(os.getenv('BCISTREAM_RASPAD')):
+        frame.main.showFullScreen()
+    else:
+        frame.main.showMaximized()
     # splash.finish(frame)  # Hide Splash
     app.exec_()
 

@@ -17,8 +17,13 @@ bandpass_filters = ('none', 'delta', 'theta', 'alpha', 'beta',
 scale = ('50 µV', '100 µV', '200 µV', '400 µV', '800 µV', '1000 µV')
 channels = ['All'] + list(prop.CHANNELS.values())
 substract = ('none', 'channel mean', 'global mean', 'Cz')
-window_time = ('30 s', '15 s', '10 s', '1 s')
 
+if prop.RASPAD:
+    window_time = ('15 s', '10 s', '1 s')
+    default_time = 15
+else:
+    window_time = ('30 s', '15 s', '10 s', '1 s')
+    default_time = 30
 
 #  Create interact file with custom widgets
 if os.path.exists(os.path.join(sys.path[0], 'interact')):
@@ -121,7 +126,7 @@ class WindowTime:
     """"""
 
     # ----------------------------------------------------------------------
-    @interact('Window time', window_time, '30 s', 30)
+    @interact('Window time', window_time, f'{default_time} s', default_time)
     def interact_window_time(self, window_time):
         """"""
         self.widget_value['Window time'] = int(window_time.replace(' s', ''))

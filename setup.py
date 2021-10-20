@@ -24,7 +24,7 @@ setup(
                       'kafka_python',
                       'tornado',
                       'scipy',
-                      'qt_material',
+                      'qt-material',
                       'numpy',
                       'mne',
                       'psutil',
@@ -34,6 +34,7 @@ setup(
                       'openbci_stream',
                       'PySide2',
                       'radiant',
+                      'psutil',
                       ],
 
     include_package_data=True,

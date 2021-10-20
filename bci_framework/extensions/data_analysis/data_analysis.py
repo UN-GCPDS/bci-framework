@@ -292,16 +292,8 @@ class DataAnalysis:
         """"""
         eeg = self.buffer_eeg_.copy()
         for tr in self.transformers_.copy():
-
             kwargs = self.transformers_[tr][1]
-
-            if 'pivot' in kwargs:
-                kwargs['pivot'] = self._pivot
-
             eeg = self.transformers_[tr][0](eeg, **kwargs)
-
-            # logging.warning(str(eeg.shape))
-            # logging.warning(str(kwargs))
         return eeg
 
     # ----------------------------------------------------------------------

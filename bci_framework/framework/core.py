@@ -492,14 +492,19 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def style_home_page(self) -> None:
         """Set the styles for home page."""
+
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            size = 50
+        else:
+            size = 80
         style = f"""
         *{{
-        width:      80px;
-        height:     80px;
-        max-width:  80px;
-        min-width:  80px;
-        max-height: 80px;
-        min-height: 80px;
+        width:      {size}px;
+        height:     {size}px;
+        max-width:  {size}px;
+        min-width:  {size}px;
+        max-height: {size}px;
+        min-height: {size}px;
         background-color: {os.environ.get('secondaryColor')}
         }}
         """
@@ -529,12 +534,18 @@ class BCIFramework(QMainWindow):
         }
         """
 
-        self.main.label_15.setStyleSheet(style)
-        self.main.label_16.setStyleSheet(style)
-        self.main.label_17.setStyleSheet(style)
-        self.main.label_20.setStyleSheet(style)
-        self.main.label_21.setStyleSheet(style)
-        self.main.label_22.setStyleSheet(style)
+        labels = [self.main.label_15, self.main.label_16, self.main.label_17,
+                  self.main.label_20, self.main.label_21, self.main.label_22, ]
+
+        for label in labels:
+            label.setStyleSheet(style)
+
+            if json.loads(os.getenv('BCISTREAM_RASPAD')):
+                label.setText(label.text().replace(
+                    'font-size:12pt', 'font-size:10pt'))
+
+        with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
+            self.main.label_software_version.setText(file.read())
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None) -> None:

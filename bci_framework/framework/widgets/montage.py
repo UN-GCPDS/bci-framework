@@ -686,16 +686,19 @@ class Montage:
 
             openbci = self.core.connection.openbci.openbci
 
-            a = openbci.command(openbci.SAMPLE_RATE_250SPS)
-            b = openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
-            c = openbci.leadoff_impedance(
+            openbci.command(openbci.SAMPLE_RATE_250SPS)
+            openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
+            openbci.leadoff_impedance(
                 prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
 
             self.measuring_impedance = True
             V = []
             with OpenBCIConsumer(host=prop.HOST, topics=['eeg']) as stream:
 
+                n = (1000 // prop.STREAMING_PACKAGE_SIZE)
+                frame = 0
                 for data in stream:
+                    frame += 1
                     if data.topic == 'eeg':
 
                         v = data.value['data']
@@ -704,10 +707,10 @@ class Montage:
                         if len(V) > 10:
                             V.pop(0)
 
-                        z = np.array(
-                            [self.topoplot_impedance.raw_to_z(v) for v in np.concatenate(V, axis=1)])
-                        self.update_impedance(z / 1000)
-                        # print(np.round(z / 1000, 2))
+                        if frame % n == 0:
+                            z = np.array(
+                                [self.topoplot_impedance.raw_to_z(v) for v in np.concatenate(V, axis=1)])
+                            self.update_impedance(z / 1000)
 
                         if not self.measuring_impedance:
                             self.core.connection.openbci.session_settings()

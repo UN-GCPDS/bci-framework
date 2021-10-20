@@ -48,7 +48,8 @@ class ConfigurationFrame(QMainWindow):
     # ----------------------------------------------------------------------
     def connect(self) -> None:
         """Connect events."""
-        self.main.lineEdit_user_directory.setText(os.environ['BCISTREAM_HOME'])
+        self.main.lineEdit_user_directory.setText(
+            os.environ['BCISTREAM_HOME'])
         self.main.lineEdit_projects_directory.setText(
             os.path.join(os.environ['BCISTREAM_HOME'], 'default_extensions'))
         self.main.lineEdit_records_directory.setText(
@@ -61,9 +62,12 @@ class ConfigurationFrame(QMainWindow):
 
         self.main.pushButton_restore_projects.clicked.connect(
             self.restore_projects)
-        self.main.pushButton_reset_projects.clicked.connect(self.reset_projects)
-        self.main.pushButton_remove_records.clicked.connect(self.remove_records)
-        self.main.pushButton_reset_montages.clicked.connect(self.reset_montages)
+        self.main.pushButton_reset_projects.clicked.connect(
+            self.reset_projects)
+        self.main.pushButton_remove_records.clicked.connect(
+            self.remove_records)
+        self.main.pushButton_reset_montages.clicked.connect(
+            self.reset_montages)
         self.main.pushButton_reset_connections.clicked.connect(
             self.reset_connections)
 
@@ -75,6 +79,9 @@ class ConfigurationFrame(QMainWindow):
 
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'), dirs_exist_ok=True)
+
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
     def reset_projects(self, *args, **kwargs) -> None:
@@ -88,6 +95,11 @@ class ConfigurationFrame(QMainWindow):
             os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
+
+        shutil.rmtree(os.path.join(
+            os.environ['BCISTREAM_HOME'], 'python_scripts'))
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'))
 
     # ----------------------------------------------------------------------
     def remove_records(self, *args, **kwargs) -> None:

@@ -1,4 +1,5 @@
 from radiant import PythonHandler
+import os
 
 
 ########################################################################
@@ -8,6 +9,7 @@ class LocalInterpreter(PythonHandler):
     # ----------------------------------------------------------------------
     def get_url(self):
         """"""
-        with open('/home/yeison/.bciframework/stimuli.ip', 'r') as file:
+        file = os.path.expanduser(os.path.join(
+            '~/', '.bciframework', 'stimuli.ip'))
+        with open(file, 'r') as file:
             return file.read()
-
