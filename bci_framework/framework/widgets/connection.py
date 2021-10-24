@@ -229,6 +229,8 @@ class Connection:
         if json.loads(os.getenv('BCISTREAM_RASPAD')):
             try:
                 restart_services(prop.HOST)
+                logging.warning(
+                    f'Restarting services on {prop.HOST}')
             except:
                 logging.warning(
                     f'Impossible to restart services on {prop.HOST}')

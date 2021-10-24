@@ -35,6 +35,7 @@ setup(
                       'PySide2',
                       'radiant',
                       'psutil',
+                      'seaborn',
                       ],
 
     include_package_data=True,

@@ -6,6 +6,7 @@ Core
 
 import os
 import sys
+import time
 import json
 import psutil
 import pickle
@@ -61,9 +62,9 @@ class ClockOffset(QThread):
 ########################################################################
 class Kafka(QThread):
     """Kafka run on a thread."""
-    over = Signal(object)
+    on_message = Signal(object)
     message = Signal()
-    first_consume = Signal()
+    # first_consume = Signal()
     produser_connected = Signal()
     continue_ = True
 
@@ -102,16 +103,11 @@ class Kafka(QThread):
 
         self.consumer.subscribe(topics)
 
-        no_consumed = True
         for message in self.consumer:
-
-            if no_consumed:
-                self.first_consume.emit()
-                no_consumed = False
-
             self.last_message = datetime.now()
             message.value['timestamp'] = message.timestamp / 1000
-            self.over.emit({'topic': message.topic, 'value': message.value})
+            self.on_message.emit(
+                {'topic': message.topic, 'value': message.value})
 
             if not self.continue_:
                 return
@@ -188,6 +184,7 @@ class BCIFramework(QMainWindow):
 
         self.main.tabWidget_widgets.setCurrentIndex(0)
         self.main.tabWidget_data_analysis.setCurrentIndex(0)
+        self.main.tabWidget_stimuli_delivery.setCurrentIndex(0)
         self.style_home_page()
 
         self.connect()
@@ -206,7 +203,7 @@ class BCIFramework(QMainWindow):
         self.aux_size = 0
         self.sample_rate = 0
         self.last_update = 0
-        QTimer().singleShot(1000, self.calculate_offset)
+        # QTimer().singleShot(1000, self.calculate_offset)
         QTimer().singleShot(3000, self.start_stimuli_server)
 
         self.status_bar(message='', right_message=('disconnected', None))
@@ -590,8 +587,7 @@ class BCIFramework(QMainWindow):
     @Slot()
     def on_kafka_event(self, value: KAFKA_STREAM) -> None:
         """Register annotations and markers."""
-        # self.main.pushButton_connect.setChecked(True)
-        # self.main.pushButton_connect.setText('Disconnect')
+
         self.streaming = True
 
         if value['topic'] == 'marker':
@@ -608,29 +604,20 @@ class BCIFramework(QMainWindow):
             self.handle_feedback(value['value'])
 
         elif value['topic'] in ['eeg', 'aux']:
+
+            if time.time() < self.last_update + 1:
+                return
+            self.last_update = time.time()
+
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
-
-            if ((value['value']['timestamp'] - self.last_update) < 1) and (self.eeg_size != 0) and (self.aux_size != 0):
-                return
-
-            # self.last_update = value['value']['timestamp']
-
             binary_created = datetime.fromtimestamp(
                 min(value['value']['context']['timestamp.binary']))
             message_created = datetime.fromtimestamp(
                 value['value']['timestamp'])
             since = (message_created - binary_created).total_seconds()
-
             if value['topic'] == 'eeg':
                 self.eeg_size = value['value']['data'].shape
-
-                # try:
-                    # self.sample_rate = self.eeg_size[1] / \
-                        # (value['value']['timestamp'] - self.last_update)
-                # except:
-                    # self.sample_rate = 0
-
             elif value['topic'] == 'aux':
                 self.aux_size = value['value']['data'].shape
 
@@ -645,7 +632,7 @@ class BCIFramework(QMainWindow):
                 message += f' | <b style="color:#dc3545;">{status}</b>'
 
             self.status_bar(right_message=(message, True))
-            self.last_update = value['value']['timestamp']
+            # self.last_update = value['value']['timestamp']
 
     # ----------------------------------------------------------------------
     def update_kafka(self, host) -> None:
@@ -655,7 +642,7 @@ class BCIFramework(QMainWindow):
             self.status_bar(right_message=('No streaming', False))
         # try:
         self.thread_kafka = Kafka()
-        self.thread_kafka.over.connect(self.on_kafka_event)
+        self.thread_kafka.on_message.connect(self.on_kafka_event)
         self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.produser_connected.connect(
             self.kafka_produser_connected)
@@ -674,9 +661,9 @@ class BCIFramework(QMainWindow):
         host = self.thread_kafka.host
         if host != 'localhost':
             self.offset_thread = ClockOffset()
+            self.offset_thread.offset.connect(self.set_offset)
             self.offset_thread.set_host(self.thread_kafka.host)
             self.offset_thread.start()
-            self.offset_thread.offset.connect(self.set_offset)
         else:
             self.set_offset(0)
 

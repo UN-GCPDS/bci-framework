@@ -254,7 +254,12 @@ def marker_slicing(markers, t0, duration):
                 if target := getattr(cls, '_target_marker', False):
 
                     # marker, target = target
-                    if cls.buffer_aux_timestamp[-1] > (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0)).timestamp():
+
+                    last_buffer_timestamp = cls.buffer_aux_timestamp[-1] - prop.OFFSET
+                    last_target_timestamp = (datetime.fromtimestamp(
+                        target[0][1]) + timedelta(seconds=duration - t0)).timestamp()
+
+                    if last_buffer_timestamp > last_target_timestamp:
                     # if True:
 
                         _marker, _target = target.pop(0)
@@ -265,8 +270,8 @@ def marker_slicing(markers, t0, duration):
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * (duration + t0))
 
-                        t = cls.buffer_aux_timestamp[argmin
-                                                     + start: argmin + stop]
+                        t = cls.buffer_aux_timestamp[argmin +
+                                                     start: argmin + stop]
                         eeg = cls.buffer_eeg_[
                             :, argmin + start: argmin + stop]
                         aux = cls.buffer_aux_[
@@ -283,9 +288,10 @@ def marker_slicing(markers, t0, duration):
                         fn(*[cls] + [kwargs[v] for v in arguments])
 
                     else:
-                        # logging.warning('Date too old to synchronize')
+                        logging.warning('Date too old to synchronize')
+                        logging.warning(f'Offset: {prop.OFFSET}')
                         logging.warning(
-                            f'{datetime.fromtimestamp(cls.buffer_aux_timestamp[-1]), (datetime.fromtimestamp(target[0][1]) + timedelta(seconds=duration - t0))}')
+                            f'{datetime.fromtimestamp(last_buffer_timestamp), datetime.fromtimestamp(last_target_timestamp)}')
 
             marker_slicing_(cls)
         return wrap

@@ -57,21 +57,8 @@ class Stream(EEGStream):
         self.latencies = [0]
         self.latency_correction = 0
 
-        # self.create_boundary(self.axis, -0.5, 1.5)
-
-        # self.axis_wave.set_title('Synchronizations')
-        # self.axis_wave.set_xlabel('Elapsed time [s]')
-        # self.axis_wave.set_ylabel('Amplitude')
-        # self.axis_wave.grid(True)
-
         self.frames_names()
-
-        # self.axis_time.spines['right'].set_visible(False)
-        # self.axis_time.spines['top'].set_visible(False)
-
-        # self.axis.set_ylim(-0.5, 1.5)
-
-        self.create_buffer(BUFFER, resampling=1000, fill=-1, aux_shape=3)
+        self.create_buffer(BUFFER, resampling=1000, fill=-1, aux_shape=2)
 
         self.stream()
 

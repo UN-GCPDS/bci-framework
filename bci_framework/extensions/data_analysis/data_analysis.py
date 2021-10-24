@@ -241,12 +241,14 @@ class DataAnalysis:
 
         if prop.CONNECTION == 'wifi' and prop.DAISY:
             self.buffer_aux_ = np.empty((aux_shape, time * 2))
+            self.buffer_aux_timestamp_ = np.zeros(time * 2)
         else:
             self.buffer_aux_ = np.empty((aux_shape, time))
+            self.buffer_aux_timestamp_ = np.zeros(time)
 
         self.buffer_aux_.fill(fill)
         self.buffer_timestamp_ = np.zeros(time)
-        self.buffer_aux_timestamp_ = np.zeros(time)
+        # self.buffer_aux_timestamp_ = np.zeros(time)
 
     # ----------------------------------------------------------------------
     def set_transformers(self, transformers):

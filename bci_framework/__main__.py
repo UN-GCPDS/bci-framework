@@ -28,9 +28,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('kafka').setLevel(logging.ERROR)
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
-# os.environ.setdefault('RASPAD', str('--raspad' in sys.argv))
 os.environ.setdefault('BCISTREAM_RASPAD', json.dumps(
-    str('--raspad' in sys.argv)))
+    ('--raspad' in sys.argv)))
 
 os.environ.setdefault('APP_NAME', 'BCI Framework')
 os.environ.setdefault(
@@ -156,10 +155,12 @@ def main() -> None:
 
     if ConfigManager().get('framework', 'theme', 'light') == 'light':
         apply_stylesheet(app, theme=light_theme, invert_secondary=True,
-                         extra=extra, parent='bci_framework_qt_material')
+                         extra=extra, parent='bci_framework_qt_material',
+                         style='Fusion')
     else:
         apply_stylesheet(app, theme=dark_theme, extra=extra,
-                         parent='bci_framework_qt_material')
+                         parent='bci_framework_qt_material',
+                         style='Fusion')
 
     stylesheet = app.styleSheet()
 
@@ -170,10 +171,9 @@ def main() -> None:
     # ------------------------------------------------------------
 
     frame = BCIFramework()
+    frame.main.showMaximized()
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
         frame.main.showFullScreen()
-    else:
-        frame.main.showMaximized()
     # splash.finish(frame)  # Hide Splash
     app.exec_()
 

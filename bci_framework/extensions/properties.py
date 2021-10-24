@@ -35,8 +35,10 @@ class Properties:
     # BOARDMODE = 'default'
     # CONNECTION = 'wifi'
     # SYNCLATENCY = 0
-    # OFFSET = 0
+    # OFFSET = -4442972.687432289
     # DAISY = [True]
+    # RASPAD = False
+    # os.environ['BCISTREAM_RASPAD'] = json.dumps('True')
 
     # ----------------------------------------------------------------------
     def __getattr__(self, attr: str):
