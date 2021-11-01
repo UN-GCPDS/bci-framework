@@ -48,7 +48,10 @@ class OpenBCIAuxiliarData(EEGStream, Widgets):
         
         t = self.widget_value['Window time']
         
-        aux = self.buffer_aux[:,-t*prop.SAMPLE_RATE:]
+        if prop.CONNECTION == 'wifi' and prop.DAISY:
+            aux = self.buffer_aux[:,-t*prop.SAMPLE_RATE*2:]
+        else:
+            aux = self.buffer_aux[:,-t*prop.SAMPLE_RATE:]
         
         time = np.linspace(-t, 0, aux.shape[1])        
         self.axis.set_xlim(-t, 0)
@@ -61,3 +64,20 @@ class OpenBCIAuxiliarData(EEGStream, Widgets):
 
 if __name__ == '__main__':
     OpenBCIAuxiliarData()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

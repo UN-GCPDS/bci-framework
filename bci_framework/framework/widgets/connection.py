@@ -87,7 +87,7 @@ class OpenBCIThread(QThread):
                 break
             time.sleep(0.1)
 
-        boardmode = self.openbci.boardmode
+        # boardmode = self.openbci.boardmode
         if not boardmode_setted:
             logging.warning('Boardmode not setted!')
         # self.session_settings(self.montage, self.bias,
@@ -95,7 +95,7 @@ class OpenBCIThread(QThread):
 
         if not self.checkBox_send_leadoff:
             self.openbci.leadoff_impedance(
-                self.montage, pchan=pchan, nchan=nchan)
+                self.montage, pchan=self.pchan, nchan=self.nchan)
 
         if self.checkBox_test_signal:
             test_signal = self.comboBox_test_signal

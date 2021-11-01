@@ -29,6 +29,10 @@ class data:
     }
 
 
+data_tmp_aux_ = None
+data_tmp_eeg_ = None
+
+
 # ----------------------------------------------------------------------
 def subprocess_this(fn: Callable) -> Callable:
     """Decorator to move methods to subprocessing."""
@@ -68,17 +72,22 @@ def loop_consumer(*topics, package_size=None) -> Callable:
 
     This decorator will call a method on every new data streamming input.
     """
+    global data_tmp_eeg_, data_tmp_aux_
 
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
         package_size = 1000
 
     def wrap_wrap(fn: Callable) -> Callable:
+        global data_tmp_eeg_, data_tmp_aux_
 
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
 
         def wrap(cls):
+            global data_tmp_eeg_, data_tmp_aux_
+
             with OpenBCIConsumer(host=prop.HOST, topics=topics) as stream:
                 frame = 0
+
                 for data in stream:
 
                     if data.topic == 'eeg':
@@ -105,18 +114,43 @@ def loop_consumer(*topics, package_size=None) -> Callable:
                         latency = (datetime.now(
                         ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
 
-                    kwargs = {'data': data_,
-                              'kafka_stream': data,
-                              'topic': data.topic,
-                              'frame': frame,
-                              'latency': latency,
-                              }
+                    if package_size and (data.topic in ['eeg', 'aux']):
 
-                    if package_size:
+                        if data.topic == 'eeg':
+                            if data_tmp_eeg_ is None:
+                                data_tmp_eeg_ = np.zeros(
+                                    (data_.shape[0], 0))
+                            data_tmp_eeg_ = np.concatenate(
+                                [data_tmp_eeg_, data_], axis=1)
+                            d = data_tmp_eeg_
+                        elif data.topic == 'aux':
+                            if data_tmp_aux_ is None:
+                                data_tmp_aux_ = np.zeros((data_.shape[0], 0))
+                            data_tmp_aux_ = np.concatenate(
+                                [data_tmp_aux_, data_], axis=1)
+                            d = data_tmp_aux_
+
+                        kwargs = {'data': d,
+                                  'kafka_stream': data,
+                                  'topic': data.topic,
+                                  'frame': frame,
+                                  'latency': latency,
+                                  }
                         n = (package_size // prop.STREAMING_PACKAGE_SIZE)
                         if frame % n == 0:
                             fn(*[cls] + [kwargs[v] for v in arguments])
+                        # else:
+                            if data.topic == 'eeg':
+                                data_tmp_eeg_ = np.zeros((data_.shape[0], 0))
+                            elif data.topic == 'aux':
+                                data_tmp_aux_ = np.zeros((data_.shape[0], 0))
                     else:
+                        kwargs = {'data': data_,
+                                  'kafka_stream': data,
+                                  'topic': data.topic,
+                                  'frame': frame,
+                                  'latency': latency,
+                                  }
                         fn(*[cls] + [kwargs[v] for v in arguments])
         return wrap
     return wrap_wrap
@@ -227,7 +261,7 @@ def fake_loop_consumer(*topics) -> Callable:
 
 
 # ----------------------------------------------------------------------
-def marker_slicing(markers, t0, duration):
+def marker_slicing(markers, t0, t1):
     """"""
     if isinstance(markers, str):
         markers = [markers]
@@ -251,13 +285,16 @@ def marker_slicing(markers, t0, duration):
                         cls._target_marker.append(
                             [data['marker'], kafka_stream.value['datetime']])
 
+                if len(cls._target_marker) < 3:
+                    return
+
                 if target := getattr(cls, '_target_marker', False):
 
                     # marker, target = target
 
                     last_buffer_timestamp = cls.buffer_aux_timestamp[-1] - prop.OFFSET
                     last_target_timestamp = (datetime.fromtimestamp(
-                        target[0][1]) + timedelta(seconds=duration - t0)).timestamp()
+                        target[0][1]) + timedelta(seconds=t1)).timestamp()
 
                     if last_buffer_timestamp > last_target_timestamp:
                     # if True:
@@ -268,7 +305,7 @@ def marker_slicing(markers, t0, duration):
                             cls.buffer_aux_timestamp - _target).argmin()
 
                         start = int((prop.SAMPLE_RATE) * t0)
-                        stop = int((prop.SAMPLE_RATE) * (duration + t0))
+                        stop = int((prop.SAMPLE_RATE) * t1)
 
                         t = cls.buffer_aux_timestamp[argmin +
                                                      start: argmin + stop]

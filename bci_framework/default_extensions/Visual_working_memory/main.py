@@ -274,12 +274,12 @@ class VisualWorkingMemory(StimuliAPI):
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.class_name = ''
         self._set_visible_markers(True)
-        self.send_marker(f'{shapes}')
+        self.send_marker(f'{shapes}', blink=None)
 
     # ----------------------------------------------------------------------
     def retention(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
         """Remove the array."""
-        self.send_marker('Retention')
+        self.send_marker('Retention', blink=None)
         self._set_visible_markers(False)
 
     # ----------------------------------------------------------------------
@@ -316,9 +316,9 @@ class VisualWorkingMemory(StimuliAPI):
         self.button_different.style = {'display': 'block'}
         keypress(self.handle_response, timeout=w.get_value('test_array'))
         if change:
-            self.send_marker('Changed')
+            self.send_marker('Changed', blink=None)
         else:
-            self.send_marker('No-changed')
+            self.send_marker('No-changed', blink=None)
 
     # ----------------------------------------------------------------------
     def handle_response(self, response: str) -> None:
@@ -326,12 +326,12 @@ class VisualWorkingMemory(StimuliAPI):
         if self.mode == 'stimuli':
             if response == 'q':
                 # print("DIFFFERENT")
-                self.send_marker(f'Different')
+                self.send_marker(f'Different', blink=None)
             elif response == 'p':
                 # print("IDENTICAL")
-                self.send_marker(f'Identical')
+                self.send_marker(f'Identical', blink=None)
             else:
-                self.send_marker(f'No-response')
+                self.send_marker(f'No-response', blink=None)
 
     # ----------------------------------------------------------------------
     def _set_visible_markers(self, visible: bool) -> None:
@@ -423,7 +423,7 @@ class VisualWorkingMemory(StimuliAPI):
     def synchronizer(self, value: bool) -> None:
         """Show or hide synchronizer."""
         if value:
-            self.show_synchronizer()
+            self.show_synchronizer(size=60, type='square', position='upper left')
         else:
             self.hide_synchronizer()
 
@@ -457,7 +457,7 @@ class VisualWorkingMemory(StimuliAPI):
                                           'position': 'absolute',
                                           'z-index': 10,
                                       })
-
+    
 
 if __name__ == '__main__':
     VisualWorkingMemory()

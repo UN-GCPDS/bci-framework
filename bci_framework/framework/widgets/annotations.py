@@ -3,7 +3,7 @@
 Annotations
 ===========
 """
-
+from datetime import datetime
 from typing import Optional
 
 from PySide2.QtWidgets import QTableWidgetItem
@@ -52,7 +52,8 @@ class Annotations:
         duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
 
         data_ = {'duration': duration,
-                 'description': content, }
+                 'description': content,
+                 'onset': datetime.now()}
 
         self.core.thread_kafka.produser.send('annotation', data_)
 
@@ -60,14 +61,16 @@ class Annotations:
     def save_marker(self) -> None:
         """Write the marker in the streaming."""
         marker = self.parent_frame.lineEdit_marker.text()
-        data_ = {'marker': marker, }
+        data_ = {'marker': marker,
+                 'datetime': datetime.now()}
         self.core.thread_kafka.produser.send('marker', data_)
 
     # ----------------------------------------------------------------------
     def save_command(self) -> None:
         """Write the command in the streaming."""
         command = self.parent_frame.lineEdit_command.text()
-        data_ = {'command': command, }
+        data_ = {'command': command,
+                 'datetime': datetime.now()}
         self.core.thread_kafka.produser.send('command', data_)
 
     # ----------------------------------------------------------------------
@@ -119,12 +122,14 @@ class Annotations:
         columns = ['Onset', 'Duration', 'Description']
         self.parent_frame.tableWidget_annotations.clear()
         self.parent_frame.tableWidget_annotations.setRowCount(0)
-        self.parent_frame.tableWidget_annotations.setColumnCount(len(columns))
+        self.parent_frame.tableWidget_annotations.setColumnCount(
+            len(columns))
         self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
             columns)
         for onset, duration, description in annotations:
             if not description in ['start_record', 'stop_record']:
-                self.add_annotation(onset, duration, description, action=False)
+                self.add_annotation(
+                    onset, duration, description, action=False)
         self.parent_frame.tableWidget_annotations.sortByColumn(0)
 
     # ----------------------------------------------------------------------
@@ -138,5 +143,6 @@ class Annotations:
             columns)
         for marker in markers:
             for onset in markers[marker]:
-                self.add_marker(f'{onset/1000:.2f} s', marker, timestamp=False)
+                self.add_marker(f'{onset/1000:.2f} s',
+                                marker, timestamp=False)
         self.parent_frame.tableWidget_markers.sortByColumn(0)

@@ -318,6 +318,7 @@ class StimuliAPI(Pipeline):
         """"""
         self._latency = 0
         self.build_areas()
+        self.listen_feedbacks(self.latency_feedback_)
 
     # ----------------------------------------------------------------------
     def connect(self, ip='localhost', port=5000):
@@ -351,10 +352,11 @@ class StimuliAPI(Pipeline):
                 'marker': marker,
             })
 
-        if force:
-            DeliveryInstance.both(self._blink)(self, blink)
-        else:
-            self._blink(blink)
+        if blink:
+            if force:
+                DeliveryInstance.both(self._blink)(self, blink)
+            else:
+                self._blink(blink)
 
         # print(f'MARKER: {marker["marker"]}')
 
@@ -498,34 +500,51 @@ class StimuliAPI(Pipeline):
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left'):
+    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left', type='round'):
         """"""
         self.hide_synchronizer.no_decorator(self)
-        if 'upper' in position:
-            top = '15px'
-        elif 'lower' in position:
-            top = f'calc(100% - {size}px - 15px)'
 
-        if 'left' in position:
-            left = '15px'
-        elif 'right' in position:
-            left = f'calc(100% - {size}px - 15px)'
+        if type == 'round':
+            if 'upper' in position:
+                top = '15px'
+            elif 'lower' in position:
+                top = f'calc(100% - {size}px - 15px)'
+            if 'left' in position:
+                left = '15px'
+            elif 'right' in position:
+                left = f'calc(100% - {size}px - 15px)'
+            self._blink_area = html.DIV('', style={
+                'width': f'{size}px',
+                'height': f'{size}px',
+                'background-color': color_off,
+                'position': 'absolute',
+                'top': top,
+                'left': left,
+                'border-radius': '100%',
+                'border': '3px solid #00bcd4',
+                'z-index': 999,
+            })
+        elif type == 'square':
+            if 'upper' in position:
+                top = '0'
+            elif 'lower' in position:
+                top = f'calc(100% - {size}px)'
+            if 'left' in position:
+                left = '0'
+            elif 'right' in position:
+                left = f'calc(100% - {size}px)'
 
-        self._blink_area = html.DIV('', style={
-
-            'width': f'{size}px',
-            'height': f'{size}px',
-            'background-color': color_off,
-            'position': 'absolute',
-            'top': top,
-            'left': left,
-            'border-radius': '100%',
-            'border': '3px solid #00bcd4',
-            'z-index': 999,
-        })
+            self._blink_area = html.DIV('', style={
+                'width': f'{size}px',
+                'height': f'{size}px',
+                'background-color': color_off,
+                'position': 'absolute',
+                'top': top,
+                'left': left,
+                'z-index': 999,
+            })
 
         self.stimuli_area <= self._blink_area
-
         self._blink_area.color_on = color_on
         self._blink_area.color_off = color_off
 
@@ -551,7 +570,7 @@ class StimuliAPI(Pipeline):
         """"""
 
     # ----------------------------------------------------------------------
-    def start_marker_synchronization(self, blink=300, pause=600):
+    def start_marker_synchronization(self, blink=250, pause=1000):
         """"""
         if hasattr(self, '_timer_marker_synchronization'):
             timer.clear_interval(self._timer_marker_synchronization)
@@ -559,4 +578,10 @@ class StimuliAPI(Pipeline):
             return
         self._timer_marker_synchronization = timer.set_interval(
             lambda: self.send_marker('MARKER', blink=blink, force=True), pause)
+
+    # ----------------------------------------------------------------------
+    def latency_feedback_(self, name, value):
+        """"""
+        if name == 'set_latency':
+            self._latency = value
 

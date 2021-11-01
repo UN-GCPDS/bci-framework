@@ -1,0 +1,4 @@
+["BandPass", ["None", "delta", "theta", "alpha", "beta", "5-45 Hz", "3-30 Hz", "4-40 Hz", "2-45 Hz", "1-50 Hz", "7-13 Hz", "15-50 Hz", "1-100 Hz", "5-50 Hz"], "None"]
+["Notch", ["None", "50 Hz", "60 Hz"], "None"]
+["Scale", ["50 \u00b5V", "100 \u00b5V", "200 \u00b5V", "400 \u00b5V", "800 \u00b5V"], "100 \u00b5V"]
+["Time", ["30 s", "15 s", "10 s", "1 s"], "30 s"]

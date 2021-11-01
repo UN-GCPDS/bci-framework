@@ -350,6 +350,11 @@ class Records:
 
         menu = QMenu()
 
+        jupyter_action = QAction('Open with Juypter Lab')
+        jupyter_action.triggered.connect(
+            lambda: self.open_with_jupyter(filename))
+        menu.addAction(jupyter_action)
+
         edf_action = QAction('Export to EDF')
         edf_action.triggered.connect(lambda: self.export_to_edf(filename))
         menu.addAction(edf_action)
@@ -388,3 +393,29 @@ class Records:
                 reader.to_npy(h5.replace('.h5', ''))
         finally:
             QApplication.restoreOverrideCursor()
+
+    # ----------------------------------------------------------------------
+    def open_with_jupyter(self, filename):
+        """"""
+        h5 = os.path.join(self.records_dir, f'{filename}.h5')
+        notebook = os.path.join(
+            os.environ['BCISTREAM_ROOT'], 'assets', 'jupyter.ipynb')
+
+        notebook_dir = os.path.join(
+            os.environ['BCISTREAM_HOME'], 'notebooks', 'records')
+        if not os.path.exists(notebook_dir):
+            os.mkdir(notebook_dir)
+
+        notebook_file = os.path.join(notebook_dir, f'{filename}.ipynb')
+        if not os.path.exists(notebook_file):
+            notebook_template = notebook.replace('.ipynb', '.template.ipynb')
+            with open(notebook_template, 'r') as file:
+                content = file.read()
+                content = content.replace(
+                    '{{BCI-FRAMEWORK:FILENAME}}', os.path.relpath(h5, notebook_dir))
+            with open(notebook_file, 'w') as file:
+                file.write(content)
+
+        command = f"jupyter-lab --notebook-dir='{notebook_dir}' {notebook_file}"
+        os.popen(command)
+

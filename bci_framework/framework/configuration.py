@@ -70,8 +70,11 @@ class ConfigurationFrame(QMainWindow):
             self.reset_montages)
         self.main.pushButton_reset_connections.clicked.connect(
             self.reset_connections)
+        self.main.pushButton_reset_notebooks.clicked.connect(
+            self.reset_notebooks)
 
     # ----------------------------------------------------------------------
+
     def restore_projects(self, *args, **kwargs) -> None:
         """Copy defautl project into the user projects directory."""
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),
@@ -82,6 +85,12 @@ class ConfigurationFrame(QMainWindow):
 
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
                         os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'), dirs_exist_ok=True)
+
+    # ----------------------------------------------------------------------
+    def reset_notebooks(self, *args, **kwargs) -> None:
+        """"""
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'notebooks'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'notebooks'), dirs_exist_ok=True)
 
     # ----------------------------------------------------------------------
     def reset_projects(self, *args, **kwargs) -> None:

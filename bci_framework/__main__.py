@@ -31,6 +31,7 @@ logging.getLogger('matplotlib').setLevel(logging.ERROR)
 os.environ.setdefault('BCISTREAM_RASPAD', json.dumps(
     ('--raspad' in sys.argv)))
 
+# Deafine defaults variables
 os.environ.setdefault('APP_NAME', 'BCI Framework')
 os.environ.setdefault(
     'BCISTREAM_ROOT', os.path.abspath(os.path.dirname(__file__)))
@@ -39,6 +40,7 @@ os.environ.setdefault('BCISTREAM_HOME', os.path.join(
 os.environ.setdefault('BCISTREAM_SYNCLATENCY', '0')
 # os.environ.setdefault('BCISTREAM_TMP', os.path.join(os.getenv('BCISTREAM_HOME'), 'tmp'))
 
+# Create custom directories
 if not os.path.exists(os.environ['BCISTREAM_HOME']):
     os.mkdir(os.environ['BCISTREAM_HOME'])
 
@@ -57,10 +59,15 @@ if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'
     shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'kafka_scripts'),
                     os.path.join(os.environ['BCISTREAM_HOME'], 'kafka_scripts'))
 
-# Copy python_scripts if not exists
-if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts')):
-    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
-                    os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'))
+    # Copy python_scripts if not exists
+    if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts')):
+        shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'python_scripts'),
+                        os.path.join(os.environ['BCISTREAM_HOME'], 'python_scripts'))
+
+# Copy notebooks if not exists
+if not os.path.exists(os.path.join(os.environ['BCISTREAM_HOME'], 'notebooks')):
+    shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'notebooks'),
+                    os.path.join(os.environ['BCISTREAM_HOME'], 'notebooks'))
 
 from .framework.qtgui.icons import generate_icons
 

@@ -1,0 +1,6 @@
+["BandPass", ["none", "delta", "theta", "alpha", "beta", "5-45 Hz", "3-30 Hz", "4-40 Hz", "2-45 Hz", "1-50 Hz", "7-13 Hz", "15-50 Hz", "1-100 Hz", "5-50 Hz"], "none", "none", true]
+["Notch", ["none", "50 Hz", "60 Hz"], "none", "none", true]
+["Scale", ["50 \u00b5V", "100 \u00b5V", "200 \u00b5V", "400 \u00b5V", "800 \u00b5V", "1000 \u00b5V"], "100 \u00b5V", 100, true]
+["Channels", ["All", "Fp1", "Fp2", "F7", "F3", "Fz", "F4", "F8", "T7", "T8", "P7", "P3", "Pz", "P4", "P8", "O1", "O2"], "All", "All", false]
+["Substract", ["none", "channel mean", "global mean", "Cz"], "none", "none", true]
+["Window time", ["30 s", "15 s", "10 s", "1 s"], "30 s", 30, true]

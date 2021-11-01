@@ -182,6 +182,7 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def start_calibration(self):
         """"""
+        self.core.calculate_offset()
         self.parent_frame.label_calibration_image.hide()
         self.parent_frame.mdiArea_latency.show()
         os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(0)

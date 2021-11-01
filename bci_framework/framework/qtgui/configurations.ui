@@ -179,6 +179,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="pushButton_reset_notebooks">
+        <property name="text">
+         <string>Reset notebooks</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="4" column="0">

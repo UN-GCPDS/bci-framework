@@ -14,7 +14,7 @@ from simple_pid import PID
 MAX_LATENCY = 150
 BUFFER = 15
 
-pid = PID(Kp=0.5, Ki=0.07, Kd=0.0001, setpoint=0,
+pid = PID(Kp=0.7, Ki=0.07, Kd=0.0001, setpoint=0,
           sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
 # pid = PID(Kp=1, Ki=0.07, Kd=0.0001, setpoint=0,
           # sample_time=None, output_limits=(-MAX_LATENCY, MAX_LATENCY))
@@ -97,16 +97,9 @@ class Stream(EEGStream):
         self.axis_hist.grid(True)
 
     # ----------------------------------------------------------------------
-    @marker_slicing(['MARKER'], t0=-0.4, duration=0.8)
+    @marker_slicing(['MARKER'], t0=-1, t1=1)
     def stream(self, aux, timestamp, marker, marker_datetime):
         """"""
-
-        logging.warning('WTF')
-
-        # if topic != 'marker':
-            # if len(self.latencies) <= 1 and (frame % 3) == 0:
-                # self.feed()
-            # return
         latencies = np.array(self.latencies)
 
         if latencies.size > 5:
@@ -137,15 +130,9 @@ class Stream(EEGStream):
 
         self.timestamp_rises, diff = self.get_rises(aux, timestamp)
 
-        if len(self.timestamp_rises) > BUFFER * 1.5:
-            return
-
         if self.timestamp_rises.size > 0:
-
-            # print(self.timestamp_rises)
-
             v = np.argmin(np.abs(timestamp - self.timestamp_rises[0]))
-            window = aux[int(v - prop.SAMPLE_RATE * 0.3): int(v + prop.SAMPLE_RATE * 0.3)]
+            window = aux[int(v - prop.SAMPLE_RATE * 0.3)                         : int(v + prop.SAMPLE_RATE * 0.3)]
             t = np.linspace(-300, 300, window.shape[0])
             self.axis_wave.plot(t, window, label='input signal')[0]
 
@@ -158,8 +145,6 @@ class Stream(EEGStream):
                                   label='last latency')
             self.axis_wave.legend(loc=4)
             self.axis_wave.set_xlim(-150, +150)
-            if t.size > 0:
-                logging.warning((t[0], t[-1]))
 
         # Histogram
         if latencies.size > 5:
@@ -217,14 +202,7 @@ class Stream(EEGStream):
             self.latencies.append(latency.min())
 
         self.feed()
-
-        # try:
-            # self.latency_correction = pid(np.mean(latencies_filtered[-6:]))
-            # # self.latency_correction = pid(latency)
-        # except:
-        self.latency_correction = pid(np.mean(self.latencies[-8:]))
-
-        # self.latency_correction -= (np.mean(self.latencies) * 0.5)
+        self.latency_correction = pid(np.mean(self.latencies[-5:]))
 
         self.send_feedback({'name': 'set_latency',
                             'value': self.latency_correction,
@@ -233,3 +211,21 @@ class Stream(EEGStream):
 
 if __name__ == '__main__':
     Stream()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

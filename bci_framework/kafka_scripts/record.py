@@ -42,8 +42,8 @@ class RecordTransformer:
         records_dir = os.path.join(os.environ.get(
             'BCISTREAM_HOME', os.path.expanduser('~/.bciframework')), 'records')
         os.makedirs(records_dir, exist_ok=True)
-        self.writer = HDF5Writer(os.path.join(
-            records_dir, f'record-{filename}.h5'))
+        filename = os.path.join(records_dir, f'record-{filename}.h5')
+        self.writer = HDF5Writer(filename)
 
         header = {'sample_rate': prop.SAMPLE_RATE,
                   'streaming_sample_rate': prop.STREAMING_PACKAGE_SIZE,
@@ -54,7 +54,6 @@ class RecordTransformer:
                   }
         self.writer.add_header(header, prop.HOST)
 
-        # trying to finish well
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
         atexit.register(self.stop)
@@ -67,15 +66,21 @@ class RecordTransformer:
         timestamp = []
 
         for dt in timestamps:
-            end_dt = (datetime.fromtimestamp(dt) -
-                      timedelta(seconds=size / prop.SAMPLE_RATE)).timestamp()
+
+            if prop.CONNECTION == 'wifi' and prop.DAISY:
+                end_dt = (datetime.fromtimestamp(
+                    dt) - timedelta(seconds=size / (prop.SAMPLE_RATE * 2))).timestamp()
+            else:
+                end_dt = (datetime.fromtimestamp(
+                    dt) - timedelta(seconds=size / prop.SAMPLE_RATE)).timestamp()
+
             timestamp.append(np.linspace(end_dt, dt, size, endpoint=False))
 
         return np.array(timestamp)
 
     # ----------------------------------------------------------------------
-    @ loop_consumer('eeg', 'aux', 'marker', 'annotation')
-    def save_data(self, kafka_stream: KafkaStream, topic: str, **kwargs) -> None:
+    @loop_consumer('eeg', 'aux', 'marker', 'annotation')
+    def save_data(self, data, kafka_stream: KafkaStream, topic: str, **kwargs) -> None:
         """Write data on every strem package.
 
         Parameters
@@ -90,7 +95,6 @@ class RecordTransformer:
             return
 
         if topic in ['eeg', 'aux']:
-            data = kafka_stream.value['data']
             timestamp = self.get_timestamps(data.shape[1],
                                             kafka_stream.value['context']['timestamp.binary'])
             getattr(self.writer, f'add_{topic}')(
@@ -115,4 +119,3 @@ class RecordTransformer:
 
 if __name__ == '__main__':
     RecordTransformer()
-

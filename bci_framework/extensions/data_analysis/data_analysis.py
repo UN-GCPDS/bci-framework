@@ -159,8 +159,8 @@ class DataAnalysis:
                     self.buffer_eeg_split, -c)
 
         if not aux is None:
-            d = aux.shape[1]
 
+            d = aux.shape[1]
             self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
             self.buffer_aux_[:, -d:] = aux
 
@@ -237,7 +237,7 @@ class DataAnalysis:
         self._create_resampled_buffer(abs(time), resampling=resampling)
 
         self.buffer_eeg_ = np.empty((chs, time))
-        self.buffer_eeg_.fill(fill)
+        self.buffer_timestamp_ = np.zeros(time)
 
         if prop.CONNECTION == 'wifi' and prop.DAISY:
             self.buffer_aux_ = np.empty((aux_shape, time * 2))
@@ -246,8 +246,8 @@ class DataAnalysis:
             self.buffer_aux_ = np.empty((aux_shape, time))
             self.buffer_aux_timestamp_ = np.zeros(time)
 
+        self.buffer_eeg_.fill(fill)
         self.buffer_aux_.fill(fill)
-        self.buffer_timestamp_ = np.zeros(time)
         # self.buffer_aux_timestamp_ = np.zeros(time)
 
     # ----------------------------------------------------------------------

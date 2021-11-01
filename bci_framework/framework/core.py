@@ -102,10 +102,10 @@ class Kafka(QThread):
                                       )
 
         self.consumer.subscribe(topics)
-
         for message in self.consumer:
             self.last_message = datetime.now()
             message.value['timestamp'] = message.timestamp / 1000
+
             self.on_message.emit(
                 {'topic': message.topic, 'value': message.value})
 
@@ -147,6 +147,8 @@ class BCIFramework(QMainWindow):
             lambda evt: self.show_interface('Home'))
         self.main.actionDocumentation.triggered.connect(
             lambda evt: self.show_interface('Documentation'))
+        self.main.actionRaspad_settings.triggered.connect(
+            lambda evt: self.show_interface('Raspad_settings'))
 
         shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
         shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
@@ -220,6 +222,11 @@ class BCIFramework(QMainWindow):
         self.main.actionHome.setIcon(icon("home"))
         self.main.actionDocumentation.setIcon(icon("documentation"))
 
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            self.main.actionRaspad_settings.setIcon(icon("brain_settings"))
+        else:
+            self.main.actionRaspad_settings.setVisible(False)
+
         self.main.pushButton_file.setIcon(icon("file"))
         self.main.pushButton_brain.setIcon(icon("brain"))
         self.main.pushButton_imagery.setIcon(icon("imagery"))
@@ -249,6 +256,9 @@ class BCIFramework(QMainWindow):
 
         self.main.pushButton_projects.setIcon(icon('go-previous'))
         self.main.pushButton_load_visualizarion.setIcon(icon('list-add'))
+
+        self.main.pushButton_open_records_folder.setIcon(icon('folder'))
+        self.main.pushButton_open_extension_folder.setIcon(icon('folder'))
 
         for i in range(1, 5):
             getattr(self.main, f'pushButton_update_wifi{i}').setIcon(
@@ -492,8 +502,16 @@ class BCIFramework(QMainWindow):
 
         if json.loads(os.getenv('BCISTREAM_RASPAD')):
             size = 50
+            version = 'RASPAD'
         else:
             size = 80
+            version = ''
+
+        if '--local' in sys.argv:
+            mode = 'DEBUG'
+        else:
+            mode = ''
+
         style = f"""
         *{{
         width:      {size}px;
@@ -542,7 +560,8 @@ class BCIFramework(QMainWindow):
                     'font-size:12pt', 'font-size:10pt'))
 
         with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
-            self.main.label_software_version.setText(file.read())
+            self.main.label_software_version.setText(
+                f'{file.read()} {version} {mode}')
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None) -> None:
@@ -646,7 +665,6 @@ class BCIFramework(QMainWindow):
         self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.produser_connected.connect(
             self.kafka_produser_connected)
-        # self.thread_kafka.first_consume.connect(self.show_desynchonization)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
