@@ -115,7 +115,11 @@
 
 {% block module_init %}
 import json
-from browser import window
+from browser import window document
+
+# Disable right click
+document.bind('contextmenu', lambda event: event.preventDefault())
+
 window.brython_environ = {{brython_environ}}
 arr = {{class_}}(None, {{python_}})
 arr.connect(f'{{ip}}', f'{{port}}')
