@@ -61,13 +61,13 @@ class RecordTransformer:
         self.save_data()
 
     # ----------------------------------------------------------------------
-    def get_timestamps(self, size, timestamps):
+    def get_timestamps(self, size, timestamps, topic):
         """"""
         timestamp = []
 
         for dt in timestamps:
 
-            if prop.CONNECTION == 'wifi' and prop.DAISY:
+            if prop.CONNECTION == 'wifi' and prop.DAISY and topic == 'aux':
                 end_dt = (datetime.fromtimestamp(
                     dt) - timedelta(seconds=size / (prop.SAMPLE_RATE * 2))).timestamp()
             else:
@@ -96,7 +96,7 @@ class RecordTransformer:
 
         if topic in ['eeg', 'aux']:
             timestamp = self.get_timestamps(data.shape[1],
-                                            kafka_stream.value['context']['timestamp.binary'])
+                                            kafka_stream.value['context']['timestamp.binary'], topic)
             getattr(self.writer, f'add_{topic}')(
                 data, timestamp - prop.OFFSET)
 
