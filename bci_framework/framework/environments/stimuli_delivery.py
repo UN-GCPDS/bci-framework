@@ -76,9 +76,9 @@ class StimuliDelivery:
         """Update the experiments selector."""
         for i in range(self.parent_frame.listWidget_projects_delivery.count()):
             item = self.parent_frame.listWidget_projects_delivery.item(i)
-            if item.text().startswith('_'):
+            if item.text().startswith('__'):
                 continue
-            if item.text().startswith('Tutorial :'):
+            if item.text().startswith('Tutorial:'):
                 continue
             self.stimuli_list.append([item.text(), item.path])
 

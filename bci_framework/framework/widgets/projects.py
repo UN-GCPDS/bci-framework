@@ -427,19 +427,19 @@ class Projects:
             icon_name = 'icon_viz'
             item = QListWidgetItem(
                 self.parent_frame.listWidget_projects_visualizations)
-            default_project = '_default_visualization'
+            default_project = '__default_visualization'
             self.mode = 'visualization'
         elif stimulus:
             icon_name = 'icon_sti'
             item = QListWidgetItem(
                 self.parent_frame.listWidget_projects_delivery)
-            default_project = '_default_stimuli_delivery'
+            default_project = '__default_stimuli_delivery'
             self.mode = 'delivery'
         elif analysis:
             icon_name = 'icon_ana'
             item = QListWidgetItem(
                 self.parent_frame.listWidget_projects_analysis)
-            default_project = '_default_data_analysis'
+            default_project = '__default_data_analysis'
             self.mode = 'analysis'
 
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable

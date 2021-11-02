@@ -295,3 +295,38 @@ class Widgets:
             switch_.bind('change', set_value())
 
         return form
+
+    # ----------------------------------------------------------------------
+    def input(self, label, value=False, on_change=None, helper_text=False, id=None, hide_label=False):
+        """"""
+        # self.dashboard <= w.label('Experiment details', 'headline4')
+        # self.dashboard <= w.input('Paradigm', value='', id='exp-paradigm')
+        # self.dashboard <= w.input('Subject Name', value='', id='exp-subject')
+        # self.dashboard <= w.input('Responsable', value='', id='exp-responsable')
+
+        label_ = MDCComponent(html.SPAN(f'{label}'))
+        label_ .mdc.typography('subtitle1')
+        form = MDCForm(formfield_style={
+                       'width': 'calc(100% - 15px)', 'min-height': '90px', 'margin-left': '15px'})
+        if not hide_label:
+            form <= label_
+
+        text_field_ = form.mdc.TextField(
+            label=label, value=value, helper_text=helper_text, filled=True, id=id)
+
+        if id:
+            self.widgets[id] = value
+            self.component[id] = text_field_
+
+            def set_value():
+                def wrap(evt):
+                    self.widgets[id] = text_field_.mdc.value
+                return wrap
+
+            text_field_.bind('input', set_value())
+
+        if on_change:
+            text_field_.bind(
+                'input', lambda evt: on_change(text_field_.mdc.value))
+
+        return form
