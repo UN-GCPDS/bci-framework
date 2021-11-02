@@ -184,6 +184,9 @@
         <property name="text">
          <string>Reset notebooks</string>
         </property>
+        <property name="class" stdset="0">
+         <string>warning</string>
+        </property>
        </widget>
       </item>
      </layout>

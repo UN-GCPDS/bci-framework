@@ -30,6 +30,7 @@ from .configuration import ConfigurationFrame
 from ..extensions import properties as prop
 from .dialogs import Dialogs
 from .subprocess_handler import run_subprocess
+from .raspad import Raspad
 
 import numpy as np
 
@@ -177,6 +178,7 @@ class BCIFramework(QMainWindow):
         self.projects = Projects(self.main, self)
         self.records = Records(self.main, self)
         self.annotations = Annotations(self.main, self)
+        self.raspad = Raspad(self.main, self)
 
         self.development = Development(self)
         self.visualizations = Visualization(self)
