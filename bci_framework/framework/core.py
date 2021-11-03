@@ -65,7 +65,7 @@ class Kafka(QThread):
     """Kafka run on a thread."""
     on_message = Signal(object)
     message = Signal()
-    # first_consume = Signal()
+    first_consume = Signal()
     produser_connected = Signal()
     continue_ = True
 
@@ -86,6 +86,7 @@ class Kafka(QThread):
         try:
             self.create_produser()
             self.produser_connected.emit()
+            self.consumed = False
             self.create_consumer()
         except Exception as e:
             self.message.emit()
@@ -106,6 +107,10 @@ class Kafka(QThread):
         for message in self.consumer:
             self.last_message = datetime.now()
             message.value['timestamp'] = message.timestamp / 1000
+
+            if not self.consumed:
+                self.first_consume.emit()
+                self.consumed = True
 
             self.on_message.emit(
                 {'topic': message.topic, 'value': message.value})
@@ -664,6 +669,8 @@ class BCIFramework(QMainWindow):
         # try:
         self.thread_kafka = Kafka()
         self.thread_kafka.on_message.connect(self.on_kafka_event)
+        self.thread_kafka.first_consume.connect(lambda: self.connection.on_connect(
+            True))
         self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.produser_connected.connect(
             self.kafka_produser_connected)

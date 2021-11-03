@@ -9,6 +9,8 @@ import sys
 from PySide2.QtCore import QTimer
 from PySide2.QtWidgets import QApplication
 
+from openbci_stream.acquisition import restart_services
+
 
 ########################################################################
 class Raspad:
@@ -33,6 +35,8 @@ class Raspad:
             self.fullscreen)
         self.parent_frame.pushButton_close_framework.clicked.connect(
             QApplication.closeAllWindows)
+        self.parent_frame.pushButton_restart_daemons.clicked.connect(
+            self.core.connection.restart_services)
         self.parent_frame.pushButton_take_screenshot.clicked.connect(
             lambda: QTimer().singleShot(3000, self.take_screenshot))
 
@@ -50,3 +54,6 @@ class Raspad:
         """"""
         pixmap = self.parent_frame.grab()
         pixmap.save(f'/home/yeison/screenshot.png')
+
+
+

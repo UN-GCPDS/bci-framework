@@ -1,6 +1,6 @@
 
 *{{
-  font-size: 12px;
+  font-size: 16px;
 }}
 
 .icon_button {{
@@ -17,4 +17,19 @@ QPushButton.connection {{
   max-width: 12px;
   max-height: 12px;
   border-radius: 6px !important;
+}}
+
+QCheckBox::indicator {{
+  width: 40px;
+  height: 40px;
+}}
+
+QMainWindow::separator:vertical,
+QSplitter::handle:horizontal {{
+  width: 30px;
+}}
+
+QMainWindow::separator:horizontal,
+QSplitter::handle:vertical {{
+  height: 30px;
 }}
