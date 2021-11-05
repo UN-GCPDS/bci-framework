@@ -27,4 +27,5 @@ Submodules
    bci_framework.framework.dialogs
    bci_framework.framework.extensions_handler
    bci_framework.framework.nbstreamreader
+   bci_framework.framework.raspad
    bci_framework.framework.subprocess_handler

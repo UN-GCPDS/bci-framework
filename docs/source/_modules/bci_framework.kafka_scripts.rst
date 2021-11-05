@@ -10,7 +10,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   bci_framework.kafka_scripts.latency_synchronization_stimuli_marker
    bci_framework.kafka_scripts.latency_synchronization_visualization
 
 Submodules

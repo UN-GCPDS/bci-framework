@@ -26,7 +26,7 @@ buildapi:
 
 	rm -f source/_modules/*
 	sphinx-apidoc -fMeET --templatedir=source/_templates -o source/_modules ../bci_framework
-	jupyter nbconvert --to rst source/notebooks/readme.ipynb
-	jupyter nbconvert --to markdown source/notebooks/readme.ipynb --output ../../../README.md
+	jupyter-nbconvert --to rst source/notebooks/readme.ipynb
+	jupyter-nbconvert --to markdown source/notebooks/readme.ipynb --output ../../../README.md
 
 	python fix_readme.py

@@ -11,14 +11,13 @@ Navigation
    notebooks/00-installation
    notebooks/01-configuration
    notebooks/02-interface
-   notebooks/70-data_analysis
-   notebooks/75-data_visualizations
-   notebooks/76-default_visualizations
-   notebooks/80-stimuli_delivery
-   notebooks/81-default_stimuli_delivery_paradigms
-   notebooks/90-event_marker_synchronization
-   notebooks/91-eeg_records_exploring
-   notebooks/99-ilustrative_example
+   notebooks/03-data_analysis
+   notebooks/04-data_visualizations
+   notebooks/05-default_visualizations
+   notebooks/06-stimuli_delivery
+   notebooks/07-default_stimuli_delivery_paradigms
+   notebooks/08-event_marker_synchronization
+   notebooks/09-ilustrative_example
 
 Indices and tables
 ------------------
