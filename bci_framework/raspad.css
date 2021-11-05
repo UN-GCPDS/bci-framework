@@ -1,6 +1,6 @@
 
 *{{
-  font-size: 16px;
+  font-size: 13px;
 }}
 
 .icon_button {{
@@ -20,8 +20,8 @@ QPushButton.connection {{
 }}
 
 QCheckBox::indicator {{
-  width: 40px;
-  height: 40px;
+  width: 37px;
+  height: 37px;
 }}
 
 QMainWindow::separator:vertical,
