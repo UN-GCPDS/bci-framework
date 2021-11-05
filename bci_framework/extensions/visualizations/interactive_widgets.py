@@ -56,7 +56,7 @@ class Filters:
     """"""
 
     # ----------------------------------------------------------------------
-    @interact('BandPass', bandpass_filters, 'none')
+    @interact('BandPass', bandpass_filters, '1-100 Hz')
     def interact_bandpass(self, bandpass):
         """"""
         if bandpass == 'none':
@@ -72,7 +72,7 @@ class Filters:
                 {'bandpass': (bandpass, {'fs': prop.SAMPLE_RATE})})
 
     # ----------------------------------------------------------------------
-    @interact('Notch', notch_filters, 'none')
+    @interact('Notch', notch_filters, '60 Hz')
     def interact_notch(self, notch):
         """"""
         if notch == 'none':
@@ -115,7 +115,7 @@ class Substract:
     """"""
 
     # ----------------------------------------------------------------------
-    @interact('Substract', substract, 'none')
+    @interact('Substract', substract, 'channel mean')
     def interact_substract(self, substract):
         """"""
         self.widget_value['Substract'] = substract
