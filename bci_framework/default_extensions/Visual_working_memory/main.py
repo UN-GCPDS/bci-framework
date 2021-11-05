@@ -198,8 +198,12 @@ class VisualWorkingMemory(StimuliAPI):
             self.start_record()
 
         self.build_trials()
-        timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback='stop_run'), 2000)
+        self.show_counter('start_run')
+        
+    # ----------------------------------------------------------------------
+    def start_run(self):
+        """"""    
+        self.run_pipeline(self.pipeline_trial, self.trials, callback='stop_run')
 
     # ----------------------------------------------------------------------
     def stop(self):
