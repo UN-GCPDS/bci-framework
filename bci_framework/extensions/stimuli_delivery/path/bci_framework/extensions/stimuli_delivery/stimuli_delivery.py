@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import random
 import logging
 from browser import timer, html, document, window
@@ -585,3 +586,32 @@ class StimuliAPI(Pipeline):
         if name == 'set_latency':
             self._latency = value
 
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.both
+    def show_counter(self, fn, *args, **kwargs):
+        """"""
+        if not document.select('#bci-counter-frame'):
+            document.select_one('.bci_stimuli') <= html.DIV(
+                html.SPAN(' ', id='bci-counter'), id='bci-counter-frame')
+        else:
+            document.select_one(
+                '#bci-counter-frame').style = {'display': 'block'}
+
+        def hide():
+            document.select_one(
+                '#bci-counter-frame').style = {'display': 'none'}
+
+        timer.set_timeout(lambda: setattr(
+            document.select_one('#bci-counter'), 'html', '5'), 1000)
+        timer.set_timeout(lambda: setattr(
+            document.select_one('#bci-counter'), 'html', '4'), 2000)
+        timer.set_timeout(lambda: setattr(
+            document.select_one('#bci-counter'), 'html', '3'), 3000)
+        timer.set_timeout(lambda: setattr(
+            document.select_one('#bci-counter'), 'html', '2'), 4000)
+        timer.set_timeout(lambda: setattr(
+            document.select_one('#bci-counter'), 'html', ' '), 5000)
+        timer.set_timeout(hide, 5000)
+
+        fn = getattr(self, fn)
+        timer.set_timeout(lambda: fn(*args, **kwargs), 6000)
