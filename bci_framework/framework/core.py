@@ -669,14 +669,14 @@ class BCIFramework(QMainWindow):
         self.thread_kafka = Kafka()
         self.thread_kafka.on_message.connect(self.on_kafka_event)
         # self.thread_kafka.first_consume.connect(lambda: self.connection.on_connect(
-            True))
+            # True))
         self.thread_kafka.message.connect(self.kafka_message)
         self.thread_kafka.produser_connected.connect(
             self.kafka_produser_connected)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
-        self.timer=QTimer()
+        self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.keep_updated)
         self.timer.start()
@@ -684,9 +684,9 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def calculate_offset(self):
         """"""
-        host=self.thread_kafka.host
+        host = self.thread_kafka.host
         if host != 'localhost':
-            self.offset_thread=ClockOffset()
+            self.offset_thread = ClockOffset()
             self.offset_thread.offset.connect(self.set_offset)
             self.offset_thread.set_host(self.thread_kafka.host)
             self.offset_thread.start()
@@ -696,12 +696,12 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def set_offset(self, offset):
         """"""
-        os.environ['BCISTREAM_OFFSET']=json.dumps(offset)
+        os.environ['BCISTREAM_OFFSET'] = json.dumps(offset)
 
     # ----------------------------------------------------------------------
     def stop_kafka(self) -> None:
         """Stop kafka."""
-        self.streaming=False
+        self.streaming = False
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
             self.status_bar(right_message=('No streaming', False))
@@ -710,12 +710,12 @@ class BCIFramework(QMainWindow):
     def keep_updated(self) -> None:
         """The status is update each 3 seconds."""
         if hasattr(self, 'thread_kafka') and hasattr(self.thread_kafka, 'last_message'):
-            last=datetime.now() - self.thread_kafka.last_message
+            last = datetime.now() - self.thread_kafka.last_message
             if last.seconds > 3:
                 self.status_bar(right_message=('No streaming', False))
                 self.annotations.set_enable(False)
                 self.main.pushButton_record.setEnabled(False)
-                self.streaming=False
+                self.streaming = False
             else:
                 self.annotations.set_enable(True)
                 self.main.pushButton_record.setEnabled(True)
@@ -724,11 +724,11 @@ class BCIFramework(QMainWindow):
     @ Slot()
     def kafka_message(self) -> None:
         """Error on kafka."""
-        self.streaming=False
+        self.streaming = False
         if self.main.comboBox_host.currentText() != 'localhost':
-            self.conection_message=f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
+            self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
         else:
-            self.conection_message='* Kafka is not running on this machine.'
+            self.conection_message = '* Kafka is not running on this machine.'
 
         self.status_bar(right_message=('Disconnected', None))
 
@@ -741,7 +741,7 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def show_configurations(self, *args, **kwargs) -> None:
         """Show configuration window."""
-        configuration=ConfigurationFrame(self)
+        configuration = ConfigurationFrame(self)
         configuration.show()
 
     # ----------------------------------------------------------------------
@@ -753,14 +753,14 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def feedback_set_latency(self, value):
         """"""
-        os.environ['BCISTREAM_SYNCLATENCY']=json.dumps(value)
+        os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(value)
 
     # ----------------------------------------------------------------------
     def start_stimuli_server(self):
         """"""
         if '--local' in sys.argv:
-            self.bciframework_server=run_subprocess([sys.executable, os.path.join(
+            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
                 os.environ['BCISTREAM_ROOT'], 'python_scripts', 'bciframework_server', 'main.py')])
         else:
-            self.bciframework_server=run_subprocess([sys.executable, os.path.join(
+            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
                 os.environ['BCISTREAM_HOME'], 'python_scripts', 'bciframework_server', 'main.py')])
