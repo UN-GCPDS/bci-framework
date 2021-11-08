@@ -270,7 +270,7 @@ class VisualWorkingMemory(StimuliAPI):
             self.stimuli_area <= self.cue_placeholder
 
         self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]}'
-        self.send_marker(cue)
+        self.send_marker(cue, blink=None)
 
     # ----------------------------------------------------------------------
     def memory_array(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
@@ -278,7 +278,7 @@ class VisualWorkingMemory(StimuliAPI):
         if hasattr(self, 'cue_placeholder'):
             self.cue_placeholder.class_name = ''
         self._set_visible_markers(True)
-        self.send_marker(f'{shapes}', blink=None)
+        self.send_marker(f'{shapes}')
 
     # ----------------------------------------------------------------------
     def retention(self, cue: Literal['Right', 'Left'], shapes: int, change: bool) -> None:
