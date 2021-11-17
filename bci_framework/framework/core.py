@@ -148,12 +148,17 @@ class BCIFramework(QMainWindow):
             lambda evt: self.show_interface('Visualizations'))
         self.main.actionStimuli_delivery.triggered.connect(
             lambda evt: self.show_interface('Stimuli_delivery'))
+        self.main.actionTimelock_analysis.triggered.connect(
+            lambda evt: self.show_interface('Timelock_analysis'))
         self.main.actionHome.triggered.connect(
             lambda evt: self.show_interface('Home'))
         self.main.actionDocumentation.triggered.connect(
             lambda evt: self.show_interface('Documentation'))
         self.main.actionRaspad_settings.triggered.connect(
             lambda evt: self.show_interface('Raspad_settings'))
+
+        self.main.stackedWidget_montage.setCurrentWidget(
+            self.main.page_montage)
 
         shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
         shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
@@ -223,8 +228,9 @@ class BCIFramework(QMainWindow):
             return QIcon(f"bci:/primary/{name}.svg")
 
         self.main.actionDevelopment.setIcon(icon("file"))
-        self.main.actionVisualizations.setIcon(icon("brain"))
+        self.main.actionVisualizations.setIcon(icon("latency2"))
         self.main.actionStimuli_delivery.setIcon(icon("imagery"))
+        self.main.actionTimelock_analysis.setIcon(icon("brain"))
         self.main.actionHome.setIcon(icon("home"))
         self.main.actionDocumentation.setIcon(icon("documentation"))
 
@@ -237,8 +243,9 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_brain.setIcon(icon("brain"))
         self.main.pushButton_imagery.setIcon(icon("imagery"))
         self.main.pushButton_docs.setIcon(icon("documentation"))
-        self.main.pushButton_latency.setIcon(icon("latency2"))
+        self.main.pushButton_latency.setIcon(icon("latency"))
         self.main.pushButton_annotations.setIcon(icon("annotation"))
+        self.main.pushButton_timelock.setIcon(icon("latency2"))
 
         self.main.pushButton_stop_preview.setIcon(
             icon('media-playback-stop'))
@@ -535,6 +542,7 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_docs.setStyleSheet(style)
         self.main.pushButton_latency.setStyleSheet(style)
         self.main.pushButton_annotations.setStyleSheet(style)
+        self.main.pushButton_timelock.setStyleSheet(style)
 
         style = f"""
         QFrame {{
@@ -546,6 +554,7 @@ class BCIFramework(QMainWindow):
         self.main.frame_5.setStyleSheet(style)
         self.main.frame_6.setStyleSheet(style)
         self.main.frame_7.setStyleSheet(style)
+        self.main.frame_4.setStyleSheet(style)
         self.main.frame.setStyleSheet(style)
 
         style = """

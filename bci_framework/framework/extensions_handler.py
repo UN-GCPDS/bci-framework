@@ -41,7 +41,7 @@ class ExtensionMenu:
             if visualization:
                 menu_stimuli = QMenu(f'{visualization } 🞃')
             else:
-                menu_stimuli = QMenu('Data analysis 🞃')
+                menu_stimuli = QMenu('Real-time analysis 🞃')
 
         # Add visualizations
         for viz, path in self.extensions_list:
@@ -227,6 +227,60 @@ class ExtensionMenu:
             self.load_extension(visualization)
         return wrap
 
+    # ----------------------------------------------------------------------
+    def build_menu_timeloclk(self, visualization: bool, debugger: Optional[bool] = False) -> None:
+        """"""
+        self.menubar = QMenuBar(self)
+        self.menubar.clear()
+        self.menubar.setMinimumWidth(1e4)
+
+        self.accent_menubar = QMenuBar(self)
+
+        # Title
+        if debugger:
+            menu_stimuli = QMenu(f"Debugging: {visualization}")
+        else:
+            if visualization:
+                menu_stimuli = QMenu(f'{visualization } 🞃')
+            else:
+                menu_stimuli = QMenu('Timelock analysis 🞃')
+
+        # Add visualizations
+        for viz, path in self.extensions_list:
+            if viz != visualization:
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_extension(path)))
+
+        self.accent_menubar.addMenu(menu_stimuli)
+
+        # Menu with accent color
+        self.accent_menubar.setStyleSheet(f"""
+        QMenuBar::item {{
+            background-color: {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
+            color: {os.getenv('QTMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
+            }}""")
+
+        # Set the menu in first position
+        self.menubar.setCornerWidget(
+            self.accent_menubar, corner=Qt.TopLeftCorner)
+
+        # View
+        menu_view = QMenu("View")
+        if visualization:
+
+            menu_view.addAction(
+                QAction('Reload', menu_view, triggered=self.reload))
+
+            # menu_view.addAction(
+                # QAction('Save capture', menu_view, triggered=self.save_img))
+            # if not debugger:
+                # menu_view.addSeparator()
+                # menu_view.addAction(
+                    # QAction('Close', menu_view, triggered=self.remove))
+        else:
+            menu_view.setEnabled(False)
+        self.menubar.addMenu(menu_view)
+
 
 ########################################################################
 class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
@@ -241,8 +295,14 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
                  directory: Optional[str] = None):
         """"""
         super().__init__(None)
-        ui = os.path.realpath(os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_widget.ui'))
+
+        if mode == 'timelock':
+            ui = os.path.realpath(os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_timelock_widget.ui'))
+        else:
+            ui = os.path.realpath(os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_widget.ui'))
+
         self.main = QUiLoader().load(ui, self)
         self.mdi_area = mdi_area
 
@@ -269,11 +329,19 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         self.setWidget(self.main)
         self.config = ConfigManager()
 
+        if not self.is_timeloclk:
+            style = f"""
+            * {{
+            border: 2px solid {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
+            border-width: 0px 2px 2px 2px;
+            }}
+            """
+        else:
+            style = ''
+
         self.setStyleSheet(f"""
-        * {{
-        border: 2px solid {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
-        border-width: 0px 2px 2px 2px;
-        }}
+        {style}
+
         QMenuBar {{
         background: {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
         border-width: 0;
@@ -287,22 +355,28 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
             self.main.widget.hide()
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_visualization(self) -> str:
         """"""
         return self.mode == 'visualization'
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_stimuli(self) -> str:
         """"""
         return self.mode in ['stimuli', 'delivery']
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_analysis(self) -> str:
         """"""
         return self.mode == 'analysis'
+
+    # ----------------------------------------------------------------------
+    @ property
+    def is_timeloclk(self) -> str:
+        """"""
+        return self.mode == 'timelock'
 
     # ----------------------------------------------------------------------
     def load_extension(self, extension: str, debugger: Optional[bool] = False) -> None:
@@ -380,6 +454,8 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
                 visualization, debugger, interact_content)
         elif self.is_stimuli:
             self.build_menu_stimuli(visualization, debugger)
+        elif self.is_timeloclk:
+            self.build_menu_timeloclk(visualization, debugger)
 
         if not self.is_analysis:
             self.main.gridLayout_menubar.setMenuBar(self.menubar)

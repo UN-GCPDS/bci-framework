@@ -14,6 +14,8 @@ from urllib import request
 from contextlib import closing
 from typing import TypeVar, Optional
 
+import importlib.util
+
 from PySide2.QtCore import QTimer, QSize
 from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
@@ -205,6 +207,9 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.timer = QTimer()
 
         self.is_analysis = self.file_is_analysis(path)
+        self.is_visualization = self.file_is_visualization(path)
+        self.is_timelock = self.file_is_timelock(path)
+        self.is_stimuli = self.file_is_stimuli(path)
 
         # if self.file_is_stimuli(path):
             # if self.debugger:
@@ -218,7 +223,7 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         # else:
             # self.port = '9999'
 
-        if not self.is_analysis:
+        if any([self.is_stimuli, self.is_visualization]):
             self.port = self.get_free_port()
         else:
             self.port = ''
@@ -227,16 +232,15 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             extra = '--debug'
         else:
             extra = ''
-        self.subprocess_script = run_subprocess(
-            [sys.executable, path, self.port, extra])
 
-        if self.is_analysis:
-            self.is_visualization = False
-            self.is_stimuli = False
-            pass
-            # self.start_debug()
-        else:
+        if not self.is_timelock:
+            self.subprocess_script = run_subprocess(
+                [sys.executable, path, self.port, extra])
+
+        if any([self.is_visualization, self.is_stimuli]):
             self.prepare_webview()
+        elif self.is_timelock:
+            self.prepare_layout(path)
 
     # ----------------------------------------------------------------------
     def file_is_analysis(self, path):
@@ -255,6 +259,12 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         """"""
         with open(path, 'r') as file:
             return 'visualizations import EEGStream' in file.read()
+
+    # ----------------------------------------------------------------------
+    def file_is_timelock(self, path):
+        """"""
+        with open(path, 'r') as file:
+            return 'timelock_analysis import TimelockDashboard' in file.read() or 'timelock_analysis import TimelockWidget' in file.read()
 
     # ----------------------------------------------------------------------
     def prepare_webview(self) -> None:
@@ -285,6 +295,24 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.load_webview()
 
     # ----------------------------------------------------------------------
+    def prepare_layout(self, path):
+        """"""
+        # self.main.widget_development_webview.show()
+
+        spec = importlib.util.spec_from_file_location("Analysis", path)
+        foo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(foo)
+        for i in range(self.web_view.count()):
+            self.web_view.itemAt(i).widget().deleteLater()
+
+        self.an = foo.Analysis(
+            self.main.scrollArea_timelock.geometry().height())
+        self.web_view.addWidget(self.an.widget)
+        # self.web_view.addItem(foo.Analysis())
+        # foo.Analysis(self.web_view)
+
+    # ----------------------------------------------------------------------
+
     def clear_subprocess_script(self) -> None:
         """"""
         if hasattr(self, 'subprocess_script'):
@@ -311,14 +339,14 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
                 pass
 
         # TODO: A wait page could be a god idea
-        self.main.widget_development_webview.hide()
+        # self.main.widget_development_webview.hide()
         if hasattr(self.main, 'web_engine'):
             self.main.web_engine.setUrl('about:blank')
 
     # ----------------------------------------------------------------------
     def load_webview(self) -> None:
         """After the process starting, set the URL into the webview."""
-        self.main.widget_development_webview.show()
+        # self.main.widget_development_webview.show()
 
         # Create main QWebEngineView object
         if not hasattr(self.main, 'web_engine'):

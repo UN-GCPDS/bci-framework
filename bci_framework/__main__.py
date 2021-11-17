@@ -28,8 +28,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('kafka').setLevel(logging.ERROR)
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
-os.environ.setdefault('BCISTREAM_RASPAD', json.dumps(
-    ('--raspad' in sys.argv)))
+os.environ.setdefault('BCISTREAM_RASPAD',
+                      json.dumps(('--raspad' in sys.argv)))
 
 # Deafine defaults variables
 os.environ.setdefault('APP_NAME', 'BCI Framework')
@@ -156,8 +156,8 @@ def main() -> None:
         dark_theme = 'dark_teal.xml'
         styles = 'raspad.css'
     else:
-        light_theme = 'light_cyan_500.xml'
-        dark_theme = 'dark_cyan.xml'
+        light_theme = 'light_blue.xml'
+        dark_theme = 'dark_blue.xml'
         styles = 'custom.css'
 
     if ConfigManager().get('framework', 'theme', 'light') == 'light':

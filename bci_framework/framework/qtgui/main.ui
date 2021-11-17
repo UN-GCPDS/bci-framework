@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1406</width>
-    <height>814</height>
+    <width>1020</width>
+    <height>769</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>5</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -43,7 +43,7 @@
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -51,17 +51,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="0">
-             <widget class="QMdiArea" name="mdiArea_stimuli">
-              <property name="background">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>0</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </property>
-             </widget>
+             <widget class="QMdiArea" name="mdiArea_stimuli"/>
             </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -229,17 +219,7 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
-          <widget class="QMdiArea" name="mdiArea_development">
-           <property name="background">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </property>
-          </widget>
+          <widget class="QMdiArea" name="mdiArea_development"/>
          </widget>
         </item>
        </layout>
@@ -259,7 +239,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
-            <string>Visualizations</string>
+            <string>Real-time visualizations</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_39">
             <item row="0" column="0">
@@ -271,7 +251,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="list-add">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                </widget>
               </item>
@@ -317,7 +297,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="title">
-            <string>Data analysis</string>
+            <string>Real-time analysis</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_48">
             <item row="0" column="0">
@@ -379,22 +359,60 @@ p, li { white-space: pre-wrap; }
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="pageHome">
-       <layout class="QGridLayout" name="gridLayout_46" rowstretch="1,10,0" columnstretch="1,15,1">
-        <item row="0" column="1">
-         <spacer name="verticalSpacer_home1">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>61</height>
-           </size>
-          </property>
-         </spacer>
+      <widget class="QWidget" name="pageTimelock_analysis">
+       <layout class="QGridLayout" name="gridLayout_56" rowstretch="0,10,0">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_38">
+          <item>
+           <widget class="QComboBox" name="comboBox"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_29">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="1" rowspan="2">
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <item>
+           <spacer name="horizontalSpacer_16">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Generate report</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QGridLayout" name="gridLayout_57"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageHome">
+       <layout class="QGridLayout" name="gridLayout_46" rowstretch="1,0" columnstretch="1">
+        <item row="0" column="0" rowspan="2">
          <widget class="QWidget" name="widget_6" native="true">
           <layout class="QGridLayout" name="gridLayout_44" rowstretch="1,0,0">
            <item row="1" column="0">
@@ -413,8 +431,8 @@ p, li { white-space: pre-wrap; }
            <item row="2" column="0">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QGridLayout" name="gridLayout_32">
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="0,0,0,1">
                 <item>
                  <widget class="QPushButton" name="pushButton_show_about">
                   <property name="cursor">
@@ -424,7 +442,23 @@ p, li { white-space: pre-wrap; }
                    <string notr="true">text-align: left</string>
                   </property>
                   <property name="text">
-                   <string>About...</string>
+                   <string>About</string>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_show_configurations">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">text-align: left</string>
+                  </property>
+                  <property name="text">
+                   <string>Configuration</string>
                   </property>
                   <property name="flat">
                    <bool>true</bool>
@@ -452,40 +486,10 @@ p, li { white-space: pre-wrap; }
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_18">
-                <item>
-                 <widget class="QPushButton" name="pushButton_show_configurations">
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">text-align: left</string>
-                  </property>
-                  <property name="text">
-                   <string>Configuration...</string>
-                  </property>
-                  <property name="flat">
+                  <property name="wordWrap">
                    <bool>true</bool>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_22">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -494,402 +498,11 @@ p, li { white-space: pre-wrap; }
            </item>
            <item row="0" column="0">
             <widget class="QWidget" name="widget_4" native="true">
-             <layout class="QGridLayout" name="gridLayout_31" rowstretch="1,1,1" columnstretch="1,1,1">
+             <layout class="QGridLayout" name="gridLayout_31" rowstretch="1,1,1,1,0" columnstretch="1,1,1,1,0">
               <property name="spacing">
                <number>15</number>
               </property>
-              <item row="0" column="0" rowspan="2">
-               <widget class="QFrame" name="frame">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_34" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_3">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_file">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_25">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_2">
-                   <item>
-                    <spacer name="horizontalSpacer_11">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_add_project_2">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Create project</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_15">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;for the data acquisition and the external stimuli synchronization.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Python&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="1" rowspan="2">
-               <widget class="QFrame" name="frame_2">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,1,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_15">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_brain">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_16">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_14">
-                   <item>
-                    <spacer name="horizontalSpacer_15">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_visualization">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Run data analysis</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_16">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QFrame" name="frame_5">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_43" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_25">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_docs">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_31">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_26">
-                   <item>
-                    <spacer name="horizontalSpacer_32">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_documentation">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Show documentation</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_20">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be edited according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QFrame" name="frame_6">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_50" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_32">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_latency">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_33">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_33">
-                   <item>
-                    <spacer name="horizontalSpacer_34">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_latency_correction">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Latency correction</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_21">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform automatic &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;latency corrections&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; algorithms in order to improve the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;markers synchronization&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="2">
+              <item row="1" column="1" colspan="4">
                <widget class="QFrame" name="frame_7">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -986,7 +599,107 @@ p, li { white-space: pre-wrap; }
                 </layout>
                </widget>
               </item>
-              <item row="0" column="1" colspan="2">
+              <item row="1" column="0" rowspan="2">
+               <widget class="QFrame" name="frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_34" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_file">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_25">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_15">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;for the data acquisition and the external stimuli synchronization.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Python&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                   <item>
+                    <spacer name="horizontalSpacer_11">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_add_project_2">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Create project</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
                <widget class="QFrame" name="frame_3">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -1083,37 +796,373 @@ p, li { white-space: pre-wrap; }
                 </layout>
                </widget>
               </item>
+              <item row="0" column="2" colspan="3">
+               <widget class="QFrame" name="frame_4">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_54">
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_43">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_timelock">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_40">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_23">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Load databases and perform &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;epochs analysis&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, results presentation and any dedicated offline data examination.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_40">
+                   <item>
+                    <spacer name="horizontalSpacer_39">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_timelock">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Timelock</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="3">
+               <widget class="QFrame" name="frame_5">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_43" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_25">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_docs">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_31">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_26">
+                   <item>
+                    <spacer name="horizontalSpacer_32">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_documentation">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Show documentation</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_20">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be edited according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="3" column="0" rowspan="2" colspan="4">
+               <widget class="QFrame" name="frame_2">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_16">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="pushButton_brain">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>64</width>
+                     <height>64</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <item>
+                    <spacer name="horizontalSpacer_15">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_visualization">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Run data analysis</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="4" rowspan="3">
+               <widget class="QFrame" name="frame_6">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_50" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_32">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_latency">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_33">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_21">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform automatic &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;latency corrections&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; algorithms in order to improve the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;markers synchronization&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_33">
+                   <item>
+                    <spacer name="horizontalSpacer_34">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_latency_correction">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Latency correction</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
           </layout>
          </widget>
-        </item>
-        <item row="0" column="0" rowspan="3">
-         <spacer name="horizontalSpacer_home1">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>54</width>
-            <height>707</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="2" rowspan="3">
-         <spacer name="horizontalSpacer_home2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>54</width>
-            <height>707</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -1258,6 +1307,7 @@ p, li { white-space: pre-wrap; }
    </attribute>
    <addaction name="actionDevelopment"/>
    <addaction name="actionVisualizations"/>
+   <addaction name="actionTimelock_analysis"/>
    <addaction name="actionStimuli_delivery"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_global">
@@ -1379,17 +1429,17 @@ p, li { white-space: pre-wrap; }
                <property name="currentIndex">
                 <number>0</number>
                </property>
-               <widget class="QWidget" name="page_3">
+               <widget class="QWidget" name="page_montage">
                 <layout class="QGridLayout" name="gridLayout_27">
-                 <item row="1" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_20"/>
-                 </item>
                  <item row="2" column="0">
                   <layout class="QGridLayout" name="gridLayout_montage"/>
                  </item>
+                 <item row="1" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_20"/>
+                 </item>
                 </layout>
                </widget>
-               <widget class="QWidget" name="page_4">
+               <widget class="QWidget" name="page_impedances">
                 <layout class="QGridLayout" name="gridLayout_38">
                  <item row="1" column="0">
                   <layout class="QGridLayout" name="gridLayout_impedances"/>
@@ -1399,15 +1449,15 @@ p, li { white-space: pre-wrap; }
               </widget>
               <widget class="QToolBox" name="toolBox">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page_5">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>502</width>
-                  <height>488</height>
+                  <width>96</width>
+                  <height>95</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1448,8 +1498,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>502</width>
-                      <height>476</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1498,8 +1548,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>303</width>
-                  <height>145</height>
+                  <width>351</width>
+                  <height>481</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1581,7 +1631,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="iconSize">
                       <size>
@@ -2122,7 +2172,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="icon">
                           <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                          </property>
                          <property name="flat">
                           <bool>true</bool>
@@ -2187,7 +2237,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="icon">
                           <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                          </property>
                          <property name="flat">
                           <bool>true</bool>
@@ -2258,7 +2308,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="icon">
                           <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                          </property>
                          <property name="flat">
                           <bool>true</bool>
@@ -2329,7 +2379,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="icon">
                           <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                          </property>
                          <property name="flat">
                           <bool>true</bool>
@@ -2846,7 +2896,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-playback-start">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2869,7 +2919,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="edit-delete-remove">
-                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -2957,7 +3007,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-record">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -2984,7 +3034,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="edit-delete">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -3033,7 +3083,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="folder-open">
-                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -3068,8 +3118,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>502</width>
-              <height>601</height>
+              <width>351</width>
+              <height>556</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3107,7 +3157,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3245,7 +3295,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3352,7 +3402,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3418,7 +3468,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_projects">
         <attribute name="title">
-         <string>Extensions</string>
+         <string>User scripts</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_5">
          <property name="topMargin">
@@ -3465,7 +3515,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3488,7 +3538,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3519,6 +3569,43 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
+             <item row="1" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_37" stretch="1,0">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_projects_path">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_open_extension_folder">
+                 <property name="toolTip">
+                  <string>Open folder</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="folder-open">
+                   <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
              <item row="4" column="0">
               <widget class="QToolBox" name="toolBox_3">
                <widget class="QWidget" name="toolBoxPage1">
@@ -3526,12 +3613,12 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>502</width>
-                  <height>487</height>
+                  <width>351</width>
+                  <height>410</height>
                  </rect>
                 </property>
                 <attribute name="label">
-                 <string>Data analysis</string>
+                 <string>Real-time analysis</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_47">
                  <property name="leftMargin">
@@ -3580,7 +3667,7 @@ p, li { white-space: pre-wrap; }
                  </rect>
                 </property>
                 <attribute name="label">
-                 <string>Visualizations</string>
+                 <string>Real-time visualizations</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_22">
                  <property name="leftMargin">
@@ -3614,6 +3701,52 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="layoutMode">
                     <enum>QListView::Batched</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_7">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>96</width>
+                  <height>93</height>
+                 </rect>
+                </property>
+                <attribute name="label">
+                 <string>Timelock analysis</string>
+                </attribute>
+                <layout class="QGridLayout" name="gridLayout_55">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QListWidget" name="listWidget_projects_timelock">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::SelectedClicked</set>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>56</width>
+                     <height>56</height>
+                    </size>
+                   </property>
+                   <property name="verticalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
                    </property>
                   </widget>
                  </item>
@@ -3670,43 +3803,6 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </item>
-             <item row="1" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_37" stretch="1,0">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_projects_path">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_open_extension_folder">
-                 <property name="toolTip">
-                  <string>Open folder</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="folder-open">
-                   <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
             </layout>
             <zorder>toolBox_3</zorder>
             <zorder>checkBox_projects_show_tutorials</zorder>
@@ -3734,7 +3830,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="go-previous">
-                   <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -3761,7 +3857,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3784,7 +3880,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3810,7 +3906,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3875,7 +3971,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="media-playback-stop">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -3889,7 +3985,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="media-playback-start">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -3916,7 +4012,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="iconSize">
                       <size>
@@ -4057,7 +4153,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Data analysis</string>
+    <string>Real-time analysis</string>
    </property>
   </action>
   <action name="actionStimuli_delivery">
@@ -4093,6 +4189,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Raspad settings</string>
+   </property>
+  </action>
+  <action name="actionTimelock_analysis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string> Timelock analysis</string>
    </property>
   </action>
  </widget>
@@ -4142,12 +4246,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>704</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1162</x>
-     <y>187</y>
+     <x>1007</x>
+     <y>233</y>
     </hint>
    </hints>
   </connection>
@@ -4158,11 +4262,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1023</x>
+     <x>788</x>
      <y>624</y>
     </hint>
    </hints>
@@ -4174,11 +4278,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
+     <x>1149</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
-     <x>994</x>
+     <x>915</x>
      <y>848</y>
     </hint>
    </hints>
@@ -4190,8 +4294,8 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
      <x>991</x>
@@ -4206,12 +4310,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1393</x>
-     <y>500</y>
+     <x>1007</x>
+     <y>719</y>
     </hint>
    </hints>
   </connection>
@@ -4222,8 +4326,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>704</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>979</x>
@@ -4238,12 +4342,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1154</x>
-     <y>770</y>
+     <x>874</x>
+     <y>753</y>
     </hint>
    </hints>
   </connection>
@@ -4254,11 +4358,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1185</x>
+     <x>950</x>
      <y>623</y>
     </hint>
    </hints>
@@ -4270,8 +4374,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>755</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4286,12 +4390,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>111</y>
+     <x>846</x>
+     <y>114</y>
     </hint>
    </hints>
   </connection>
@@ -4302,8 +4406,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4318,12 +4422,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>355</y>
+     <x>801</x>
+     <y>752</y>
     </hint>
    </hints>
   </connection>
@@ -4334,12 +4438,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>990</x>
-     <y>765</y>
+     <x>755</x>
+     <y>748</y>
     </hint>
    </hints>
   </connection>
@@ -4350,11 +4454,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>964</x>
+     <x>729</x>
      <y>661</y>
     </hint>
    </hints>
@@ -4366,8 +4470,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4382,8 +4486,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>704</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>991</x>
@@ -4398,8 +4502,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4414,11 +4518,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
+     <x>1149</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
-     <x>994</x>
+     <x>915</x>
      <y>810</y>
     </hint>
    </hints>
@@ -4430,11 +4534,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1071</x>
+     <x>836</x>
      <y>662</y>
     </hint>
    </hints>
@@ -4446,12 +4550,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1390</x>
-     <y>767</y>
+     <x>752</x>
+     <y>127</y>
     </hint>
     <hint type="destinationlabel">
-     <x>993</x>
-     <y>479</y>
+     <x>754</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -4462,11 +4566,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
+     <x>1149</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
-     <x>946</x>
+     <x>711</x>
      <y>847</y>
     </hint>
    </hints>
@@ -4478,11 +4582,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>929</x>
+     <x>694</x>
      <y>623</y>
     </hint>
    </hints>
@@ -4494,11 +4598,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1063</x>
+     <x>828</x>
      <y>700</y>
     </hint>
    </hints>
@@ -4510,12 +4614,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>755</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1154</x>
-     <y>770</y>
+     <x>874</x>
+     <y>753</y>
     </hint>
    </hints>
   </connection>
@@ -4526,11 +4630,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
+     <x>1149</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
-     <x>944</x>
+     <x>709</x>
      <y>809</y>
     </hint>
    </hints>
@@ -4542,11 +4646,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1309</x>
+     <x>1074</x>
      <y>624</y>
     </hint>
    </hints>
@@ -4558,11 +4662,11 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
+     <x>1149</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
-     <x>926</x>
+     <x>691</x>
      <y>699</y>
     </hint>
    </hints>
@@ -4574,8 +4678,8 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>755</x>
+     <y>748</y>
     </hint>
     <hint type="destinationlabel">
      <x>1141</x>
@@ -4590,12 +4694,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1001</x>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1194</x>
-     <y>319</y>
+     <x>1007</x>
+     <y>570</y>
     </hint>
    </hints>
   </connection>
@@ -4606,8 +4710,8 @@ p, li { white-space: pre-wrap; }
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1392</x>
-     <y>669</y>
+     <x>1006</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>991</x>
@@ -4622,11 +4726,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1170</x>
+     <x>935</x>
      <y>280</y>
     </hint>
    </hints>
@@ -4638,11 +4742,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1329</x>
+     <x>1094</x>
      <y>280</y>
     </hint>
    </hints>
@@ -4654,11 +4758,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
+     <x>742</x>
      <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1170</x>
+     <x>935</x>
      <y>322</y>
     </hint>
    </hints>
@@ -4670,11 +4774,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
+     <x>742</x>
      <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1329</x>
+     <x>1094</x>
      <y>322</y>
     </hint>
    </hints>
@@ -4686,11 +4790,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1170</x>
+     <x>935</x>
      <y>196</y>
     </hint>
    </hints>
@@ -4702,11 +4806,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1329</x>
+     <x>1094</x>
      <y>196</y>
     </hint>
    </hints>
@@ -4718,11 +4822,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
+     <x>742</x>
      <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1207</x>
+     <x>972</x>
      <y>322</y>
     </hint>
    </hints>
@@ -4734,11 +4838,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1207</x>
+     <x>972</x>
      <y>280</y>
     </hint>
    </hints>
@@ -4750,11 +4854,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1207</x>
+     <x>972</x>
      <y>196</y>
     </hint>
    </hints>
@@ -4766,11 +4870,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1328</x>
+     <x>1093</x>
      <y>238</y>
     </hint>
    </hints>
@@ -4782,11 +4886,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1168</x>
+     <x>933</x>
      <y>238</y>
     </hint>
    </hints>
@@ -4798,11 +4902,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
+     <x>741</x>
      <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1205</x>
+     <x>970</x>
      <y>238</y>
     </hint>
    </hints>
