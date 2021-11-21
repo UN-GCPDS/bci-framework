@@ -221,6 +221,10 @@ class BCIFramework(QMainWindow):
 
         self.status_bar(message='', right_message=('disconnected', None))
 
+        if '--timelock' in sys.argv:
+            self.main.tabWidget_widgets.setCurrentIndex(4)
+            # self.projects.open_project('Test_timelock_analysis')
+
     # ----------------------------------------------------------------------
     def set_icons(self) -> None:
         """The Qt resource system has been deprecated."""

@@ -9,7 +9,6 @@ from typing import TypeVar, Optional
 
 from PySide2.QtWidgets import QFileDialog, QMessageBox
 
-from ..extensions.timelock_analysis import FileHandler
 
 PATH = TypeVar('Path')
 
@@ -46,6 +45,8 @@ class Dialogs:
     @classmethod
     def load_database(cls):
         """"""
+        from ..extensions.timelock_analysis.file_handler import FileHandler
+
         path = os.path.join(os.getenv('BCISTREAM_HOME'), 'records')
         filters = "EEG data (*.h5 *.edf)"
 

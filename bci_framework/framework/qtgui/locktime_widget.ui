@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1,0" columnstretch="0,1,0">
-   <item row="1" column="2">
-    <layout class="QVBoxLayout" name="rightLayout">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1,0,0" columnstretch="0,1,0">
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="leftLayout">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -24,26 +24,21 @@
    <item row="1" column="1">
     <layout class="QGridLayout" name="gridLayout"/>
    </item>
-   <item row="2" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="bottomLayout">
-     <property name="spacing">
-      <number>4</number>
-     </property>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QVBoxLayout" name="leftLayout">
+   <item row="1" column="2">
+    <layout class="QVBoxLayout" name="rightLayout">
      <property name="spacing">
       <number>0</number>
      </property>
     </layout>
    </item>
    <item row="0" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="topLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-    </layout>
+    <layout class="QHBoxLayout" name="topLayout"/>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <layout class="QHBoxLayout" name="bottomLayout"/>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <layout class="QHBoxLayout" name="bottom2Layout"/>
    </item>
   </layout>
  </widget>

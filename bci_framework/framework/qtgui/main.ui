@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>3</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -1194,7 +1194,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QWidget" name="pageRaspad_settings">
        <layout class="QGridLayout" name="gridLayout_53">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_52">
+         <layout class="QGridLayout" name="gridLayout_52" rowstretch="0,0,0,0,0" columnstretch="0,0,0,0,0">
           <item row="0" column="2" colspan="2">
            <spacer name="verticalSpacer_3">
             <property name="orientation">
@@ -1548,8 +1548,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>351</width>
-                  <height>481</height>
+                  <width>303</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3118,8 +3118,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>351</width>
-              <height>556</height>
+              <width>269</width>
+              <height>274</height>
              </rect>
             </property>
             <attribute name="label">

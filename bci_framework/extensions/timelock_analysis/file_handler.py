@@ -11,11 +11,12 @@ class FileHandler:
 
         if filename.endswith('.h5'):
             self.file = HDF5Reader(filename)
+            print(self.file)
 
     # ----------------------------------------------------------------------
     def data(self):
         """"""
-        return self.file.eeg, self.file.timestamp
+        return self.file.eeg.copy(), self.file.timestamp.copy()
 
     # ----------------------------------------------------------------------
     def close(self):

@@ -101,7 +101,8 @@ class Development:
             self.parent_frame.mdiArea_development.show()
             self.parent_frame.splitter_preview.moveSplitter(
                 self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
-            self.parent_frame.splitter_preview.setHandleWidth(self.handle_width)
+            self.parent_frame.splitter_preview.setHandleWidth(
+                self.handle_width)
 
     # ----------------------------------------------------------------------
     def get_project(self) -> PATH:
@@ -111,8 +112,10 @@ class Development:
     # ----------------------------------------------------------------------
     def start_preview(self) -> None:
         """Initialize the previsualization and the debugger."""
+
         if not self.parent_frame.pushButton_script_preview.isVisible():
             return
+
         self.log_timer.start()
         self.show_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
