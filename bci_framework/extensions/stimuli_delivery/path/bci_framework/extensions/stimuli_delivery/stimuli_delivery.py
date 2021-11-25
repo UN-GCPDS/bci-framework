@@ -199,9 +199,15 @@ class Pipeline:
         explicit_pipeline = []
         for method, var in pipeline:
             if isinstance(var, str):
-                var = w.get_value(var)
-            if isinstance(var, [list, tuple, set]):
+
+                if var.endswith('()'):
+                    var = getattr(self, var[:-2])()
+                else:
+                    var = w.get_value(var)
+
+            elif isinstance(var, [list, tuple, set]):
                 var = random.randint(*var)
+
             if isinstance(method, str):
                 explicit_pipeline.append([getattr(self, method), var])
             else:

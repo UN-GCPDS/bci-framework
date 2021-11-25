@@ -14,18 +14,38 @@ class FileHandler:
             print(self.file)
 
     # ----------------------------------------------------------------------
-    def data(self):
+    @property
+    def eeg(self):
         """"""
-        return self.file.eeg.copy(), self.file.timestamp.copy()
+        return self.file.eeg.copy()
 
     # ----------------------------------------------------------------------
-    def close(self):
+    @property
+    def timestamp(self):
         """"""
-        self.file.close()
+        return self.file.timestamp.copy()
+
+    # ----------------------------------------------------------------------
+
+    @property
+    def markers(self):
+        """"""
+        return self.file.markers.copy()
 
     # ----------------------------------------------------------------------
     @property
     def header(self):
         """"""
         return self.file.header
+
+    # ----------------------------------------------------------------------
+    @property
+    def description(self):
+        """"""
+        return self.file.__str__()
+
+    # ----------------------------------------------------------------------
+    def close(self):
+        """"""
+        self.file.close()
 
