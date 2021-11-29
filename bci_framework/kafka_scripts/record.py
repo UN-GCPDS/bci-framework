@@ -20,12 +20,15 @@ if home := os.getenv('BCISTREAM_HOME'):
 
 from datetime import datetime, timedelta
 from openbci_stream.utils import HDF5Writer
+from openbci_stream.utils.pid_admin import autokill_process
 import numpy as np
 
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import loop_consumer
 
 KafkaStream = TypeVar('kafka-stream')
+
+autokill_process(name=f'bci-framework_records')
 
 
 ########################################################################
