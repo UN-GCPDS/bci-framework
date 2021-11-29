@@ -277,6 +277,7 @@ class BCIFramework(QMainWindow):
         """Save in a file all the child subprocess."""
         current_process = psutil.Process()
         children = current_process.children(recursive=True)
+        children.append(current_process)
         file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
         try:
             with open(file, 'w') as file_:
