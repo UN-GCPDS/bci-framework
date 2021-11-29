@@ -173,12 +173,13 @@ class VisualWorkingMemory(StimuliAPI):
         )
 
         self.dashboard <= w.button('Test shapes', on_click=self.test_shapes)
-        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
-        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
-
-
+        self.dashboard <= w.toggle_button(
+            [('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), (
+            'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
+
     def test_shapes(self) -> None:
         """Preview the size and distribution of the squares."""
         self.clear()
@@ -198,12 +199,14 @@ class VisualWorkingMemory(StimuliAPI):
             self.start_record()
 
         self.build_trials()
-        self.show_counter('start_run')
-        
+        self.show_counter(5)
+        timer.set_timeout(self.start_run, 5000)
+
     # ----------------------------------------------------------------------
     def start_run(self):
-        """"""    
-        self.run_pipeline(self.pipeline_trial, self.trials, callback='stop_run')
+        """"""
+        self.run_pipeline(self.pipeline_trial,
+                          self.trials, callback='stop_run')
 
     # ----------------------------------------------------------------------
     def stop(self):
@@ -427,7 +430,8 @@ class VisualWorkingMemory(StimuliAPI):
     def synchronizer(self, value: bool) -> None:
         """Show or hide synchronizer."""
         if value:
-            self.show_synchronizer(size=60, type='square', position='upper left')
+            self.show_synchronizer(
+                size=60, type='square', position='upper left')
         else:
             self.hide_synchronizer()
 
@@ -461,7 +465,7 @@ class VisualWorkingMemory(StimuliAPI):
                                           'position': 'absolute',
                                           'z-index': 10,
                                       })
-    
+
 
 if __name__ == '__main__':
     VisualWorkingMemory()

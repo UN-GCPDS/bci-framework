@@ -212,9 +212,7 @@ class Pipeline:
     # ----------------------------------------------------------------------
     def run_pipeline(self, pipeline, trials, callback=None):
         """"""
-        # self._callback = callback
         self.show_progressbar(len(trials) * len(pipeline))
-        # self.iteration = 0
 
         if self.DEBUG:
             self._prepare.no_decorator(self, callback)
@@ -588,7 +586,7 @@ class StimuliAPI(Pipeline):
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def show_counter(self, fn, *args, **kwargs):
+    def show_counter(self, start=5):
         """"""
         if not document.select('#bci-counter-frame'):
             document.select_one('.bci_stimuli') <= html.DIV(
@@ -601,17 +599,16 @@ class StimuliAPI(Pipeline):
             document.select_one(
                 '#bci-counter-frame').style = {'display': 'none'}
 
-        timer.set_timeout(lambda: setattr(
-            document.select_one('#bci-counter'), 'html', '5'), 1000)
-        timer.set_timeout(lambda: setattr(
-            document.select_one('#bci-counter'), 'html', '4'), 2000)
-        timer.set_timeout(lambda: setattr(
-            document.select_one('#bci-counter'), 'html', '3'), 3000)
-        timer.set_timeout(lambda: setattr(
-            document.select_one('#bci-counter'), 'html', '2'), 4000)
-        timer.set_timeout(lambda: setattr(
-            document.select_one('#bci-counter'), 'html', ' '), 5000)
-        timer.set_timeout(hide, 5000)
+        def set_counter(n):
+            def inset():
+                counter = document.select_one('#bci-counter')
+                counter.html = f'{n}'
+            return inset
 
-        fn = getattr(self, fn)
-        timer.set_timeout(lambda: fn(*args, **kwargs), 6000)
+        for i in range(start):
+            if i < (start - 1):
+                timer.set_timeout(set_counter(start - i), 1000 * (i + 1))
+            else:
+                timer.set_timeout(set_counter(''), 1000 * (i + 1))
+                timer.set_timeout(hide, 1000 * start)
+
