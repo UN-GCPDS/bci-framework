@@ -198,14 +198,10 @@ class Pipeline:
         """"""
         explicit_pipeline = []
         for method, var in pipeline:
+
             if isinstance(var, str):
-
-                if var.endswith('()'):
-                    var = getattr(self, var[:-2])()
-                else:
-                    var = w.get_value(var)
-
-            elif isinstance(var, [list, tuple, set]):
+                var = w.get_value(var)
+            if isinstance(var, [list, tuple, set]):
                 var = random.randint(*var)
 
             if isinstance(method, str):
@@ -216,10 +212,14 @@ class Pipeline:
         return explicit_pipeline
 
     # ----------------------------------------------------------------------
-    def run_pipeline(self, pipeline, trials, callback=None):
+    def run_pipeline(self, pipeline, trials, callback=None, show_progressbar=True):
         """"""
         # self._callback = callback
-        self.show_progressbar(len(trials) * len(pipeline))
+        if show_progressbar:
+            self._autoprogress = True
+            self.show_progressbar(len(trials) * len(pipeline))
+        else:
+            self._autoprogress = False
         # self.iteration = 0
 
         if self.DEBUG:
@@ -310,7 +310,8 @@ class Pipeline:
     # ----------------------------------------------------------------------
     def on_callback(self):
         """"""
-        DeliveryInstance.event(self.set_progress)(self, 0)
+        if self._autoprogress:
+            DeliveryInstance.event(self.set_progress)(self, 0)
         if getattr(self, '_callback', None):
             DeliveryInstance.event(self._callback)(self)
 
@@ -372,6 +373,16 @@ class StimuliAPI(Pipeline):
     def start_record(self):
         """"""
         self.send_annotation('start_record')
+        timer.set_timeout(self._send_custom_annotations, 15000)
+
+    # ----------------------------------------------------------------------
+    def _send_custom_annotations(self):
+        """"""
+        prefix = 'annotation-'
+        data = w.get_prefix(prefix)
+        for k in data:
+            description = f'{k.replace(prefix, "").capitalize()}: {data[k]}'
+            self.send_annotation(description)
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.event
@@ -382,6 +393,7 @@ class StimuliAPI(Pipeline):
     # ----------------------------------------------------------------------
     def send_annotation(self, description, duration=0, force=False):
         """"""
+        logging.warning(f'Annotation: {description}')
         if self.mode == 'stimuli' or force or self.DEBUG:
             self.ws.send({
                 'action': 'annotation',

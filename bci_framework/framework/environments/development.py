@@ -15,8 +15,13 @@ from PySide2.QtGui import QTextCursor, QKeySequence
 from PySide2.QtWidgets import QShortcut
 
 from ..extensions_handler import ExtensionWidget
-# from ..editor import Autocompleter
+from ..editor import Autocompleter
+from ..widgets import projects
 
+# LINE_DELIVERY = 'bci_framework.extensions.stimuli_delivery'
+# LINE_VISUALIZATION = 'bci_framework.extensions.visualizations'
+# LINE_ANALYSIS = 'bci_framework.extensions.data_analysis'
+# LINE_LOCKTIME = 'bci_framework.extensions.timelock_analysis'
 
 PATH = TypeVar('Path')
 
@@ -280,14 +285,17 @@ class Development:
                     file.write(content)
 
                     # if not editor.completer:
-                        # if 'bci_framework.extensions.stimuli_delivery' in content:
+                        # if projects.LINE_DELIVERY in content:
                             # completer = Autocompleter(mode='stimuli')
                             # editor.set_completer(completer)
-                        # elif 'bci_framework.extensions.data_analysis' in content:
+                        # elif projects.LINE_ANALYSIS in content:
                             # completer = Autocompleter(mode='visualization')
                             # editor.set_completer(completer)
-                        # elif 'bci_framework.extensions.visualizations' in content:
+                        # elif projects.LINE_VISUALIZATION in content:
                             # completer = Autocompleter(mode='visualization')
+                            # editor.set_completer(completer)
+                        # elif projects.LINE_LOCKTIME in content:
+                            # completer = Autocompleter(mode='locktime')
                             # editor.set_completer(completer)
 
                     self.parent_frame.tabWidget_project.setTabText(
