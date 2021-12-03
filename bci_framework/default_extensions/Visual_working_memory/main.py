@@ -50,6 +50,8 @@ class VisualWorkingMemory(StimuliAPI):
         self.dashboard <= w.label(
             'Visual working memory - Change detection task', 'headline4')
         self.dashboard <= html.BR()
+        
+        self.dashboard <= w.subject_information(paradigm='Visual working memory')
 
         # Markers
         self.dashboard <= w.label('Squares', 'headline4')
