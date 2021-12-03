@@ -6,6 +6,7 @@ from browser import html, timer
 import random
 
 from figures import Stimuli
+from stimuli import stimuli_set
 
 from typing import Literal
 
@@ -19,14 +20,13 @@ class StimuliDelivery(StimuliAPI):
         super().__init__(*args, **kwargs)
         self.add_stylesheet('styles.css')
         
-        self.stimuli = Stimuli()
+        # self.stimuli = Stimuli('original')
+        self.stimuli = Stimuli('fancy')
         
         self.stimuli_area <= self.stimuli.canvas
         self.stimuli_area <= self.stimuli.score
         
         self.response = None
-        self.delay = 250
-
         self.show_cross()
         self.show_synchronizer()
         
@@ -35,10 +35,10 @@ class StimuliDelivery(StimuliAPI):
           
         self.dashboard <= w.range_slider(
             label='Inter stimulus interval',
-            min=1000,
-            max=3000,
-            value_lower=2000,
-            value_upper=3000,
+            min=500,
+            max=4000,
+            value_lower=1600,
+            value_upper=2000,
             step=100,
             unit='ms',
             id='isi',
@@ -52,6 +52,16 @@ class StimuliDelivery(StimuliAPI):
             step=10,
             unit='ms',
             id='stimuli_duration',
+        )  
+        
+        self.dashboard <= w.slider(
+            label='Initial delay',
+            min=250,
+            max=950,
+            value=500,
+            step=50,
+            unit='ms',
+            id='delay',
         )        
 
         self.dashboard <= w.slider(
@@ -66,14 +76,13 @@ class StimuliDelivery(StimuliAPI):
         
         self.dashboard <= w.slider(
             label='Probability for inhibition',
-            min=0.1,
-            max=1,
-            value=0.3,
-            step=0.1,
+            min=0.2,
+            max=0.3,
+            value=0.25,
+            step=0.01,
             unit='',
             id='p',
         )
-        
         
         self.dashboard <= w.switch(
             label='External marker synchronizer',
@@ -96,9 +105,8 @@ class StimuliDelivery(StimuliAPI):
         self.dashboard <= w.button('Fail', on_click=lambda: self.stimuli.show_fail(w.get_value('stimuli_duration')))
         self.dashboard <= w.button('Coin', on_click=lambda: self.stimuli.show_coin(w.get_value('stimuli_duration')))
         self.dashboard <= w.button('Remove coin', on_click=self.stimuli.remove_coin)
+        self.dashboard <= w.button('Build trials', on_click=self.build_trials)
         self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
-
-
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -109,10 +117,12 @@ class StimuliDelivery(StimuliAPI):
         if w.get_value('record'):
             self.start_record()
             
-        
+        self.delay = w.get_value('delay') 
         self.trials_count = w.get_value('trials')
+        self.build_trials()
         timer.set_timeout(self.run_trials, 2000)
         
+        self.show_progressbar(w.get_value('trials') * 2)
         
         logging.warning(f'Probability to see an inhibition event: {w.get_value("p")}')
         
@@ -120,15 +130,15 @@ class StimuliDelivery(StimuliAPI):
     # ----------------------------------------------------------------------        
     def run_trials(self) -> None:
         """"""
-        self.build_trial(self.get_delay())
+        self.prepare_trial(self.get_delay())
         
         logging.warning('#'*32)
         logging.warning(f'Trial: {w.get_value("trials") - self.trials_count}')
         
         if self.trials_count>1:
-            self.run_pipeline(self.pipeline_trial, self.trials, callback='run_trials')
+            self.run_pipeline(self.pipeline_trial, self.trials, callback='run_trials', show_progressbar=False)
         else:
-            self.run_pipeline(self.pipeline_trial, self.trials, callback='stop_run')
+            self.run_pipeline(self.pipeline_trial, self.trials, callback='stop_run', show_progressbar=False)
             
         self.trials_count -= 1
             
@@ -143,12 +153,37 @@ class StimuliDelivery(StimuliAPI):
     def stop_run(self) -> None:
         """Stop pipeline execution."""
         self.isi()
+        w.get_value('run').off()
         if w.get_value('record'):
             timer.set_timeout(self.stop_record, 2000)
 
+    # ----------------------------------------------------------------------
+    def build_trials(self) -> None:
+        """"""
+        
+        self.inhibitions_array = self.generate_trials(p=w.get_value('p'), count=w.get_value('trials'))
+        self.trials_array = random.choices(['Right', 'Left'], k=w.get_value('trials'))
+        logging.warning(f'{[f"{t}:{i}" for t, i in zip(self.trials_array, self.inhibitions_array)]}')
+        
+    # ----------------------------------------------------------------------
+    def generate_trials(self, p, count):
+        """"""
+        min_ = round(count * p)
+        validated = False
+        while True:
+            a = ''.join(map(str, random.choices([1, 0], (p, 1-p), k=count)))
+            if a.startswith('1'):
+                continue
+            if '11' in a:
+                continue
+            if a.count('1') < min_:
+                continue
+            break
+        
+        return [l=='1' for l in list(a)]
 
     # ----------------------------------------------------------------------
-    def build_trial(self, delay=250) -> None:
+    def prepare_trial(self, delay=250) -> None:
         """Define the `trials` and `pipeline trials`.
 
         The `trials` consist (in this case) in a list of cues.
@@ -156,11 +191,12 @@ class StimuliDelivery(StimuliAPI):
         define a single trial, this list of functions are executed asynchronously
         and repeated for each trial.
         """
-        trial = random.choice(['Right', 'Left'])
-        goomba = random.choices([True, False], (w.get_value('p'), 1-w.get_value('p')))
         
-        self.trials = [{'cue': trial, 'goomba': goomba[0]}]
-
+        self.trials = [{'cue': self.trials_array.pop(0),
+                        'inhibition': self.inhibitions_array.pop(0),
+                        'delay': delay,
+                        }]
+        
         self.pipeline_trial = [
             ['target', delay],  
             ['inhibition', 'stimuli_duration'],  
@@ -181,31 +217,31 @@ class StimuliDelivery(StimuliAPI):
         return self.delay
         
     # ---------------------------------------------------------------------- 
-    def target(self, cue: Literal['Right', 'Left'], goomba: bool):
+    def target(self, cue: Literal['Right', 'Left'], inhibition: bool, delay: int):
         """"""
-        logging.warning(f'Delay: {self.delay}')
+        self.stimuli.show_target(cue, w.get_value('stimuli_duration'))
+        logging.warning(f'Delay: {delay}')
         self.previous_response = self.response
         self.response = None
-        keypress(self.handle_response, self.get_delay())
-        self.stimuli.show_target(cue, w.get_value('stimuli_duration'))
-        timer.set_timeout(self.stimuli.hide, 250)
+        self.key_timer = keypress(self.handle_response, delay-8)
       
     # ----------------------------------------------------------------------
-    def inhibition(self, cue, goomba: bool) -> None:
+    def inhibition(self, cue, inhibition: bool) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial
         as argument each time is called.
         """
+        logging.warning(f'Inhibition: {inhibition} | Response: {self.response}')
         
-        logging.warning(f'Inhibition: {goomba} | Response: {self.response}')
-        
-        if goomba:
+        if inhibition:
             if self.response is None:
                 
-                if self.delay < 950 and self.previous_response:
+                if self.delay > 250:
+                    self.delay -= 50
+                    
+                if self.previous_response:
                     self.stimuli.show_coin(w.get_value('stimuli_duration'))
-                    self.delay += 50
                     logging.warning(f'Coin!')
                 else:
                     logging.warning(f'Fail because no previous response')
@@ -213,9 +249,8 @@ class StimuliDelivery(StimuliAPI):
             elif self.response in ['Right', 'Left']:
                 logging.warning(f'Fail!!')
                 self.stimuli.show_fail(w.get_value('stimuli_duration'))
-                
-                if self.delay > 250:
-                    self.delay -= 50
+                if self.delay < 950:
+                    self.delay += 50
                 
     # ----------------------------------------------------------------------
     def handle_response(self, response: str) -> None:
@@ -223,20 +258,13 @@ class StimuliDelivery(StimuliAPI):
 
         if response == 'q':
             self.response = 'Left'
-            # self.send_marker(f'Different', blink=None)
         elif response == 'p':
             self.response = 'Right'
-            # self.send_marker(f'Identical', blink=None)
         else:
             self.response = None
-            if self.delay < 750:
-                self.delay += 50
-            # self.send_marker(f'No-response', blink=None)
             
-        logging.warning(f'Response: {self.response}')
         logging.warning(f'Previous Response: {self.previous_response}')
-            
-            
+        logging.warning(f'Response: {self.response}')        
         
     # ----------------------------------------------------------------------
     def synchronizer(self, value: bool) -> None:
