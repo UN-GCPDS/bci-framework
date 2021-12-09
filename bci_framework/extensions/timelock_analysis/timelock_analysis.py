@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import logging
+import copy
 from string import ascii_lowercase
 
 from PySide2.QtUiTools import QUiLoader
@@ -23,6 +24,8 @@ import numpy as np
 from scipy.signal import decimate, welch
 
 from gcpds.filters import frequency as flt
+
+from abc import ABCMeta, abstractmethod
 
 
 # Set logger
@@ -64,7 +67,7 @@ class Canvas(FigureCanvasQTAgg):
 
 
 ########################################################################
-class TimelockWidget:
+class TimelockWidget(metaclass=ABCMeta):
     """"""
 
     # ----------------------------------------------------------------------
@@ -76,8 +79,11 @@ class TimelockWidget:
         self.bottom_stretch = []
         self.bottom2_stretch = []
         self.top_stretch = []
+        self.top2_stretch = []
         self.right_stretch = []
         self.left_stretch = []
+
+        self._pipeline_output = None
 
         ui = os.path.realpath(os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'locktime_widget.ui'))
@@ -93,12 +99,23 @@ class TimelockWidget:
         self.widget.gridLayout.addWidget(self.canvas)
 
     # ----------------------------------------------------------------------
+    def draw(self):
+        """"""
+        self.canvas.draw()
+
+    # ----------------------------------------------------------------------
     def _add_spacers(self):
         """"""
         for i, s in enumerate(self.bottom_stretch):
             self.widget.bottomLayout.setStretch(i, s)
 
         for i, s in enumerate(self.top_stretch):
+            self.widget.topLayout.setStretch(i, s)
+
+        for i, s in enumerate(self.bottom2_stretch):
+            self.widget.bottomLayout.setStretch(i, s)
+
+        for i, s in enumerate(self.top2_stretch):
             self.widget.topLayout.setStretch(i, s)
 
         for i, s in enumerate(self.right_stretch):
@@ -108,14 +125,53 @@ class TimelockWidget:
             self.widget.leftLayout.setStretch(i, s)
 
     # ----------------------------------------------------------------------
-    def add_spacer(self, area='top', stretch=0):
+    def add_spacer(self, area='top', fixed=None):
         """"""
-        if area in ['left', 'right']:
-            getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
-                20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        elif area in ['top', 'bottom']:
-            getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
-                20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        if fixed:
+            if area in ['left', 'right']:
+                getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
+                    20, fixed, QSizePolicy.Minimum, QSizePolicy.Minimum))
+            elif area in ['top', 'bottom', 'top2', 'bottom2']:
+                getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
+                    fixed, 20, QSizePolicy.Minimum, QSizePolicy.Minimum))
+        else:
+            if area in ['left', 'right']:
+                getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
+                    20, 20000, QSizePolicy.Minimum, QSizePolicy.Expanding))
+            elif area in ['top', 'bottom', 'top2', 'bottom2']:
+                getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
+                    20000, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+    # ----------------------------------------------------------------------
+    def clear_layout(self, layout):
+        """"""
+        for i in range(layout.count()):
+            b = layout.itemAt(i)
+
+            if b is None:
+                continue
+
+            if w := b.widget():  # widget
+                w.deleteLater()
+
+            if b.spacerItem():  # spacer
+                layout.removeItem(b)
+
+            if l := b.layout():
+                self.clear_layout(l)
+
+            # layout.removeItem(layout.itemAt(i))
+
+            # b = layout.takeAt(2)
+                # buttons.pop(2)
+                # b.widget().deleteLater()
+
+    # ----------------------------------------------------------------------
+    def clear_widgets(self):
+        """"""
+        for area in ['left', 'right', 'top', 'bottom', 'top2', 'bottom2']:
+            layout = getattr(self.widget, f'{area}Layout')
+            self.clear_layout(layout)
 
     # ----------------------------------------------------------------------
     def add_textarea(self, content='', area='top', stretch=0):
@@ -141,7 +197,7 @@ class TimelockWidget:
         return button
 
     # ----------------------------------------------------------------------
-    def add_radios(self, group_name, radios, cols=None, callback=None, area='top', stretch=0):
+    def add_radios(self, group_name, radios, cols=None, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
         vbox = QtWidgets.QVBoxLayout()
@@ -155,7 +211,7 @@ class TimelockWidget:
                 hbox = QtWidgets.QHBoxLayout()
                 vbox.addLayout(hbox)
 
-            group.setLayout(hbox)
+            # group.setLayout(hbox)
             r = QtWidgets.QRadioButton()
             r.setText(radio)
             r.setChecked(i == 0)
@@ -177,6 +233,90 @@ class TimelockWidget:
 
         getattr(self.widget, f'{area}Layout').addWidget(group)
         getattr(self, f'{area}_stretch').append(stretch)
+
+    # ----------------------------------------------------------------------
+    def add_checkbox(self, group_name, radios, ncol=None, callback=None, area='top', stretch=1):
+        """"""
+        group = QtWidgets.QGroupBox(group_name)
+        vbox = QtWidgets.QVBoxLayout()
+        group.setLayout(vbox)
+
+        if ncol is None:
+            ncol = len(radios)
+
+        list_radios = []
+        for i, radio in enumerate(radios):
+            if (i % ncol) == 0:
+                hbox = QtWidgets.QHBoxLayout()
+                vbox.addLayout(hbox)
+
+            # group.setLayout(hbox)
+            r = QtWidgets.QCheckBox()
+            r.setText(radio)
+            r.setChecked(i == 0)
+            list_radios.append(r)
+
+           # ----------------------------------------------------------------------
+            def dec(*args):
+                # ----------------------------------------------------------------------
+                def wrap(fn):
+                    return callback(*args)
+                return wrap
+
+            if callback:
+                r.clicked.connect(dec(group_name, radio))
+
+            hbox.addWidget(r)
+
+        getattr(self.widget, f'{area}Layout').addWidget(group)
+        getattr(self, f'{area}_stretch').append(stretch)
+
+        return list_radios
+
+    # ----------------------------------------------------------------------
+    def add_channels(self, group_name, radios, callback=None, area='top', stretch=1):
+        """"""
+        group = QtWidgets.QGroupBox(group_name)
+        vbox = QtWidgets.QHBoxLayout()
+        group.setLayout(vbox)
+
+        # ncol = len(radios)
+
+        vbox_odd = QtWidgets.QVBoxLayout()
+        vbox_z = QtWidgets.QVBoxLayout()
+        vbox_even = QtWidgets.QVBoxLayout()
+
+        vbox.addLayout(vbox_even)
+        vbox.addLayout(vbox_z)
+        vbox.addLayout(vbox_odd)
+
+        list_radios = []
+        for radio in radios:
+
+            r = QtWidgets.QCheckBox()
+            r.setText(radio)
+            r.setChecked(True)
+            list_radios.append(r)
+
+            if radio[-1].isnumeric() and int(radio[-1]) % 2 != 0:  # odd
+                vbox_odd.addWidget(r)
+            elif radio[-1].isnumeric() and int(radio[-1]) % 2 == 0:  # even
+                vbox_even.addWidget(r)
+            else:
+                vbox_z.addWidget(r)
+
+            def dec(*args):
+                def wrap(fn):
+                    return callback(*args)
+                return wrap
+
+            if callback:
+                r.clicked.connect(dec(group_name, radio))
+
+        getattr(self.widget, f'{area}Layout').addWidget(group)
+        getattr(self, f'{area}_stretch').append(stretch)
+
+        return list_radios
 
     # ----------------------------------------------------------------------
     def add_scroll(self, callback=None, area='bottom', stretch=0):
@@ -210,6 +350,41 @@ class TimelockWidget:
         return slider
 
     # ----------------------------------------------------------------------
+    def add_spin(self, label, value, decimals=1, step=0.1, prefix='', suffix='', min_=0, max_=999, callback=None, area='top', stretch=0):
+        """"""
+        spin = QtWidgets.QDoubleSpinBox()
+
+        spin.setDecimals(decimals)
+        spin.setSingleStep(step)
+        spin.setMinimum(min_)
+        spin.setMaximum(max_)
+        spin.setValue(value)
+
+        if callback:
+            spin.valueChanged.connect(callback)
+
+        if prefix:
+            spin.setPrefix(f' {prefix}')
+        if suffix:
+            spin.setSuffix(f' {suffix}')
+
+        layout = QtWidgets.QHBoxLayout()
+        widget = QtWidgets.QWidget()
+        widget.setLayout(layout)
+
+        if label:
+            layout.addWidget(QtWidgets.QLabel(label))
+        layout.addWidget(spin)
+
+        getattr(self.widget, f'{area}Layout').addWidget(widget)
+        getattr(self, f'{area}_stretch').append(stretch)
+
+        layout.setStretch(0, 0)
+        layout.setStretch(1, 1)
+
+        return spin
+
+    # ----------------------------------------------------------------------
     def add_combobox(self, label, items, callback=None, area='top', stretch=0):
         """"""
 
@@ -217,82 +392,151 @@ class TimelockWidget:
         combo.addItems(items)
         combo.activated.connect(callback)
 
+        layout = QtWidgets.QHBoxLayout()
+        widget = QtWidgets.QWidget()
+        widget.setLayout(layout)
         if label:
-            getattr(self.widget, f'{area}Layout').addWidget(
-                QtWidgets.QLabel(label))
+            layout.addWidget(QtWidgets.QLabel(label))
+        layout.addWidget(combo)
 
-        getattr(self.widget, f'{area}Layout').addWidget(combo)
+        getattr(self.widget, f'{area}Layout').addWidget(widget)
+        getattr(self, f'{area}_stretch').append(stretch)
 
-        getattr(self, f'{area}_stretch').append(stretch)
-        getattr(self, f'{area}_stretch').append(stretch)
+        layout.setStretch(0, 0)
+        layout.setStretch(1, 1)
 
         return combo
 
     # ----------------------------------------------------------------------
-    def set_next_pipeline(self, fn):
+    # @abstractmethod
+    @property
+    def pipeline_input(self):
         """"""
-        self.next_pipeline = fn
+        if hasattr(self, '_previous_pipeline'):
+            return self._previous_pipeline.pipeline_output
+        elif hasattr(self, '_pipeline_input'):
+            return self._pipeline_input
+        else:
+            logging.warning("'pipeline_input' does not exist yet.")
 
     # ----------------------------------------------------------------------
-    def propagate(self):
+    # @abstractmethod
+    @pipeline_input.setter
+    def pipeline_input(self, input_):
         """"""
-        if next_pipeline := getattr(self, 'next_pipeline', False):
-            next_pipeline(self.output)
+        self._pipeline_input = input_
 
     # ----------------------------------------------------------------------
-    def fit_propagate(self, datafile):
+    # @abstractmethod
+    @property
+    def pipeline_output(self):
         """"""
-        self.fit(datafile)
-        self.propagate()
+        if hasattr(self, '_pipeline_output'):
+            return self._pipeline_output
 
     # ----------------------------------------------------------------------
-    def draw(self):
+    # @abstractmethod
+    @pipeline_output.setter
+    def pipeline_output(self, output_):
         """"""
-        self.canvas.draw()
+        self._pipeline_output = output_
+        self._pipeline_propagate()
 
+    # ----------------------------------------------------------------------
+    # @abstractmethod
+    @property
+    def pipeline_tunned(self):
+        """"""
+        return getattr(self, '_pipeline_tunned', False)
+
+    # ----------------------------------------------------------------------
+    # @abstractmethod
+    @pipeline_tunned.setter
+    def pipeline_tunned(self, value):
+        """"""
+        self._pipeline_tunned = value
+
+    # ----------------------------------------------------------------------
+    def next_pipeline(self, pipe):
+        """"""
+        self._next_pipeline = pipe
+        # self._next_pipeline._pipeline_input = self._pipeline_output
+
+    # ----------------------------------------------------------------------
+    def previous_pipeline(self, pipe):
+        """"""
+        self._previous_pipeline = pipe
+
+    # ----------------------------------------------------------------------
+    def set_pipeline_input(self, in_):
+        """"""
+        self._pipeline_input = in_
+
+    # ----------------------------------------------------------------------
+    # @abstractmethod
+    def _pipeline_propagate(self):
+        """"""
+        if hasattr(self, '_next_pipeline'):
+            if not self._next_pipeline.pipeline_tunned:
+                return
+
+            if next_pipeline := getattr(self, '_next_pipeline', False):
+                next_pipeline.fit()
+
+    # ----------------------------------------------------------------------
+    @abstractmethod
+    def fit(self):
+        """"""
 
 ########################################################################
+
+
 class TimelockDashboard:
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, height=0):
+    def __init__(self, height):
         """Constructor"""
         self.height = height
         ui = os.path.realpath(os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'locktime_widget.ui'))
         self.widget = QUiLoader().load(ui)
+        self.widget.setProperty('class', 'dashboard')
+        self.widget.label_title.setText('')
+        self.widget.gridLayout.setVerticalSpacing(30)
+        self.widget.gridLayout.setContentsMargins(30, 30, 30, 30)
 
     # ----------------------------------------------------------------------
     def add_widgets(self, *widgets):
         """"""
-
         analyzers = []
         max_r = 0
         max_c = 0
-        for i, w in enumerate(widgets):
+        i = 0
+        for analyzer, w in widgets:
 
-            height = 1
+            height = w.get('height', 1)
 
             name = ''.join([random.choice(ascii_lowercase)
                             for i in range(8)])
-            setattr(self, name, w['analyzer'](self.height * height))
+            setattr(self, name, analyzer(self.height * height))
             analyzer = getattr(self, name)
+            analyzer.widget.label_title.setText(w.get('title', ''))
+            analyzer.widget.setProperty('class', 'timelock')
+            analyzer.widget.setContentsMargins(30, 30, 30, 30)
             analyzer._add_spacers()
 
             if analyzers:
-                analyzers[-1].set_next_pipeline(analyzer.fit_propagate)
+                analyzer.previous_pipeline(analyzers[-1])
+                analyzers[-1].next_pipeline(analyzer)
 
             self.widget.gridLayout.addWidget(
-                analyzer.widget, w['row'], w['col'], w['row_span'], w['col_span'])
-
-            # self.widget.gridLayout.setColumnStretch(
-                # w['col'], w.get('stretch', 1))
-
+                analyzer.widget, w.get('row', i), w.get('col', 0), w.get('row_span', 1), w.get('col_span', 1))
             analyzers.append(analyzer)
 
+            i += 1
+
         self.widget.gridLayout.setColumnStretch(0, 1)
-        self.widget.gridLayout.setColumnStretch(1, 1)
 
         # for i in range(max_r):
             # self.widget.gridLayout.setRowStretch(i, 0)
@@ -326,8 +570,8 @@ class TimelockSeries(TimelockWidget):
         self.window_value = self._get_seconds_from_human(
             self.combobox.currentText())
 
-        eeg = self.output.eeg
-        timestamp = self.output.timestamp
+        eeg = self.pipeline_output.eeg
+        timestamp = self.pipeline_output.timestamp
 
         timestamp = np.linspace(
             0, timestamp[0][-1], eeg.shape[1], endpoint=True) / 1000
@@ -423,6 +667,7 @@ class TimelockFilters(TimelockWidget):
 
         self.notchs = ('none', '50 Hz', '60 Hz')
         self.bandpass = ('none', 'delta', 'theta', 'alpha', 'beta',
+                         '0.01-20 Hz',
                          '5-45 Hz', '3-30 Hz', '4-40 Hz', '2-45 Hz', '1-50 Hz',
                          '7-13 Hz', '15-50 Hz', '1-100 Hz', '5-50 Hz')
 
@@ -431,34 +676,16 @@ class TimelockFilters(TimelockWidget):
         self.add_radios('Bandpass', self.bandpass, callback=self.set_filters,
                         area='top', stretch=1)
 
-        # self.add_slider(callback=self.change_window)
-
-        # self.set_window_width_options(['10 Hz'])
-        # self.window_options = ['10 Hz',
-                               # '100 Hz',
-                               # '1000 Hz',
-                               # ]
-
-    # # ----------------------------------------------------------------------
-    # def change_window(self, value):
-        # """"""
-        # self.ax1.set_xlim(0, value)
-        # self.draw()
+        self.scale = self.add_spin('Scale', 150, suffix='uv', min_=0,
+                                   max_=1000, step=50, callback=self.fit, area='top',
+                                   stretch=0)
 
     # ----------------------------------------------------------------------
-    def filter_data(self):
+    def fit(self):
         """"""
-        # self.data = data
-        # self.input_data = data.data()
-        self.fit_propagate(self.input_data)
 
-    # ----------------------------------------------------------------------
-    def fit(self, input_data):
-        """"""
-        self.input_data = input_data
-
-        eeg = input_data.eeg
-        timestamp = input_data.timestamp
+        eeg = self.pipeline_input.eeg
+        timestamp = self.pipeline_input.timestamp
 
         for f in self.filters:
             if self.filters[f] != 'none':
@@ -467,13 +694,17 @@ class TimelockFilters(TimelockWidget):
         self.ax1.clear()
         self.ax2.clear()
 
-        # spectrum = np.abs(rfft(eeg, axis=1))
-        # w = rfftfreq(spectrum.shape[1], 1 / 1000)
-
-        # t = np.linspace(0, timestamp[0][-1] / 1000, eeg.shape[1])
         t = np.linspace(0, eeg.shape[1], eeg.shape[1], endpoint=True) / 1000
 
-        threshold = max(eeg.max(axis=1) - eeg.min(axis=1)).round()
+        channels = eeg.shape[0]
+
+        # threshold = max(eeg.max(axis=1) - eeg.min(axis=1)).round()
+        # threshold = max(eeg.std(axis=1)).round()
+        threshold = self.scale.value()
+        # eeg_d = decimate(eeg, 15, axis=1)
+        # timestamp = np.linspace(
+            # 0, t[-1], eeg_d.shape[1], endpoint=True)
+
         for i, ch in enumerate(eeg):
             self.ax2.plot(t, ch + (threshold * i))
 
@@ -481,8 +712,10 @@ class TimelockFilters(TimelockWidget):
         self.ax1.set_ylabel('Amplitude')
         self.ax2.set_xlabel('Time [$s$]')
 
-        self.ax2.set_yticks([threshold * i for i in range(16)])
-        self.ax2.set_yticklabels(input_data.header['channels'].values())
+        self.ax2.set_yticks([threshold * i for i in range(channels)])
+        self.ax2.set_yticklabels(
+            self.pipeline_input.header['channels'].values())
+        self.ax2.set_ylim(-threshold, threshold * channels)
 
         # self.output_signal = eeg
 
@@ -504,8 +737,9 @@ class TimelockFilters(TimelockWidget):
 
         self.draw()
 
-        # self.set_data(w, spectrum, labels=[f'ch{i}' for i in range(
-            # 16)], ylabel='Millivolt [$mv$]', xlabel='Time [$s$]')
+        self.pipeline_tunned = True
+        self.pipeline_output = copy.deepcopy(self.pipeline_input)
+        self.pipeline_output.eeg = eeg.copy()
 
     # ----------------------------------------------------------------------
     def set_filters(self, group_name, filter_):
@@ -521,13 +755,14 @@ class TimelockFilters(TimelockWidget):
                     filter_ = getattr(flt, f'{filter_}')
                 else:
                     filter_ = getattr(
-                        flt, f'band{filter_.replace(" Hz", "").replace("-", "")}')
+                        flt, f'band{filter_.replace(" Hz", "").replace("-", "").replace(".", "")}')
             self.filters[group_name] = filter_
 
-        self.filter_data()
+        self.fit()
 
-    # ----------------------------------------------------------------------
-    @property
-    def output(self):
-        """"""
-        return self.output_signal
+    # # ----------------------------------------------------------------------
+    # @property
+    # def output(self):
+        # """"""
+        # if hasattr(self, 'output_signal'):
+            # return self.output_signal

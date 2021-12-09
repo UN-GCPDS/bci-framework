@@ -17,7 +17,16 @@ class FileHandler:
     @property
     def eeg(self):
         """"""
-        return self.file.eeg.copy()
+        if hasattr(self, '_modified_eeg'):
+            return self._modified_eeg
+        else:
+            return self.file.eeg.copy()
+
+    # ----------------------------------------------------------------------
+    @eeg.setter
+    def eeg(self, value):
+        """"""
+        self._modified_eeg = value
 
     # ----------------------------------------------------------------------
     @property
@@ -36,7 +45,7 @@ class FileHandler:
     @property
     def header(self):
         """"""
-        return self.file.header
+        return self.file.header.copy()
 
     # ----------------------------------------------------------------------
     @property
@@ -49,3 +58,7 @@ class FileHandler:
         """"""
         self.file.close()
 
+    # ----------------------------------------------------------------------
+    def epochs(self, tmax, tmin, markers):
+        """"""
+        return self.file.get_epochs(tmax=tmax, tmin=tmin, markers=markers, eeg=self.eeg)

@@ -24,8 +24,14 @@ QTextEdit.clear {{
 }}
 
 
-/*QWidget.bottom_border {{*/
+QWidget.dashboard {{
+  background-color: {secondaryDarkColor};
 
-  /*border-bottom: 5px solid #f5f5f5;*/
+}}
 
-/*}}*/
+QWidget.timelock {{
+
+  background-color: {secondaryLightColor};
+  border-radius: 5px;
+
+}}

@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 project = 'BCI-Framework'
-copyright = '2021, Yeison Cardona'
-author = 'Yeison Cardona'
+copyright = '2021, DunderLab SAS'
+author = 'DunderLab SAS'
 
 
 # -- General configuration ---------------------------------------------------
@@ -168,7 +168,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'BCI-Framework.tex',
-     'BCI-Framework Documentation', 'Yeison Cardona', 'manual'),
+     'BCI-Framework Documentation', 'DunderLab SAS', 'manual'),
 ]
 
 
@@ -317,9 +317,6 @@ with open('index.rst', 'w') as file:
     file.write(f"""
 .. include:: {notebooks_dir}/readme.rst
 
-Navigation
-----------
-
 .. toctree::
    :maxdepth: 2
    :name: mastertoc
@@ -327,7 +324,7 @@ Navigation
    {notebooks}
 
 Indices and tables
-------------------
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`

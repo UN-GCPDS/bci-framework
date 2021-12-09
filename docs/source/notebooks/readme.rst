@@ -1,15 +1,16 @@
-   | Developed by `Yeison Nolberto Cardona
-     Álvarez <https://github.com/yeisonCardona>`__
-   | `Andrés Marino Álvarez Meza,
-     PhD. <https://github.com/amalvarezme>`__
-   | César Germán Castellanos Dominguez, PhD.
-   | *Digital Signal Processing and Control Group* \| *Grupo de Control
-     y Procesamiento Digital de Señales
-     (*\ `GCPDS <https://github.com/UN-GCPDS/>`__\ *)*
-   | *National University of Colombia at Manizales* \| *Universidad
-     Nacional de Colombia sede Manizales*
+.. raw:: html
 
---------------
+   <!---
+
+   > Developed by [Yeison Nolberto Cardona Álvarez](https://github.com/yeisonCardona)  
+   > [Andrés Marino Álvarez Meza, PhD.](https://github.com/amalvarezme)  
+   > César Germán Castellanos Dominguez, PhD.  
+   > _Digital Signal Processing and Control Group_  | _Grupo de Control y Procesamiento Digital de Señales ([GCPDS](https://github.com/UN-GCPDS/))_  
+   > _National University of Colombia at Manizales_ | _Universidad Nacional de Colombia sede Manizales_
+
+   ----
+
+   -->
 
 BCI-Framework
 =============
@@ -17,9 +18,20 @@ BCI-Framework
 A distributed processing tool, stimuli delivery, psychophysiological
 experiments designer and real-time data visualizations for OpenBCI.
 
-|GitHub top language| |PyPI - License| |PyPI| |PyPI - Status| |PyPI -
-Python Version| |GitHub last commit| |CodeFactor Grade| |Documentation
-Status|
+.. raw:: html
+
+   <!---
+
+   ![GitHub top language](https://img.shields.io/github/languages/top/un-gcpds/bci-framework)
+   ![PyPI - License](https://img.shields.io/pypi/l/bci-framework)
+   ![PyPI](https://img.shields.io/pypi/v/bci-framework)
+   ![PyPI - Status](https://img.shields.io/pypi/status/bci-framework)
+   ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bci-framework)
+   ![GitHub last commit](https://img.shields.io/github/last-commit/un-gcpds/bci-framework)
+   ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/UN-GCPDS/bci-framework)
+   [![Documentation Status](https://readthedocs.org/projects/bci-framework/badge/?version=latest)](https://bci-framework.readthedocs.io/en/latest/?badge=latest)
+
+   -->
 
 BCI-Framework is an open-source tool for the acquisition of EEG/EMG/ECG
 signals, developed to work with `OpenBCI’s Cyton
@@ -46,16 +58,6 @@ acquisition, storage data, or stream a previous one (offline analysis).
 It has a built-in development environment and a set of libraries that
 the user can implement to create their specific functionality.
 
-.. |GitHub top language| image:: https://img.shields.io/github/languages/top/un-gcpds/bci-framework
-.. |PyPI - License| image:: https://img.shields.io/pypi/l/bci-framework
-.. |PyPI| image:: https://img.shields.io/pypi/v/bci-framework
-.. |PyPI - Status| image:: https://img.shields.io/pypi/status/bci-framework
-.. |PyPI - Python Version| image:: https://img.shields.io/pypi/pyversions/bci-framework
-.. |GitHub last commit| image:: https://img.shields.io/github/last-commit/un-gcpds/bci-framework
-.. |CodeFactor Grade| image:: https://img.shields.io/codefactor/grade/github/UN-GCPDS/bci-framework
-.. |Documentation Status| image:: https://readthedocs.org/projects/bci-framework/badge/?version=latest
-   :target: https://bci-framework.readthedocs.io/en/latest/?badge=latest
-
 A distributed processing tool, stimuli delivery, psychophysiological
 experiments designer and real-time data visualizations for OpenBCI.
 
@@ -79,7 +81,4 @@ previous one (offline analysis). Finally, it integrates a built-in
 development environment and a set of libraries that the user can
 implement to create their specific functionality.
 
-Screenshots
------------
-
-.. image:: images/readme.gif
+.. image:: images/readme.png
