@@ -45,7 +45,7 @@ class RawEEG(EEGStream, Widgets):
         
 
     # ----------------------------------------------------------------------
-    @loop_consumer('eeg')
+    @fake_loop_consumer('eeg')
     def stream(self):
         """"""
         scale = self.widget_value['Scale']

@@ -11,9 +11,10 @@ import pickle
 from datetime import datetime
 from typing import Optional, Literal, List, Callable
 
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar, QActionGroup
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtWidgets import QMdiSubWindow, QMenu, QMenuBar
+from PySide6.QtGui import QAction
 
 from .subprocess_handler import LoadSubprocess
 from .config_manager import ConfigManager

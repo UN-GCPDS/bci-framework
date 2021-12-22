@@ -11,10 +11,10 @@ import pickle
 import shutil
 from typing import TypeVar
 
-from PySide2.QtGui import QIcon
-from PySide2.QtCore import Qt, QSize, QTimer
-from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QDesktopWidget
-from PySide2.QtUiTools import QUiLoader
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize, QTimer
+from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QWidget
+from PySide6.QtUiTools import QUiLoader
 
 from ..editor import BCIEditor  # , Autocompleter
 
@@ -423,7 +423,7 @@ class Projects:
             project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
                 os.path.join(self.projects_dir, str_))))
 
-        center = QDesktopWidget().availableGeometry().center()
+        center = QWidget.screen(self).availableGeometry().center()
         geometry = project.frameGeometry()
         geometry.moveCenter(center)
         project.move(geometry.topLeft())

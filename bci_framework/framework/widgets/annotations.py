@@ -6,7 +6,7 @@ Annotations
 from datetime import datetime
 from typing import Optional
 
-from PySide2.QtWidgets import QTableWidgetItem
+from PySide6.QtWidgets import QTableWidgetItem
 
 
 ########################################################################

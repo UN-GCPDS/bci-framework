@@ -10,9 +10,8 @@ extensions.
 import os
 from typing import TypeVar
 
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtGui import QTextCursor, QKeySequence
-from PySide2.QtWidgets import QShortcut
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QTextCursor, QKeySequence, QShortcut
 
 from ..extensions_handler import ExtensionWidget
 from ..editor import Autocompleter

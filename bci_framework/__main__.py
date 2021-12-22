@@ -14,9 +14,9 @@ import logging
 from pathlib import Path
 from multiprocessing import freeze_support
 
-from PySide2.QtWidgets import QApplication, QSplashScreen
-from PySide2.QtGui import QPixmap
-from PySide2.QtCore import Qt, QCoreApplication
+from PySide6.QtWidgets import QApplication, QSplashScreen
+from PySide6.QtGui import QPixmap
+from PySide6.QtCore import Qt, QCoreApplication
 from qt_material import apply_stylesheet
 
 from .framework import BCIFramework
@@ -137,7 +137,7 @@ def main() -> None:
     app.setQuitOnLastWindowClosed(False)
     app.lastWindowClosed.connect(kill_subprocess)
     app.lastWindowClosed.connect(kill_childs)
-    app.lastWindowClosed.connect(lambda: app.quit())
+    app.lastWindowClosed.connect(app.quit)
 
     os.environ['BCISTREAM_DPI'] = str(app.screens()[0].physicalDotsPerInch())
 
@@ -156,8 +156,10 @@ def main() -> None:
         dark_theme = 'dark_teal.xml'
         styles = 'raspad.css'
     else:
-        light_theme = 'light_blue.xml'
-        dark_theme = 'dark_blue.xml'
+        # light_theme = 'light_blue.xml'
+        # dark_theme = 'dark_blue.xml'
+        light_theme = 'light_cyan_500.xml'
+        dark_theme = 'dark_cyan.xml'
         styles = 'custom.css'
 
     if ConfigManager().get('framework', 'theme', 'light') == 'light':

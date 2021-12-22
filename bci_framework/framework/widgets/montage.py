@@ -8,10 +8,10 @@ import os
 import json
 from typing import List, TypeVar, Dict, Optional
 
-from PySide2.QtGui import QCursor
-from PySide2.QtCore import QTimer, QSize, Qt
-from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
-from PySide2.QtGui import QResizeEvent
+from PySide6.QtGui import QCursor
+from PySide6.QtCore import QTimer, QSize, Qt
+from PySide6.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
+from PySide6.QtGui import QResizeEvent
 
 import mne
 import numpy as np

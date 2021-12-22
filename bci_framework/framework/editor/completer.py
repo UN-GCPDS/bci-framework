@@ -8,8 +8,8 @@ Auxiliar pop-up list of options with frequent use snippets and methods.
 
 from typing import Literal
 
-from PySide2 import QtCore
-from PySide2.QtWidgets import QCompleter
+from PySide6 import QtCore
+from PySide6.QtWidgets import QCompleter
 
 from .snippets import STIMULI_KEYWORDS, ANALISYS_KEYWORDS, VISUALIZATION_KEYWORDS
 from .snippets import analysis_snippets, stimuli_snippets, visualizations_snippets, snippets, locktime_snippets

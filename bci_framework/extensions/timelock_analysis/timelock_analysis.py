@@ -1,31 +1,30 @@
 import os
 import sys
-import random
 import logging
 import copy
-from string import ascii_lowercase
+from abc import ABCMeta, abstractmethod
 
-from PySide2.QtUiTools import QUiLoader
-
-
-from PySide2.QtCore import Qt
-from PySide2 import QtWidgets
-from PySide2.QtWidgets import QSpacerItem, QSizePolicy
-
-from bci_framework.framework.dialogs import Dialogs
-
+import mne
+import numpy as np
+# from scipy.fftpack import rfft, rfftfreq
+from scipy.signal import welch, decimate
+from scipy.signal import decimate, welch
 
 from cycler import cycler
 import matplotlib
 from matplotlib import pyplot
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-import numpy as np
-from scipy.signal import decimate, welch
+
+from PySide6.QtCore import Qt
+from PySide6 import QtWidgets
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QSpacerItem, QSizePolicy
 
 from gcpds.filters import frequency as flt
-
-from abc import ABCMeta, abstractmethod
+from gcpds.filters import frequency as flt
+from bci_framework.extensions.timelock_analysis import timelock_analysis as ta
+from bci_framework.framework.dialogs import Dialogs
 
 
 # Set logger
@@ -35,6 +34,7 @@ logging.getLogger('matplotlib.font_manager').disabled = True
 logging.getLogger().setLevel(logging.WARNING)
 logging.root.name = "TimelockAnalysis"
 
+
 ########################################################################
 class Canvas(FigureCanvasQTAgg):
 
@@ -43,6 +43,16 @@ class Canvas(FigureCanvasQTAgg):
         """"""
 
         # Consigure matplotlib
+        self.configure()
+
+        self.figure = Figure(*args, **kwargs)
+        super().__init__(self.figure)
+
+        # self.figure.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+    # ----------------------------------------------------------------------
+    def configure(self):
+        """"""
         if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
             pass
         else:
@@ -59,11 +69,6 @@ class Canvas(FigureCanvasQTAgg):
         except:
             # 'rcParams' object does not support item assignment
             pass
-
-        self.figure = Figure(*args, **kwargs)
-        super().__init__(self.figure)
-
-        # self.figure.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
 
 
 ########################################################################
@@ -101,6 +106,7 @@ class TimelockWidget(metaclass=ABCMeta):
     # ----------------------------------------------------------------------
     def draw(self):
         """"""
+        self.canvas.configure()
         self.canvas.draw()
 
     # ----------------------------------------------------------------------
@@ -113,10 +119,10 @@ class TimelockWidget(metaclass=ABCMeta):
             self.widget.topLayout.setStretch(i, s)
 
         for i, s in enumerate(self.bottom2_stretch):
-            self.widget.bottomLayout.setStretch(i, s)
+            self.widget.bottom2Layout.setStretch(i, s)
 
         for i, s in enumerate(self.top2_stretch):
-            self.widget.topLayout.setStretch(i, s)
+            self.widget.top2Layout.setStretch(i, s)
 
         for i, s in enumerate(self.right_stretch):
             self.widget.rightLayout.setStretch(i, s)
@@ -125,7 +131,7 @@ class TimelockWidget(metaclass=ABCMeta):
             self.widget.leftLayout.setStretch(i, s)
 
     # ----------------------------------------------------------------------
-    def add_spacer(self, area='top', fixed=None):
+    def add_spacer(self, area='top', fixed=None, stretch=0):
         """"""
         if fixed:
             if area in ['left', 'right']:
@@ -142,7 +148,11 @@ class TimelockWidget(metaclass=ABCMeta):
                 getattr(self.widget, f'{area}Layout').addItem(QSpacerItem(
                     20000, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
+        if stretch:
+            getattr(self, f'{area}_stretch').append(stretch)
+
     # ----------------------------------------------------------------------
+
     def clear_layout(self, layout):
         """"""
         for i in range(layout.count()):
@@ -179,6 +189,7 @@ class TimelockWidget(metaclass=ABCMeta):
         textarea = QtWidgets.QTextEdit(content)
         textarea.setProperty('class', 'clear')
         textarea.setMinimumWidth(500)
+        textarea.setReadOnly(True)
         # if callback:
             # button.clicked.connect(callback)
         getattr(self.widget, f'{area}Layout').addWidget(textarea)
@@ -299,9 +310,9 @@ class TimelockWidget(metaclass=ABCMeta):
             list_radios.append(r)
 
             if radio[-1].isnumeric() and int(radio[-1]) % 2 != 0:  # odd
-                vbox_odd.addWidget(r)
-            elif radio[-1].isnumeric() and int(radio[-1]) % 2 == 0:  # even
                 vbox_even.addWidget(r)
+            elif radio[-1].isnumeric() and int(radio[-1]) % 2 == 0:  # even
+                vbox_odd.addWidget(r)
             else:
                 vbox_z.addWidget(r)
 
@@ -385,12 +396,13 @@ class TimelockWidget(metaclass=ABCMeta):
         return spin
 
     # ----------------------------------------------------------------------
-    def add_combobox(self, label, items, callback=None, area='top', stretch=0):
+    def add_combobox(self, label, items, editable=False, callback=None, area='top', stretch=0):
         """"""
 
         combo = QtWidgets.QComboBox()
         combo.addItems(items)
         combo.activated.connect(callback)
+        combo.setEditable(editable)
 
         layout = QtWidgets.QHBoxLayout()
         widget = QtWidgets.QWidget()
@@ -488,59 +500,6 @@ class TimelockWidget(metaclass=ABCMeta):
     def fit(self):
         """"""
 
-########################################################################
-
-
-class TimelockDashboard:
-    """"""
-
-    # ----------------------------------------------------------------------
-    def __init__(self, height):
-        """Constructor"""
-        self.height = height
-        ui = os.path.realpath(os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'locktime_widget.ui'))
-        self.widget = QUiLoader().load(ui)
-        self.widget.setProperty('class', 'dashboard')
-        self.widget.label_title.setText('')
-        self.widget.gridLayout.setVerticalSpacing(30)
-        self.widget.gridLayout.setContentsMargins(30, 30, 30, 30)
-
-    # ----------------------------------------------------------------------
-    def add_widgets(self, *widgets):
-        """"""
-        analyzers = []
-        max_r = 0
-        max_c = 0
-        i = 0
-        for analyzer, w in widgets:
-
-            height = w.get('height', 1)
-
-            name = ''.join([random.choice(ascii_lowercase)
-                            for i in range(8)])
-            setattr(self, name, analyzer(self.height * height))
-            analyzer = getattr(self, name)
-            analyzer.widget.label_title.setText(w.get('title', ''))
-            analyzer.widget.setProperty('class', 'timelock')
-            analyzer.widget.setContentsMargins(30, 30, 30, 30)
-            analyzer._add_spacers()
-
-            if analyzers:
-                analyzer.previous_pipeline(analyzers[-1])
-                analyzers[-1].next_pipeline(analyzer)
-
-            self.widget.gridLayout.addWidget(
-                analyzer.widget, w.get('row', i), w.get('col', 0), w.get('row_span', 1), w.get('col_span', 1))
-            analyzers.append(analyzer)
-
-            i += 1
-
-        self.widget.gridLayout.setColumnStretch(0, 1)
-
-        # for i in range(max_r):
-            # self.widget.gridLayout.setRowStretch(i, 0)
-
 
 ########################################################################
 class TimelockSeries(TimelockWidget):
@@ -588,6 +547,14 @@ class TimelockSeries(TimelockWidget):
                               *self.ax1.get_ylim(),
                               color=self.fill_color,
                               alpha=self.fill_opacity)
+
+        # paths = self.area.get_paths()
+        # v = paths[0].vertices[:, 0]
+        # m, n = v.min(), v.max()
+
+        # v[v == n] = self.scroll.value() / 1000
+        # v[v == m] = self.scroll.value() / 1000 + self.window_value
+
         self.draw()
 
     # ----------------------------------------------------------------------
@@ -684,7 +651,7 @@ class TimelockFilters(TimelockWidget):
     def fit(self):
         """"""
 
-        eeg = self.pipeline_input.eeg
+        eeg = self.pipeline_input.original_eeg
         timestamp = self.pipeline_input.timestamp
 
         for f in self.filters:
@@ -738,8 +705,9 @@ class TimelockFilters(TimelockWidget):
         self.draw()
 
         self.pipeline_tunned = True
-        self.pipeline_output = copy.deepcopy(self.pipeline_input)
-        self.pipeline_output.eeg = eeg.copy()
+        self._pipeline_output = self.pipeline_input
+        self._pipeline_output.eeg = eeg.copy()
+        self._pipeline_propagate()
 
     # ----------------------------------------------------------------------
     def set_filters(self, group_name, filter_):
@@ -766,3 +734,444 @@ class TimelockFilters(TimelockWidget):
         # """"""
         # if hasattr(self, 'output_signal'):
             # return self.output_signal
+
+
+########################################################################
+class LoadDatabase(ta.TimelockSeries):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height=700, *args, **kwargs):
+        """Constructor"""
+        super().__init__(height, *args, **kwargs)
+
+        #  Create grid plot
+        gs = self.figure.add_gridspec(4, 4)
+        self.ax1 = gs.figure.add_subplot(gs[0:-1, :])
+        self.ax2 = gs.figure.add_subplot(gs[-1, :])
+        self.ax2.get_yaxis().set_visible(False)
+
+        self.figure.subplots_adjust(left=0.05,
+                                    bottom=0.12,
+                                    right=0.95,
+                                    top=0.8,
+                                    wspace=None,
+                                    hspace=0.6)
+
+        self.add_button('Load database',
+                        callback=self.load_database, area='top', stretch=0)
+        self.add_spacer(area='top')
+
+        self.set_window_width_options(['500 milliseconds'])
+
+        self.window_options = ['500 milliseconds',
+                               '1 second',
+                               '5 second',
+                               '15 second',
+                               '30 second',
+                               '1 minute',
+                               '5 minute',
+                               '10 minute',
+                               '30 minute',
+                               '1 hour']
+
+        self.database_description = self.add_textarea(
+            area='right', stretch=0)
+
+    # ----------------------------------------------------------------------
+    def load_database(self):
+        """"""
+        self.datafile = Dialogs.load_database()
+
+        # Set input manually
+        self.pipeline_input = self.datafile
+
+        flt.compile_filters(
+            FS=self.pipeline_input.header['sample_rate'], N=2, Q=3)
+
+        self.fit()
+
+    # ----------------------------------------------------------------------
+    def fit(self):
+        """"""
+        datafile = self.pipeline_input
+
+        header = datafile.header
+        eeg = datafile.eeg
+        timestamp = datafile.timestamp
+
+        self.database_description.setText(datafile.description)
+
+        eeg = decimate(eeg, 15, axis=1)
+        timestamp = np.linspace(
+            0, timestamp[0][-1], eeg.shape[1], endpoint=True) / 1000
+
+        eeg = eeg / 1000
+
+        options = [self._get_seconds_from_human(
+            w) for w in self.window_options]
+        l = len([o for o in options if o < timestamp[-1]])
+        self.combobox.clear()
+        self.combobox.addItems(self.window_options[:l])
+
+        self.set_data(timestamp, eeg,
+                      labels=list(header['channels'].values()),
+                      ylabel='Millivolt [$mv$]',
+                      xlabel='Time [$s$]')
+
+        datafile.close()
+
+        self.pipeline_tunned = True
+        self.pipeline_output = datafile
+
+
+########################################################################
+class EpochsVisualization(ta.TimelockWidget):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height=700, *args, **kwargs):
+        """Constructor"""
+        super().__init__(height, *args, **kwargs)
+
+        self.ax1 = self.figure.add_subplot(111)
+        self.pipeline_tunned = True
+
+    # ----------------------------------------------------------------------
+    def fit(self):
+        """"""
+        self.clear_widgets()
+        markers = list(self.pipeline_input.file.markers.keys())
+        channels = list(self.pipeline_input.header['channels'].values())
+
+        self.tmin = self.add_spin('tmin', 0, suffix='s', min_=-99,
+                                  max_=99, callback=self.get_epochs, area='top', stretch=0)
+        self.tmax = self.add_spin(
+            'tmax', 1, suffix='s', min_=-99, max_=99, callback=self.get_epochs, area='top', stretch=0)
+        self.method = self.add_combobox(label='Method', items=[
+                                        'mean', 'median'], callback=self.get_epochs, area='top', stretch=0)
+
+        self.add_spacer(area='top', fixed=50)
+
+        self.reject = self.add_spin('Reject', 200, suffix='vpp', min_=0,
+                                    max_=500, step=10, callback=self.get_epochs, area='top', stretch=0)
+        self.flat = self.add_spin('Flat', 10, suffix='vpp', min_=0, max_=500,
+                                  step=10, callback=self.get_epochs, area='top', stretch=0)
+
+        self.add_spacer(area='top')
+
+        self.checkbox = self.add_checkbox(
+            'Markers', markers, callback=self.get_epochs, area='left', ncol=1, stretch=1)
+        self.add_spacer(area='left')
+
+        self.channels = self.add_channels(
+            'Channels', channels, callback=self.get_epochs, area='right', stretch=1)
+        self.add_spacer(area='right')
+
+    # ----------------------------------------------------------------------
+    def get_epochs(self, *args, **kwargs):
+        """"""
+        self.figure.clear()
+        self.ax1 = self.figure.add_subplot(111)
+
+        markers = sorted([ch.text()
+                          for ch in self.checkbox if ch.isChecked()])
+        channels = sorted([ch.text()
+                           for ch in self.channels if ch.isChecked()])
+
+        if not markers:
+            return
+
+        if not channels:
+            return
+
+        if self.reject.value() < self.flat.value():
+            return
+
+        epochs = self.pipeline_input.epochs(
+            tmin=self.tmin.value(), tmax=self.tmax.value(), markers=markers)
+
+        reject = {'eeg': self.reject.value()}
+        flat = {'eeg': self.flat.value()}
+        epochs.drop_bad(reject, flat)
+
+        evokeds = {}
+        for mk in markers:
+            erp = epochs[mk].average(
+                method=self.method.currentText(), picks=channels)
+            evokeds[mk] = erp
+
+        try:
+            mne.viz.plot_compare_evokeds(evokeds, axes=self.ax1, cmap=(
+                'Class', 'cool'), show=False, show_sensors=False, invert_y=True, styles={}, split_legend=False, legend='upper center')
+        except:
+            pass
+
+        self.draw()
+
+        self.pipeline_output = epochs
+
+
+########################################################################
+class TimelockAmplitudeAnalysis(ta.TimelockWidget):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height, *args, **kwargs):
+        """Constructor"""
+        super().__init__(height, *args, **kwargs)
+
+        self.ax1 = self.figure.add_subplot(111)
+        self.pipeline_tunned = True
+
+        # decimates = '10 20 50 100 1000 2000 5000'.split()
+        # self.decimate = self.add_combobox(
+            # 'Decimate', decimates, callback=self.fit, area='top', stretch=0)
+        # self.add_spacer(area='top')
+
+    # ----------------------------------------------------------------------
+    def fit(self):
+        """"""
+        datafile = self.pipeline_input
+        t = datafile.timestamp[0] / 1000 / 60
+
+        eeg = datafile.eeg
+        eeg = eeg - eeg.mean(axis=1)[:, np.newaxis]
+
+        mx = eeg.max(axis=0)
+        mn = eeg.min(axis=0)
+        m = eeg.mean(axis=0)
+
+        self.ax1.clear()
+
+        # dc = int(self.decimate.currentText())
+        dc = 1000
+        mxd = decimate(mx, dc, n=2)
+        mnd = decimate(mn, dc, n=2)
+        md = decimate(m, dc, n=2)
+        td = decimate(t, dc, n=2)
+
+        self.ax1.fill_between(td, mnd, mxd, color='k',
+                              alpha=0.3, linewidth=0)
+        self.ax1.plot(td, md, color='C0')
+
+        vpps = [100, 150, 200, 300, 500, 0]
+        for i, vpp in enumerate(vpps):
+            self.ax1.hlines(
+                vpp / 2, 0, td[-1], linestyle='--', color=pyplot.cm.tab10(i))
+            if vpp:
+                self.ax1.hlines(-vpp / 2, 0,
+                                td[-1], linestyle='--', color=pyplot.cm.tab10(i))
+
+        self.ax1.set_xlim(0, td[-1])
+        self.ax1.set_ylim(2 * mn.mean(), 2 * mx.mean())
+
+        ticks = sorted(vpps + [-v for v in vpps])
+        self.ax1.set_yticks([v / 2 for v in ticks])
+        self.ax1.set_yticklabels([f'{abs(v)} vpp' for v in ticks])
+
+        self.ax1.grid(True)
+
+        self.ax1.set_ylabel('Voltage [uv]')
+        self.ax1.set_xlabel('Time [$s$]')
+
+        self.draw()
+
+        self.pipeline_output = self.pipeline_input
+
+
+########################################################################
+class AddMarkers(ta.TimelockSeries):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height, *args, **kwargs):
+        """Constructor"""
+        super().__init__(height, *args, **kwargs)
+
+        #  Create grid plot
+        gs = self.figure.add_gridspec(4, 1)
+        self.ax1 = gs.figure.add_subplot(gs[0:-1, :])
+        self.ax2 = gs.figure.add_subplot(gs[-1, :])
+        self.ax2.get_yaxis().set_visible(False)
+
+        # self.figure.subplots_adjust(left=0.05,
+                                    # bottom=0.12,
+                                    # right=0.95,
+                                    # top=0.8,
+                                    # wspace=None,
+                                    # hspace=0.6)
+
+        self.set_window_width_options(
+            ['500 milliseconds',
+             '1 second',
+             '5 second',
+             '15 second',
+             '30 second',
+             '1 minute',
+             '5 minute',
+             '10 minute',
+             '30 minute',
+             '1 hour'])
+
+        self.markers = self.add_combobox('Marker', [], callback=None, editable=True,
+                                         area='bottom2', stretch=3)
+        self.add_button('Add marker', callback=self.add_marker,
+                        area='bottom2', stretch=0)
+        self.add_spacer(area='bottom2', stretch=10)
+
+        # self.database_description = self.add_textarea(
+            # area='right', stretch=0)
+
+        self.pipeline_tunned = True
+
+    # ----------------------------------------------------------------------
+    def add_marker(self):
+        """"""
+        q = np.mean(self.ax1.get_xlim())
+
+        self.ax1.vlines(q, * self.ax1.get_ylim(),
+                        linestyle='--', color='red', linewidth=5, zorder=99)
+        self.ax2.vlines(q, * self.ax2.get_ylim(),
+                        linestyle='--', color='red', linewidth=3, zorder=99)
+
+        # self.ax1.fill_between([q - 1, q + 1], *self.ax1.get_ylim(),
+                              # linewidth=0, color='red', zorder=99, alpha=0.2)
+        # self.ax2.fill_between([q - 1, q + 1], *self.ax2.get_ylim(),
+                              # linewidth=0, color='red', zorder=99, alpha=0.2)
+
+        self.draw()
+
+    # ----------------------------------------------------------------------
+    def fit(self):
+        """"""
+        datafile = self.pipeline_input
+
+        markers = ['BAD', 'BLINK']
+        markers += sorted(list(datafile.markers.keys()))
+
+        self.markers.clear()
+        self.markers.addItems(markers)
+
+        header = datafile.header
+        eeg = datafile.eeg
+        timestamp = datafile.timestamp
+
+        eeg = decimate(eeg, 15, axis=1)
+        timestamp = np.linspace(
+            0, timestamp[0][-1], eeg.shape[1], endpoint=True) / 1000
+
+        # eeg = eeg / 1000
+
+        self.threshold = 150
+        channels = eeg.shape[0]
+
+        self.set_data(timestamp, eeg,
+                      labels=list(header['channels'].values()),
+                      ylabel='Millivolt [$mv$]',
+                      xlabel='Time [$s$]')
+
+        self.ax1.set_yticks([self.threshold * i for i in range(channels)])
+        self.ax1.set_yticklabels(
+            self.pipeline_input.header['channels'].values())
+        self.ax1.set_ylim(-self.threshold, self.threshold * channels)
+        self.ax2.set_ylim(-self.threshold, self.threshold * channels)
+
+        self.vlines = self.ax1.vlines(np.mean(self.ax1.get_xlim()),
+                                      * self.ax1.get_ylim(), linestyle='--', color='red', linewidth=2, zorder=99)
+
+        self.draw()
+
+        datafile.close()
+
+        self.pipeline_tunned = True
+        self.pipeline_output = self.pipeline_input
+
+    # ----------------------------------------------------------------------
+    def set_data(self, timestamp, eeg, labels, ylabel='', xlabel=''):
+        """"""
+        self.ax1.clear()
+        self.ax2.clear()
+
+        for i, ch in enumerate(eeg):
+            self.ax1.plot(timestamp, ch + self.threshold *
+                          i, label=labels[i])
+            self.ax2.plot(timestamp, ch + self.threshold * i, alpha=0.5)
+
+        self.ax1.grid(True)
+        self.ax1.legend(loc='upper center', ncol=8,
+                        labelcolor='k', bbox_to_anchor=(0.5, 1.4))
+        self.ax1.set_xlim(0, self.window_value)
+
+        self.ax2.grid(True)
+        self.ax2.set_xlim(0, timestamp[-1])
+        self.area = self.ax2.fill_between([0, self.window_value], *self.ax1.get_ylim(),
+                                          color=self.fill_color, alpha=self.fill_opacity, label='AREA')
+
+        self.scroll.setMaximum((timestamp[-1] - self.window_value) * 1000)
+        self.scroll.setMinimum(0)
+
+        self.ax1.set_ylabel(ylabel)
+        self.ax2.set_xlabel(xlabel)
+
+    # ----------------------------------------------------------------------
+    def move_plot(self, value):
+        """"""
+        self.ax1.set_xlim(value / 1000, (value / 1000 + self.window_value))
+        # self.ax2.collections.clear()
+        # [c for c in self.ax2.collections if c.get_label() == 'AREA'].clear()
+
+        # [self.ax2.collections.pop(j) for j in [len(self.ax2.collections) - 1 -
+                                               # i for i, c in enumerate(self.ax2.collections) if c.get_label() == 'AREA']]
+
+        # self.ax2.collections.pop(self.ax2.collections.index(self.area))
+
+        paths = self.area.get_paths()
+        v = paths[0].vertices[:, 0]
+        m, n = v.min(), v.max()
+
+        v[v == n] = value / 1000
+        v[v == m] = value / 1000 + self.window_value
+
+        # self.area.set_paths(paths)
+
+        segments = self.vlines.get_segments()
+        segments[0][:, 0] = [np.mean(self.ax1.get_xlim())] * 2
+        self.vlines.set_segments(segments)
+
+        self.draw()
+
+    # ----------------------------------------------------------------------
+
+    def change_window(self):
+        """"""
+        self.window_value = self._get_seconds_from_human(
+            self.combobox.currentText())
+
+        eeg = self.pipeline_output.eeg
+        timestamp = self.pipeline_output.timestamp
+
+        timestamp = np.linspace(
+            0, timestamp[0][-1], eeg.shape[1], endpoint=True) / 1000
+
+        self.scroll.setMaximum((timestamp[-1] - self.window_value) * 1000)
+        self.scroll.setMinimum(0)
+        self.scroll.setPageStep(self.window_value * 1000)
+
+        self.ax1.set_xlim(self.scroll.value() / 1000,
+                          (self.scroll.value() / 1000 + self.window_value))
+
+        # self.ax2.collections.clear()
+        # self.ax2.fill_between([self.scroll.value() / 1000, (self.scroll.value() + self.window_value) / 1000],
+                              # *self.ax1.get_ylim(),
+                              # color=self.fill_color,
+                              # alpha=self.fill_opacity)
+
+        paths = self.area.get_paths()
+        v = paths[0].vertices[:, 0]
+        m, n = v.min(), v.max()
+
+        v[v == n] = self.scroll.value() / 1000
+        v[v == m] = self.scroll.value() / 1000 + self.window_value
+
+        self.draw()

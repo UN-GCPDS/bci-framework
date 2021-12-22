@@ -12,3 +12,4 @@ Submodules
 
    bci_framework.extensions.timelock_analysis.file_handler
    bci_framework.extensions.timelock_analysis.timelock_analysis
+   bci_framework.extensions.timelock_analysis.timelock_dashboard

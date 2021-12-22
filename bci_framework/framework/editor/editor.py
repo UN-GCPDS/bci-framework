@@ -9,9 +9,9 @@ import os
 import json
 from typing import Literal, TypeVar
 
-from PySide2.QtWidgets import QTextEdit, QCompleter
-from PySide2.QtGui import QTextOption
-from PySide2.QtCore import Qt
+from PySide6.QtWidgets import QTextEdit, QCompleter
+from PySide6.QtGui import QTextOption
+from PySide6.QtCore import Qt
 
 from .highlighters import PythonHighlighter, CSSHighlighter
 

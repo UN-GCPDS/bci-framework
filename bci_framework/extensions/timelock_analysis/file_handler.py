@@ -23,6 +23,13 @@ class FileHandler:
             return self.file.eeg.copy()
 
     # ----------------------------------------------------------------------
+    @property
+    def original_eeg(self):
+        """"""
+        return self.file.eeg.copy()
+
+    # ----------------------------------------------------------------------
+
     @eeg.setter
     def eeg(self, value):
         """"""

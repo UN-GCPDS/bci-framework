@@ -32,7 +32,7 @@ setup(
                       'figurestream',
                       'gcpds',
                       'openbci_stream',
-                      'PySide2',
+                      'PySide6',
                       'radiant',
                       'psutil',
                       'seaborn',

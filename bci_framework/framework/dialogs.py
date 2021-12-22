@@ -7,7 +7,7 @@ Dialogs
 import os
 from typing import TypeVar, Optional
 
-from PySide2.QtWidgets import QFileDialog, QMessageBox
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 
 PATH = TypeVar('Path')

@@ -15,16 +15,16 @@ import subprocess
 from datetime import datetime
 from typing import TypeVar, Optional
 
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
-from PySide2.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence
-from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel, QShortcut
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
+from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence, QShortcut
+from PySide6.QtWidgets import QWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
 
 from kafka import KafkaProducer, KafkaConsumer
 import ntplib
 
 from .widgets import Montage, Projects, Connection, Records, Annotations
-from .environments import Development, Visualization, StimuliDelivery
+from .environments import Development, Visualization, StimuliDelivery, TimeLockAnalysis
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
 from ..extensions import properties as prop
@@ -192,6 +192,7 @@ class BCIFramework(QMainWindow):
         self.development = Development(self)
         self.visualizations = Visualization(self)
         self.stimuli_delivery = StimuliDelivery(self)
+        self.timelock_analysis = TimeLockAnalysis(self)
 
         # self.status_bar('OpenBCI no connected')
 
@@ -537,7 +538,7 @@ class BCIFramework(QMainWindow):
         min-width:  {size}px;
         max-height: {size}px;
         min-height: {size}px;
-        background-color: {os.environ.get('secondaryColor')}
+        background-color: {os.environ.get('secondaryLightColor')}
         }}
         """
         self.main.pushButton_file.setStyleSheet(style)
@@ -550,7 +551,7 @@ class BCIFramework(QMainWindow):
 
         style = f"""
         QFrame {{
-        background-color: {os.environ.get('secondaryColor')}
+        background-color: {os.environ.get('secondaryLightColor')}
         }}
         """
         self.main.frame_3.setStyleSheet(style)
@@ -563,20 +564,23 @@ class BCIFramework(QMainWindow):
 
         style = """
         *{
-        font-family: "Roboto Light";
-        font-weight: 300;
+        color: black;
         }
         """
 
         labels = [self.main.label_15, self.main.label_16, self.main.label_17,
-                  self.main.label_20, self.main.label_21, self.main.label_22, ]
+                  self.main.label_20, self.main.label_21, self.main.label_22,
+                  self.main.label_23]
 
         for label in labels:
-            label.setStyleSheet(style)
+            # label.setStyleSheet(style)
 
             if json.loads(os.getenv('BCISTREAM_RASPAD')):
                 label.setText(label.text().replace(
                     'font-size:12pt', 'font-size:10pt'))
+
+            # label.setText(label.text().replace(
+                # 'font-size:12pt', 'font-size:12pt; font-family:"Roboto Light"'))
 
         with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
             self.main.label_software_version.setText(
@@ -614,7 +618,7 @@ class BCIFramework(QMainWindow):
         }}
         """)
 
-        center = QDesktopWidget().availableGeometry().center()
+        center = QWidget.screen(self).availableGeometry().center()
         geometry = about.frameGeometry()
         geometry.moveCenter(center)
         about.move(geometry.topLeft())

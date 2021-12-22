@@ -16,8 +16,10 @@ from typing import TypeVar, Optional
 
 import importlib.util
 
-from PySide2.QtCore import QTimer, QSize
-from PySide2.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer, QSize
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWebEngineCore import QWebEnginePage
 
 from .nbstreamreader import NonBlockingStreamReader as NBSR
 from ..extensions import properties as prop
@@ -305,8 +307,11 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         for i in range(self.web_view.count()):
             self.web_view.itemAt(i).widget().deleteLater()
 
-        self.an = foo.Analysis(
-            self.main.scrollArea_timelock.geometry().height())
+        screen = QApplication.primaryScreen()
+        size = screen.size()
+        size.height()
+
+        self.an = foo.Analysis(size.height())
         self.web_view.addWidget(self.an.widget)
         # self.web_view.addItem(foo.Analysis())
         # foo.Analysis(self.web_view)

@@ -12,3 +12,4 @@ visualizations and external commands performer.
 from .development import Development
 from .visualization import Visualization
 from .stimuli_delivery import StimuliDelivery
+from .timelock_analysis import TimeLockAnalysis
