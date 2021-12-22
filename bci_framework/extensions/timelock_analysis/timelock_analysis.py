@@ -62,7 +62,7 @@ class Canvas(FigureCanvasQTAgg):
             q = matplotlib.cm.get_cmap('cool')
             matplotlib.rcParams['axes.prop_cycle'] = cycler(
                 color=[q(m) for m in np.linspace(0, 1, 16)])
-            matplotlib.rcParams['figure.dpi'] = 60
+            matplotlib.rcParams['figure.dpi'] = 70
             matplotlib.rcParams['font.family'] = 'monospace'
             matplotlib.rcParams['font.size'] = 15
             # matplotlib.rcParams['legend.facecolor'] = 'red'
@@ -211,6 +211,7 @@ class TimelockWidget(metaclass=ABCMeta):
     def add_radios(self, group_name, radios, cols=None, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
+        group.setProperty('class', 'fill_background')
         vbox = QtWidgets.QVBoxLayout()
         group.setLayout(vbox)
 
@@ -249,6 +250,7 @@ class TimelockWidget(metaclass=ABCMeta):
     def add_checkbox(self, group_name, radios, ncol=None, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
+        group.setProperty('class', 'fill_background')
         vbox = QtWidgets.QVBoxLayout()
         group.setLayout(vbox)
 
@@ -288,6 +290,7 @@ class TimelockWidget(metaclass=ABCMeta):
     def add_channels(self, group_name, radios, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
+        group.setProperty('class', 'fill_background')
         vbox = QtWidgets.QHBoxLayout()
         group.setLayout(vbox)
 
@@ -1094,8 +1097,8 @@ class AddMarkers(ta.TimelockSeries):
         self.ax2.clear()
 
         for i, ch in enumerate(eeg):
-            self.ax1.plot(timestamp, ch + self.threshold *
-                          i, label=labels[i])
+            self.ax1.plot(timestamp, ch + self.threshold
+                          * i, label=labels[i])
             self.ax2.plot(timestamp, ch + self.threshold * i, alpha=0.5)
 
         self.ax1.grid(True)

@@ -37,7 +37,7 @@ try:
     q = matplotlib.cm.get_cmap('rainbow')
     matplotlib.rcParams['axes.prop_cycle'] = cycler(
         color=[q(m) for m in np.linspace(0, 1, 16)])
-    matplotlib.rcParams['figure.dpi'] = 60
+    matplotlib.rcParams['figure.dpi'] = 70
     matplotlib.rcParams['font.family'] = 'monospace'
     matplotlib.rcParams['font.size'] = 15
 except:

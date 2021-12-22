@@ -76,6 +76,7 @@ class Visualization:
         """Reload all patitions."""
         for sub in self.parent_frame.mdiArea.subWindowList():
             sub.reload()
+        # self.resize_menubar()
 
     # ----------------------------------------------------------------------
     def remove_all(self) -> None:
@@ -83,6 +84,14 @@ class Visualization:
         for sub in self.parent_frame.mdiArea.subWindowList():
             sub.remove()
         QTimer().singleShot(100, self.widgets_set_enabled)
+
+    # # ----------------------------------------------------------------------
+    # def resize_menubars(self):
+        # """"""
+        # for sub in self.parent_frame.mdiArea.subWindowList():
+            # if hasattr(sub, 'resize_menubar'):
+                # # sub.resize_menubar()
+                # QTimer().singleShot(100, sub.resize_menubar)
 
     # ----------------------------------------------------------------------
     def add_subwindow(self) -> None:
@@ -96,7 +105,12 @@ class Visualization:
         sub.loaded = self.widgets_set_enabled
 
         sub.destroyed.connect(self.widgets_set_enabled)
+        # sub..connect(self.resize_menubars)
+        # sub.on_remove(self.resize_menubars)
+
         self.widgets_set_enabled()
+
+        # self.resize_menubars()
 
     # ----------------------------------------------------------------------
     def widgets_set_enabled(self) -> None:
@@ -174,9 +188,9 @@ class Visualization:
                 if 0 < j < 4:
                     item.setTextAlignment(Qt.AlignCenter)
 
-                item.setFlags(item.flags()
-                              & ~Qt.ItemIsEditable
-                              & ~Qt.ItemIsSelectable)
+                item.setFlags(item.flags() &
+                              ~Qt.ItemIsEditable &
+                              ~Qt.ItemIsSelectable)
                 self.parent_frame.tableWidget_anlaysis.setItem(
                     start_index + i, j, item)
 

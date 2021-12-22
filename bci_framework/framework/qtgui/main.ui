@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1628</width>
+    <width>1088</width>
     <height>763</height>
    </rect>
   </property>
@@ -1416,7 +1416,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>83</width>
+                  <width>96</width>
                   <height>95</height>
                  </rect>
                 </property>
@@ -1458,8 +1458,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>83</width>
-                      <height>83</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1508,7 +1508,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>552</width>
+                  <width>518</width>
                   <height>475</height>
                  </rect>
                 </property>
@@ -1769,9 +1769,9 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-300</y>
-                 <width>531</width>
-                 <height>898</height>
+                 <y>0</y>
+                 <width>497</width>
+                 <height>996</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -3030,7 +3030,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>552</width>
+              <width>518</width>
               <height>550</height>
              </rect>
             </property>
@@ -3525,7 +3525,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>552</width>
+                  <width>425</width>
                   <height>404</height>
                  </rect>
                 </property>
@@ -3574,7 +3574,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3623,8 +3623,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>552</width>
-                  <height>404</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3669,8 +3669,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>552</width>
-                  <height>404</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">

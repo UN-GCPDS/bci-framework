@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>530</height>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
+  <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,1" columnstretch="0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -29,18 +29,22 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_menubar" rowminimumheight="0">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-     <property name="bottomMargin">
-      <number>33</number>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_webview">
+     <property name="spacing">
+      <number>0</number>
      </property>
     </layout>
    </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_webview"/>
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_menubar" rowminimumheight="0">
+     <property name="bottomMargin">
+      <number>40</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
    </item>
   </layout>
  </widget>

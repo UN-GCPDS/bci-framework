@@ -317,7 +317,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         # foo.Analysis(self.web_view)
 
     # ----------------------------------------------------------------------
-
     def clear_subprocess_script(self) -> None:
         """"""
         if hasattr(self, 'subprocess_script'):

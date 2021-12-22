@@ -44,7 +44,6 @@ class TimeLockAnalysis:
             self.timelock_list.append([item.text(), item.path])
 
     # ----------------------------------------------------------------------
-
     def build_dashboard(self) -> None:
         """Create the experiments selector."""
         sub = ExtensionWidget(
