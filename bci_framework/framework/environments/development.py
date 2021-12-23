@@ -95,8 +95,8 @@ class Development:
             self.parent_frame.mdiArea_development.hide()
             self.parent_frame.splitter_preview.moveSplitter(
                 self.parent_frame.splitter_preview.getRange(1)[1], 1)
-            self.handle_width = self.parent_frame.splitter_preview.handleWidth()
-            self.parent_frame.splitter_preview.setHandleWidth(0)
+            # self.handle_width = self.parent_frame.splitter_preview.handleWidth()
+            # self.parent_frame.splitter_preview.setHandleWidth(0)
 
     # ----------------------------------------------------------------------
     def show_preview(self) -> None:
@@ -105,8 +105,7 @@ class Development:
             self.parent_frame.mdiArea_development.show()
             self.parent_frame.splitter_preview.moveSplitter(
                 self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
-            self.parent_frame.splitter_preview.setHandleWidth(
-                self.handle_width)
+            # self.parent_frame.splitter_preview.setHandleWidth(30)
 
     # ----------------------------------------------------------------------
     def get_project(self) -> PATH:
