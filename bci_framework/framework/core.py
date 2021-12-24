@@ -160,17 +160,6 @@ class BCIFramework(QMainWindow):
         self.main.stackedWidget_montage.setCurrentWidget(
             self.main.page_montage)
 
-        shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
-        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
-        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
-
-        shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
-        shortcut_docs.activated.connect(
-            lambda: self.show_interface('Documentation'))
-
-        shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
-        shortcut_docs.activated.connect(self.toggle_dock_collapsed)
-
         self.show_interface('Home')
         self.config = ConfigManager()
 
@@ -222,11 +211,23 @@ class BCIFramework(QMainWindow):
 
         self.status_bar(message='', right_message=('disconnected', None))
 
-        # if '--timelock' in sys.argv:
-            # self.main.tabWidget_widgets.setCurrentIndex(4)
-            # self.projects.open_project('Test_timelock_analysis')
+        shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
+        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
+        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
+
+        shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
+        shortcut_docs.activated.connect(
+            lambda: self.show_interface('Documentation'))
+
+        shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
+        shortcut_docs.activated.connect(self.toggle_dock_collapsed)
+
+        shortcut_docs = QShortcut(QKeySequence('F9'), self.main)
+        shortcut_docs.activated.connect(
+            self.timelock_analysis.show_fullscreen)
 
     # ----------------------------------------------------------------------
+
     def set_icons(self) -> None:
         """The Qt resource system has been deprecated."""
         def icon(name):
@@ -352,10 +353,10 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def toggle_dock_collapsed(self) -> None:
         """"""
-        if self.main.dockWidget_global.maximumWidth() >= 9999:
-            self.set_dock_collapsed(True)
-        else:
+        if self.main.dockWidget_global.maximumWidth() < 100:
             self.set_dock_collapsed(False)
+        else:
+            self.set_dock_collapsed(True)
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
