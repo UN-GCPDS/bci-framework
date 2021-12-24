@@ -1,4 +1,6 @@
 
+from PySide6.QtCore import QTimer
+
 from ..extensions_handler import ExtensionWidget
 
 
@@ -22,6 +24,22 @@ class TimeLockAnalysis:
     # ----------------------------------------------------------------------
     def connect(self):
         """"""
+
+    # ----------------------------------------------------------------------
+    def show_fullscreen(self):
+        """"""
+        if self.parent_frame.dockWidget_global.isVisible():
+            self.parent_frame.dockWidget_global.hide()
+            self.parent_frame.toolBar_environs.hide()
+            self.parent_frame.toolBar_Documentation.hide()
+            self.parent_frame.showFullScreen()
+            self.parent_frame.statusBar().hide()
+        else:
+            self.parent_frame.dockWidget_global.show()
+            self.parent_frame.toolBar_environs.show()
+            self.parent_frame.toolBar_Documentation.show()
+            self.parent_frame.showMaximized()
+            self.parent_frame.statusBar().show()
 
     # ----------------------------------------------------------------------
     def on_focus(self):
@@ -50,10 +68,7 @@ class TimeLockAnalysis:
             self.parent_frame.mdiArea_timelock, extensions_list=self.timelock_list, mode='timelock')
         self.parent_frame.mdiArea_timelock.addSubWindow(sub)
         sub.show()
-        self.parent_frame.mdiArea_timelock.tileSubWindows()
 
-        # sub.update_ip = self.update_ip
         sub.update_menu_bar()
-        # sub.loaded = self.widgets_set_enabled
+        QTimer().singleShot(100, self.parent_frame.mdiArea_timelock.tileSubWindows)
 
-        # QTimer().singleShot(100, self.widgets_set_enabled)
