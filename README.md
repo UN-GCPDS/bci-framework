@@ -1,20 +1,14 @@
-<!---
-
 > Developed by [Yeison Nolberto Cardona Álvarez](https://github.com/yeisonCardona)  
 > [Andrés Marino Álvarez Meza, PhD.](https://github.com/amalvarezme)  
 > César Germán Castellanos Dominguez, PhD.  
 > _Digital Signal Processing and Control Group_  | _Grupo de Control y Procesamiento Digital de Señales ([GCPDS](https://github.com/UN-GCPDS/))_  
-> _National University of Colombia at Manizales_ | _Universidad Nacional de Colombia sede Manizales_
+> _Universidad Nacional de Colombia sede Manizales_
 
 ----
-
--->
 
 # BCI-Framework
 
 A distributed processing tool, stimuli delivery, psychophysiological experiments designer and real-time data visualizations for OpenBCI.
-
-<!---
 
 ![GitHub top language](https://img.shields.io/github/languages/top/un-gcpds/bci-framework)
 ![PyPI - License](https://img.shields.io/pypi/l/bci-framework)
@@ -24,8 +18,6 @@ A distributed processing tool, stimuli delivery, psychophysiological experiments
 ![GitHub last commit](https://img.shields.io/github/last-commit/un-gcpds/bci-framework)
 ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/UN-GCPDS/bci-framework)
 [![Documentation Status](https://readthedocs.org/projects/bci-framework/badge/?version=latest)](https://bci-framework.readthedocs.io/en/latest/?badge=latest)
-
--->
 
 BCI-Framework is an open-source tool for the acquisition of EEG/EMG/ECG signals, developed to work with [OpenBCI's Cyton board](https://shop.openbci.com/products/cyton-biosensing-board-8-channel?variant=38958638542), the main core of this software lies on [OpenBCI-Stream](https://openbci-stream.readthedocs.io/en/latest/index.html), a library designed to handle all the [low-level hardware features](https://docs.openbci.com/docs/02Cyton/CytonSDK) and extend the hardware capabilities with high-level programming libraries.
 
