@@ -49,6 +49,8 @@ class TimeLockAnalysis:
 
         if not self.parent_frame.mdiArea_timelock.subWindowList():
             self.build_dashboard()
+        else:
+            QTimer().singleShot(100, self.parent_frame.mdiArea_timelock.tileSubWindows)
 
     # ----------------------------------------------------------------------
     def update_timelock_list(self):

@@ -371,6 +371,8 @@ class BCIFramework(QMainWindow):
             lambda evt: self.show_interface('Visualizations'))
         self.main.pushButton_show_stimuli_delivery.clicked.connect(
             lambda evt: self.show_interface('Stimuli_delivery', 0))
+        self.main.pushButton_show_timelock.clicked.connect(
+            lambda evt: self.show_interface('Timelock_analysis', 0))
 
         self.main.pushButton_show_documentation.clicked.connect(
             lambda evt: self.show_interface('Documentation'))
@@ -585,7 +587,7 @@ class BCIFramework(QMainWindow):
 
         with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
             self.main.label_software_version.setText(
-                f'{file.read()} {version} {mode}')
+                f'{file.read().strip()} {version} {mode}')
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None) -> None:

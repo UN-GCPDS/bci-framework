@@ -148,7 +148,6 @@ def main() -> None:
              'success': '#17a2b8',
 
              'font_family': 'Roboto',
-
              'density_scale': -1,
              }
 

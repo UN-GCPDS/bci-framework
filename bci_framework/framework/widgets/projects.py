@@ -423,7 +423,7 @@ class Projects:
             project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
                 os.path.join(self.projects_dir, str_))))
 
-        center = QWidget.screen(self).availableGeometry().center()
+        center = QWidget.screen(self.core).availableGeometry().center()
         geometry = project.frameGeometry()
         geometry.moveCenter(center)
         project.move(geometry.topLeft())
