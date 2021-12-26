@@ -15,16 +15,16 @@ import subprocess
 from datetime import datetime
 from typing import TypeVar, Optional
 
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
-from PySide2.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence
-from PySide2.QtWidgets import QDesktopWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel, QShortcut
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
+from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence, QShortcut
+from PySide6.QtWidgets import QWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
 
 from kafka import KafkaProducer, KafkaConsumer
 import ntplib
 
 from .widgets import Montage, Projects, Connection, Records, Annotations
-from .environments import Development, Visualization, StimuliDelivery
+from .environments import Development, Visualization, StimuliDelivery, TimeLockAnalysis
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
 from ..extensions import properties as prop
@@ -148,6 +148,8 @@ class BCIFramework(QMainWindow):
             lambda evt: self.show_interface('Visualizations'))
         self.main.actionStimuli_delivery.triggered.connect(
             lambda evt: self.show_interface('Stimuli_delivery'))
+        self.main.actionTimelock_analysis.triggered.connect(
+            lambda evt: self.show_interface('Timelock_analysis'))
         self.main.actionHome.triggered.connect(
             lambda evt: self.show_interface('Home'))
         self.main.actionDocumentation.triggered.connect(
@@ -155,16 +157,8 @@ class BCIFramework(QMainWindow):
         self.main.actionRaspad_settings.triggered.connect(
             lambda evt: self.show_interface('Raspad_settings'))
 
-        shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
-        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
-        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
-
-        shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
-        shortcut_docs.activated.connect(
-            lambda: self.show_interface('Documentation'))
-
-        shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
-        shortcut_docs.activated.connect(self.toggle_dock_collapsed)
+        self.main.stackedWidget_montage.setCurrentWidget(
+            self.main.page_montage)
 
         self.show_interface('Home')
         self.config = ConfigManager()
@@ -187,6 +181,7 @@ class BCIFramework(QMainWindow):
         self.development = Development(self)
         self.visualizations = Visualization(self)
         self.stimuli_delivery = StimuliDelivery(self)
+        self.timelock_analysis = TimeLockAnalysis(self)
 
         # self.status_bar('OpenBCI no connected')
 
@@ -216,15 +211,32 @@ class BCIFramework(QMainWindow):
 
         self.status_bar(message='', right_message=('disconnected', None))
 
+        shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
+        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
+        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
+
+        shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
+        shortcut_docs.activated.connect(
+            lambda: self.show_interface('Documentation'))
+
+        shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
+        shortcut_docs.activated.connect(self.toggle_dock_collapsed)
+
+        shortcut_docs = QShortcut(QKeySequence('F9'), self.main)
+        shortcut_docs.activated.connect(
+            self.timelock_analysis.show_fullscreen)
+
     # ----------------------------------------------------------------------
+
     def set_icons(self) -> None:
         """The Qt resource system has been deprecated."""
         def icon(name):
             return QIcon(f"bci:/primary/{name}.svg")
 
         self.main.actionDevelopment.setIcon(icon("file"))
-        self.main.actionVisualizations.setIcon(icon("brain"))
+        self.main.actionVisualizations.setIcon(icon("latency2"))
         self.main.actionStimuli_delivery.setIcon(icon("imagery"))
+        self.main.actionTimelock_analysis.setIcon(icon("brain"))
         self.main.actionHome.setIcon(icon("home"))
         self.main.actionDocumentation.setIcon(icon("documentation"))
 
@@ -237,8 +249,9 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_brain.setIcon(icon("brain"))
         self.main.pushButton_imagery.setIcon(icon("imagery"))
         self.main.pushButton_docs.setIcon(icon("documentation"))
-        self.main.pushButton_latency.setIcon(icon("latency2"))
+        self.main.pushButton_latency.setIcon(icon("latency"))
         self.main.pushButton_annotations.setIcon(icon("annotation"))
+        self.main.pushButton_timelock.setIcon(icon("latency2"))
 
         self.main.pushButton_stop_preview.setIcon(
             icon('media-playback-stop'))
@@ -341,10 +354,10 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def toggle_dock_collapsed(self) -> None:
         """"""
-        if self.main.dockWidget_global.maximumWidth() >= 9999:
-            self.set_dock_collapsed(True)
-        else:
+        if self.main.dockWidget_global.maximumWidth() < 100:
             self.set_dock_collapsed(False)
+        else:
+            self.set_dock_collapsed(True)
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
@@ -359,6 +372,8 @@ class BCIFramework(QMainWindow):
             lambda evt: self.show_interface('Visualizations'))
         self.main.pushButton_show_stimuli_delivery.clicked.connect(
             lambda evt: self.show_interface('Stimuli_delivery', 0))
+        self.main.pushButton_show_timelock.clicked.connect(
+            lambda evt: self.show_interface('Timelock_analysis', 0))
 
         self.main.pushButton_show_documentation.clicked.connect(
             lambda evt: self.show_interface('Documentation'))
@@ -527,7 +542,7 @@ class BCIFramework(QMainWindow):
         min-width:  {size}px;
         max-height: {size}px;
         min-height: {size}px;
-        background-color: {os.environ.get('secondaryColor')}
+        background-color: {os.environ.get('secondaryLightColor')}
         }}
         """
         self.main.pushButton_file.setStyleSheet(style)
@@ -536,10 +551,11 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_docs.setStyleSheet(style)
         self.main.pushButton_latency.setStyleSheet(style)
         self.main.pushButton_annotations.setStyleSheet(style)
+        self.main.pushButton_timelock.setStyleSheet(style)
 
         style = f"""
         QFrame {{
-        background-color: {os.environ.get('secondaryColor')}
+        background-color: {os.environ.get('secondaryLightColor')}
         }}
         """
         self.main.frame_3.setStyleSheet(style)
@@ -547,28 +563,32 @@ class BCIFramework(QMainWindow):
         self.main.frame_5.setStyleSheet(style)
         self.main.frame_6.setStyleSheet(style)
         self.main.frame_7.setStyleSheet(style)
+        self.main.frame_4.setStyleSheet(style)
         self.main.frame.setStyleSheet(style)
 
         style = """
         *{
-        font-family: "Roboto Light";
-        font-weight: 300;
+        color: black;
         }
         """
 
         labels = [self.main.label_15, self.main.label_16, self.main.label_17,
-                  self.main.label_20, self.main.label_21, self.main.label_22, ]
+                  self.main.label_20, self.main.label_21, self.main.label_22,
+                  self.main.label_23]
 
         for label in labels:
-            label.setStyleSheet(style)
+            # label.setStyleSheet(style)
 
             if json.loads(os.getenv('BCISTREAM_RASPAD')):
                 label.setText(label.text().replace(
                     'font-size:12pt', 'font-size:10pt'))
 
+            # label.setText(label.text().replace(
+                # 'font-size:12pt', 'font-size:12pt; font-family:"Roboto Light"'))
+
         with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
             self.main.label_software_version.setText(
-                f'{file.read()} {version} {mode}')
+                f'{file.read().strip()} {version} {mode}')
 
     # ----------------------------------------------------------------------
     def show_about(self, event=None) -> None:
@@ -602,7 +622,7 @@ class BCIFramework(QMainWindow):
         }}
         """)
 
-        center = QDesktopWidget().availableGeometry().center()
+        center = QWidget.screen(self).availableGeometry().center()
         geometry = about.frameGeometry()
         geometry.moveCenter(center)
         about.move(geometry.topLeft())

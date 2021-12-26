@@ -1,0 +1,36 @@
+.bci_dashboard button {
+    margin: 10px;
+}
+
+
+#canvas {
+    height: 30vh;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 40vh;
+
+}
+
+
+#score {
+    right: 15px;
+    position: absolute;
+    bottom: 15px;
+} 
+
+
+#score-coin {
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin-left: -19px;
+    
+}
+

@@ -90,6 +90,20 @@ visualizations_keywords = [
 
 ]
 
+# Locktime snippets
+
+locktime_snippets = {
+
+}
+
+locktime_snippets_ = [
+
+]
+
+locktime_keywords = [
+
+]
+
 
 [stimuli_snippets.update({key.replace('[!]', ''): key})
  for key in stimuli_snippets_]
@@ -97,6 +111,8 @@ visualizations_keywords = [
  for key in analysis_snippets_]
 [visualizations_snippets.update({key.replace('[!]', ''): key})
  for key in visualizations_snippets_]
+[locktime_snippets.update({key.replace('[!]', ''): key})
+ for key in locktime_snippets_]
 
 
 [snippets.update({key.replace('[!]', ''): key}) for key in snippets_]
@@ -108,3 +124,5 @@ ANALISYS_KEYWORDS = analysis_keywords + \
     list(analysis_snippets.keys()) + list(snippets.keys())
 VISUALIZATION_KEYWORDS = visualizations_keywords + \
     list(visualizations_snippets.keys()) + list(snippets.keys())
+LOCKTIME_KEYWORDS = visualizations_keywords + \
+    list(locktime_snippets.keys()) + list(snippets.keys())

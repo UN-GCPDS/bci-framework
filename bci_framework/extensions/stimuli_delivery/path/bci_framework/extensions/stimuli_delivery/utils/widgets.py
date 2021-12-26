@@ -46,6 +46,11 @@ class Widgets:
             return self._fix_value(v)
 
     # ----------------------------------------------------------------------
+    def get_prefix(self, prefix):
+        """"""
+        return {k: self.get_value(k) for k in self.widgets.keys() if k.startswith(prefix)}
+
+    # ----------------------------------------------------------------------
     def __getitem__(self, id):
         """"""
         return self.get_value(id)
@@ -304,12 +309,12 @@ class Widgets:
         # self.dashboard <= w.input('Subject Name', value='', id='exp-subject')
         # self.dashboard <= w.input('Responsable', value='', id='exp-responsable')
 
-        label_ = MDCComponent(html.SPAN(f'{label}'))
-        label_ .mdc.typography('subtitle1')
+        # label_ = MDCComponent(html.SPAN(f'{label}'))
+        # label_ .mdc.typography('subtitle1')
         form = MDCForm(formfield_style={
-                       'width': 'calc(100% - 15px)', 'min-height': '90px', 'margin-left': '15px'})
-        if not hide_label:
-            form <= label_
+                       'width': 'calc(100% - 15px)', 'min-height': '50px', 'margin-left': '15px'})
+        # if not hide_label:
+            # form <= label_
 
         text_field_ = form.mdc.TextField(
             label=label, value=value, helper_text=helper_text, filled=True, id=id)
@@ -330,3 +335,23 @@ class Widgets:
                 'input', lambda evt: on_change(text_field_.mdc.value))
 
         return form
+
+    # ----------------------------------------------------------------------
+    def subject_information(self, paradigm):
+        """"""
+        subject_information = html.DIV(style={'background-color': '#e3e3e3',
+                                              'padding': '30px 15px',
+                                              'margin': '30px 0px', }
+                                       )
+        subject_information <= self.label(
+            'Subject information', 'headline4')
+        subject_information <= html.BR()
+        subject_information <= self.input(
+            'Paradigm', value=paradigm, id='annotation-paradigm')
+        subject_information <= self.input(
+            'Subject Name', value='', id='annotation-subject')
+        subject_information <= self.input(
+            'Responsable', value='', id='annotation-responsable')
+        return subject_information
+
+

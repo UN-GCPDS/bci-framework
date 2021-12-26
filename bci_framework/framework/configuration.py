@@ -7,8 +7,8 @@ Configuration
 import os
 import shutil
 
-from PySide2.QtWidgets import QDesktopWidget, QMainWindow
-from PySide2.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QWidget, QMainWindow
+from PySide6.QtUiTools import QUiLoader
 
 from .config_manager import ConfigManager
 
@@ -39,7 +39,7 @@ class ConfigurationFrame(QMainWindow):
     # ----------------------------------------------------------------------
     def show(self) -> None:
         """Show frame."""
-        center = QDesktopWidget().availableGeometry().center()
+        center = QWidget.screen(self).availableGeometry().center()
         geometry = self.main.frameGeometry()
         geometry.moveCenter(center)
         self.main.move(geometry.topLeft())

@@ -10,13 +10,17 @@ extensions.
 import os
 from typing import TypeVar
 
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtGui import QTextCursor, QKeySequence
-from PySide2.QtWidgets import QShortcut
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QTextCursor, QKeySequence, QShortcut
 
 from ..extensions_handler import ExtensionWidget
-# from ..editor import Autocompleter
+from ..editor import Autocompleter
+from ..widgets import projects
 
+# LINE_DELIVERY = 'bci_framework.extensions.stimuli_delivery'
+# LINE_VISUALIZATION = 'bci_framework.extensions.visualizations'
+# LINE_ANALYSIS = 'bci_framework.extensions.data_analysis'
+# LINE_LOCKTIME = 'bci_framework.extensions.timelock_analysis'
 
 PATH = TypeVar('Path')
 
@@ -91,8 +95,8 @@ class Development:
             self.parent_frame.mdiArea_development.hide()
             self.parent_frame.splitter_preview.moveSplitter(
                 self.parent_frame.splitter_preview.getRange(1)[1], 1)
-            self.handle_width = self.parent_frame.splitter_preview.handleWidth()
-            self.parent_frame.splitter_preview.setHandleWidth(0)
+            # self.handle_width = self.parent_frame.splitter_preview.handleWidth()
+            # self.parent_frame.splitter_preview.setHandleWidth(0)
 
     # ----------------------------------------------------------------------
     def show_preview(self) -> None:
@@ -101,7 +105,7 @@ class Development:
             self.parent_frame.mdiArea_development.show()
             self.parent_frame.splitter_preview.moveSplitter(
                 self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)
-            self.parent_frame.splitter_preview.setHandleWidth(self.handle_width)
+            # self.parent_frame.splitter_preview.setHandleWidth(30)
 
     # ----------------------------------------------------------------------
     def get_project(self) -> PATH:
@@ -111,8 +115,10 @@ class Development:
     # ----------------------------------------------------------------------
     def start_preview(self) -> None:
         """Initialize the previsualization and the debugger."""
+
         if not self.parent_frame.pushButton_script_preview.isVisible():
             return
+
         self.log_timer.start()
         self.show_preview()
         self.parent_frame.mdiArea_development.tileSubWindows()
@@ -277,14 +283,17 @@ class Development:
                     file.write(content)
 
                     # if not editor.completer:
-                        # if 'bci_framework.extensions.stimuli_delivery' in content:
+                        # if projects.LINE_DELIVERY in content:
                             # completer = Autocompleter(mode='stimuli')
                             # editor.set_completer(completer)
-                        # elif 'bci_framework.extensions.data_analysis' in content:
+                        # elif projects.LINE_ANALYSIS in content:
                             # completer = Autocompleter(mode='visualization')
                             # editor.set_completer(completer)
-                        # elif 'bci_framework.extensions.visualizations' in content:
+                        # elif projects.LINE_VISUALIZATION in content:
                             # completer = Autocompleter(mode='visualization')
+                            # editor.set_completer(completer)
+                        # elif projects.LINE_LOCKTIME in content:
+                            # completer = Autocompleter(mode='locktime')
                             # editor.set_completer(completer)
 
                     self.parent_frame.tabWidget_project.setTabText(

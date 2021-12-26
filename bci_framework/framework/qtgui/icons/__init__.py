@@ -1,6 +1,6 @@
 import os
 
-from PySide2.QtCore import QDir
+from PySide6.QtCore import QDir
 from qt_material.resources import ResourseGenerator
 
 

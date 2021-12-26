@@ -25,11 +25,11 @@ class Stream(EEGStream):
         self.stream()
 
     # ----------------------------------------------------------------------
-    @fake_loop_consumer('eeg')
+    @loop_consumer('eeg')
     def stream(self, data, frame):
         """"""
         if (frame % 5) == 0:
-            eeg, _ = data
+            eeg = data
             self.axis.clear()
             mne.viz.plot_topomap(eeg.mean(axis=1) - eeg.mean(), 
                 self.info, axes=self.axis, show=False, outlines='skirt', cmap='cool')

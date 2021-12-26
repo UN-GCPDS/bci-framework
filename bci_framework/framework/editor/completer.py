@@ -8,11 +8,11 @@ Auxiliar pop-up list of options with frequent use snippets and methods.
 
 from typing import Literal
 
-from PySide2 import QtCore
-from PySide2.QtWidgets import QCompleter
+from PySide6 import QtCore
+from PySide6.QtWidgets import QCompleter
 
 from .snippets import STIMULI_KEYWORDS, ANALISYS_KEYWORDS, VISUALIZATION_KEYWORDS
-from .snippets import analysis_snippets, stimuli_snippets, visualizations_snippets, snippets
+from .snippets import analysis_snippets, stimuli_snippets, visualizations_snippets, snippets, locktime_snippets
 
 
 ########################################################################
@@ -32,7 +32,7 @@ class Autocompleter(QCompleter):
     insertText = QtCore.Signal(str)
 
     # ----------------------------------------------------------------------
-    def __init__(self, mode: Literal['stimuli', 'visualization', 'analysis'], parent=None):
+    def __init__(self, mode: Literal['stimuli', 'visualization', 'analysis', 'locktime'], parent=None):
         """"""
         if mode == 'stimuli':
             QCompleter.__init__(self, STIMULI_KEYWORDS, parent)
@@ -43,6 +43,9 @@ class Autocompleter(QCompleter):
         elif mode == 'analysis':
             QCompleter.__init__(self, ANALISYS_KEYWORDS, parent)
             self.snippets = {**analysis_snippets, **snippets}
+        elif mode == 'locktime':
+            QCompleter.__init__(self, ANALISYS_KEYWORDS, parent)
+            self.snippets = {**locktime_snippets, **snippets}
 
         self.connect(self, QtCore.SIGNAL(
             "activated(const QString&)"), self.changeCompletion)

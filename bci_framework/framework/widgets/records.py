@@ -9,9 +9,9 @@ import os
 import shutil
 from datetime import datetime, timedelta
 
-from PySide2.QtWidgets import QTableWidgetItem, QApplication, QMenu, QAction
-from PySide2.QtCore import Qt, QTimer
-from PySide2.QtGui import QCursor, QIcon, QCursor
+from PySide6.QtWidgets import QTableWidgetItem, QApplication, QMenu
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QCursor, QIcon, QCursor, QAction
 
 from openbci_stream.utils import HDF5Reader
 
@@ -123,7 +123,8 @@ class Records:
                 # item.setContextMenuPolicy(Qt.CustomContextMenu)
                 # header.customContextMenuRequested.connect(self.handleHeaderMenu)
 
-        self.parent_frame.tableWidget_records.sortByColumn(1)
+        self.parent_frame.tableWidget_records.sortByColumn(
+            1, Qt.SortOrder.AscendingOrder)
 
         # header = self.parent_frame.tableWidget_records.horizontalHeader()
         self.parent_frame.tableWidget_records.setContextMenuPolicy(

@@ -13,3 +13,25 @@ QPushButton.connection {{
   max-height: 12px;
   border-radius: 6px !important;
 }}
+
+QTextEdit.clear {{
+
+  background-color: {secondaryLightColor};
+  border: none;
+  color: black;
+  font-family: mono;
+
+}}
+
+
+QWidget.dashboard {{
+  background-color: {secondaryDarkColor};
+
+}}
+
+QWidget.timelock {{
+
+  background-color: {secondaryLightColor};
+  border-radius: 5px;
+
+}}

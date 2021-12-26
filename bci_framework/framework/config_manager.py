@@ -8,7 +8,7 @@ import os
 from configparser import ConfigParser
 from typing import Optional, Dict, TypeVar, Callable
 
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 WIDGET = TypeVar('QWidget')
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1406</width>
-    <height>814</height>
+    <width>1111</width>
+    <height>727</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -43,7 +43,7 @@
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -51,17 +51,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="0">
-             <widget class="QMdiArea" name="mdiArea_stimuli">
-              <property name="background">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>0</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </property>
-             </widget>
+             <widget class="QMdiArea" name="mdiArea_stimuli"/>
             </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -229,17 +219,7 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
-          <widget class="QMdiArea" name="mdiArea_development">
-           <property name="background">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </property>
-          </widget>
+          <widget class="QMdiArea" name="mdiArea_development"/>
          </widget>
         </item>
        </layout>
@@ -259,7 +239,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
-            <string>Visualizations</string>
+            <string>Real-time visualizations</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_39">
             <item row="0" column="0">
@@ -271,7 +251,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset theme="list-add">
-                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                  <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                 </property>
                </widget>
               </item>
@@ -317,7 +297,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="title">
-            <string>Data analysis</string>
+            <string>Real-time analysis</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_48">
             <item row="0" column="0">
@@ -379,22 +359,20 @@ p, li { white-space: pre-wrap; }
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="pageHome">
-       <layout class="QGridLayout" name="gridLayout_46" rowstretch="1,10,0" columnstretch="1,15,1">
-        <item row="0" column="1">
-         <spacer name="verticalSpacer_home1">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>61</height>
-           </size>
-          </property>
-         </spacer>
+      <widget class="QWidget" name="pageTimelock_analysis">
+       <layout class="QGridLayout" name="gridLayout_56" rowstretch="0">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_locktime">
+          <item row="0" column="0">
+           <widget class="QMdiArea" name="mdiArea_timelock"/>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="1" rowspan="2">
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageHome">
+       <layout class="QGridLayout" name="gridLayout_46" rowstretch="1,0" columnstretch="1">
+        <item row="0" column="0" rowspan="2">
          <widget class="QWidget" name="widget_6" native="true">
           <layout class="QGridLayout" name="gridLayout_44" rowstretch="1,0,0">
            <item row="1" column="0">
@@ -413,8 +391,8 @@ p, li { white-space: pre-wrap; }
            <item row="2" column="0">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QGridLayout" name="gridLayout_32">
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="0,0,1">
                 <item>
                  <widget class="QPushButton" name="pushButton_show_about">
                   <property name="cursor">
@@ -424,7 +402,7 @@ p, li { white-space: pre-wrap; }
                    <string notr="true">text-align: left</string>
                   </property>
                   <property name="text">
-                   <string>About...</string>
+                   <string>About</string>
                   </property>
                   <property name="flat">
                    <bool>true</bool>
@@ -432,17 +410,20 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_26">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QPushButton" name="pushButton_show_configurations">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
+                  <property name="styleSheet">
+                   <string notr="true">text-align: left</string>
                   </property>
-                 </spacer>
+                  <property name="text">
+                   <string>Configuration</string>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_software_version">
@@ -456,440 +437,16 @@ p, li { white-space: pre-wrap; }
                 </item>
                </layout>
               </item>
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_18">
-                <item>
-                 <widget class="QPushButton" name="pushButton_show_configurations">
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">text-align: left</string>
-                  </property>
-                  <property name="text">
-                   <string>Configuration...</string>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_22">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
              </layout>
             </widget>
            </item>
            <item row="0" column="0">
             <widget class="QWidget" name="widget_4" native="true">
-             <layout class="QGridLayout" name="gridLayout_31" rowstretch="1,1,1" columnstretch="1,1,1">
+             <layout class="QGridLayout" name="gridLayout_31" rowstretch="1,1,1,1,0" columnstretch="1,1,1,1,0">
               <property name="spacing">
                <number>15</number>
               </property>
-              <item row="0" column="0" rowspan="2">
-               <widget class="QFrame" name="frame">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_34" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_3">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_file">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_25">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_2">
-                   <item>
-                    <spacer name="horizontalSpacer_11">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_add_project_2">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Create project</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_15">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;for the data acquisition and the external stimuli synchronization.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Python&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="1" rowspan="2">
-               <widget class="QFrame" name="frame_2">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,1,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_15">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_brain">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_16">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_14">
-                   <item>
-                    <spacer name="horizontalSpacer_15">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_visualization">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Run data analysis</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_16">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QFrame" name="frame_5">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_43" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_25">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_docs">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_31">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_26">
-                   <item>
-                    <spacer name="horizontalSpacer_32">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_documentation">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Show documentation</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_20">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be edited according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QFrame" name="frame_6">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_50" rowstretch="0,0,0">
-                 <property name="leftMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_32">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_latency">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>64</width>
-                       <height>64</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_33">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_33">
-                   <item>
-                    <spacer name="horizontalSpacer_34">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_show_latency_correction">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="text">
-                      <string>Latency correction</string>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_21">
-                   <property name="cursor">
-                    <cursorShape>IBeamCursor</cursorShape>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform automatic &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;latency corrections&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; algorithms in order to improve the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;markers synchronization&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="2">
+              <item row="1" column="1" colspan="4">
                <widget class="QFrame" name="frame_7">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -976,7 +533,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. The system store all annotations along with the EEG data in a custom &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;records &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;format&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Generate and visualize markers, annotations, and commands in real-time. The system store all annotations along with the EEG data in a custom &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;records &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;format&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -986,7 +543,107 @@ p, li { white-space: pre-wrap; }
                 </layout>
                </widget>
               </item>
-              <item row="0" column="1" colspan="2">
+              <item row="1" column="0" rowspan="2">
+               <widget class="QFrame" name="frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_34" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_file">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_25">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_15">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;OpenBCI &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;for the data acquisition and the external stimuli synchronization.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Use &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Python&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; and the built-in development environment to code extensions through a real-time electrophysiological (EEG/EMG/ECG) data stream &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                   <item>
+                    <spacer name="horizontalSpacer_11">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_add_project_2">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Create project</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
                <widget class="QFrame" name="frame_3">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -1073,7 +730,7 @@ p, li { white-space: pre-wrap; }
                     <cursorShape>IBeamCursor</cursorShape>
                    </property>
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;remote stimuli delivery experiments&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with real-time feedback and events synchronization.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;remote stimuli delivery experiments&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with real-time feedback and events synchronization.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -1083,37 +740,373 @@ p, li { white-space: pre-wrap; }
                 </layout>
                </widget>
               </item>
+              <item row="0" column="2" colspan="3">
+               <widget class="QFrame" name="frame_4">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_54">
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_43">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_timelock">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_40">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_23">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt&quot;&gt;Load databases and perform &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;epochs analysis&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, results presentation and any dedicated offline data examination.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_40">
+                   <item>
+                    <spacer name="horizontalSpacer_39">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_timelock">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Timelock</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="3">
+               <widget class="QFrame" name="frame_5">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_43" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_25">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_docs">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_31">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_26">
+                   <item>
+                    <spacer name="horizontalSpacer_32">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_documentation">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Show documentation</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_20">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Online and offline &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;API documentation&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; with examples and use cases. A complete set of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;default extensions&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; available to be edited according to the user specific needs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="3" column="0" rowspan="2" colspan="4">
+               <widget class="QFrame" name="frame_2">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_35" rowstretch="0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_16">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Integrate all Python scientific environments (&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Numpy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Scipy&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Matplotlib&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;MNE&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;) to develop real-time data analysis and visualizations. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Implement &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;distributed&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; process to create a new data for streaming through the network and reuse it for data analysis.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="pushButton_brain">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>64</width>
+                     <height>64</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <item>
+                    <spacer name="horizontalSpacer_15">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_visualization">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Run data analysis</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="4" rowspan="3">
+               <widget class="QFrame" name="frame_6">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_50" rowstretch="0,0,0">
+                 <property name="leftMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>15</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_32">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_latency">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>64</width>
+                       <height>64</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_33">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_21">
+                   <property name="cursor">
+                    <cursorShape>IBeamCursor</cursorShape>
+                   </property>
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body style=&quot;font-weight: 100&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Perform automatic &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;latency corrections&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; algorithms in order to improve the &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;markers synchronization&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_33">
+                   <item>
+                    <spacer name="horizontalSpacer_34">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_show_latency_correction">
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="text">
+                      <string>Latency correction</string>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
           </layout>
          </widget>
-        </item>
-        <item row="0" column="0" rowspan="3">
-         <spacer name="horizontalSpacer_home1">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>54</width>
-            <height>707</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="2" rowspan="3">
-         <spacer name="horizontalSpacer_home2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>54</width>
-            <height>707</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -1145,7 +1138,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QWidget" name="pageRaspad_settings">
        <layout class="QGridLayout" name="gridLayout_53">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_52">
+         <layout class="QGridLayout" name="gridLayout_52" rowstretch="0,0,0,0,0" columnstretch="0,0,0,0,0">
           <item row="0" column="2" colspan="2">
            <spacer name="verticalSpacer_3">
             <property name="orientation">
@@ -1258,6 +1251,7 @@ p, li { white-space: pre-wrap; }
    </attribute>
    <addaction name="actionDevelopment"/>
    <addaction name="actionVisualizations"/>
+   <addaction name="actionTimelock_analysis"/>
    <addaction name="actionStimuli_delivery"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_global">
@@ -1299,7 +1293,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1379,17 +1373,17 @@ p, li { white-space: pre-wrap; }
                <property name="currentIndex">
                 <number>0</number>
                </property>
-               <widget class="QWidget" name="page_3">
+               <widget class="QWidget" name="page_montage">
                 <layout class="QGridLayout" name="gridLayout_27">
-                 <item row="1" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_20"/>
-                 </item>
                  <item row="2" column="0">
                   <layout class="QGridLayout" name="gridLayout_montage"/>
                  </item>
+                 <item row="1" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_20"/>
+                 </item>
                 </layout>
                </widget>
-               <widget class="QWidget" name="page_4">
+               <widget class="QWidget" name="page_impedances">
                 <layout class="QGridLayout" name="gridLayout_38">
                  <item row="1" column="0">
                   <layout class="QGridLayout" name="gridLayout_impedances"/>
@@ -1399,15 +1393,15 @@ p, li { white-space: pre-wrap; }
               </widget>
               <widget class="QToolBox" name="toolBox">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page_5">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>502</width>
-                  <height>488</height>
+                  <width>448</width>
+                  <height>442</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1448,8 +1442,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>502</width>
-                      <height>476</height>
+                      <width>448</width>
+                      <height>430</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1498,8 +1492,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>303</width>
-                  <height>145</height>
+                  <width>448</width>
+                  <height>442</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1581,7 +1575,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="iconSize">
                       <size>
@@ -1760,8 +1754,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>501</width>
-                 <height>782</height>
+                 <width>427</width>
+                 <height>996</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
@@ -1771,101 +1765,46 @@ p, li { white-space: pre-wrap; }
                 <property name="topMargin">
                  <number>0</number>
                 </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
                 <item row="1" column="0">
                  <widget class="QGroupBox" name="groupBox_settings">
                   <property name="title">
-                   <string>Channel settings</string>
+                   <string>Custom channel settings</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_12">
                    <property name="horizontalSpacing">
-                    <number>20</number>
+                    <number>30</number>
                    </property>
-                   <item row="1" column="1">
-                    <layout class="QFormLayout" name="formLayout_4">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_4">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to connect all channel’s N inputs to &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1&lt;/span&gt;. This effects all pins, and disconnects all N inputs from the ADC: &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1_DISCONNECT&lt;/span&gt; (default), &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1_CONNECT.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>SRB1</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QComboBox" name="comboBox_srb1">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="currentIndex">
-                        <number>1</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>CONNECT</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>DISCONNECT</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QComboBox" name="comboBox_srb2">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>CONNECT</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>DISCONNECT</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_3">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to connect this channel’s P input to the &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2&lt;/span&gt; pin. This closes a switch between P input and &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2&lt;/span&gt; for the given channel, and allows the P input also remain connected to the ADC: &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2_CONNECT&lt;/span&gt; (default), SRB2_DISCONNECT.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>SRB2</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item row="1" column="0">
-                    <layout class="QFormLayout" name="formLayout_2">
+                   <item row="0" column="0" colspan="2">
+                    <layout class="QFormLayout" name="formLayout_6">
+                     <property name="rowWrapPolicy">
+                      <enum>QFormLayout::WrapLongRows</enum>
+                     </property>
                      <property name="labelAlignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                      </property>
                      <property name="formAlignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>16</number>
+                     </property>
+                     <property name="verticalSpacing">
+                      <number>8</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_2">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="text">
                         <string>Gain</string>
                        </property>
@@ -1873,9 +1812,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item row="0" column="1">
                       <widget class="QComboBox" name="comboBox_gain">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="currentIndex">
                         <number>6</number>
                        </property>
@@ -1918,9 +1854,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="label_5">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="toolTip">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the ADC channel input source.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
@@ -1931,9 +1864,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="comboBox_input_type">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <item>
                         <property name="text">
                          <string>NORMAL</string>
@@ -1978,9 +1908,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="label_8">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="toolTip">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to include the channel input in BIAS generation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
@@ -1991,9 +1918,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item row="2" column="1">
                       <widget class="QComboBox" name="comboBox_bias">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <item>
                         <property name="text">
                          <string>INCLUDE</string>
@@ -2006,23 +1930,58 @@ p, li { white-space: pre-wrap; }
                        </item>
                       </widget>
                      </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="label_4">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to connect all channel’s N inputs to &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1&lt;/span&gt;. This effects all pins, and disconnects all N inputs from the ADC: &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1_DISCONNECT&lt;/span&gt; (default), &lt;span style=&quot; font-style:italic;&quot;&gt;SRB1_CONNECT.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>SRB1</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QComboBox" name="comboBox_srb1">
+                       <property name="currentIndex">
+                        <number>1</number>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>CONNECT</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>DISCONNECT</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="label_3">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to connect this channel’s P input to the &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2&lt;/span&gt; pin. This closes a switch between P input and &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2&lt;/span&gt; for the given channel, and allows the P input also remain connected to the ADC: &lt;span style=&quot; font-style:italic;&quot;&gt;SRB2_CONNECT&lt;/span&gt; (default), SRB2_DISCONNECT.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>SRB2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QComboBox" name="comboBox_srb2">
+                       <item>
+                        <property name="text">
+                         <string>CONNECT</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>DISCONNECT</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
                     </layout>
-                   </item>
-                   <item row="0" column="0" colspan="2">
-                    <widget class="QCheckBox" name="checkBox_default_settings">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked then a default configuration is used, this is, single reference to SRB2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
-                     </property>
-                     <property name="text">
-                      <string>Default channel settings</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -2048,11 +2007,20 @@ p, li { white-space: pre-wrap; }
                   <layout class="QGridLayout" name="gridLayout_7">
                    <item row="0" column="0">
                     <layout class="QFormLayout" name="formLayout">
+                     <property name="rowWrapPolicy">
+                      <enum>QFormLayout::WrapLongRows</enum>
+                     </property>
                      <property name="labelAlignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                      </property>
                      <property name="formAlignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>16</number>
+                     </property>
+                     <property name="verticalSpacing">
+                      <number>8</number>
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_6">
@@ -2091,135 +2059,12 @@ p, li { white-space: pre-wrap; }
                        </item>
                       </layout>
                      </item>
-                     <item row="2" column="0">
-                      <widget class="QCheckBox" name="checkBox_board1">
-                       <property name="text">
-                        <string>Board 1</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,0,1,1">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_port1">
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>/dev/ttyUSB0</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_update_wifi1">
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_ip1">
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>192.168.1.113</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_ip1">
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
                      <item row="3" column="0">
                       <widget class="QCheckBox" name="checkBox_board2">
                        <property name="text">
                         <string>Board 2</string>
                        </property>
                       </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_42" stretch="1,0,1,1">
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_port2">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>/dev/ttyUSB1</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_update_wifi2">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_ip2">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>192.168.1.114</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_ip2">
-                         <property name="enabled">
-                          <bool>true</bool>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
                      </item>
                      <item row="4" column="0">
                       <widget class="QCheckBox" name="checkBox_board3">
@@ -2231,67 +2076,6 @@ p, li { white-space: pre-wrap; }
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_46" stretch="1,0,1,1">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_port3">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>/dev/ttyUSB2</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_update_wifi3">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_ip3">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>192.168.1.115</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_ip3">
-                         <property name="enabled">
-                          <bool>true</bool>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
                      <item row="5" column="0">
                       <widget class="QCheckBox" name="checkBox_board4">
                        <property name="enabled">
@@ -2301,67 +2085,6 @@ p, li { white-space: pre-wrap; }
                         <string>Board 4</string>
                        </property>
                       </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <layout class="QHBoxLayout" name="horizontalLayout_45" stretch="1,0,1,1">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_port4">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>/dev/ttyUSB3</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_update_wifi4">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset theme="gtk-convert">
-                           <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="comboBox_ip4">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="editable">
-                          <bool>true</bool>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>192.168.1.116</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_ip4">
-                         <property name="enabled">
-                          <bool>true</bool>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
                      </item>
                      <item row="6" column="0">
                       <widget class="QLabel" name="label_latency">
@@ -2559,6 +2282,239 @@ p, li { white-space: pre-wrap; }
                        </item>
                       </widget>
                      </item>
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="checkBox_board1">
+                       <property name="text">
+                        <string>Board 1</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_18" stretch="1,1,0,0">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port1">
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB0</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip1">
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.113</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi1">
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip1">
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="3" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_23" stretch="1,1,0,0">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB0</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.113</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi2">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip2">
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="4" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_38" stretch="1,1,0,0">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB0</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.113</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi3">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip3">
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="5" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayout_39" stretch="1,1,0,0">
+                       <item>
+                        <widget class="QComboBox" name="comboBox_port4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>/dev/ttyUSB0</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_ip4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="editable">
+                          <bool>true</bool>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>192.168.1.113</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_update_wifi4">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="gtk-convert">
+                           <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_ip4">
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
                     </layout>
                    </item>
                   </layout>
@@ -2572,20 +2528,35 @@ p, li { white-space: pre-wrap; }
                   <property name="title">
                    <string>Leadoff Impedance</string>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_13">
-                   <item row="1" column="0">
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_13" columnstretch="1,0">
+                   <property name="horizontalSpacing">
+                    <number>30</number>
+                   </property>
+                   <item row="0" column="0" colspan="2">
                     <layout class="QFormLayout" name="formLayout_3">
+                     <property name="rowWrapPolicy">
+                      <enum>QFormLayout::WrapLongRows</enum>
+                     </property>
                      <property name="labelAlignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                      </property>
                      <property name="formAlignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>16</number>
+                     </property>
+                     <property name="verticalSpacing">
+                      <number>8</number>
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_12">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="toolTip">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply a current signal of 31.2 Hz into the P channels.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
@@ -2594,24 +2565,8 @@ p, li { white-space: pre-wrap; }
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_13">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply a current signal of 31.2 Hz into the N channels.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="text">
-                        <string>NCHAN</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="1">
                       <widget class="QComboBox" name="comboBox_pchan">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <item>
                         <property name="text">
                          <string>TEST SIGNAL NOT APPLIED</string>
@@ -2624,11 +2579,18 @@ p, li { white-space: pre-wrap; }
                        </item>
                       </widget>
                      </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_13">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apply a current signal of 31.2 Hz into the N channels.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>NCHAN</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="comboBox_nchan">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
                        <property name="currentIndex">
                         <number>1</number>
                        </property>
@@ -2645,22 +2607,6 @@ p, li { white-space: pre-wrap; }
                       </widget>
                      </item>
                     </layout>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QCheckBox" name="checkBox_send_leadoff">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If not checked, used for measure the &lt;a href=&quot;https://openbci-stream.readthedocs.io/en/latest/notebooks/A2-electrodes_impedance.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;electrodes impedance&lt;/span&gt;&lt;/a&gt; by injecting a current at 31.2 Hz.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::RightToLeft</enum>
-                     </property>
-                     <property name="text">
-                      <string>Not send leadoff commands</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -2846,7 +2792,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-playback-start">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2869,7 +2815,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="edit-delete-remove">
-                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -2957,7 +2903,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="media-record">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -2984,7 +2930,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="edit-delete">
-                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -3033,7 +2979,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="icon">
                     <iconset theme="folder-open">
-                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                     <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -3068,8 +3014,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>502</width>
-              <height>601</height>
+              <width>448</width>
+              <height>514</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3107,7 +3053,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3245,7 +3191,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3352,7 +3298,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3418,7 +3364,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_projects">
         <attribute name="title">
-         <string>Extensions</string>
+         <string>User scripts</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_5">
          <property name="topMargin">
@@ -3465,7 +3411,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3488,7 +3434,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3519,6 +3465,43 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
+             <item row="1" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_37" stretch="1,0">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_projects_path">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_open_extension_folder">
+                 <property name="toolTip">
+                  <string>Open folder</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="folder-open">
+                   <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
              <item row="4" column="0">
               <widget class="QToolBox" name="toolBox_3">
                <widget class="QWidget" name="toolBoxPage1">
@@ -3526,12 +3509,12 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>502</width>
-                  <height>487</height>
+                  <width>448</width>
+                  <height>368</height>
                  </rect>
                 </property>
                 <attribute name="label">
-                 <string>Data analysis</string>
+                 <string>Real-time analysis</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_47">
                  <property name="leftMargin">
@@ -3580,7 +3563,7 @@ p, li { white-space: pre-wrap; }
                  </rect>
                 </property>
                 <attribute name="label">
-                 <string>Visualizations</string>
+                 <string>Real-time visualizations</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_22">
                  <property name="leftMargin">
@@ -3614,6 +3597,52 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="layoutMode">
                     <enum>QListView::Batched</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_7">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>96</width>
+                  <height>93</height>
+                 </rect>
+                </property>
+                <attribute name="label">
+                 <string>Timelock analysis</string>
+                </attribute>
+                <layout class="QGridLayout" name="gridLayout_55">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QListWidget" name="listWidget_projects_timelock">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::SelectedClicked</set>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>56</width>
+                     <height>56</height>
+                    </size>
+                   </property>
+                   <property name="verticalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
                    </property>
                   </widget>
                  </item>
@@ -3670,43 +3699,6 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </item>
-             <item row="1" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_37" stretch="1,0">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_projects_path">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_open_extension_folder">
-                 <property name="toolTip">
-                  <string>Open folder</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="folder-open">
-                   <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
             </layout>
             <zorder>toolBox_3</zorder>
             <zorder>checkBox_projects_show_tutorials</zorder>
@@ -3734,7 +3726,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="go-previous">
-                   <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="flat">
                   <bool>true</bool>
@@ -3761,7 +3753,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="document-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3784,7 +3776,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="folder-new">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3810,7 +3802,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="icon">
                   <iconset theme="edit-delete">
-                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                   <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -3853,6 +3845,9 @@ p, li { white-space: pre-wrap; }
                 <property name="title">
                  <string>Debug</string>
                 </property>
+                <property name="class" stdset="0">
+                 <string>fill_background</string>
+                </property>
                 <layout class="QGridLayout" name="gridLayout_28">
                  <property name="leftMargin">
                   <number>0</number>
@@ -3875,7 +3870,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="media-playback-stop">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -3889,7 +3884,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="media-playback-start">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -3916,7 +3911,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="icon">
                       <iconset theme="edit-delete">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
                      </property>
                      <property name="iconSize">
                       <size>
@@ -4057,7 +4052,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Data analysis</string>
+    <string>Real-time analysis</string>
    </property>
   </action>
   <action name="actionStimuli_delivery">
@@ -4095,6 +4090,14 @@ p, li { white-space: pre-wrap; }
     <string>Raspad settings</string>
    </property>
   </action>
+  <action name="actionTimelock_analysis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string> Timelock analysis</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -4110,10 +4113,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_projects</tabstop>
   <tabstop>pushButton_projects_add_folder</tabstop>
   <tabstop>pushButton_projects_remove</tabstop>
-  <tabstop>comboBox_bias</tabstop>
   <tabstop>comboBox_pchan</tabstop>
   <tabstop>comboBox_sample_rate</tabstop>
-  <tabstop>comboBox_nchan</tabstop>
   <tabstop>checkBox_test_signal</tabstop>
   <tabstop>comboBox_test_signal</tabstop>
   <tabstop>tabWidget_project</tabstop>
@@ -4122,13 +4123,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>scrollArea</tabstop>
   <tabstop>pushButton_add_project</tabstop>
   <tabstop>pushButton_remove_project</tabstop>
-  <tabstop>comboBox_srb1</tabstop>
-  <tabstop>comboBox_srb2</tabstop>
-  <tabstop>comboBox_gain</tabstop>
-  <tabstop>comboBox_input_type</tabstop>
   <tabstop>tabWidget_widgets</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>comboBox_port1</tabstop>
   <tabstop>comboBox_host</tabstop>
   <tabstop>horizontalSlider_record</tabstop>
   <tabstop>pushButton_play_signal</tabstop>
@@ -4142,44 +4138,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>1111</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1162</x>
-     <y>187</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_gain</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1023</x>
-     <y>624</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_send_leadoff</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_nchan</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>994</x>
-     <y>848</y>
+     <x>1615</x>
+     <y>279</y>
     </hint>
    </hints>
   </connection>
@@ -4190,11 +4154,11 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
+     <x>1615</x>
      <y>143</y>
     </hint>
    </hints>
@@ -4206,12 +4170,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1393</x>
-     <y>500</y>
+     <x>1146</x>
+     <y>277</y>
     </hint>
    </hints>
   </connection>
@@ -4222,12 +4186,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>1111</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
-     <x>979</x>
-     <y>105</y>
+     <x>1615</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>
@@ -4238,28 +4202,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1154</x>
-     <y>770</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1185</x>
-     <y>623</y>
+     <x>1351</x>
+     <y>719</y>
     </hint>
    </hints>
   </connection>
@@ -4270,12 +4218,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>1162</x>
+     <y>714</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1141</x>
-     <y>721</y>
+     <x>1588</x>
+     <y>492</y>
     </hint>
    </hints>
   </connection>
@@ -4286,12 +4234,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>111</y>
+     <x>1454</x>
+     <y>114</y>
     </hint>
    </hints>
   </connection>
@@ -4302,12 +4250,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1141</x>
-     <y>387</y>
+     <x>1335</x>
+     <y>-15</y>
     </hint>
    </hints>
   </connection>
@@ -4318,12 +4266,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>355</y>
+     <x>1208</x>
+     <y>718</y>
     </hint>
    </hints>
   </connection>
@@ -4334,28 +4282,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>990</x>
-     <y>765</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_5</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>964</x>
-     <y>661</y>
+     <x>1162</x>
+     <y>714</y>
     </hint>
    </hints>
   </connection>
@@ -4366,12 +4298,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1141</x>
-     <y>721</y>
+     <x>1588</x>
+     <y>492</y>
     </hint>
    </hints>
   </connection>
@@ -4382,12 +4314,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>939</x>
-     <y>698</y>
+     <x>1111</x>
+     <y>665</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>197</y>
+     <x>1615</x>
+     <y>329</y>
     </hint>
    </hints>
   </connection>
@@ -4398,44 +4330,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1141</x>
-     <y>573</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_send_leadoff</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_pchan</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>994</x>
-     <y>810</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_input_type</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1071</x>
-     <y>662</y>
+     <x>1588</x>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
@@ -4446,60 +4346,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1390</x>
-     <y>767</y>
+     <x>1612</x>
+     <y>724</y>
     </hint>
     <hint type="destinationlabel">
-     <x>993</x>
-     <y>479</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_send_leadoff</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_13</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>946</x>
-     <y>847</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_2</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>929</x>
-     <y>623</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_bias</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1063</x>
-     <y>700</y>
+     <x>1360</x>
+     <y>507</y>
     </hint>
    </hints>
   </connection>
@@ -4510,60 +4362,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>1162</x>
+     <y>714</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1154</x>
-     <y>770</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_send_leadoff</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_12</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>763</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>944</x>
-     <y>809</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_srb1</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1309</x>
-     <y>624</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_default_settings</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_8</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1254</x>
-     <y>577</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>926</x>
-     <y>699</y>
+     <x>1351</x>
+     <y>719</y>
     </hint>
    </hints>
   </connection>
@@ -4574,12 +4378,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>990</x>
-     <y>765</y>
+     <x>1162</x>
+     <y>714</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1141</x>
-     <y>573</y>
+     <x>1588</x>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
@@ -4590,12 +4394,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1387</x>
-     <y>771</y>
+     <x>1609</x>
+     <y>720</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1194</x>
-     <y>319</y>
+     <x>1615</x>
+     <y>675</y>
     </hint>
    </hints>
   </connection>
@@ -4606,44 +4410,12 @@ p, li { white-space: pre-wrap; }
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1392</x>
-     <y>669</y>
+     <x>1614</x>
+     <y>620</y>
     </hint>
     <hint type="destinationlabel">
-     <x>991</x>
-     <y>668</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board3</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_port3</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>268</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1170</x>
-     <y>280</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board3</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_ip3</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>268</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1329</x>
-     <y>280</y>
+     <x>1615</x>
+     <y>721</y>
     </hint>
    </hints>
   </connection>
@@ -4654,12 +4426,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
-     <y>310</y>
+     <x>1093</x>
+     <y>-7</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1170</x>
-     <y>322</y>
+     <x>1269</x>
+     <y>-3</y>
     </hint>
    </hints>
   </connection>
@@ -4670,44 +4442,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
-     <y>310</y>
+     <x>1133</x>
+     <y>-14</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1329</x>
-     <y>322</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board1</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_port1</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1170</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board1</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_ip1</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1329</x>
-     <y>196</y>
+     <x>1377</x>
+     <y>-5</y>
     </hint>
    </hints>
   </connection>
@@ -4718,12 +4458,44 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>977</x>
-     <y>310</y>
+     <x>1141</x>
+     <y>0</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1207</x>
-     <y>322</y>
+     <x>1504</x>
+     <y>6</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1122</x>
+     <y>-47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1260</x>
+     <y>-47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1121</x>
+     <y>-43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1391</x>
+     <y>-45</y>
     </hint>
    </hints>
   </connection>
@@ -4734,44 +4506,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
-     <y>268</y>
+     <x>1128</x>
+     <y>-49</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1207</x>
-     <y>280</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board1</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>pushButton_update_wifi1</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1207</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_board2</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>comboBox_ip2</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>976</x>
-     <y>226</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1328</x>
-     <y>238</y>
+     <x>1517</x>
+     <y>-36</y>
     </hint>
    </hints>
   </connection>
@@ -4782,12 +4522,28 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
-     <y>226</y>
+     <x>1120</x>
+     <y>-82</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1168</x>
-     <y>238</y>
+     <x>1239</x>
+     <y>-88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1148</x>
+     <y>-88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1392</x>
+     <y>-88</y>
     </hint>
    </hints>
   </connection>
@@ -4798,12 +4554,60 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>976</x>
-     <y>226</y>
+     <x>1098</x>
+     <y>-75</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1205</x>
-     <y>238</y>
+     <x>1497</x>
+     <y>-74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_port1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1118</x>
+     <y>-126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1247</x>
+     <y>-133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBox_ip1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1129</x>
+     <y>-128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1388</x>
+     <y>-126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_board1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pushButton_update_wifi1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1139</x>
+     <y>-122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1519</x>
+     <y>-120</y>
     </hint>
    </hints>
   </connection>

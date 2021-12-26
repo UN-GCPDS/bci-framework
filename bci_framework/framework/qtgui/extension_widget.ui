@@ -1,108 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>widget_development_webview</class>
+ <widget class="QWidget" name="widget_development_webview">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>530</height>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1">
-   <property name="verticalSpacing">
+  <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,1" columnstretch="0">
+   <property name="leftMargin">
     <number>0</number>
    </property>
-   <item row="2" column="0">
-    <widget class="QWidget" name="widget_preview" native="true">
-     <layout class="QGridLayout" name="gridLayout_11">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QWidget" name="widget_development_webview" native="true">
-        <layout class="QGridLayout" name="gridLayout_27">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_webview">
-           <property name="leftMargin">
-            <number>2</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>2</number>
-           </property>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_webview">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
    </item>
    <item row="0" column="0">
-    <widget class="QWidget" name="widget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>33</height>
-      </size>
+    <layout class="QGridLayout" name="gridLayout_menubar" rowminimumheight="0">
+     <property name="bottomMargin">
+      <number>40</number>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
-       <layout class="QVBoxLayout" name="gridLayout_menubar"/>
-      </item>
-     </layout>
-    </widget>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="icons/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -13,10 +13,9 @@ import logging
 import sys
 import json
 
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QPixmap, QKeySequence
-from PySide2.QtWidgets import QShortcut
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtGui import QPixmap, QKeySequence, QShortcut
 
 from ..extensions_handler import ExtensionWidget
 from ..subprocess_handler import run_subprocess

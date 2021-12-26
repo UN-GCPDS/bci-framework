@@ -11,9 +11,10 @@ import pickle
 from datetime import datetime
 from typing import Optional, Literal, List, Callable
 
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import QTimer, Qt
-from PySide2.QtWidgets import QMdiSubWindow, QMenu, QAction, QMenuBar, QActionGroup
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QTimer, Qt, QRect
+from PySide6.QtWidgets import QMdiSubWindow, QMenu, QMenuBar, QSizePolicy
+from PySide6.QtGui import QAction
 
 from .subprocess_handler import LoadSubprocess
 from .config_manager import ConfigManager
@@ -30,7 +31,7 @@ class ExtensionMenu:
         """Menu for visualizations."""
         self.menubar = QMenuBar(self)
         self.menubar.clear()
-        self.menubar.setMinimumWidth(1e4)
+        # self.menubar.setMinimumWidth(1e4)
 
         self.accent_menubar = QMenuBar(self)
 
@@ -41,7 +42,7 @@ class ExtensionMenu:
             if visualization:
                 menu_stimuli = QMenu(f'{visualization } 🞃')
             else:
-                menu_stimuli = QMenu('Data analysis 🞃')
+                menu_stimuli = QMenu('Real-time analysis 🞃')
 
         # Add visualizations
         for viz, path in self.extensions_list:
@@ -80,17 +81,17 @@ class ExtensionMenu:
         self.menubar.addMenu(menu_view)
 
         # DPI
-        menu_dpi = QMenu("DPI (60)")
-        if visualization:
+        # menu_dpi = QMenu("DPI (60)")
+        # if visualization:
 
-            for dpi in [60, 70, 80, 90, 100, 110, 120, 130]:
-                menu_dpi.addAction(QAction(
-                    f'{dpi}', menu_dpi, checkable=True, triggered=self.set_dpi(menu_dpi, f'{dpi}', dpi)))
-                if dpi == 60:
-                    self.set_dpi(menu_dpi, f'{dpi}', dpi)()
-        else:
-            menu_dpi.setEnabled(False)
-        self.menubar.addMenu(menu_dpi)
+            # for dpi in [60, 70, 80, 90, 100, 110, 120, 130]:
+                # menu_dpi.addAction(QAction(
+                    # f'{dpi}', menu_dpi, checkable=True, triggered=self.set_dpi(menu_dpi, f'{dpi}', dpi)))
+                # if dpi == 60:
+                    # self.set_dpi(menu_dpi, f'{dpi}', dpi)()
+        # else:
+            # menu_dpi.setEnabled(False)
+        # self.menubar.addMenu(menu_dpi)
 
         self.main.INTERACTIVE = {}
         if interact_content:
@@ -209,16 +210,16 @@ class ExtensionMenu:
             menu_view.setEnabled(False)
         self.menubar.addMenu(menu_view)
 
-    # ----------------------------------------------------------------------
-    def set_dpi(self, menu_dpi, text: str, dpi: int) -> Callable:
-        """Set the DPI value for matplotlib figures."""
-        def wrap():
-            [action.setChecked(False) for action in menu_dpi.actions()]
-            [action.setChecked(
-                True) for action in menu_dpi.actions() if action.text() == text]
-            self.main.DPI = dpi
-            menu_dpi.setTitle(f'DPI ({dpi})')
-        return wrap
+    # # ----------------------------------------------------------------------
+    # def set_dpi(self, menu_dpi, text: str, dpi: int) -> Callable:
+        # """Set the DPI value for matplotlib figures."""
+        # def wrap():
+            # [action.setChecked(False) for action in menu_dpi.actions()]
+            # [action.setChecked(
+                # True) for action in menu_dpi.actions() if action.text() == text]
+            # self.main.DPI = dpi
+            # menu_dpi.setTitle(f'DPI ({dpi})')
+        # return wrap
 
     # ----------------------------------------------------------------------
     def set_extension(self, visualization: str) -> Callable:
@@ -226,6 +227,60 @@ class ExtensionMenu:
         def wrap():
             self.load_extension(visualization)
         return wrap
+
+    # ----------------------------------------------------------------------
+    def build_menu_timeloclk(self, visualization: bool, debugger: Optional[bool] = False) -> None:
+        """"""
+        self.menubar = QMenuBar(self)
+        self.menubar.clear()
+        self.menubar.setMinimumWidth(1e4)
+
+        self.accent_menubar = QMenuBar(self)
+
+        # Title
+        if debugger:
+            menu_stimuli = QMenu(f"Debugging: {visualization}")
+        else:
+            if visualization:
+                menu_stimuli = QMenu(f'{visualization } 🞃')
+            else:
+                menu_stimuli = QMenu('Timelock analysis 🞃')
+
+        # Add visualizations
+        for viz, path in self.extensions_list:
+            if viz != visualization:
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_extension(path)))
+
+        self.accent_menubar.addMenu(menu_stimuli)
+
+        # Menu with accent color
+        self.accent_menubar.setStyleSheet(f"""
+        QMenuBar::item {{
+            background-color: {os.getenv('QTMATERIAL_PRIMARYCOLOR', '#ffffff')};
+            color: {os.getenv('QTMATERIAL_PRIMARYTEXTCOLOR', '#ffffff')};
+            }}""")
+
+        # Set the menu in first position
+        self.menubar.setCornerWidget(
+            self.accent_menubar, corner=Qt.TopLeftCorner)
+
+        # View
+        menu_view = QMenu("View")
+        if visualization:
+
+            menu_view.addAction(
+                QAction('Reload', menu_view, triggered=self.reload))
+
+            # menu_view.addAction(
+                # QAction('Save capture', menu_view, triggered=self.save_img))
+            # if not debugger:
+                # menu_view.addSeparator()
+                # menu_view.addAction(
+                    # QAction('Close', menu_view, triggered=self.remove))
+        else:
+            menu_view.setEnabled(False)
+        self.menubar.addMenu(menu_view)
 
 
 ########################################################################
@@ -241,12 +296,18 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
                  directory: Optional[str] = None):
         """"""
         super().__init__(None)
-        ui = os.path.realpath(os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_widget.ui'))
+
+        if mode == 'timelock':
+            ui = os.path.realpath(os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_timelock_widget.ui'))
+        else:
+            ui = os.path.realpath(os.path.join(
+                os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'extension_widget.ui'))
+
         self.main = QUiLoader().load(ui, self)
         self.mdi_area = mdi_area
 
-        self.main.DPI = 60
+        self.main.DPI = 70
         self.mode = mode
         self.current_viz = None
 
@@ -269,11 +330,19 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
         self.setWidget(self.main)
         self.config = ConfigManager()
 
+        if not self.is_timeloclk:
+            style = f"""
+            * {{
+            border: 2px solid {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
+            border-width: 0px 2px 2px 2px;
+            }}
+            """
+        else:
+            style = ''
+
         self.setStyleSheet(f"""
-        * {{
-        border: 2px solid {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
-        border-width: 0px 2px 2px 2px;
-        }}
+        {style}
+
         QMenuBar {{
         background: {os.getenv('QTMATERIAL_SECONDARYCOLOR', '#000000')};
         border-width: 0;
@@ -287,22 +356,28 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
             self.main.widget.hide()
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_visualization(self) -> str:
         """"""
         return self.mode == 'visualization'
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_stimuli(self) -> str:
         """"""
         return self.mode in ['stimuli', 'delivery']
 
     # ----------------------------------------------------------------------
-    @property
+    @ property
     def is_analysis(self) -> str:
         """"""
         return self.mode == 'analysis'
+
+    # ----------------------------------------------------------------------
+    @ property
+    def is_timeloclk(self) -> str:
+        """"""
+        return self.mode == 'timelock'
 
     # ----------------------------------------------------------------------
     def load_extension(self, extension: str, debugger: Optional[bool] = False) -> None:
@@ -353,6 +428,14 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
             self.update_menu_bar()
             self.loaded()
 
+        if hasattr(self, 'on_remove_callback'):
+            self.on_remove_callback()
+
+    # ----------------------------------------------------------------------
+    def on_remove(self, callback):
+        """"""
+        self.on_remove_callback = callback
+
     # ----------------------------------------------------------------------
     def save_img(self, name: Optional[str] = None) -> None:
         """Save capture of visualization in the project directory."""
@@ -380,12 +463,34 @@ class ExtensionWidget(QMdiSubWindow, ExtensionMenu):
                 visualization, debugger, interact_content)
         elif self.is_stimuli:
             self.build_menu_stimuli(visualization, debugger)
+        elif self.is_timeloclk:
+            self.build_menu_timeloclk(visualization, debugger)
 
         if not self.is_analysis:
+
+            self.menubar.setStyleSheet("""
+            QToolButton:hover,
+            QToolButton:pressed,
+            QToolButton {
+              background-color: transparent;
+            }
+            """)
+            # self.resize_menubar()
             self.main.gridLayout_menubar.setMenuBar(self.menubar)
-            self.menubar.adjustSize()
-            self.menubar.setStyleSheet(
-                self.menubar.styleSheet() + """QMenuBar::item {width: 10000px;}""")
+
+    # ----------------------------------------------------------------------
+    def resize_menubar(self):
+        """"""
+        if hasattr(self, 'menubar'):
+            self.menubar.setGeometry(
+                QRect(0, 0, self.menubar.parent().rect().width(), 37))
+
+    # ----------------------------------------------------------------------
+    def resizeEvent(self, event):
+        """"""
+        super().resizeEvent(event)
+        self.resize_menubar()
+        # QTimer.singleShot(10, self.resize_menubar)
 
     # ----------------------------------------------------------------------
     def stop_preview(self) -> None:

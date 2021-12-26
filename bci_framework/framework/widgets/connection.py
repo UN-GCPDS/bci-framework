@@ -12,9 +12,9 @@ import logging
 import requests
 
 from openbci_stream.acquisition import Cyton, CytonBase, wifi, restart_services
-from PySide2.QtCore import Qt, Signal, QThread, Slot, QTimer
-from PySide2.QtGui import QCursor, QIcon
-from PySide2.QtWidgets import QApplication
+from PySide6.QtCore import Qt, Signal, QThread, Slot, QTimer
+from PySide6.QtGui import QCursor, QIcon
+from PySide6.QtWidgets import QApplication
 
 from ..dialogs import Dialogs
 from ...extensions import properties as prop
@@ -265,15 +265,15 @@ class Connection:
         self.parent_frame.pushButton_connect.clicked.connect(self.on_connect)
         self.parent_frame.comboBox_connection_mode.activated.connect(
             self.update_connections)
-        self.parent_frame.comboBox_host.textActivated.connect(
-            self.load_config)
+        # self.parent_frame.comboBox_host.textActivated.connect(
+            # self.load_config)
 
         # CheckWiFiModule
         for i in range(1, 5):
             combo = getattr(self.parent_frame, f'comboBox_ip{i}')
             target = getattr(self.parent_frame, f'pushButton_ip{i}')
-            combo.textActivated.connect(
-                self.request_wifi(i, target, combo))
+            # combo.textActivated.connect(
+                # self.request_wifi(i, target, combo))
             target.setStyleSheet("""*{
                 background-color: transparent !important;
                  }""")
@@ -299,6 +299,7 @@ class Connection:
     def request_wifi(self, board, target, combo, no_cursor=False):
         """"""
         target.setText('')
+        target.hide()
 
         # @thread_this
         def inset():
@@ -344,6 +345,7 @@ class Connection:
                 if board in self.channels_assignations:
                     del self.channels_assignations[board]
 
+            target.show()
             if not no_cursor:
                 QApplication.restoreOverrideCursor()
         return inset
@@ -512,10 +514,13 @@ class Connection:
         os.environ['BCISTREAM_CHANNELS_BY_BOARD'] = json.dumps(
             self.openbci.channels_assignations)
 
-        self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
+        # self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
+        self.openbci.checkBox_send_leadoff = self.parent_frame.groupBox_leadoff_impedance.isChecked()
+        # self.openbci.checkBox_default_settings = self.parent_frame.checkBox_default_settings.isChecked()
+        self.openbci.checkBox_default_settings = self.parent_frame.groupBox_settings.isChecked()
+
         self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()
         self.openbci.comboBox_test_signal = self.parent_frame.comboBox_test_signal.currentText()
-        self.openbci.checkBox_default_settings = self.parent_frame.checkBox_default_settings.isChecked()
 
         self.parent_frame.pushButton_connect.setText('Connecting...')
         self.parent_frame.pushButton_connect.setEnabled(False)

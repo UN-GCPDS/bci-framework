@@ -12,6 +12,7 @@ Subpackages
 
    bci_framework.extensions.data_analysis
    bci_framework.extensions.stimuli_delivery
+   bci_framework.extensions.timelock_analysis
    bci_framework.extensions.visualizations
 
 Submodules

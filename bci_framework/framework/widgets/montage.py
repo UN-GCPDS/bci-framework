@@ -8,14 +8,14 @@ import os
 import json
 from typing import List, TypeVar, Dict, Optional
 
-from PySide2.QtGui import QCursor
-from PySide2.QtCore import QTimer, QSize, Qt
-from PySide2.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
-from PySide2.QtGui import QResizeEvent
+from PySide6.QtGui import QCursor
+from PySide6.QtCore import QTimer, QSize, Qt
+from PySide6.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
+from PySide6.QtGui import QResizeEvent
 
 import mne
 import numpy as np
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, squareform, euclidean
 import matplotlib
 from matplotlib import cm, pyplot
 from matplotlib.figure import Figure
@@ -27,6 +27,9 @@ from gcpds.filters import frequency as filters
 
 from ...extensions import properties as prop
 from ...extensions.data_analysis.utils import thread_this
+
+
+from mne.channels.layout import _find_topomap_coords
 
 try:
     matplotlib.rcParams['axes.edgecolor'] = 'k'
@@ -81,14 +84,121 @@ class TopoplotBase(FigureCanvas):
 
 
 ########################################################################
-class TopoplotMontage(TopoplotBase):
+class DragAndDropMontage:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        """Constructor"""
+        self.mpl_connect('button_press_event', self.on_press)
+        self.mpl_connect('button_release_event', self.on_release)
+        self.mpl_connect('motion_notify_event', self.on_motion)
+
+    # ----------------------------------------------------------------------
+    def on_press(self, event):
+        """"""
+        self.dragging = True
+
+        markers = [l.get_marker() for l in self.ax.axes.lines]
+        if not 'o' in markers:
+            return
+        line = self.ax.axes.lines[0]
+
+        distance = 1e99
+        mk = None
+        b = None
+
+        pos = _find_topomap_coords(
+            self.info_, picks=self.channels_labels_, sphere=0.1)
+
+        for i, (x, y) in enumerate(pos):
+        # for i, (x, y) in enumerate(zip(*line.get_data())):
+
+            d = euclidean((event.xdata, event.ydata), (x, y))
+            if distance > d:
+                distance = d
+                mk = i
+                b = [x], [y]
+
+        self.figure.axes[0].plot(
+            *b, 'o', color='w', alpha=0.7, markersize=self.markersize)[0]
+
+        self.target_start = mk
+
+    # ----------------------------------------------------------------------
+    def on_release(self, event):
+        """"""
+        self.dragging = False
+        try:
+            print(f'CH{self.target_start} -> {self.target_end}')
+            self.set_channel(self.target_start, self.target_end)
+        except:
+            pass
+
+        del self.marker_placeholder
+        del self.text_placeholder
+
+    # ----------------------------------------------------------------------
+    def on_motion(self, event):
+        """"""
+        if not self.dragging:
+            return
+
+        if event.xdata == None and event.ydata == None:
+            return
+
+        distance = 1e99
+        mk = None
+        b = None
+        t = None
+
+        pos = _find_topomap_coords(
+            self.info_, picks=self.channels_names_, sphere=0.1)
+
+        for i, (x, y) in enumerate(pos):
+            xe, ye = event.xdata, event.ydata
+            d = euclidean((xe, ye), (x, y))
+
+            if distance > d:
+                distance = d
+                mk = i
+                b = [x], [y]
+                t = [x, y]
+
+        if not hasattr(self, 'marker_placeholder'):
+            self.marker_placeholder = self.figure.axes[0].plot(
+                *b, 'o', color='k', alpha=0.5, markersize=self.markersize)[0]
+
+            self.text_placeholder = self.figure.axes[0].text(
+                *b, self.channels_names_[mk], color='w', fontsize=self.font_size, va='center', ha='center', fontdict={})
+
+        self.marker_placeholder.set_data(*b)
+        self.text_placeholder.set_position(t)
+        self.text_placeholder.set_text(self.channels_names_[mk])
+
+        self.draw()
+
+        if mk != None:
+            self.target_end = self.channels_names_[mk]
+
+
+########################################################################
+class TopoplotMontage(TopoplotBase, DragAndDropMontage):
     """Topoplot with electrodes positions."""
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super().__init__()
+        """"""
+        TopoplotBase.__init__(self)
+        DragAndDropMontage.__init__(self)
+
         self.ax = self.figure.add_subplot(111)
         self.reset_plot()
+        self.dragging = False
+
+        # self.mpl_connect('button_press_event', self.on_press)
+        # self.mpl_connect('button_release_event', self.on_release)
+        # self.mpl_connect('motion_notify_event', self.on_motion)
 
     # ----------------------------------------------------------------------
     def reset_plot(self) -> None:
@@ -101,6 +211,7 @@ class TopoplotMontage(TopoplotBase):
         """Redraw electrodes positions."""
 
         self.args_update = (montage, electrodes, montage_name)
+        self.montage_ = montage
 
         # ----------------------------------------------------------------------
         def map_(x, in_min, in_max, out_min, out_max):
@@ -109,57 +220,38 @@ class TopoplotMontage(TopoplotBase):
         matplotlib.rcParams['text.color'] = "#ffffff"
         if hasattr(self, 'lastEvent'):
             factor = map_(len(electrodes), 1, 32, 1.2, 0.6)
-
-            matplotlib.rcParams['font.size'] = int(
-                min(self.lastEvent) / 25) * factor
-            markersize = int(min(self.lastEvent) / 10) * factor
+            self.font_size = int(min(self.lastEvent) / 25) * factor
+            self.markersize = int(min(self.lastEvent) / 10) * factor
         else:
-            matplotlib.rcParams['font.size'] = 13
-            markersize = 35
+            self.font_size = 13
+            self.markersize = 35
+        matplotlib.rcParams['font.size'] = self.font_size
 
         self.ax.clear()
-        channels_names = montage.ch_names.copy()
+        self.channels_names = montage.ch_names.copy()
 
-        info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
+        info = mne.create_info(self.channels_names,
+                               sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
-        # locs3d = [ch['loc'][:3] for ch in info['chs']]
-        # dist = pdist(locs3d)
-        # problematic_electrodes = []
-        # if len(locs3d) > 1 and np.min(dist) < 1e-10:
-            # problematic_electrodes = [
-                # info['chs'][elec_i]
-                # for elec_i in squareform(dist < 1e-10).any(axis=0).nonzero()[0]
-            # ]
-
-        # issued = []
-        # for ch_i in problematic_electrodes:
-            # for ch_j in problematic_electrodes:
-                # if ch_i['ch_name'] == ch_j['ch_name']:
-                    # continue
-                # if ch_i['ch_name'] in issued and ch_j['ch_name'] in issued:
-                    # continue
-                # if pdist([ch_i['loc'][:3], ch_j['loc'][:3]])[0] < 1e-10:
-                    # issued.extend([ch_i['ch_name'], ch_j['ch_name']])
-                    # if ch_i['ch_name'] in channels_names:
-
-                        # # print(ch_i['ch_name'], ch_j['ch_name'])
-                        # channels_names.pop(channels_names.index(
-                            # ch_i['ch_name']))
-
+        self.channels_names_ = self.channels_names.copy()
         if montage_name in ['standard_1020', 'standard_1005']:
             for ch in ['T3', 'T5', 'T4', 'T6']:
-                channels_names.pop(channels_names.index(ch))
+                self.channels_names.pop(self.channels_names.index(ch))
 
-        info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
+        info = mne.create_info(self.channels_names,
+                               sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
+        self.info_ = info.copy()
+
         channels_mask = np.array(
-            [ch in electrodes for ch in channels_names])
+            [ch in electrodes for ch in self.channels_names])
         values = [0] * len(channels_mask)
 
         channels_labels = []
-        for ch in channels_names:
+        self.channels_labels_ = electrodes.copy()
+        for ch in self.channels_names:
             if ch in electrodes:
                 i = electrodes.index(ch)
                 channels_labels.append(
@@ -172,10 +264,19 @@ class TopoplotMontage(TopoplotBase):
             'QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
         cm = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
+        # pos = np.stack([k['r'] for k in self.info_['dig'][3:]])
+        # radius = np.abs(pos[[2, 3], 0]).mean()
+
+        # x = pos[0, 0]
+        # y = pos[-1, 1]
+        # z = pos[:, -1].mean()
+        # [x, y, z, radius]
+
         mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0, cmap=cm, outlines='skirt', names=channels_labels, show_names=True, axes=self.ax, sensors=True, show=False,
                              mask_params=dict(marker='o', markerfacecolor='#263238',
-                                              markeredgecolor='#4f5b62', linewidth=0, markersize=markersize),
+                                              markeredgecolor='#4f5b62', linewidth=0, markersize=self.markersize),
                              mask=channels_mask,
+                             # sphere=[0, 0, 0, 0.1],
                              )
 
         self.draw()
@@ -247,13 +348,17 @@ class TopoplotImpedances(TopoplotBase):
             markersize = 35
 
         channels_names = montage.ch_names.copy()
-        info = mne.create_info(montage.ch_names, sfreq=1000, ch_types="eeg")
+        info = mne.create_info(
+            montage.ch_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
         # channels_names = self.remove_overlaping(info, channels_names)
         if montage_name in ['standard_1020', 'standard_1005', None]:
             for ch in ['T3', 'T5', 'T4', 'T6']:
-                channels_names.pop(channels_names.index(ch))
+                try:
+                    channels_names.pop(channels_names.index(ch))
+                except:
+                    pass
 
         info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
@@ -381,6 +486,7 @@ class Montage:
         self.channels_bipolar_widgets = []
 
         self.topoplot = TopoplotMontage()
+        self.topoplot.set_channel = self.set_channel
         self.parent_frame.gridLayout_montage.addWidget(self.topoplot)
 
         self.parent_frame.comboBox_montages.addItems(
@@ -532,6 +638,12 @@ class Montage:
             self.channels_bipolar_widgets.append(channel_bipolar)
 
             layout.addWidget(channel_bipolar, j, 2)
+
+    # ----------------------------------------------------------------------
+    def set_channel(self, channel, name):
+        """"""
+        self.channels_names_widgets[channel].setCurrentText(name)
+        self.update_topoplot()
 
     # ----------------------------------------------------------------------
     def save_montage(self) -> None:

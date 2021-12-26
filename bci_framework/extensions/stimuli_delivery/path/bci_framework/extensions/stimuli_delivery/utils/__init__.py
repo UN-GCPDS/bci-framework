@@ -10,17 +10,18 @@ Tone = t()
 # ----------------------------------------------------------------------
 def keypress(callback, timeout=3000):
     """"""
+    [h.remove() for h in document.select('.hidden-input')]
     capture_key = html.INPUT(type="text", name="capture", Class='hidden-input', value="", style={
                              'position': 'absolute', 'opacity': 0, 'top': 0})
     document <= capture_key
     capture_key.focus()
 
     def process(key=None):
-        capture_key.unbind('keypress')
-        capture_key.remove()
         callback(key)
         if timeout:
             timer.clear_timeout(t)
+        capture_key.unbind('keypress')
+        capture_key.remove()
 
     def handle(evt):
         key = chr(evt.charCode)

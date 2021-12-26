@@ -31,23 +31,6 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="lineEdit_project_name"/>
       </item>
-      <item row="2" column="1">
-       <widget class="QRadioButton" name="radioButton_visualization">
-        <property name="text">
-         <string>Visualization</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QRadioButton" name="radioButton_data_analysis">
-        <property name="text">
-         <string>Data analysis</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -55,10 +38,34 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="radioButton_data_analysis">
+        <property name="text">
+         <string>Real-time analysis</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QRadioButton" name="radioButton_visualization">
+        <property name="text">
+         <string>Real-time visualization</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
        <widget class="QRadioButton" name="radioButton_stimulus_delivery">
         <property name="text">
          <string>Stimuli delivery</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QRadioButton" name="radioButton_timelock">
+        <property name="text">
+         <string>Timelock analysis</string>
         </property>
        </widget>
       </item>

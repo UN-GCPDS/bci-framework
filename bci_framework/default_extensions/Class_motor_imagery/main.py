@@ -154,6 +154,7 @@ class FourClassMotorImagery(StimuliAPI):
     # ----------------------------------------------------------------------
     def synchronizer(self, value: bool) -> None:
         """Show or hide synchronizer."""
+        logging.warning('WTF')
         if value:
             self.show_synchronizer()
         else:

@@ -11,10 +11,10 @@ import pickle
 import shutil
 from typing import TypeVar
 
-from PySide2.QtGui import QIcon
-from PySide2.QtCore import Qt, QSize, QTimer
-from PySide2.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QDesktopWidget
-from PySide2.QtUiTools import QUiLoader
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize, QTimer
+from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem, QDialogButtonBox, QWidget
+from PySide6.QtUiTools import QUiLoader
 
 from ..editor import BCIEditor  # , Autocompleter
 
@@ -24,6 +24,7 @@ PATH = TypeVar('path')
 LINE_DELIVERY = 'bci_framework.extensions.stimuli_delivery'
 LINE_VISUALIZATION = 'bci_framework.extensions.visualizations'
 LINE_ANALYSIS = 'bci_framework.extensions.data_analysis'
+LINE_LOCKTIME = 'bci_framework.extensions.timelock_analysis'
 BCIFR_FILE = 'bcifr'
 
 
@@ -72,6 +73,8 @@ class Projects:
             lambda evt: self.open_project(evt.path))
         self.parent_frame.listWidget_projects_analysis.itemDoubleClicked.connect(
             lambda evt: self.open_project(evt.path))
+        self.parent_frame.listWidget_projects_timelock.itemDoubleClicked.connect(
+            lambda evt: self.open_project(evt.path))
 
         self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
             self.there_can_only_be_one)
@@ -79,12 +82,16 @@ class Projects:
             self.there_can_only_be_one)
         self.parent_frame.listWidget_projects_delivery.itemClicked.connect(
             self.there_can_only_be_one)
+        self.parent_frame.listWidget_projects_timelock.itemClicked.connect(
+            self.there_can_only_be_one)
 
         self.parent_frame.listWidget_projects_visualizations.itemChanged.connect(
             self.project_renamed)
         self.parent_frame.listWidget_projects_analysis.itemChanged.connect(
             self.project_renamed)
         self.parent_frame.listWidget_projects_delivery.itemChanged.connect(
+            self.project_renamed)
+        self.parent_frame.listWidget_projects_timelock.itemChanged.connect(
             self.project_renamed)
 
         self.parent_frame.treeWidget_project.itemDoubleClicked.connect(
@@ -151,6 +158,7 @@ class Projects:
         self.parent_frame.listWidget_projects_visualizations.clear()
         self.parent_frame.listWidget_projects_analysis.clear()
         self.parent_frame.listWidget_projects_delivery.clear()
+        self.parent_frame.listWidget_projects_timelock.clear()
 
         projects = os.listdir(self.projects_dir)
         projects = filter(lambda f: os.path.isdir(
@@ -197,6 +205,7 @@ class Projects:
                 modules = {LINE_VISUALIZATION: (self.parent_frame.listWidget_projects_visualizations, 'icon_viz'),
                            LINE_DELIVERY: (self.parent_frame.listWidget_projects_delivery, 'icon_sti'),
                            LINE_ANALYSIS: (self.parent_frame.listWidget_projects_analysis, 'icon_ana'),
+                           LINE_LOCKTIME: (self.parent_frame.listWidget_projects_timelock, 'icon_lock'),
                            }
                 for module in modules:
                     if [line for line in lines if module in ' '.join(line.split()) and not line.strip().startswith("#")]:
@@ -228,6 +237,8 @@ class Projects:
             self.mode = 'stimuli'
         elif self.parent_frame.listWidget_projects_analysis.selectedItems():
             self.mode = 'analysis'
+        elif self.parent_frame.listWidget_projects_timelock.selectedItems():
+            self.mode = 'timelock'
 
         self.parent_frame.stackedWidget_projects.setCurrentWidget(
             getattr(self.parent_frame, "page_projects_files"))
@@ -243,7 +254,7 @@ class Projects:
 
         files_count = 0
         dir_count = 0
-        open_item = None
+        # open_item = None
         project_name_ = project_path
 
         def add_leaves(parent, path):
@@ -401,7 +412,9 @@ class Projects:
             lambda evt: self.create_project(project.lineEdit_project_name.text(),
                                             project.radioButton_visualization.isChecked(),
                                             project.radioButton_stimulus_delivery.isChecked(),
-                                            project.radioButton_data_analysis.isChecked()))
+                                            project.radioButton_data_analysis.isChecked(),
+                                            project.radioButton_timelock.isChecked(),
+                                            ))
 
         project.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(
             lambda evt: project.destroy())
@@ -413,7 +426,7 @@ class Projects:
             project.buttonBox.button(QDialogButtonBox.Ok).setDisabled(os.path.isdir(
                 os.path.join(self.projects_dir, str_))))
 
-        center = QDesktopWidget().availableGeometry().center()
+        center = QWidget.screen(self.core).availableGeometry().center()
         geometry = project.frameGeometry()
         geometry.moveCenter(center)
         project.move(geometry.topLeft())
@@ -421,7 +434,7 @@ class Projects:
         project.show()
 
     # ----------------------------------------------------------------------
-    def create_project(self, project_name: str, visualization: bool = False, stimulus: bool = False, analysis: bool = False) -> None:
+    def create_project(self, project_name: str, visualization: bool = False, stimulus: bool = False, analysis: bool = False, timelock=False) -> None:
         """Create a new project with a template and open it."""
         icon = QIcon()
         icon_name = 'icon_sti'
@@ -444,6 +457,12 @@ class Projects:
                 self.parent_frame.listWidget_projects_analysis)
             default_project = '__default_data_analysis'
             self.mode = 'analysis'
+        elif timelock:
+            icon_name = 'icon_lock'
+            item = QListWidgetItem(
+                self.parent_frame.listWidget_projects_timelock)
+            default_project = '__default_data_timelock'
+            self.mode = 'timelock'
 
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable |
                       Qt.ItemIsDragEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)

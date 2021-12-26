@@ -1,9 +1,6 @@
 
 .. include:: notebooks/readme.rst
 
-Navigation
-----------
-
 .. toctree::
    :maxdepth: 2
    :name: mastertoc
@@ -20,7 +17,7 @@ Navigation
    notebooks/09-ilustrative_example
 
 Indices and tables
-------------------
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`

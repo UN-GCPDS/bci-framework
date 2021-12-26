@@ -8,8 +8,8 @@ QSyntaxHighlighter for CSS syntax.
 
 import os
 
-from PySide2.QtCore import QRegExp as QRegularExpression
-from PySide2.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PySide6.QtCore import QRegularExpression
+from PySide6.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
 ########################################################################
@@ -50,9 +50,11 @@ class CSSHighlighter(QSyntaxHighlighter):
         rules += [(r'"[^"\\]*(\\.[^"\\]*)*"', 0, self.styles['value']),
                   (r"'[^'\\]*(\\.[^'\\]*)*'", 0, self.styles['value']),
 
-                  (r'^([\w]+)[#\.\w\[\]=]*\s*\{', 1, self.styles['selector']),
+                  (r'^([\w]+)[#\.\w\[\]=]*\s*\{',
+                   1, self.styles['selector']),
                   (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 1, self.styles['key']),
-                  (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)', 2, self.styles['value']),
+                  (r'^\s*([\w-]+)\s*:\s*([\w\'"#]+)',
+                   2, self.styles['value']),
 
                   # Numeric literals
                   (r'\b[+-]?[0-9]+[lL]?\b', 0, self.styles['numbers']),
@@ -71,14 +73,24 @@ class CSSHighlighter(QSyntaxHighlighter):
         """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
         for expression, nth, format in self.rules:
-            index = expression.indexIn(text, 0)
+            # index = expression.indexIn(text, 0)
+            index = expression.match(text, 0).capturedStart(nth)
 
+            start = 0
             while index >= 0:
                 # We actually want the index of the nth match
-                index = expression.pos(nth)
-                length = len(expression.cap(nth))
+                # index = expression.pos(nth)
+                # length = len(expression.cap(nth))
+
+                index = expression.match(text, start).capturedStart(nth)
+                length = expression.match(text, start).capturedLength()
+
                 self.setFormat(index, length, format)
-                index = expression.indexIn(text, index + length)
+
+                index = expression.match(
+                    text, index + length).capturedStart()
+                # index = expression.indexIn(text, index + length)
+                start = index + length
 
         self.setCurrentBlockState(0)
 

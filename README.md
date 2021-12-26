@@ -2,7 +2,7 @@
 > [Andrés Marino Álvarez Meza, PhD.](https://github.com/amalvarezme)  
 > César Germán Castellanos Dominguez, PhD.  
 > _Digital Signal Processing and Control Group_  | _Grupo de Control y Procesamiento Digital de Señales ([GCPDS](https://github.com/UN-GCPDS/))_  
-> _National University of Colombia at Manizales_ | _Universidad Nacional de Colombia sede Manizales_
+> _Universidad Nacional de Colombia sede Manizales_
 
 ----
 
@@ -31,6 +31,4 @@ BCI-Framework is an open-source tool for the acquisition of EEG/EMG/ECG signals 
 
 In particular BCI-Framework comprises a graphical user interface (GUI) with a set of individual computational processes (distributed or in a single machine). Also, this application can feed a visualization, serve a stimuli delivery, handle an acquisition, storage data, or stream a previous one (offline analysis). Finally, it integrates a built-in development environment and a set of libraries that the user can implement to create their specific functionality.
 
-## Screenshots
-
-![](https://github.com/UN-GCPDS/bci-framework/blob/master/docs/source/notebooks/images/readme.gif)
+![](https://github.com/UN-GCPDS/bci-framework/blob/master/docs/source/notebooks/images/readme.png)

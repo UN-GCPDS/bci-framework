@@ -6,8 +6,7 @@
    | *Digital Signal Processing and Control Group* \| *Grupo de Control
      y Procesamiento Digital de Señales
      (*\ `GCPDS <https://github.com/UN-GCPDS/>`__\ *)*
-   | *National University of Colombia at Manizales* \| *Universidad
-     Nacional de Colombia sede Manizales*
+   | *Universidad Nacional de Colombia sede Manizales*
 
 --------------
 
@@ -79,7 +78,4 @@ previous one (offline analysis). Finally, it integrates a built-in
 development environment and a set of libraries that the user can
 implement to create their specific functionality.
 
-Screenshots
------------
-
-.. image:: images/readme.gif
+.. image:: images/readme.png
