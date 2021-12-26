@@ -148,7 +148,8 @@ def main() -> None:
              'success': '#17a2b8',
 
              'font_family': 'Roboto',
-             'font_size': 'unset',
+
+             'density_scale': -1,
              }
 
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
