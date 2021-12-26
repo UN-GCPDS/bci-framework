@@ -78,4 +78,4 @@ previous one (offline analysis). Finally, it integrates a built-in
 development environment and a set of libraries that the user can
 implement to create their specific functionality.
 
-.. image:: images/readme.png
+.. image:: images/readme.gif
