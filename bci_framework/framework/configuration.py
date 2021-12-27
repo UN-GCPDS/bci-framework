@@ -74,7 +74,6 @@ class ConfigurationFrame(QMainWindow):
             self.reset_notebooks)
 
     # ----------------------------------------------------------------------
-
     def restore_projects(self, *args, **kwargs) -> None:
         """Copy defautl project into the user projects directory."""
         shutil.copytree(os.path.join(os.environ['BCISTREAM_ROOT'], 'default_extensions'),

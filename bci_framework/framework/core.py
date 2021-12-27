@@ -18,7 +18,7 @@ from typing import TypeVar, Optional
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence, QShortcut
-from PySide6.QtWidgets import QWidget, QMainWindow, QDialogButtonBox, QPushButton, QLabel
+from PySide6.QtWidgets import QWidget, QMainWindow, QPushButton, QLabel, QCheckBox
 
 from kafka import KafkaProducer, KafkaConsumer
 import ntplib
@@ -27,57 +27,55 @@ from .widgets import Montage, Projects, Connection, Records, Annotations
 from .environments import Development, Visualization, StimuliDelivery, TimeLockAnalysis
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
-from ..extensions import properties as prop
-from .dialogs import Dialogs
 from .subprocess_handler import run_subprocess
 from .raspad import Raspad
 
-import numpy as np
-
-KAFKA_STREAM = TypeVar('Kafka')
+KafkaMessage = TypeVar('KafkaMessage')
+PathLike = TypeVar('PathLike')
+HostLike = TypeVar('HostLike')
+Millis = TypeVar('Milliseconds')
 
 
 ########################################################################
 class ClockOffset(QThread):
     """"""
-    offset = Signal(object)
+    signal_offset = Signal(object)
 
     # ----------------------------------------------------------------------
-    def set_host(self, host: str) -> None:
+    def set_host(self, host: HostLike) -> None:
         """Set the host for kafka."""
         self.host = host
 
     # ----------------------------------------------------------------------
-    def run(self):
+    def run(self) -> None:
         """"""
         try:
             client = ntplib.NTPClient()
             r = client.request(self.host)
             clock_offset = r.offset  # * 1000
-            self.offset.emit(clock_offset)
+            self.signal_offset.emit(clock_offset)
             print(f'offset: {clock_offset}')
-        except Exception as e:
+        except Exception:
             pass
 
 
 ########################################################################
 class Kafka(QThread):
     """Kafka run on a thread."""
-    on_message = Signal(object)
-    message = Signal()
-    # first_consume = Signal()
-    produser_connected = Signal()
-    continue_ = True
+    signal_kafka_message = Signal(object)
+    signal_exception_message = Signal()
+    signal_produser = Signal()
+    keep_alive = True
 
     # ----------------------------------------------------------------------
-    def set_host(self, host: str) -> None:
+    def set_host(self, host: HostLike) -> None:
         """Set the host for kafka."""
         self.host = host
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
         """Kill the thread."""
-        self.continue_ = False
+        self.keep_alive = False
         self.terminate()
 
     # ----------------------------------------------------------------------
@@ -85,11 +83,11 @@ class Kafka(QThread):
         """Start the produser and consumer for Kafka."""
         try:
             self.create_produser()
-            self.produser_connected.emit()
+            self.signal_produser.emit()
             self.consumed = False
             self.create_consumer()
-        except Exception as e:
-            self.message.emit()
+        except Exception:
+            self.signal_exception_message.emit()
             self.stop()
 
     # ----------------------------------------------------------------------
@@ -107,14 +105,11 @@ class Kafka(QThread):
         for message in self.consumer:
             self.last_message = datetime.now()
             message.value['timestamp'] = message.timestamp / 1000
-            # if not self.consumed:
-                # self.first_consume.emit()
-                # self.consumed = True
 
-            self.on_message.emit(
+            self.signal_kafka_message.emit(
                 {'topic': message.topic, 'value': message.value})
 
-            if not self.continue_:
+            if not self.keep_alive:
                 return
 
     # ----------------------------------------------------------------------
@@ -176,7 +171,7 @@ class BCIFramework(QMainWindow):
         self.projects = Projects(self.main, self)
         self.records = Records(self.main, self)
         self.annotations = Annotations(self.main, self)
-        self.raspad = Raspad(self.main, self)
+        self.raspad = Raspad(self)
 
         self.development = Development(self)
         self.visualizations = Visualization(self)
@@ -206,6 +201,7 @@ class BCIFramework(QMainWindow):
         self.aux_size = 0
         self.sample_rate = 0
         self.last_update = 0
+
         # QTimer().singleShot(1000, self.calculate_offset)
         QTimer().singleShot(3000, self.start_stimuli_server)
 
@@ -227,7 +223,6 @@ class BCIFramework(QMainWindow):
             self.timelock_analysis.show_fullscreen)
 
     # ----------------------------------------------------------------------
-
     def set_icons(self) -> None:
         """The Qt resource system has been deprecated."""
         def icon(name):
@@ -405,13 +400,13 @@ class BCIFramework(QMainWindow):
             lambda b: self.board_handle(self.main.checkBox_board4, b))
 
     # ----------------------------------------------------------------------
-    def board_handle(self, chbox, b):
+    def board_handle(self, chbox: QCheckBox, enable: bool) -> None:
         """"""
-        chbox.setEnabled(b)
+        chbox.setEnabled(enable)
         chbox.setChecked(False)
 
     # ----------------------------------------------------------------------
-    def open_folder_in_system(self, path) -> None:
+    def open_folder_in_system(self, path: PathLike) -> None:
         """"""
         if platform.system() == "Windows":
             os.startfile(path)
@@ -474,7 +469,7 @@ class BCIFramework(QMainWindow):
         # item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def status_bar(self, message: str = None, right_message: str = None) -> None:
+    def status_bar(self, message: Optional[str] = None, right_message: Optional[str] = None) -> None:
         """Update messages for status bar."""
         statusbar = self.main.statusBar()
 
@@ -542,7 +537,7 @@ class BCIFramework(QMainWindow):
         min-width:  {size}px;
         max-height: {size}px;
         min-height: {size}px;
-        background-color: {os.environ.get('secondaryLightColor')}
+        background-color: {os.environ.get('secondaryColor')}
         }}
         """
         self.main.pushButton_file.setStyleSheet(style)
@@ -555,7 +550,7 @@ class BCIFramework(QMainWindow):
 
         style = f"""
         QFrame {{
-        background-color: {os.environ.get('secondaryLightColor')}
+        background-color: {os.environ.get('secondaryColor')}
         }}
         """
         self.main.frame_3.setStyleSheet(style)
@@ -591,7 +586,7 @@ class BCIFramework(QMainWindow):
                 f'{file.read().strip()} {version} {mode}')
 
     # ----------------------------------------------------------------------
-    def show_about(self, event=None) -> None:
+    def show_about(self, *args, **wargs) -> None:
         """Display about window."""
         frame = os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'about.ui')
@@ -631,7 +626,7 @@ class BCIFramework(QMainWindow):
 
     # ----------------------------------------------------------------------
     @Slot()
-    def on_kafka_event(self, value: KAFKA_STREAM) -> None:
+    def on_kafka_event(self, value: KafkaMessage) -> None:
         """Register annotations and markers."""
 
         self.streaming = True
@@ -681,18 +676,19 @@ class BCIFramework(QMainWindow):
             # self.last_update = value['value']['timestamp']
 
     # ----------------------------------------------------------------------
-    def update_kafka(self, host) -> None:
+    def update_kafka(self, host: HostLike) -> None:
         """Try to restart kafka services."""
         if hasattr(self, 'thread_kafka'):
             self.thread_kafka.stop()
             self.status_bar(right_message=('No streaming', False))
         # try:
         self.thread_kafka = Kafka()
-        self.thread_kafka.on_message.connect(self.on_kafka_event)
+        self.thread_kafka.signal_kafka_message.connect(self.on_kafka_event)
         # self.thread_kafka.first_consume.connect(lambda: self.connection.on_connect(
             # True))
-        self.thread_kafka.message.connect(self.kafka_message)
-        self.thread_kafka.produser_connected.connect(
+        self.thread_kafka.signal_exception_message.connect(
+            self.kafka_message)
+        self.thread_kafka.signal_produser.connect(
             self.kafka_produser_connected)
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
@@ -703,19 +699,19 @@ class BCIFramework(QMainWindow):
         self.timer.start()
 
     # ----------------------------------------------------------------------
-    def calculate_offset(self):
+    def calculate_offset(self) -> None:
         """"""
         host = self.thread_kafka.host
         if host != 'localhost':
             self.offset_thread = ClockOffset()
-            self.offset_thread.offset.connect(self.set_offset)
+            self.offset_thread.signal_offset.connect(self.set_offset)
             self.offset_thread.set_host(self.thread_kafka.host)
             self.offset_thread.start()
         else:
             self.set_offset(0)
 
     # ----------------------------------------------------------------------
-    def set_offset(self, offset):
+    def set_offset(self, offset: Millis) -> None:
         """"""
         os.environ['BCISTREAM_OFFSET'] = json.dumps(offset)
 
@@ -742,7 +738,7 @@ class BCIFramework(QMainWindow):
                 self.main.pushButton_record.setEnabled(True)
 
     # ----------------------------------------------------------------------
-    @ Slot()
+    @Slot()
     def kafka_message(self) -> None:
         """Error on kafka."""
         self.streaming = False
@@ -754,7 +750,7 @@ class BCIFramework(QMainWindow):
         self.status_bar(right_message=('Disconnected', None))
 
     # ----------------------------------------------------------------------
-    @ Slot()
+    @Slot()
     def kafka_produser_connected(self) -> None:
         """If produser connected is posible the consumer too."""
         self.status_bar(right_message=('Connected', False))
@@ -766,18 +762,18 @@ class BCIFramework(QMainWindow):
         configuration.show()
 
     # ----------------------------------------------------------------------
-    def handle_feedback(self, data):
+    def handle_feedback(self, data) -> None:
         """"""
         if fn := getattr(self, f"feedback_{data['name']}", False):
             fn(data['value'])
 
     # ----------------------------------------------------------------------
-    def feedback_set_latency(self, value):
+    def feedback_set_latency(self, latency: Millis) -> None:
         """"""
-        os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(value)
+        os.environ['BCISTREAM_SYNCLATENCY'] = json.dumps(latency)
 
     # ----------------------------------------------------------------------
-    def start_stimuli_server(self):
+    def start_stimuli_server(self) -> None:
         """"""
         if '--local' in sys.argv:
             self.bciframework_server = run_subprocess([sys.executable, os.path.join(

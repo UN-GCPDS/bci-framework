@@ -5,12 +5,14 @@ Dialogs
 """
 
 import os
-from typing import TypeVar, Optional
+from typing import TypeVar
 
 from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 
-PATH = TypeVar('Path')
+PathLike = TypeVar('PathLike')
+ParentWindow = TypeVar('QMainWindow')
+FileHandlerType = TypeVar('FileHandler')
 
 
 ########################################################################
@@ -19,14 +21,13 @@ class Dialogs:
 
     # ---------------------------- ------------------------------------------
     @classmethod
-    def critical_message(self, parent, title: str, text: str) -> None:
+    def critical_message(self, parent: ParentWindow, title: str, text: str) -> None:
         """Critical message."""
-        msgBox = QMessageBox.critical(
-            parent, title, text, QMessageBox.Ok)
+        QMessageBox.critical(parent, title, text, QMessageBox.Ok)
 
     # ----------------------------------------------------------------------
     @classmethod
-    def question_message(self, parent, title: str, text: str) -> None:
+    def question_message(self, parent: ParentWindow, title: str, text: str) -> bool:
         """Question message."""
         msgBox = QMessageBox.question(
             parent, title, text, QMessageBox.Ok | QMessageBox.Cancel)
@@ -35,7 +36,7 @@ class Dialogs:
 
     # ----------------------------------------------------------------------
     @classmethod
-    def remove_file_warning(cls, parent, filename: PATH) -> bool:
+    def remove_file_warning(cls, parent: ParentWindow, filename: PathLike) -> bool:
         """"""
         return cls.question_message(parent, 'Remove file?', f"""<p>This action
         cannot be undone.<br><br><nobr>Remove permanently the file
@@ -43,7 +44,7 @@ class Dialogs:
 
     # ----------------------------------------------------------------------
     @classmethod
-    def load_database(cls):
+    def load_database(cls) -> FileHandlerType:
         """"""
         from ..extensions.timelock_analysis.file_handler import FileHandler
 

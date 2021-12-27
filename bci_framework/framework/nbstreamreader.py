@@ -5,56 +5,50 @@ Non blocking stream reader
 """
 
 import time
-from typing import Optional
+from typing import Optional, TypeVar, Union
 from threading import Thread
 from queue import Queue, Empty
 
 
+Stdout = TypeVar('Stdout')
+Seconds = TypeVar('Seconds')
+
+
 ########################################################################
 class NonBlockingStreamReader:
-    """Artificial `timeout` for blocking process.
-
-    Parameters
-    ----------
-    stream
-        The stream to read from, usually a process' stdout or stderr.
-    """
+    """Artificial `timeout` for blocking process."""
 
     # ----------------------------------------------------------------------
-    def __init__(self, stream):
+    def __init__(self, stream: Stdout):
         """"""
-        self._s = stream
-        self._q = Queue()
-        self.running = True
+        self.stream_stdout = stream
+        self.queue_messages = Queue()
+        self.kepp_alive = True
 
         def _populateQueue(stream, queue):
-            '''
-            Collect lines from 'stream' and put them in 'quque'.
-            '''
+            """Collect lines from 'stream' and put them in 'quque'."""
 
-            while self.running:
+            while self.kepp_alive:
                 line = stream.readline()
                 if line:
                     queue.put(line)
-                # else:
-                    # pass
-                    # raise UnexpectedEndOfStream
                 time.sleep(0.1)
 
-        self._t = Thread(target=_populateQueue, args=(self._s, self._q))
-        self._t.daemon = True
-        self._t.start()  # start collecting lines from the stream
+        self.thread_collector = Thread(target=_populateQueue,
+                                       args=(self.stream_stdout,
+                                             self.queue_messages))
+        self.thread_collector.daemon = True
+        self.thread_collector.start()  # start collecting lines from the stream
 
     # ----------------------------------------------------------------------
-    def readline(self, timeout: Optional[int] = 0.1) -> None:
+    def readline(self, timeout: Optional[Seconds] = 0.1) -> Union[str, None]:
         """Read lines from queue object."""
         try:
-            return self._q.get(block=timeout is not None, timeout=timeout)
-            # return self._q.get(block=True, timeout=0.1)
+            return self.queue_messages.get(block=timeout is not None, timeout=timeout)
         except Empty:
             return None
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
         """Stop the readline."""
-        self.running = False
+        self.kepp_alive = False

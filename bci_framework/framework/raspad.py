@@ -4,12 +4,15 @@ Projects
 ========
 """
 
+import os
 import sys
+from typing import TypeVar
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
 
-from openbci_stream.acquisition import restart_services
+
+ParentWindow = TypeVar('QMainWindow')
 
 
 ########################################################################
@@ -17,10 +20,10 @@ class Raspad:
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, core):
+    def __init__(self, parent: ParentWindow):
         """"""
-        self.parent_frame = parent
-        self.core = core
+        self.core = parent
+        self.parent_frame = parent.main
 
         self.parent_frame.checkBox_full_screen.setChecked(
             '--raspad' in sys.argv)
@@ -41,7 +44,7 @@ class Raspad:
             lambda: QTimer().singleShot(3000, self.take_screenshot))
 
     # ----------------------------------------------------------------------
-    def fullscreen(self):
+    def fullscreen(self) -> None:
         """"""
         if self.parent_frame.checkBox_full_screen.isChecked():
             self.parent_frame.showMaximized()
@@ -50,10 +53,10 @@ class Raspad:
             self.parent_frame.showMaximized()
 
     # ----------------------------------------------------------------------
-    def take_screenshot(self):
+    def take_screenshot(self) -> None:
         """"""
         pixmap = self.parent_frame.grab()
-        pixmap.save(f'/home/yeison/screenshot.png')
+        pixmap.save(os.path.join(os.path.expanduser('~/'), 'screenshot.png'))
 
 
 

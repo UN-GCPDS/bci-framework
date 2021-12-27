@@ -9,30 +9,29 @@ import sys
 import socket
 import logging
 import subprocess
-from queue import Queue, Empty
+import importlib.util
 from urllib import request
+from queue import Queue, Empty
 from contextlib import closing
 from typing import TypeVar, Optional
-
-import importlib.util
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer, QSize
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
 
-from .nbstreamreader import NonBlockingStreamReader as NBSR
 from ..extensions import properties as prop
+from .nbstreamreader import NonBlockingStreamReader as NBSR
 
+PathLike = TypeVar('PathLike')
+HostLike = TypeVar('HostLike')
+Command = TypeVar('Command')
 
-COMMAND = TypeVar('Command')
-PATH = TypeVar('Path')
 DEFAULT_LOCAL_IP = 'localhost'
 
+
 # ----------------------------------------------------------------------
-
-
-def run_subprocess(call: COMMAND) -> subprocess.Popen:
+def run_subprocess(call: Command) -> subprocess.Popen:
     """Run a python script with non blocking debugger installed."""
     my_env = os.environ.copy()
     my_env['PYTHONPATH'] = ":".join(
@@ -110,7 +109,7 @@ class VisualizationSubprocess:
             self.timer.singleShot(1000, self.viz_auto_size)
 
     # ----------------------------------------------------------------------
-    def input_interact(self):
+    def input_interact(self) -> bool:
         """"""
         if not hasattr(self, 'interactive_copy'):
             self.interactive_copy = self.main.INTERACTIVE.copy()
@@ -122,7 +121,7 @@ class VisualizationSubprocess:
         return bool(len(differents_items))
 
     # ----------------------------------------------------------------------
-    def update_interact(self):
+    def update_interact(self) -> str:
         """"""
         get_args = [
             f'{k}={self.main.INTERACTIVE[k]}' for k in self.main.INTERACTIVE]
@@ -163,8 +162,7 @@ class StimuliSubprocess:
                 '/dashboard', '').replace('localhost', self.get_local_ip_address()))
 
     # ----------------------------------------------------------------------
-
-    def get_local_ip_address(self) -> str:
+    def get_local_ip_address(self) -> HostLike:
         """Connect to internet for get the local IP."""
 
         try:
@@ -188,23 +186,20 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, parent, path: Optional[PATH] = None, use_webview: Optional[bool] = True, debugger: Optional[bool] = False):
+    def __init__(self, parent, path: Optional[PathLike] = None, use_webview: Optional[bool] = True, debugger: Optional[bool] = False):
         """"""
         self.main = parent
         self.web_view = self.main.gridLayout_webview
         self.plot_size = QSize(0, 0)
         self.plot_dpi = 0
         self.stopped = False
-        # self.is_analysis = not use_webview
-        # self.is_visualization = use_webview
-        # self.is_stimuli = use_webview
         self.debugger = debugger
 
         if path:
             self.load_path(path)
 
     # ----------------------------------------------------------------------
-    def load_path(self, path: PATH) -> None:
+    def load_path(self, path: PathLike) -> None:
         """Load Python scipt."""
         self.timer = QTimer()
 
@@ -212,18 +207,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.is_visualization = self.file_is_visualization(path)
         self.is_timelock = self.file_is_timelock(path)
         self.is_stimuli = self.file_is_stimuli(path)
-
-        # if self.file_is_stimuli(path):
-            # if self.debugger:
-                # self.port = '9999'
-            # else:
-                # self.port = '999'
-        # elif self.file_is_visualization(path):
-            # self.port = self.get_free_port()
-        # elif self.file_is_analysis(path):
-            # self.port = ''
-        # else:
-            # self.port = '9999'
 
         if any([self.is_stimuli, self.is_visualization]):
             self.port = self.get_free_port()
@@ -245,25 +228,25 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
             self.prepare_layout(path)
 
     # ----------------------------------------------------------------------
-    def file_is_analysis(self, path):
+    def file_is_analysis(self, path: PathLike) -> bool:
         """"""
         with open(path, 'r') as file:
             return 'data_analysis import DataAnalysis' in file.read()
 
     # ----------------------------------------------------------------------
-    def file_is_stimuli(self, path):
+    def file_is_stimuli(self, path: PathLike) -> bool:
         """"""
         with open(path, 'r') as file:
             return 'stimuli_delivery import StimuliAPI' in file.read()
 
     # ----------------------------------------------------------------------
-    def file_is_visualization(self, path):
+    def file_is_visualization(self, path: PathLike) -> bool:
         """"""
         with open(path, 'r') as file:
             return 'visualizations import EEGStream' in file.read()
 
     # ----------------------------------------------------------------------
-    def file_is_timelock(self, path):
+    def file_is_timelock(self, path: PathLike) -> bool:
         """"""
         with open(path, 'r') as file:
             return 'timelock_analysis import TimelockDashboard' in file.read() or 'timelock_analysis import TimelockWidget' in file.read()
@@ -297,10 +280,8 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
         self.load_webview()
 
     # ----------------------------------------------------------------------
-    def prepare_layout(self, path):
+    def prepare_layout(self, path: PathLike) -> None:
         """"""
-        # self.main.widget_development_webview.show()
-
         spec = importlib.util.spec_from_file_location("Analysis", path)
         foo = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(foo)
@@ -313,8 +294,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
 
         self.an = foo.Analysis(size.height())
         self.web_view.addWidget(self.an.widget)
-        # self.web_view.addItem(foo.Analysis())
-        # foo.Analysis(self.web_view)
 
     # ----------------------------------------------------------------------
     def clear_subprocess_script(self) -> None:
