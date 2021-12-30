@@ -76,7 +76,7 @@ class DataAnalysis:
                 value_serializer=pickle.dumps,
             )
         except:
-            logging.error('Kafka not available!')
+            logging.error('Commands: Kafka not available!')
             self.kafka_producer = None
 
     # ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ class DataAnalysis:
         if hasattr(self, 'kafka_producer'):
 
             if self.kafka_producer is None:
-                logging.error('Kafka not available!')
+                logging.error('Send command: Kafka not available!')
             else:
                 data = {'command': command,
                         'value': data,
@@ -100,7 +100,7 @@ class DataAnalysis:
         """"""
         if hasattr(self, 'kafka_producer'):
             if self.kafka_producer is None:
-                logging.error('Kafka not available!')
+                logging.error('Send annotation: Kafka not available!')
             else:
                 self.kafka_producer.send('annotation', {
                     'action': 'annotation',
@@ -122,7 +122,7 @@ class DataAnalysis:
         if hasattr(self, 'kafka_producer'):
 
             if self.kafka_producer is None:
-                logging.error('Kafka not available!')
+                logging.error('Produser: Kafka not available!')
             else:
                 self.kafka_producer.send(topic, data)
                 # self.kafka_producer.send(topic, 888)

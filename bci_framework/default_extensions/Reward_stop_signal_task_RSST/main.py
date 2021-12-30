@@ -5,10 +5,9 @@ import logging
 from browser import html, timer
 import random
 
-from figures import Stimuli
-from stimuli import stimuli_set
-
-from typing import Literal
+from figures import Stimuli  
+  
+from typing import Literal     
 
 
 ########################################################################
@@ -21,11 +20,12 @@ class StimuliDelivery(StimuliAPI):
         self.add_stylesheet('styles.css')
 
         # self.stimuli = Stimuli('original')
-        self.stimuli = Stimuli('fancy')
+        self.stimuli = Stimuli()
 
         self.stimuli_area <= self.stimuli.canvas
         self.stimuli_area <= self.stimuli.score
 
+        self.builded = False
         self.response = None
         self.show_cross()
         self.show_synchronizer()
@@ -33,6 +33,13 @@ class StimuliDelivery(StimuliAPI):
         self.dashboard <= w.label(
             'Reward stop signal task - RSST', 'headline4')
         self.dashboard <= html.BR()
+
+        self.dashboard <= w.switch(
+            label='Original assets',
+            checked=True,
+            on_change=self.set_assets,
+            id='assets',
+        )
 
         self.dashboard <= w.range_slider(
             label='Inter stimulus interval',
@@ -118,6 +125,15 @@ class StimuliDelivery(StimuliAPI):
             'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
+
+    def set_assets(self, value) -> None:
+        """"""
+        if value:
+            self.stimuli.set_style('original')
+        else:
+            self.stimuli.set_style('fancy')
+
+    # ----------------------------------------------------------------------
     def start(self) -> None:
         """Start the run.
 
@@ -126,9 +142,10 @@ class StimuliDelivery(StimuliAPI):
         if w.get_value('record'):
             self.start_record()
 
-        self.delay = w.get_value('delay')
-        self.trials_count = w.get_value('trials')
-        self.build_trials()
+        # self.delay = w.get_value('delay')
+        # self.trials_count = w.get_value('trials')
+
+        # self.build_trials()
         timer.set_timeout(self.run_trials, 2000)
 
         self.show_progressbar(w.get_value('trials') * 2)
@@ -137,10 +154,12 @@ class StimuliDelivery(StimuliAPI):
             f'Probability to see an inhibition event: {w.get_value("p")}')
 
     # ----------------------------------------------------------------------
-
     def run_trials(self) -> None:
         """"""
-        self.prepare_trial(self.get_delay())
+        if not self.builded:
+            self.build_trials()
+
+        self.prepare_trial(self.delay)
 
         logging.warning('#' * 32)
         logging.warning(
@@ -156,13 +175,11 @@ class StimuliDelivery(StimuliAPI):
         self.trials_count -= 1
 
     # ----------------------------------------------------------------------
-
     def stop(self) -> None:
         """Stop pipeline execution."""
         self.stop_pipeline()
 
     # ----------------------------------------------------------------------
-
     def stop_run(self) -> None:
         """Stop pipeline execution."""
         self.isi()
@@ -173,6 +190,8 @@ class StimuliDelivery(StimuliAPI):
     # ----------------------------------------------------------------------
     def build_trials(self) -> None:
         """"""
+        self.delay = w.get_value('delay')
+        self.trials_count = w.get_value('trials')
 
         self.inhibitions_array = self.generate_trials(
             p=w.get_value('p'), count=w.get_value('trials'))
@@ -180,6 +199,7 @@ class StimuliDelivery(StimuliAPI):
             ['Right', 'Left'], k=w.get_value('trials'))
         logging.warning(
             f'{[f"{t}:{i}" for t, i in zip(self.trials_array, self.inhibitions_array)]}')
+        self.builded = True
 
     # ----------------------------------------------------------------------
     def generate_trials(self, p, count):
@@ -243,7 +263,7 @@ class StimuliDelivery(StimuliAPI):
         self.key_timer = keypress(self.handle_response, delay - 8)
 
     # ----------------------------------------------------------------------
-    def inhibition(self, cue, inhibition: bool) -> None:
+    def inhibition(self, cue, inhibition: bool, delay: int) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial
@@ -255,8 +275,8 @@ class StimuliDelivery(StimuliAPI):
         if inhibition:
             if self.response is None:
 
-                if self.delay > 250:
-                    self.delay -= 50
+                if delay > 250:
+                    self.delay = delay - 50
 
                 if self.previous_response:
                     self.stimuli.show_coin(w.get_value('stimuli_duration'))
@@ -267,8 +287,8 @@ class StimuliDelivery(StimuliAPI):
             elif self.response in ['Right', 'Left']:
                 logging.warning(f'Fail!!')
                 self.stimuli.show_fail(w.get_value('stimuli_duration'))
-                if self.delay < 950:
-                    self.delay += 50
+                if delay < 950:
+                    self.delay = delay + 50
 
     # ----------------------------------------------------------------------
     def handle_response(self, response: str) -> None:
@@ -293,7 +313,6 @@ class StimuliDelivery(StimuliAPI):
             self.hide_synchronizer()
 
     # ----------------------------------------------------------------------
-
     def synchronizer_square(self, value: bool) -> None:
         """Show or hide synchronizer."""
         if value:

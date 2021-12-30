@@ -26,22 +26,8 @@ from bci_framework.extensions.data_analysis.utils import thread_this, subprocess
 clients = []
 JSON = TypeVar('json')
 
-
-# @thread_this
-# def consumer(*args, **kwargs):
-    # """"""
-    # consumer = KafkaConsumer(
-        # bootstrap_servers=[f'{prop.HOST}:9092'],
-        # # value_deserializer=pickle.loads,
-        # auto_offset_reset='latest',
-    # )
-    # consumer.subscribe(['commands'])
-
-    # for message in consumer:
-        # for client in WSHandler.clients:
-            # client.write_message(json.dumps({'method': 'command',
-                                             # 'args': message.value.decode(),
-                                             # 'kwargs': {}, }))
+logging.getLogger('kafka').setLevel(logging.CRITICAL)
+logging.getLogger('kafka.conn').setLevel(logging.CRITICAL)
 
 
 ########################################################################
@@ -75,7 +61,8 @@ class WSHandler(WebSocketHandler):
                 value_serializer=pickle.dumps,
             )
         except:
-            logging.warning('Kafka not available!')
+            logging.warning(
+                f'Kafka host ({prop.HOST}:9092) not available!')
 
     # ----------------------------------------------------------------------
     def check_origin(self, *args, **kwargs):
@@ -174,11 +161,16 @@ class WSHandler(WebSocketHandler):
     def bci_consumer(cls, **kwargs):
         """"""
         asyncio.set_event_loop(asyncio.new_event_loop())
-        consumer = KafkaConsumer(
-            bootstrap_servers=[f'{prop.HOST}:9092'],
-            value_deserializer=pickle.loads,
-            auto_offset_reset='latest',
-        )
+
+        try:
+            consumer = KafkaConsumer(
+                bootstrap_servers=[f'{prop.HOST}:9092'],
+                value_deserializer=pickle.loads,
+                auto_offset_reset='latest',
+            )
+        except:
+            return
+
         consumer.subscribe(['feedback'])
 
         for message in consumer:
@@ -189,7 +181,7 @@ class WSHandler(WebSocketHandler):
                                                      'args': [],
                                                      'kwargs': message.value,
                                                      }))
-                except Exception as e:
+                except:
                     pass
                     # clients.pop(i)
 

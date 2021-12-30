@@ -102,24 +102,21 @@ class PythonHighlighter(QSyntaxHighlighter):
                       for (pat, index, fmt) in rules]
 
     # ----------------------------------------------------------------------
-    def highlightBlock(self, text):
-        """Apply syntax highlighting to the given block of text.
-        """
+    def highlightBlock(self, text: str) -> None:
+        """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
-        for expression, nth, format in self.rules:
+        for expression, nth, format_ in self.rules:
             index = expression.match(text, 0).capturedStart(nth)
 
             start = 0
             while index >= 0:
                 # We actually want the index of the nth match
                 index = expression.match(text, start).capturedStart(nth)
-                length = expression.match(text, start).capturedLength()
+                length = expression.match(text, start).capturedLength(nth)
+                end = expression.match(text, start).capturedEnd(nth)
 
-                self.setFormat(index, length, format)
-
-                index = expression.match(
-                    text, index + length).capturedStart()
-                start = index + length
+                self.setFormat(index, length, format_)
+                start = end
 
         self.setCurrentBlockState(0)
 
@@ -129,7 +126,7 @@ class PythonHighlighter(QSyntaxHighlighter):
             in_multiline = self.match_multiline(text, *self.tri_double)
 
     # ----------------------------------------------------------------------
-    def match_multiline(self, text, delimiter, in_state, style):
+    def match_multiline(self, text: str, delimiter, in_state, style):
         """Do highlighting of multi-line strings. ``delimiter`` should be a
         ``QRegularExpression`` for triple-single-quotes or triple-double-quotes, and
         ``in_state`` should be a unique integer to represent the corresponding

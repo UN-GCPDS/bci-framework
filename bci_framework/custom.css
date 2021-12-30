@@ -1,8 +1,8 @@
-.icon_button {{
+.icon_button {
   font-weight: normal;
-}}
+}
 
-QPushButton.connection {{
+QPushButton.connection {
   padding: 0px;
   margin: 0px;
   width: 12px;
@@ -12,26 +12,27 @@ QPushButton.connection {{
   max-width: 12px;
   max-height: 12px;
   border-radius: 6px !important;
-}}
+}
 
-QTextEdit.clear {{
+QTextEdit.linenumber {
+  padding: 8px 0px ;
+  padding-top: {{38|density(density_scale)}}px;
+}
 
-  background-color: {secondaryLightColor};
+QTextEdit.clear {
+  background-color: {{secondaryLightColor}};
   border: none;
   color: black;
   font-family: mono;
+}
 
-}}
+QWidget.dashboard {
+  background-color: {{secondaryDarkColor}};
+}
 
-
-QWidget.dashboard {{
-  background-color: {secondaryDarkColor};
-
-}}
-
-QWidget.timelock {{
-
-  background-color: {secondaryLightColor};
+QWidget.timelock {
+  background-color: {{secondaryLightColor}};
   border-radius: 5px;
+}
 
-}}
+

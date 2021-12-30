@@ -57,28 +57,28 @@ class Development:
         self.connect()
         self.hide_preview()
 
-        self.build_linenumber()
+        # self.build_linenumber()
 
-    # ----------------------------------------------------------------------
-    def build_linenumber(self) -> None:
-        """The same linenumber is used for all editors."""
+    # # ----------------------------------------------------------------------
+    # def build_linenumber(self) -> None:
+        # """The same linenumber is used for all editors."""
 
-        self.parent_frame.textEdit_linenumber.setStyleSheet(f"""
-        QTextEdit {{
-        background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
-        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
-        font-weight: normal;
-        font-family: 'DejaVu Sans Mono';
-        font-size: 15px;
-        line-height: 15px;
-        border: 0px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
-        border-right: 10px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
-        border-radius: 0px;
-        padding: 8px 0px ;
-        padding-top: 41px;
+        # self.parent_frame.textEdit_linenumber.setStyleSheet(f"""
+        # QTextEdit {{
+        # background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+        # color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
+        # font-weight: normal;
+        # font-family: 'DejaVu Sans Mono';
+        # font-size: 15px;
+        # line-height: 15px;
+        # border: 0px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+        # border-right: 10px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+        # border-radius: 0px;
+        # padding: 8px 0px ;
+        # padding-top: 41px;
 
-        }}
-        """)
+        # }}
+        # """)
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
@@ -124,7 +124,8 @@ class Development:
         self.parent_frame.mdiArea_development.tileSubWindows()
         self.save_all_files()
         self.parent_frame.plainTextEdit_preview_log.setPlainText('')
-        self.sub.load_extension(self.get_project(), debugger=self)
+        self.sub.open_subwindow = self.open_subwindow
+        self.sub.load_extension(self.get_project(), debugger=True)
 
         self.parent_frame.pushButton_stop_preview.show()
         self.parent_frame.pushButton_script_preview.hide()

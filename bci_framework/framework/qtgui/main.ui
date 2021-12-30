@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget_modes">
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageStimuli_delivery">
        <layout class="QGridLayout" name="gridLayout_26">
@@ -204,6 +204,9 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="textInteractionFlags">
                <set>Qt::NoTextInteraction</set>
+              </property>
+              <property name="class" stdset="0">
+               <string>linenumber</string>
               </property>
              </widget>
             </item>
@@ -1227,7 +1230,7 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="toolBar_environs">
+  <widget class="QToolBar" name="toolBar_Environs">
    <property name="windowTitle">
     <string>Environments</string>
    </property>

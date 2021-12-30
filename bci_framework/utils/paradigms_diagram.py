@@ -1,7 +1,6 @@
-from matplotlib import pyplot as plt
-from matplotlib import lines
-import matplotlib
 import numpy as np
+from matplotlib import lines
+from matplotlib import pyplot as plt
 
 plt.style.use('ggplot')
 
@@ -16,6 +15,7 @@ class Paradigm:
         """"""
         import matplotlib.colors as mc
         import colorsys
+
         try:
             c = mc.cnames[color]
         except:
@@ -25,7 +25,7 @@ class Paradigm:
 
     # ----------------------------------------------------------------------
     @classmethod
-    def build_paradigm(cls, data):
+    def build_paradigm(cls, data) -> None:
         """"""
         ax = plt.gca()
         ax.set_frame_on(False)

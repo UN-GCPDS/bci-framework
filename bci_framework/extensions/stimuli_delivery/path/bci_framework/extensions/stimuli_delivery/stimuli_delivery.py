@@ -127,6 +127,7 @@ class DeliveryInstance_:
             else:
                 method_ = method
 
+            # try:
             if self._bci_mode == 'dashboard':
                 try:
                     cls.both(method_)(self, *args, **kwargs)
@@ -135,8 +136,15 @@ class DeliveryInstance_:
             else:
                 try:
                     cls.rboth(method_)(self, *args, **kwargs)
-                except:
+                except TypeError:
                     cls.rboth(method_)(*args, **kwargs)
+            # except Exception as e:
+                # logging.warning(e)
+                # logging.warning('#' * 15)
+                # logging.warning(f'Method: {method_}')
+                # logging.warning(f'args: {args}')
+                # logging.warning(f'kwargs: {kwargs}')
+                # logging.warning('#' * 15)
 
         wrap.no_decorator = method
         return wrap
@@ -173,20 +181,14 @@ class BCIWebSocket(WebSocket):
     # ----------------------------------------------------------------------
     def on_close(self, evt):
         """"""
-        print('on_close', self.ip_)
-        # timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
-        # getattr(self.main, 'stop', lambda: None)()
-        window.location.replace(self.ip_.replace('/ws', '').replace(
-            'ws', 'http'))
+        window.location.replace(self.ip_.replace(
+            '/ws', '').replace('ws', 'http'))
 
     # ----------------------------------------------------------------------
     def on_error(self, evt):
         """"""
-        print('on_error', self.ip_)
-        # timer.set_timeout(lambda: self.__init__(self.ip_), 1000)
-        # getattr(self.main, 'stop', lambda: None)()
-        window.location.replace(self.ip_.replace('/ws', '').replace(
-            'ws', 'http'))
+        window.location.replace(self.ip_.replace(
+            '/ws', '').replace('ws', 'http'))
 
 
 ########################################################################
@@ -214,24 +216,25 @@ class Pipeline:
     # ----------------------------------------------------------------------
     def run_pipeline(self, pipeline, trials, callback=None, show_progressbar=True):
         """"""
-<<<<<<< HEAD
-        self.show_progressbar(len(trials) * len(pipeline))
-=======
         # self._callback = callback
         if show_progressbar:
-            self._autoprogress = True
             self.show_progressbar(len(trials) * len(pipeline))
-        else:
-            self._autoprogress = False
-        # self.iteration = 0
->>>>>>> ADHD_capabilities
+        # self.set_autoprogress(show_progressbar)
 
         if self.DEBUG:
+            self.set_autoprogress.no_decorator(self, show_progressbar)
             self._prepare.no_decorator(self, callback)
             self._run_pipeline.no_decorator(self, pipeline, trials)
         else:
+            self.set_autoprogress(show_progressbar)
             self._prepare(callback)
             self._run_pipeline(pipeline, trials)
+
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.both
+    def set_autoprogress(self, value):
+        """"""
+        self._autoprogress = value
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
@@ -540,7 +543,7 @@ class StimuliAPI(Pipeline):
                 'width': f'{size}px',
                 'height': f'{size}px',
                 'background-color': color_off,
-                'position': 'absolute',
+                'position': 'fixed',
                 'top': top,
                 'left': left,
                 'border-radius': '100%',
@@ -561,7 +564,7 @@ class StimuliAPI(Pipeline):
                 'width': f'{size}px',
                 'height': f'{size}px',
                 'background-color': color_off,
-                'position': 'absolute',
+                'position': 'fixed',
                 'top': top,
                 'left': left,
                 'z-index': 999,

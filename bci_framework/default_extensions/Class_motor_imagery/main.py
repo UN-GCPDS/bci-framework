@@ -14,7 +14,7 @@ from typing import Literal
 
 UNICODE_CUES = {
     'Right': 'arrow-right-short',
-    'Left': 'arrow-left-short',
+    'Left': 'arrow-left-short', 
     'Up': 'arrow-up-short',
     'Bottom': 'arrow-down-short',
 }
@@ -79,11 +79,13 @@ class FourClassMotorImagery(StimuliAPI):
             on_change=self.synchronizer,
         )
 
-        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
-        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
-
+        self.dashboard <= w.toggle_button(
+            [('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), (
+            'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
+
     def start(self) -> None:
         """Start the run.
 
@@ -154,11 +156,12 @@ class FourClassMotorImagery(StimuliAPI):
     # ----------------------------------------------------------------------
     def synchronizer(self, value: bool) -> None:
         """Show or hide synchronizer."""
-        logging.warning('WTF')
         if value:
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
+            
+            
 
 
 if __name__ == '__main__':

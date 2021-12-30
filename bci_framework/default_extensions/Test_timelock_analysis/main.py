@@ -11,6 +11,8 @@ class Analysis(TimelockDashboard):
         """Constructor"""
         super().__init__(*args, **kwargs)
 
+        self.columns = 1
+
         self.add_widgets(
             (ta.LoadDatabase, {'title': 'Raw EEG signal'}),
             (ta.TimelockFilters, {'title': 'Filter EEG'}),

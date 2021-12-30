@@ -1,5 +1,6 @@
-import random
 import os
+import math
+import random
 from string import ascii_lowercase
 
 from PySide6.QtUiTools import QUiLoader
@@ -21,6 +22,8 @@ class TimelockDashboard:
         self.widget.label_title.setText('')
         self.widget.gridLayout.setVerticalSpacing(30)
         self.widget.gridLayout.setContentsMargins(30, 0, 30, 30)
+
+        self.columns = 1
 
     # ----------------------------------------------------------------------
     def add_widgets(self, *widgets):
@@ -46,13 +49,21 @@ class TimelockDashboard:
                 analyzer.previous_pipeline(analyzers[-1])
                 analyzers[-1].next_pipeline(analyzer)
 
-            self.widget.gridLayout.addWidget(
-                analyzer.widget, w.get('row', i), w.get('col', 0), w.get('row_span', 1), w.get('col_span', 1))
+            print((i % self.columns, math.floor(i / self.columns)))
+
+            self.widget.gridLayout.addWidget(analyzer.widget,
+                                             math.floor(i / self.columns),
+                                             (i % self.columns),  # col
+                                             1, 1,  # spans
+                                             )
             analyzers.append(analyzer)
 
             i += 1
 
-        self.widget.gridLayout.setColumnStretch(0, 1)
+        for c in range(self.columns):
+            self.widget.gridLayout.setColumnStretch(c, 1)
+
+        # self.widget.gridLayout.setColumnStretch(2, 1)
 
         # for i in range(max_r):
             # self.widget.gridLayout.setRowStretch(i, 0)

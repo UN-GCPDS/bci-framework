@@ -17,7 +17,7 @@ from multiprocessing import freeze_support
 from PySide6.QtWidgets import QApplication, QSplashScreen
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QCoreApplication
-from qt_material import apply_stylesheet
+from qt_material import apply_stylesheet, build_stylesheet
 
 from .framework import BCIFramework
 from .framework.config_manager import ConfigManager
@@ -154,27 +154,29 @@ def main() -> None:
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
         light_theme = 'light_teal.xml'
         dark_theme = 'dark_teal.xml'
-        styles = 'raspad.css'
+        extra['density_scale'] = 2
     else:
         # light_theme = 'light_blue.xml'
         # dark_theme = 'dark_blue.xml'
         light_theme = 'light_cyan_500.xml'
         dark_theme = 'dark_cyan.xml'
-        styles = 'custom.css'
+
+    custom_style = os.path.join(os.path.dirname(__file__), 'custom.css')
 
     if ConfigManager().get('framework', 'theme', 'light') == 'light':
         apply_stylesheet(app, theme=light_theme, invert_secondary=True,
                          extra=extra, parent='bci_framework_qt_material',
                          style='Fusion')
+        custom_builded = build_stylesheet(theme=light_theme, invert_secondary=True,
+                                          extra=extra, parent='bci_framework_qt_material',
+                                          template=custom_style)
     else:
         apply_stylesheet(app, theme=dark_theme, extra=extra,
-                         parent='bci_framework_qt_material',
-                         style='Fusion')
+                         parent='bci_framework_qt_material', style='Fusion')
+        custom_builded = build_stylesheet(theme=dark_theme, extra=extra,
+                                          parent='bci_framework_qt_material', template=custom_style)
 
-    stylesheet = app.styleSheet()
-
-    with open(os.path.join(os.path.dirname(__file__), styles)) as file:
-        app.setStyleSheet(stylesheet + file.read().format(**os.environ))
+    app.setStyleSheet(app.styleSheet() + custom_builded)
 
     generate_icons()
     # ------------------------------------------------------------

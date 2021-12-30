@@ -158,8 +158,8 @@ class BCIFramework(QMainWindow):
         self.show_interface('Home')
         self.config = ConfigManager()
 
-        for i in range(self.main.toolBar_environs.layout().count()):
-            tool_button = self.main.toolBar_environs.layout().itemAt(i).widget()
+        for i in range(self.main.toolBar_Environs.layout().count()):
+            tool_button = self.main.toolBar_Environs.layout().itemAt(i).widget()
             tool_button.setMaximumWidth(200)
             tool_button.setMinimumWidth(200)
 
@@ -221,6 +221,12 @@ class BCIFramework(QMainWindow):
         shortcut_docs = QShortcut(QKeySequence('F9'), self.main)
         shortcut_docs.activated.connect(
             self.timelock_analysis.show_fullscreen)
+
+        self.main.toolBar_Environs.setStyleSheet("""
+          * {
+          min-width: 200px;
+          }
+          """)
 
     # ----------------------------------------------------------------------
     def set_icons(self) -> None:
@@ -343,8 +349,8 @@ class BCIFramework(QMainWindow):
         self.main.dockWidget_global.setMinimumWidth(w)
 
         if not collapsed:
-            self.main.dockWidget_global.setMaximumWidth(9999)
-            self.main.dockWidget_global.setMinimumWidth(100)
+            self.main.dockWidget_global.setMaximumWidth(w * 99)
+            self.main.dockWidget_global.setMinimumWidth(0)
 
     # ----------------------------------------------------------------------
     def toggle_dock_collapsed(self) -> None:
@@ -420,7 +426,7 @@ class BCIFramework(QMainWindow):
         """Switch between environs."""
         self.main.stackedWidget_modes.setCurrentWidget(
             getattr(self.main, f"page{interface}"))
-        for action in self.main.toolBar_environs.actions():
+        for action in self.main.toolBar_Environs.actions():
             action.setChecked(False)
         for action in self.main.toolBar_Documentation.actions():
             action.setChecked(False)
@@ -451,7 +457,6 @@ class BCIFramework(QMainWindow):
         *{
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
-        font-size: 13px;
         }
         """)
 
@@ -567,19 +572,14 @@ class BCIFramework(QMainWindow):
         }
         """
 
+        # FONTSIZE
         labels = [self.main.label_15, self.main.label_16, self.main.label_17,
                   self.main.label_20, self.main.label_21, self.main.label_22,
                   self.main.label_23]
-
         for label in labels:
-            # label.setStyleSheet(style)
-
             if json.loads(os.getenv('BCISTREAM_RASPAD')):
                 label.setText(label.text().replace(
                     'font-size:12pt', 'font-size:10pt'))
-
-            # label.setText(label.text().replace(
-                # 'font-size:12pt', 'font-size:12pt; font-family:"Roboto Light"'))
 
         with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
             self.main.label_software_version.setText(

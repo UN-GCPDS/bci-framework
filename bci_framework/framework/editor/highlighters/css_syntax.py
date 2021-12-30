@@ -72,25 +72,18 @@ class CSSHighlighter(QSyntaxHighlighter):
     def highlightBlock(self, text: str) -> None:
         """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
-        for expression, nth, format in self.rules:
-            # index = expression.indexIn(text, 0)
+        for expression, nth, format_ in self.rules:
             index = expression.match(text, 0).capturedStart(nth)
 
             start = 0
             while index >= 0:
                 # We actually want the index of the nth match
-                # index = expression.pos(nth)
-                # length = len(expression.cap(nth))
-
                 index = expression.match(text, start).capturedStart(nth)
-                length = expression.match(text, start).capturedLength()
+                length = expression.match(text, start).capturedLength(nth)
+                end = expression.match(text, start).capturedEnd(nth)
 
-                self.setFormat(index, length, format)
-
-                index = expression.match(
-                    text, index + length).capturedStart()
-                # index = expression.indexIn(text, index + length)
-                start = index + length
+                self.setFormat(index, length, format_)
+                start = end
 
         self.setCurrentBlockState(0)
 

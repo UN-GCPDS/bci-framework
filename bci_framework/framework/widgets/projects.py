@@ -330,6 +330,8 @@ class Projects:
         self.core.development.build_preview()
         self.core.show_interface('Development')
 
+        self.parent_frame.tabWidget_project.currentWidget().editor.update_linenumber()
+
     # ----------------------------------------------------------------------
     def ignore_file(self, file: str) -> bool:
         """Evaluate if the file must be showed on the interface."""

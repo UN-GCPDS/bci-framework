@@ -3,26 +3,26 @@
 }
 
 
-#canvas {
+#rsst-canvas {
     height: 30vh;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     margin-right: auto;
     margin-left: auto;
-    margin-top: 40vh;
+    border-top: 40vh solid;
 
 }
 
 
-#score {
+#rsst-score {
     right: 15px;
     position: absolute;
     bottom: 15px;
-} 
+}
 
 
-#score-coin {
+.score-coin {
 
     background-repeat: no-repeat;
     background-position: center;
@@ -31,6 +31,6 @@
     width: 30px;
     height: 30px;
     margin-left: -19px;
-    
+
 }
 

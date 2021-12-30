@@ -30,13 +30,13 @@ class TimeLockAnalysis:
         """"""
         if self.parent_frame.dockWidget_global.isVisible():
             self.parent_frame.dockWidget_global.hide()
-            self.parent_frame.toolBar_environs.hide()
+            self.parent_frame.toolBar_Environs.hide()
             self.parent_frame.toolBar_Documentation.hide()
             self.parent_frame.showFullScreen()
             self.parent_frame.statusBar().hide()
         else:
             self.parent_frame.dockWidget_global.show()
-            self.parent_frame.toolBar_environs.show()
+            self.parent_frame.toolBar_Environs.show()
             self.parent_frame.toolBar_Documentation.show()
             self.parent_frame.showMaximized()
             self.parent_frame.statusBar().show()
@@ -72,5 +72,6 @@ class TimeLockAnalysis:
         sub.show()
 
         sub.update_menu_bar()
-        QTimer().singleShot(100, self.parent_frame.mdiArea_timelock.tileSubWindows)
+        self.parent_frame.mdiArea_timelock.tileSubWindows()
+        # QTimer().singleShot(100, self.parent_frame.mdiArea_timelock.tileSubWindows)
 

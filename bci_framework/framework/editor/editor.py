@@ -44,25 +44,35 @@ class BCIEditor(QTextEdit):
         else:
             font_color = 'white'
 
-        if json.loads(os.getenv('BCISTREAM_RASPAD')):
-            font_size = 11
-        else:
-            font_size = 15
+        f = self.fontMetrics()
+        font_size = f.height()
 
         self.setStyleSheet(f"""
         QTextEdit {{
         background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
         color: {font_color};
-        height: 18px;
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
         font-size: {font_size}px;
         line-height: {font_size}px;
         border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
         border-radius: 4px;
-        height: 18px;
         padding: 0px;
         padding-top: 8px;
+        }}
+        """)
+
+        linenumber.setStyleSheet(f"""
+        QTextEdit.linenumber {{
+        background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
+        color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
+        font-weight: normal;
+        font-family: 'DejaVu Sans Mono';
+        font-size: {font_size}px;
+        line-height: {font_size}px;
+        border: 0px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+        border-right: 10px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
+        border-radius: 0px;
         }}
         """)
 
@@ -92,15 +102,10 @@ class BCIEditor(QTextEdit):
         lines = len(self.toPlainText().split('\n'))
         lines_ln = len(self.linenumber.toPlainText().split('\n'))
 
-        if json.loads(os.getenv('BCISTREAM_RASPAD')):
-            font_size = 11
-        else:
-            font_size = 15
-
         if lines != lines_ln:
             content = [f'{l}' for l in range(1, lines + 1)]
             self.linenumber.setHtml(
-                f'<p style="text-align: right; line-height: {font_size}px; font-size: {font_size}px">{"<br>".join(content)}</p>')
+                f'<p style="text-align: right">{"<br>".join(content)}</p>')
         self.linenumber.verticalScrollBar().setValue(self.verticalScrollBar().value())
 
     # ----------------------------------------------------------------------

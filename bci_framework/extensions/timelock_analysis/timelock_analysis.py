@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import copy
+import math
 from abc import ABCMeta, abstractmethod
 
 import mne
@@ -26,6 +27,12 @@ from gcpds.filters import frequency as flt
 from bci_framework.extensions.timelock_analysis import timelock_analysis as ta
 from bci_framework.framework.dialogs import Dialogs
 
+from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
+
+from PySide6.QtGui import QCursor
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import Qt
+
 
 # Set logger
 logger = logging.getLogger("mne")
@@ -33,6 +40,21 @@ logger.setLevel(logging.CRITICAL)
 logging.getLogger('matplotlib.font_manager').disabled = True
 logging.getLogger().setLevel(logging.WARNING)
 logging.root.name = "TimelockAnalysis"
+
+
+# ----------------------------------------------------------------------
+def wait_for_it(fn):
+    """"""
+    # ----------------------------------------------------------------------
+    def wrap(*args, **kwargs):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            fn(*args, **kwargs)
+        except Exception as e:
+            logging.warning(e)
+        QApplication.restoreOverrideCursor()
+
+    return wrap
 
 
 ########################################################################
@@ -208,7 +230,7 @@ class TimelockWidget(metaclass=ABCMeta):
         return button
 
     # ----------------------------------------------------------------------
-    def add_radios(self, group_name, radios, cols=None, callback=None, area='top', stretch=1):
+    def add_radios(self, group_name, radios, cols=None, rows=None, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
         group.setProperty('class', 'fill_background')
@@ -217,6 +239,9 @@ class TimelockWidget(metaclass=ABCMeta):
 
         if cols is None:
             cols = len(radios)
+
+        if rows:
+            cols = math.ceil(len(radios) / rows)
 
         for i, radio in enumerate(radios):
             if (i % cols) == 0:
@@ -228,14 +253,9 @@ class TimelockWidget(metaclass=ABCMeta):
             r.setText(radio)
             r.setChecked(i == 0)
 
-            # ----------------------------------------------------------------------
-
             def dec(*args):
-                # ----------------------------------------------------------------------
                 def wrap(fn):
-
                     return callback(*args)
-
                 return wrap
 
             if callback:
@@ -247,37 +267,38 @@ class TimelockWidget(metaclass=ABCMeta):
         getattr(self, f'{area}_stretch').append(stretch)
 
     # ----------------------------------------------------------------------
-    def add_checkbox(self, group_name, radios, ncol=None, callback=None, area='top', stretch=1):
+    def add_checkbox(self, group_name, checkboxes, cols=None, rows=None, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
         group.setProperty('class', 'fill_background')
         vbox = QtWidgets.QVBoxLayout()
         group.setLayout(vbox)
 
-        if ncol is None:
-            ncol = len(radios)
+        if cols is None:
+            cols = len(checkboxes)
+
+        if rows:
+            cols = math.ceil(len(checkboxes) / rows)
 
         list_radios = []
-        for i, radio in enumerate(radios):
-            if (i % ncol) == 0:
+        for i, checkbox in enumerate(checkboxes):
+            if (i % cols) == 0:
                 hbox = QtWidgets.QHBoxLayout()
                 vbox.addLayout(hbox)
 
             # group.setLayout(hbox)
             r = QtWidgets.QCheckBox()
-            r.setText(radio)
+            r.setText(checkbox)
             r.setChecked(i == 0)
             list_radios.append(r)
 
-           # ----------------------------------------------------------------------
             def dec(*args):
-                # ----------------------------------------------------------------------
                 def wrap(fn):
                     return callback(*args)
                 return wrap
 
             if callback:
-                r.clicked.connect(dec(group_name, radio))
+                r.clicked.connect(dec(group_name, checkbox))
 
             hbox.addWidget(r)
 
@@ -287,7 +308,7 @@ class TimelockWidget(metaclass=ABCMeta):
         return list_radios
 
     # ----------------------------------------------------------------------
-    def add_channels(self, group_name, radios, callback=None, area='top', stretch=1):
+    def add_channels(self, group_name, channels, callback=None, area='top', stretch=1):
         """"""
         group = QtWidgets.QGroupBox(group_name)
         group.setProperty('class', 'fill_background')
@@ -305,16 +326,16 @@ class TimelockWidget(metaclass=ABCMeta):
         vbox.addLayout(vbox_odd)
 
         list_radios = []
-        for radio in radios:
+        for channel in channels:
 
             r = QtWidgets.QCheckBox()
-            r.setText(radio)
+            r.setText(channel)
             r.setChecked(True)
             list_radios.append(r)
 
-            if radio[-1].isnumeric() and int(radio[-1]) % 2 != 0:  # odd
+            if channel[-1].isnumeric() and int(channel[-1]) % 2 != 0:  # odd
                 vbox_even.addWidget(r)
-            elif radio[-1].isnumeric() and int(radio[-1]) % 2 == 0:  # even
+            elif channel[-1].isnumeric() and int(channel[-1]) % 2 == 0:  # even
                 vbox_odd.addWidget(r)
             else:
                 vbox_z.addWidget(r)
@@ -325,7 +346,7 @@ class TimelockWidget(metaclass=ABCMeta):
                 return wrap
 
             if callback:
-                r.clicked.connect(dec(group_name, radio))
+                r.clicked.connect(dec(group_name, channel))
 
         getattr(self.widget, f'{area}Layout').addWidget(group)
         getattr(self, f'{area}_stretch').append(stretch)
@@ -644,13 +665,14 @@ class TimelockFilters(TimelockWidget):
         self.add_radios('Notch', self.notchs, callback=self.set_filters,
                         area='top', stretch=0)
         self.add_radios('Bandpass', self.bandpass, callback=self.set_filters,
-                        area='top', stretch=1)
+                        area='top', stretch=0)
 
         self.scale = self.add_spin('Scale', 150, suffix='uv', min_=0,
                                    max_=1000, step=50, callback=self.fit, area='top',
                                    stretch=0)
 
     # ----------------------------------------------------------------------
+    @wait_for_it
     def fit(self):
         """"""
 
@@ -795,6 +817,7 @@ class LoadDatabase(ta.TimelockSeries):
         self.fit()
 
     # ----------------------------------------------------------------------
+    @wait_for_it
     def fit(self):
         """"""
         datafile = self.pipeline_input
@@ -864,7 +887,7 @@ class EpochsVisualization(ta.TimelockWidget):
         self.add_spacer(area='top')
 
         self.checkbox = self.add_checkbox(
-            'Markers', markers, callback=self.get_epochs, area='left', ncol=1, stretch=1)
+            'Markers', markers, callback=self.get_epochs, area='left', cols=1, stretch=1)
         self.add_spacer(area='left')
 
         self.channels = self.add_channels(
@@ -872,6 +895,7 @@ class EpochsVisualization(ta.TimelockWidget):
         self.add_spacer(area='right')
 
     # ----------------------------------------------------------------------
+    @wait_for_it
     def get_epochs(self, *args, **kwargs):
         """"""
         self.figure.clear()
@@ -933,6 +957,7 @@ class TimelockAmplitudeAnalysis(ta.TimelockWidget):
         # self.add_spacer(area='top')
 
     # ----------------------------------------------------------------------
+    @wait_for_it
     def fit(self):
         """"""
         datafile = self.pipeline_input
@@ -1046,6 +1071,7 @@ class AddMarkers(ta.TimelockSeries):
         self.draw()
 
     # ----------------------------------------------------------------------
+    @wait_for_it
     def fit(self):
         """"""
         datafile = self.pipeline_input
