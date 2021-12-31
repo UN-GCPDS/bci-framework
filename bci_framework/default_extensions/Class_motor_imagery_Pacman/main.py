@@ -87,7 +87,9 @@ class PacmanMotorImagery(StimuliAPI):
             self.start_record()
 
         self.build_trials()
-        self.show_counter('start_run')
+        
+        self.show_counter(5)
+        timer.set_timeout(self.start_run, 5000)
         
     # ----------------------------------------------------------------------
     def start_run(self):

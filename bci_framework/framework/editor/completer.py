@@ -17,17 +17,7 @@ from .snippets import analysis_snippets, stimuli_snippets, visualizations_snippe
 
 ########################################################################
 class Autocompleter(QCompleter):
-    """Autocompleter for Python Scripts.
-
-
-    Parameters
-    ----------
-    mode
-        The available options are different form stimuli delivery and data analysis.
-    parent
-
-
-    """
+    """Autocompleter for Python Scripts."""
 
     insertText = QtCore.Signal(str)
 
@@ -52,6 +42,8 @@ class Autocompleter(QCompleter):
         self.connect(self, QtCore.SIGNAL(
             "highlighted(const QString&)"), self.changeHighlighted)
 
+        self.regular_items = self.model().stringList()
+
         self.setMaxVisibleItems(15)
         self.popup().setStyleSheet("""
         *{
@@ -71,4 +63,11 @@ class Autocompleter(QCompleter):
     def changeHighlighted(self, value: str) -> None:
         """Retain the last option selected."""
         self.last_highlighted = value
+
+    # # ----------------------------------------------------------------------
+    # def set_temporal(self, values):
+        # """"""
+        # m = self.model()
+        # m.setStringList(self.regular_items + values)
+        # # self.setModel(m)
 

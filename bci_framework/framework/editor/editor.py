@@ -6,6 +6,7 @@ BCIEditor
 """
 
 import os
+import ast
 import json
 from typing import Literal, TypeVar
 
@@ -38,6 +39,7 @@ class BCIEditor(QTextEdit):
 
         self.set_options()
         self.linenumber = linenumber
+        self.temporal_vars = []
 
         if 'light' in os.environ.get('QTMATERIAL_THEME'):
             font_color = 'black'
@@ -398,8 +400,8 @@ class BCIEditor(QTextEdit):
         tc.insertText(extra)
 
         if text_position > 0:
-            tc.setPosition(pos + text_position
-                           + (4 * extra[:text_position].count('\n')))
+            tc.setPosition(pos + text_position +
+                           (4 * extra[:text_position].count('\n')))
 
         self.setTextCursor(tc)
 
@@ -447,6 +449,7 @@ class BCIEditor(QTextEdit):
     # ----------------------------------------------------------------------
     def show_completer(self, completion_prefix: str) -> None:
         """Show better options for current text."""
+        # self.completer.set_temporal(self.get_variables())
         self.completer.setCompletionPrefix(completion_prefix)
         popup = self.completer.popup()
         popup.setCurrentIndex(self.completer.completionModel().index(0, 0))
@@ -456,3 +459,14 @@ class BCIEditor(QTextEdit):
         cr.setHeight(30)
 
         self.completer.complete(cr)
+
+    # # ----------------------------------------------------------------------
+    # def get_variables(self):
+        # """"""
+        # try:
+            # root = ast.parse(self.toPlainText())
+            # self.temporal_vars = sorted({node.id for node in ast.walk(
+                # root) if isinstance(node, ast.Name)})
+        # except:
+            # pass
+        # return self.temporal_vars

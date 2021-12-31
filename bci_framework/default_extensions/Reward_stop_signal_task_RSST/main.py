@@ -320,6 +320,8 @@ class StimuliDelivery(StimuliAPI):
                 size=60, type='square', position='upper left')
         else:
             self.hide_synchronizer()
+            
+
 
 
 if __name__ == '__main__':

@@ -288,7 +288,7 @@ class Development:
                             # completer = Autocompleter(mode='stimuli')
                             # editor.set_completer(completer)
                         # elif projects.LINE_ANALYSIS in content:
-                            # completer = Autocompleter(mode='visualization')
+                            # completer = Autocompleter(mode='analysis')
                             # editor.set_completer(completer)
                         # elif projects.LINE_VISUALIZATION in content:
                             # completer = Autocompleter(mode='visualization')
