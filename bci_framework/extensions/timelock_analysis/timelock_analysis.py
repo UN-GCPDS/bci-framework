@@ -100,6 +100,8 @@ class TimelockWidget(metaclass=ABCMeta):
     # ----------------------------------------------------------------------
     def __init__(self, height, *args, **kwargs):
         """Constructor"""
+
+        self.title = ''
         # self.fill_opacity = 0.2
         # self.fill_color = os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ff0000')
 
@@ -174,10 +176,11 @@ class TimelockWidget(metaclass=ABCMeta):
             getattr(self, f'{area}_stretch').append(stretch)
 
     # ----------------------------------------------------------------------
-
     def clear_layout(self, layout):
         """"""
-        for i in range(layout.count()):
+        i = -1
+        for _ in range(layout.count()):
+            i = i + 1
             b = layout.itemAt(i)
 
             if b is None:
@@ -188,6 +191,7 @@ class TimelockWidget(metaclass=ABCMeta):
 
             if b.spacerItem():  # spacer
                 layout.removeItem(b)
+                i = i - 1
 
             if l := b.layout():
                 self.clear_layout(l)
@@ -591,7 +595,7 @@ class TimelockSeries(TimelockWidget):
         return np.prod(list(map(float, value.split())))
 
     # ----------------------------------------------------------------------
-    def set_data(self, timestamp, eeg, labels, ylabel='', xlabel=''):
+    def set_data(self, timestamp, eeg, labels, ylabel='', xlabel='', legend=True):
         """"""
         self.ax1.clear()
         self.ax2.clear()
@@ -600,12 +604,13 @@ class TimelockSeries(TimelockWidget):
             self.ax1.plot(timestamp, eeg[i], label=labels[i])
             self.ax2.plot(timestamp, eeg[i], alpha=0.5)
 
-        self.ax1.grid(True)
-        self.ax1.legend(loc='upper center', ncol=8,
-                        labelcolor='k', bbox_to_anchor=(0.5, 1.4))
+        self.ax1.grid(True, axis='x')
+        if legend:
+            self.ax1.legend(loc='upper center', ncol=8,
+                            labelcolor='k', bbox_to_anchor=(0.5, 1.4))
         self.ax1.set_xlim(0, self.window_value)
 
-        self.ax2.grid(True)
+        self.ax2.grid(True, axis='x')
         self.ax2.set_xlim(0, timestamp[-1])
         self.ax2.fill_between([0, self.window_value], *self.ax1.get_ylim(),
                               color=self.fill_color, alpha=self.fill_opacity)
@@ -630,13 +635,14 @@ class TimelockSeries(TimelockWidget):
 
 
 ########################################################################
-class TimelockFilters(TimelockWidget):
+class Filters(TimelockWidget):
     """"""
 
     # ----------------------------------------------------------------------
     def __init__(self, height, *args, **kwargs):
         """Constructor"""
         super().__init__(height, *args, **kwargs)
+        self.title = 'Filter EEG'
 
         gs = self.figure.add_gridspec(1, 2)
         self.ax1 = gs.figure.add_subplot(gs[:, 0:-1])
@@ -648,7 +654,7 @@ class TimelockFilters(TimelockWidget):
         self.figure.subplots_adjust(left=0.05,
                                     bottom=0.12,
                                     right=0.95,
-                                    top=0.8,
+                                    top=0.95,
                                     wspace=None,
                                     hspace=0.6)
 
@@ -724,8 +730,8 @@ class TimelockFilters(TimelockWidget):
 
         self.ax1.set_xlim(0, w[-1])
         self.ax2.set_xlim(0, t[-1])
-        self.ax1.grid(True)
-        self.ax2.grid(True)
+        self.ax1.grid(True, axis='y')
+        self.ax2.grid(True, axis='x')
 
         self.draw()
 
@@ -769,6 +775,8 @@ class LoadDatabase(ta.TimelockSeries):
     def __init__(self, height=700, *args, **kwargs):
         """Constructor"""
         super().__init__(height, *args, **kwargs)
+
+        self.title = 'Raw EEG signal'
 
         #  Create grid plot
         gs = self.figure.add_gridspec(4, 4)
@@ -859,6 +867,7 @@ class EpochsVisualization(ta.TimelockWidget):
     def __init__(self, height=700, *args, **kwargs):
         """Constructor"""
         super().__init__(height, *args, **kwargs)
+        self.title = 'Visualize epochs'
 
         self.ax1 = self.figure.add_subplot(111)
         self.pipeline_tunned = True
@@ -867,7 +876,7 @@ class EpochsVisualization(ta.TimelockWidget):
     def fit(self):
         """"""
         self.clear_widgets()
-        markers = list(self.pipeline_input.file.markers.keys())
+        markers = list(self.pipeline_input.markers.keys())
         channels = list(self.pipeline_input.header['channels'].values())
 
         self.tmin = self.add_spin('tmin', 0, suffix='s', min_=-99,
@@ -940,21 +949,22 @@ class EpochsVisualization(ta.TimelockWidget):
 
 
 ########################################################################
-class TimelockAmplitudeAnalysis(ta.TimelockWidget):
+class AmplitudeAnalysis(ta.TimelockWidget):
     """"""
 
     # ----------------------------------------------------------------------
     def __init__(self, height, *args, **kwargs):
         """Constructor"""
         super().__init__(height, *args, **kwargs)
+        self.title = 'Amplitude analysis'
 
         self.ax1 = self.figure.add_subplot(111)
         self.pipeline_tunned = True
 
-        # decimates = '10 20 50 100 1000 2000 5000'.split()
-        # self.decimate = self.add_combobox(
-            # 'Decimate', decimates, callback=self.fit, area='top', stretch=0)
-        # self.add_spacer(area='top')
+        self.figure.subplots_adjust(left=0.05,
+                                    bottom=0.12,
+                                    right=0.95,
+                                    top=0.95)
 
     # ----------------------------------------------------------------------
     @wait_for_it
@@ -998,7 +1008,7 @@ class TimelockAmplitudeAnalysis(ta.TimelockWidget):
         self.ax1.set_yticks([v / 2 for v in ticks])
         self.ax1.set_yticklabels([f'{abs(v)} vpp' for v in ticks])
 
-        self.ax1.grid(True)
+        self.ax1.grid(True, axis='x')
 
         self.ax1.set_ylabel('Voltage [uv]')
         self.ax1.set_xlabel('Time [$s$]')
@@ -1016,6 +1026,7 @@ class AddMarkers(ta.TimelockSeries):
     def __init__(self, height, *args, **kwargs):
         """Constructor"""
         super().__init__(height, *args, **kwargs)
+        self.title = 'Add new markers'
 
         #  Create grid plot
         gs = self.figure.add_gridspec(4, 1)
@@ -1023,12 +1034,12 @@ class AddMarkers(ta.TimelockSeries):
         self.ax2 = gs.figure.add_subplot(gs[-1, :])
         self.ax2.get_yaxis().set_visible(False)
 
-        # self.figure.subplots_adjust(left=0.05,
-                                    # bottom=0.12,
-                                    # right=0.95,
-                                    # top=0.8,
-                                    # wspace=None,
-                                    # hspace=0.6)
+        self.figure.subplots_adjust(left=0.05,
+                                    bottom=0.12,
+                                    right=0.95,
+                                    top=0.95,
+                                    wspace=None,
+                                    hspace=0.6)
 
         self.set_window_width_options(
             ['500 milliseconds',
@@ -1063,10 +1074,10 @@ class AddMarkers(ta.TimelockSeries):
         self.ax2.vlines(q, * self.ax2.get_ylim(),
                         linestyle='--', color='red', linewidth=3, zorder=99)
 
-        # self.ax1.fill_between([q - 1, q + 1], *self.ax1.get_ylim(),
-                              # linewidth=0, color='red', zorder=99, alpha=0.2)
-        # self.ax2.fill_between([q - 1, q + 1], *self.ax2.get_ylim(),
-                              # linewidth=0, color='red', zorder=99, alpha=0.2)
+        markers = self._pipeline_output.markers
+        markers.setdefault(self.markers.currentText(), []).append(q)
+        self._pipeline_output.markers = markers
+        self._pipeline_propagate()
 
         self.draw()
 
@@ -1098,7 +1109,9 @@ class AddMarkers(ta.TimelockSeries):
         self.set_data(timestamp, eeg,
                       labels=list(header['channels'].values()),
                       ylabel='Millivolt [$mv$]',
-                      xlabel='Time [$s$]')
+                      xlabel='Time [$s$]',
+                      legend=False,
+                      )
 
         self.ax1.set_yticks([self.threshold * i for i in range(channels)])
         self.ax1.set_yticklabels(
@@ -1117,7 +1130,7 @@ class AddMarkers(ta.TimelockSeries):
         self.pipeline_output = self.pipeline_input
 
     # ----------------------------------------------------------------------
-    def set_data(self, timestamp, eeg, labels, ylabel='', xlabel=''):
+    def set_data(self, timestamp, eeg, labels, ylabel='', xlabel='', legend=True):
         """"""
         self.ax1.clear()
         self.ax2.clear()
@@ -1127,15 +1140,17 @@ class AddMarkers(ta.TimelockSeries):
                           * i, label=labels[i])
             self.ax2.plot(timestamp, ch + self.threshold * i, alpha=0.5)
 
-        self.ax1.grid(True)
-        self.ax1.legend(loc='upper center', ncol=8,
-                        labelcolor='k', bbox_to_anchor=(0.5, 1.4))
+        self.ax1.grid(True, axis='x')
+        if legend:
+            self.ax1.legend(loc='upper center', ncol=8,
+                            labelcolor='k', bbox_to_anchor=(0.5, 1.4))
         self.ax1.set_xlim(0, self.window_value)
 
-        self.ax2.grid(True)
+        self.ax2.grid(True, axis='x')
         self.ax2.set_xlim(0, timestamp[-1])
-        self.area = self.ax2.fill_between([0, self.window_value], *self.ax1.get_ylim(),
-                                          color=self.fill_color, alpha=self.fill_opacity, label='AREA')
+
+        self.ax2.fill_between([0, self.window_value], *self.ax1.get_ylim(),
+                              color=self.fill_color, alpha=self.fill_opacity, label='AREA')
 
         self.scroll.setMaximum((timestamp[-1] - self.window_value) * 1000)
         self.scroll.setMinimum(0)
@@ -1147,22 +1162,13 @@ class AddMarkers(ta.TimelockSeries):
     def move_plot(self, value):
         """"""
         self.ax1.set_xlim(value / 1000, (value / 1000 + self.window_value))
-        # self.ax2.collections.clear()
-        # [c for c in self.ax2.collections if c.get_label() == 'AREA'].clear()
 
-        # [self.ax2.collections.pop(j) for j in [len(self.ax2.collections) - 1 -
-                                               # i for i, c in enumerate(self.ax2.collections) if c.get_label() == 'AREA']]
+        for area in [i for i, c in enumerate(self.ax2.collections) if c.get_label() == 'AREA'][::-1]:
+            self.ax2.collections.pop(area)
 
-        # self.ax2.collections.pop(self.ax2.collections.index(self.area))
-
-        paths = self.area.get_paths()
-        v = paths[0].vertices[:, 0]
-        m, n = v.min(), v.max()
-
-        v[v == n] = value / 1000
-        v[v == m] = value / 1000 + self.window_value
-
-        # self.area.set_paths(paths)
+        self.ax2.fill_between([value / 1000, (value / 1000 + self.window_value)],
+                              * self.ax1.get_ylim(), color=self.fill_color,
+                              alpha=self.fill_opacity, label='AREA')
 
         segments = self.vlines.get_segments()
         segments[0][:, 0] = [np.mean(self.ax1.get_xlim())] * 2
@@ -1171,7 +1177,6 @@ class AddMarkers(ta.TimelockSeries):
         self.draw()
 
     # ----------------------------------------------------------------------
-
     def change_window(self):
         """"""
         self.window_value = self._get_seconds_from_human(
@@ -1189,18 +1194,5 @@ class AddMarkers(ta.TimelockSeries):
 
         self.ax1.set_xlim(self.scroll.value() / 1000,
                           (self.scroll.value() / 1000 + self.window_value))
-
-        # self.ax2.collections.clear()
-        # self.ax2.fill_between([self.scroll.value() / 1000, (self.scroll.value() + self.window_value) / 1000],
-                              # *self.ax1.get_ylim(),
-                              # color=self.fill_color,
-                              # alpha=self.fill_opacity)
-
-        paths = self.area.get_paths()
-        v = paths[0].vertices[:, 0]
-        m, n = v.min(), v.max()
-
-        v[v == n] = self.scroll.value() / 1000
-        v[v == m] = self.scroll.value() / 1000 + self.window_value
 
         self.draw()

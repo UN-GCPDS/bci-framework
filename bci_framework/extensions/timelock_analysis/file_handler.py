@@ -42,9 +42,23 @@ class FileHandler:
         return self.file.timestamp.copy()
 
     # ----------------------------------------------------------------------
-
     @property
     def markers(self):
+        """"""
+        if hasattr(self, '_modified_markers'):
+            return self._modified_markers
+        else:
+            return self.file.markers.copy()
+
+    # ----------------------------------------------------------------------
+    @markers.setter
+    def markers(self, value):
+        """"""
+        self._modified_markers = value
+
+    # ----------------------------------------------------------------------
+    @property
+    def original_markers(self):
         """"""
         return self.file.markers.copy()
 

@@ -32,7 +32,13 @@ class TimelockDashboard:
         max_r = 0
         max_c = 0
         i = 0
-        for analyzer, w in widgets:
+        for unpack in widgets:
+
+            if isinstance(unpack, (list, tuple)):
+                analyzer, w = unpack
+            else:
+                analyzer = unpack
+                w = {}
 
             height = w.get('scale', self.default_scale)
 
@@ -40,7 +46,8 @@ class TimelockDashboard:
                             for i in range(8)])
             setattr(self, name, analyzer(self.height * height))
             analyzer = getattr(self, name)
-            analyzer.widget.label_title.setText(w.get('title', ''))
+            analyzer.widget.label_title.setText(
+                w.get('title', analyzer.title))
             analyzer.widget.setProperty('class', 'timelock')
             analyzer.widget.setContentsMargins(30, 30, 30, 30)
             analyzer._add_spacers()
