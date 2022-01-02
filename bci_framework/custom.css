@@ -20,18 +20,18 @@ QTextEdit.linenumber {
 }
 
 QTextEdit.clear {
-  background-color: {{secondaryLightColor}};
+  background-color: {{secondaryDarkColor}};
   border: none;
   color: black;
   font-family: mono;
 }
 
 QWidget.dashboard {
-  background-color: {{secondaryDarkColor}};
+  background-color: {{secondaryLightColor}};
 }
 
 QWidget.timelock {
-  background-color: {{secondaryLightColor}};
+background-color: {{secondaryDarkColor}};
   border-radius: 5px;
 }
 
