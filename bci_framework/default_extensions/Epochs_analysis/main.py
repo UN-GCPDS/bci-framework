@@ -14,11 +14,11 @@ class Analysis(TimelockDashboard):
         self.columns = 1
 
         self.add_widgets(
-            (ta.LoadDatabase, {'title': 'Raw EEG signal'}),
-            (ta.TimelockFilters, {'title': 'Filter EEG'}),
-            (ta.AddMarkers, {'title': 'Add new markers'}),
-            (ta.TimelockAmplitudeAnalysis, {'title': 'Amplitude analysis'}),
-            (ta.EpochsVisualization, {'title': 'Visualize epochs'}),
+            (ta.LoadDatabase),
+            (ta.Filters),
+            (ta.AddMarkers),
+            (ta.AmplitudeAnalysis),
+            (ta.EpochsVisualization),
             # {'analyzer': AnalysisWidget,  'row': 1, 'col': 0, 'row_span': 1, 'col_span': 1},
             # {'analyzer': AnalysisWidget,  'row': 1, 'col': 1, 'row_span': 1, 'col_span': 1},
         )
