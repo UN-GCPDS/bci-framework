@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 project = 'BCI-Framework'
-copyright = '2021, DunderLab SAS'
-author = 'DunderLab SAS'
+copyright = '2019-2022, Yeison Cardona'
+author = 'Yeison Cardona'
 
 
 # -- General configuration ---------------------------------------------------
@@ -168,7 +168,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'BCI-Framework.tex',
-     'BCI-Framework Documentation', 'DunderLab SAS', 'manual'),
+     'BCI-Framework Documentation', 'Yeison Cardona', 'manual'),
 ]
 
 
