@@ -696,8 +696,7 @@ class Montage:
             ['Montage', 'Channels', 'Electrodes'])
         saved_montages = self.core.config['montages']
 
-        i = 0
-        for saved in saved_montages.keys():
+        for i, saved in enumerate(saved_montages.keys()):
             if not saved.startswith('montage'):
                 continue
             montage, electrodes = saved_montages.get(saved).split('|')
@@ -707,7 +706,7 @@ class Montage:
             item.config_name = saved
 
             itemh = QTableWidgetItem(montage)
-            itemh.setText(f'#{i}')
+            itemh.setText(f'#{i+1}')
             self.parent_frame.tableWidget_montages.setVerticalHeaderItem(
                 i, itemh)
 
