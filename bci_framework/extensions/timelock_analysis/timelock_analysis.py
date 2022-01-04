@@ -24,10 +24,9 @@ from PySide6.QtWidgets import QSpacerItem, QSizePolicy
 
 from gcpds.filters import frequency as flt
 from gcpds.filters import frequency as flt
-from bci_framework.extensions.timelock_analysis import timelock_analysis as ta
 from bci_framework.framework.dialogs import Dialogs
 
-from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
+# from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
 
 from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import QApplication
@@ -40,6 +39,30 @@ logger.setLevel(logging.CRITICAL)
 logging.getLogger('matplotlib.font_manager').disabled = True
 logging.getLogger().setLevel(logging.WARNING)
 logging.root.name = "TimelockAnalysis"
+
+if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
+    pass
+else:
+    pyplot.style.use('dark_background')
+
+try:
+    q = matplotlib.cm.get_cmap('cool')
+    matplotlib.rcParams['axes.prop_cycle'] = cycler(
+        color=[q(m) for m in np.linspace(0, 1, 16)])
+    matplotlib.rcParams['figure.dpi'] = 70
+    matplotlib.rcParams['font.family'] = 'monospace'
+    matplotlib.rcParams['font.size'] = 15
+    matplotlib.rcParams['axes.titlecolor'] = '#000000'
+    matplotlib.rcParams['xtick.color'] = '#000000'
+    matplotlib.rcParams['ytick.color'] = '#000000'
+    # matplotlib.rcParams['legend.facecolor'] = 'red'
+except:
+    # 'rcParams' object does not support item assignment
+    pass
+
+LEGEND_KWARGS = {'labelcolor': '#000000',
+                 'fontsize': 12,
+                 }
 
 
 # ----------------------------------------------------------------------
@@ -64,10 +87,9 @@ class Canvas(FigureCanvasQTAgg):
     def __init__(self, *args, **kwargs):
         """"""
 
-        # Consigure matplotlib
+        self.figure = Figure(*args, **kwargs)
         self.configure()
 
-        self.figure = Figure(*args, **kwargs)
         super().__init__(self.figure)
 
         # self.figure.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
@@ -75,22 +97,16 @@ class Canvas(FigureCanvasQTAgg):
     # ----------------------------------------------------------------------
     def configure(self):
         """"""
-        if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
-            pass
-        else:
-            pyplot.style.use('dark_background')
+        # if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
+            # pass
+        # else:
+            # pyplot.style.use('dark_background')
 
-        try:
-            q = matplotlib.cm.get_cmap('cool')
-            matplotlib.rcParams['axes.prop_cycle'] = cycler(
-                color=[q(m) for m in np.linspace(0, 1, 16)])
-            matplotlib.rcParams['figure.dpi'] = 70
-            matplotlib.rcParams['font.family'] = 'monospace'
-            matplotlib.rcParams['font.size'] = 15
-            # matplotlib.rcParams['legend.facecolor'] = 'red'
-        except:
-            # 'rcParams' object does not support item assignment
-            pass
+        for ax in self.figure.axes:
+            ax.tick_params(axis='x', labelsize=12)
+            ax.tick_params(axis='y', labelsize=12)
+            ax.xaxis.label.set_size(14)
+            ax.yaxis.label.set_size(14)
 
 
 ########################################################################
@@ -102,8 +118,6 @@ class TimelockWidget(metaclass=ABCMeta):
         """Constructor"""
 
         self.title = ''
-        # self.fill_opacity = 0.2
-        # self.fill_color = os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ff0000')
 
         self.bottom_stretch = []
         self.bottom2_stretch = []
@@ -117,8 +131,6 @@ class TimelockWidget(metaclass=ABCMeta):
         ui = os.path.realpath(os.path.join(
             os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'locktime_widget.ui'))
         self.widget = QUiLoader().load(ui)
-
-        # self.widget.setProperty('class', 'bottom_border')
 
         if height:
             self.widget.setMinimumHeight(height)
@@ -203,9 +215,9 @@ class TimelockWidget(metaclass=ABCMeta):
                 # b.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def clear_widgets(self):
+    def clear_widgets(self, areas=['left', 'right', 'top', 'bottom', 'top2', 'bottom2']):
         """"""
-        for area in ['left', 'right', 'top', 'bottom', 'top2', 'bottom2']:
+        for area in areas:
             layout = getattr(self.widget, f'{area}Layout')
             self.clear_layout(layout)
 
@@ -431,6 +443,7 @@ class TimelockWidget(metaclass=ABCMeta):
         combo.addItems(items)
         combo.activated.connect(callback)
         combo.setEditable(editable)
+        combo.setMinimumWidth(200)
 
         layout = QtWidgets.QHBoxLayout()
         widget = QtWidgets.QWidget()
@@ -480,6 +493,10 @@ class TimelockWidget(metaclass=ABCMeta):
     def pipeline_output(self, output_):
         """"""
         self._pipeline_output = output_
+        try:
+            self.pipeline_output._original_markers = self.pipeline_output.markers
+        except:
+            pass
         self._pipeline_propagate()
 
     # ----------------------------------------------------------------------
@@ -576,13 +593,6 @@ class TimelockSeries(TimelockWidget):
                               color=self.fill_color,
                               alpha=self.fill_opacity)
 
-        # paths = self.area.get_paths()
-        # v = paths[0].vertices[:, 0]
-        # m, n = v.min(), v.max()
-
-        # v[v == n] = self.scroll.value() / 1000
-        # v[v == m] = self.scroll.value() / 1000 + self.window_value
-
         self.draw()
 
     # ----------------------------------------------------------------------
@@ -607,7 +617,7 @@ class TimelockSeries(TimelockWidget):
         self.ax1.grid(True, axis='x')
         if legend:
             self.ax1.legend(loc='upper center', ncol=8,
-                            labelcolor='k', bbox_to_anchor=(0.5, 1.4))
+                            bbox_to_anchor=(0.5, 1.4), **LEGEND_KWARGS)
         self.ax1.set_xlim(0, self.window_value)
 
         self.ax2.grid(True, axis='x')
@@ -768,7 +778,7 @@ class Filters(TimelockWidget):
 
 
 ########################################################################
-class LoadDatabase(ta.TimelockSeries):
+class LoadDatabase(TimelockSeries):
     """"""
 
     # ----------------------------------------------------------------------
@@ -832,6 +842,7 @@ class LoadDatabase(ta.TimelockSeries):
 
         header = datafile.header
         eeg = datafile.eeg
+        datafile.aux
         timestamp = datafile.timestamp
 
         self.database_description.setText(datafile.description)
@@ -860,7 +871,7 @@ class LoadDatabase(ta.TimelockSeries):
 
 
 ########################################################################
-class EpochsVisualization(ta.TimelockWidget):
+class EpochsVisualization(TimelockWidget):
     """"""
 
     # ----------------------------------------------------------------------
@@ -876,7 +887,7 @@ class EpochsVisualization(ta.TimelockWidget):
     def fit(self):
         """"""
         self.clear_widgets()
-        markers = list(self.pipeline_input.markers.keys())
+        markers = sorted(list(self.pipeline_input.markers.keys()))
         channels = list(self.pipeline_input.header['channels'].values())
 
         self.tmin = self.add_spin('tmin', 0, suffix='s', min_=-99,
@@ -896,8 +907,8 @@ class EpochsVisualization(ta.TimelockWidget):
         self.add_spacer(area='top')
 
         self.checkbox = self.add_checkbox(
-            'Markers', markers, callback=self.get_epochs, area='left', cols=1, stretch=1)
-        self.add_spacer(area='left')
+            'Markers', markers, callback=self.get_epochs, area='bottom', stretch=1)
+        self.add_spacer(area='bottom')
 
         self.channels = self.add_channels(
             'Channels', channels, callback=self.get_epochs, area='right', stretch=1)
@@ -949,7 +960,7 @@ class EpochsVisualization(ta.TimelockWidget):
 
 
 ########################################################################
-class AmplitudeAnalysis(ta.TimelockWidget):
+class AmplitudeAnalysis(TimelockWidget):
     """"""
 
     # ----------------------------------------------------------------------
@@ -1019,7 +1030,7 @@ class AmplitudeAnalysis(ta.TimelockWidget):
 
 
 ########################################################################
-class AddMarkers(ta.TimelockSeries):
+class AddMarkers(TimelockSeries):
     """"""
 
     # ----------------------------------------------------------------------
@@ -1136,14 +1147,14 @@ class AddMarkers(ta.TimelockSeries):
         self.ax2.clear()
 
         for i, ch in enumerate(eeg):
-            self.ax1.plot(timestamp, ch + self.threshold
-                          * i, label=labels[i])
+            self.ax1.plot(timestamp, ch + self.threshold *
+                          i, label=labels[i])
             self.ax2.plot(timestamp, ch + self.threshold * i, alpha=0.5)
 
         self.ax1.grid(True, axis='x')
         if legend:
             self.ax1.legend(loc='upper center', ncol=8,
-                            labelcolor='k', bbox_to_anchor=(0.5, 1.4))
+                            bbox_to_anchor=(0.5, 1.4), **LEGEND_KWARGS)
         self.ax1.set_xlim(0, self.window_value)
 
         self.ax2.grid(True, axis='x')
@@ -1196,3 +1207,233 @@ class AddMarkers(ta.TimelockSeries):
                           (self.scroll.value() / 1000 + self.window_value))
 
         self.draw()
+
+
+# ########################################################################
+# class ConditionalCreateMarkers(ta.TimelockWidget):
+    # """"""
+
+    # # ----------------------------------------------------------------------
+    # def __init__(self, height, *args, **kwargs):
+        # """Constructor"""
+        # super().__init__(height=0, *args, **kwargs)
+        # self.title = 'Create markers conditionally'
+
+        # self.layout = QtWidgets.QVBoxLayout()
+        # widget = QtWidgets.QWidget()
+        # widget.setLayout(self.layout)
+
+        # getattr(self.widget, 'topLayout').addWidget(widget)
+        # getattr(self, 'top_stretch').append(1)
+
+        # self.add_button('Add row', callback=self.add_row,
+                        # area='bottom', stretch=0)
+        # self.add_spacer(area='bottom', fixed=None, stretch=1)
+
+        # self.new_markers = {}
+
+    # # ----------------------------------------------------------------------
+    # @wait_for_it
+    # def fit(self):
+        # """"""
+
+    # # ----------------------------------------------------------------------
+    # def add_new_markers(self, n):
+        # """"""
+        # for k in self.new_markers:
+            # c1, c2, tx = self.new_markers[k]
+            # print(f'{c1()}, {c2()}, {tx()}')
+
+        # print('#' * 10)
+
+    # # ----------------------------------------------------------------------
+    # def add_row(self):
+        # """"""
+        # layout = QtWidgets.QHBoxLayout()
+        # widget = QtWidgets.QWidget()
+        # widget.setLayout(layout)
+
+        # layout.addWidget(QtWidgets.QLabel(
+            # 'Create new markers in the position of'))
+
+        # combo1 = QtWidgets.QComboBox()
+        # combo1.addItems(self.pipeline_input.markers.keys())
+        # layout.addWidget(combo1)
+
+        # layout.addWidget(QtWidgets.QLabel('that have a closest'))
+
+        # combo2 = QtWidgets.QComboBox()
+        # combo2.addItems(self.pipeline_input.markers.keys())
+        # layout.addWidget(combo2)
+
+        # layout.addWidget(QtWidgets.QLabel('as'))
+
+        # edit = QtWidgets.QLineEdit()
+        # self.new_markers[edit] = (
+            # combo1.currentText, combo2.currentText, edit.text)
+        # edit.textChanged.connect(self.add_new_markers)
+        # layout.addWidget(edit)
+
+        # layout.setStretch(0, 0)
+        # layout.setStretch(1, 0)
+        # layout.setStretch(2, 0)
+        # layout.setStretch(3, 0)
+        # layout.setStretch(4, 0)
+        # layout.setStretch(5, 1)
+
+        # self.layout.addWidget(widget)
+
+
+########################################################################
+class MarkersSynchronization(TimelockWidget):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height, *args, **kwargs):
+        """Constructor"""
+        super().__init__(height, *args, **kwargs)
+        self.title = 'Markers synchronization'
+
+        # self.add_radios('Markers', self.notchs, callback=self.set_filters,
+                        # area='top', stretch=0)
+
+        self.sync_channel = self.add_combobox('Channel', [], editable=False, callback=self.update_plot,
+                                              area='top2', stretch=0)
+        self.add_spacer(area='top2', fixed=None, stretch=1)
+
+        self.upper = self.add_spin('Upper', 500, suffix='vpp', min_=0, max_=2000,
+                                   step=10, callback=self.update_plot, area='right', stretch=0)
+        self.lower = self.add_spin('Lower', 200, suffix='vpp', min_=0, max_=2000,
+                                   step=10, callback=self.update_plot, area='right', stretch=0)
+
+        self.pipeline_tunned = True
+
+        gs = self.figure.add_gridspec(1, 3)
+        self.ax1 = gs.figure.add_subplot(gs[:, 0:-1])
+        self.ax2 = gs.figure.add_subplot(gs[:, -1])
+
+        self.figure.subplots_adjust(left=0.05,
+                                    bottom=0.12,
+                                    right=0.95,
+                                    top=0.8)
+
+    # ----------------------------------------------------------------------
+    @wait_for_it
+    def fit(self):
+        """"""
+        self.sync_channel.clear()
+        self.sync_channel.addItems(
+            f'AUX{c}' for c in range(self.pipeline_input.aux.shape[0]))
+
+        self.clear_widgets(areas=['left'])
+        self.marker_sync = self.add_checkbox('Markers', self.pipeline_input.markers.keys(), callback=self.update_plot,
+                                             area='left', stretch=0, cols=1)
+        self.add_spacer(stretch=1, area='left')
+
+    # ----------------------------------------------------------------------
+    def update_plot(self, *args, **kwargs):
+        """"""
+        self.ax1.clear()
+        self.ax2.clear()
+
+        lower_val = self.lower.value()
+        upper_val = self.upper.value()
+
+        aux = self.pipeline_input.aux[self.sync_channel.currentIndex()]
+        markers = self.pipeline_input.markers
+
+        t = self.pipeline_input.aux_timestamp[0]
+        rises = self.pipeline_input.get_rises(
+            aux, t, lower=lower_val, upper=upper_val)
+
+        mks = []
+        target_markers = [ch.text()
+                          for ch in self.marker_sync if ch.isChecked()]
+        for k in target_markers:
+            mks.extend(markers[k])
+
+        for i in mks:
+            shape = aux[i - 2000:i + 2000]
+            ts = np.linspace(-2000, 2000, shape.shape[0])
+            self.ax1.plot(ts, shape, color=pyplot.cm.tab10(7),
+                          alpha=0.5, linewidth=1)
+
+            sh = shape.copy()
+            if sh.size:
+                sh = sh / (sh.max() - sh.min())
+                sh = sh - sh.min()
+                sh[sh > 0.5] = 1
+                sh[sh <= 0.5] = 0
+                a = abs(np.diff(sh, prepend=0))
+                if r := np.argwhere(a == 1)[0][0]:
+                    self.ax1.vlines(ts[r], 200, 800,
+                                    linestyle='--', color=pyplot.cm.tab10(3), alpha=0.5)
+
+        self.ax1.grid(True)
+
+        for rise in rises:
+            i = np.argmin(abs(t - rise))
+            shape = aux[i - 50:i + 300]
+            ts = np.linspace(-50, 300, shape.shape[0])
+            self.ax2.plot(ts, shape, color=pyplot.cm.tab10(7),
+                          alpha=0.1, linewidth=1)
+
+        target = 100 * len(mks) / len(rises)
+        self.ax2.plot(ts, shape, color=pyplot.cm.tab10(7),
+                      alpha=0.1, linewidth=1, label=f'{target:.2f}% of markers synchronized')
+
+        self.ax2.grid(True)
+        self.ax2.vlines(0, lower_val, upper_val,
+                        linestyle='--', color=pyplot.cm.tab10(3))
+
+        self.ax1.set_title('Original analog rises')
+        self.ax2.set_title('Syncronized rises')
+
+        self.ax1.set_xlabel('Time [s]')
+        self.ax2.set_xlabel('Time [s]')
+        self.ax1.set_ylabel('Amplitude [mV]')
+        # self.ax1.legend(ncol=2, loc='upper center')
+        if 90 < target < 110:
+            self.ax2.legend(loc='lower right', facecolor=pyplot.cm.tab10(
+                0), framealpha=0.5, **LEGEND_KWARGS)
+        else:
+            self.ax2.legend(loc='lower right', facecolor=pyplot.cm.tab10(
+                3), framealpha=0.5, **LEGEND_KWARGS)
+        self.ax1.set_ylim(lower_val, upper_val)
+        self.ax2.set_ylim(lower_val, upper_val)
+        # self.ax2.set_xlim(0, 20)
+
+        self.pipeline_input.reset_markers()
+
+        if target_markers:
+            self.pipeline_input.fix_markers(
+                target_markers, rises, range_=2000)
+
+        # self.pipeline_tunned = True
+        self.pipeline_output = self.pipeline_input
+
+        self.draw()
+
+
+########################################################################
+class ScriptProcess(TimelockWidget):
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, height, *args, **kwargs):
+        """Constructor"""
+        super().__init__(0, *args, **kwargs)
+        self.title = 'Script process'
+        self.pipeline_tunned = True
+
+    # # ----------------------------------------------------------------------
+    # def fit(self):
+        # """"""
+        # self.pipeline_output = self.process(self.pipeline_input)
+
+    # # ----------------------------------------------------------------------
+    # def process(self, *args, **kwargs):
+        # """"""
+        # logging.warning('ERROR')
+
+

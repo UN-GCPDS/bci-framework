@@ -56,12 +56,16 @@ class TimelockDashboard:
                 analyzer.previous_pipeline(analyzers[-1])
                 analyzers[-1].next_pipeline(analyzer)
 
-            print((i % self.columns, math.floor(i / self.columns)))
+            # print((i % self.columns, math.floor(i / self.columns)))
+
+            row = w.get('row', math.floor(i / self.columns))
+            col = w.get('col', (i % self.columns))
+            span = w.get('span', 1)
 
             self.widget.gridLayout.addWidget(analyzer.widget,
-                                             math.floor(i / self.columns),
-                                             (i % self.columns),  # col
-                                             1, 1,  # spans
+                                             row,  # row
+                                             col,  # col
+                                             1, span,  # spans
                                              )
             analyzers.append(analyzer)
 
@@ -70,7 +74,3 @@ class TimelockDashboard:
         for c in range(self.columns):
             self.widget.gridLayout.setColumnStretch(c, 1)
 
-        # self.widget.gridLayout.setColumnStretch(2, 1)
-
-        # for i in range(max_r):
-            # self.widget.gridLayout.setRowStretch(i, 0)
