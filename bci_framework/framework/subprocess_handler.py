@@ -290,7 +290,6 @@ class LoadSubprocess(VisualizationSubprocess, StimuliSubprocess):
 
         screen = QApplication.primaryScreen()
         size = screen.size()
-        size.height()
 
         self.an = foo.Analysis(size.height())
         self.web_view.addWidget(self.an.widget)
