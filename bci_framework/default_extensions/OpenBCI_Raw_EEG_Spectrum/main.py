@@ -23,9 +23,9 @@ class RawEEG(EEGStream, Widgets):
         """"""
         super().__init__(*args, **kwargs)
         BUFFER = 2
-        
+
         self.enable_widgets('BandPass', 'Notch', 'Mode', 'Channels')
-    
+
         self.mode = 'Fourier'
 
         self.axis = self.add_subplot(111)
@@ -43,19 +43,20 @@ class RawEEG(EEGStream, Widgets):
         self.axis.set_ylim(0, 1)
         self.axis.set_xlabel('Frequency [Hz]')
         self.axis.set_ylabel('Amplitude')
+        self.axis.grid(True)
 
         self.stream()
 
-
     # ----------------------------------------------------------------------
+
     @loop_consumer('eeg')
     def stream(self, frame):
 
         if frame % 3:
             return
-            
+
         channels = self.widget_value['Channels']
-        
+
         logging.warning(str(channels))
 
         eeg = self.buffer_eeg
@@ -71,11 +72,11 @@ class RawEEG(EEGStream, Widgets):
 
         EEG = EEG / EEG.max()
         for i, line in enumerate(self.lines):
-            
+
             if channels != 'All' and not i in channels:
                 line.set_data([], [])
                 continue
-            
+
             if self.mode == 'Fourier':
                 line.set_data(self.W, EEG[i])
                 self.axis.fill_between(
@@ -88,8 +89,8 @@ class RawEEG(EEGStream, Widgets):
 
         self.feed()
 
-  
     # ----------------------------------------------------------------------
+
     @interact('Mode', ('Fourier', 'Welch'), 'Fourier')
     def interact_mode(self, mode):
         """"""

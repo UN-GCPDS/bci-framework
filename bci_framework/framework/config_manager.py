@@ -5,6 +5,7 @@ Configuration Manager
 """
 
 import os
+import sys
 from configparser import ConfigParser
 from typing import Optional, Dict, TypeVar, Callable
 
@@ -22,12 +23,17 @@ class ConfigManager(ConfigParser):
         """"""
         super().__init__()
 
-        if os.path.isabs(filename):
-            self.filename = filename
-        else:
-            user_dir = os.path.join(os.getenv('BCISTREAM_HOME'))
+        if '--local' in sys.argv:
+            user_dir = os.path.join(os.getenv('BCISTREAM_ROOT'), 'assets')
             os.makedirs(user_dir, exist_ok=True)
-            self.filename = os.path.join(user_dir, filename)
+            self.filename = os.path.join(user_dir, 'bciframework.default')
+        else:
+            if os.path.isabs(filename):
+                self.filename = filename
+            else:
+                user_dir = os.path.join(os.getenv('BCISTREAM_HOME'))
+                os.makedirs(user_dir, exist_ok=True)
+                self.filename = os.path.join(user_dir, filename)
 
         self.load()
 

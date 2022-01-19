@@ -81,7 +81,7 @@ class OpenBCIThread(QThread):
         boardmode_setted = False
         for _ in range(10):
             response = self.openbci.command(self.boardmode)
-            if response and b'Success: analog\r\n' in response:
+            if response and all([b'Success:' in r for r in response]):
                 logging.info(f'Bardmode setted in {self.boardmode} mode')
                 boardmode_setted = True
                 break
@@ -93,7 +93,7 @@ class OpenBCIThread(QThread):
         # self.session_settings(self.montage, self.bias,
                               # self.gain, self.srb1, self.adsinput, self.srb2, self.sample_rate)
 
-        if not self.checkBox_send_leadoff:
+        if self.checkBox_send_leadoff:
             self.openbci.leadoff_impedance(
                 self.montage, pchan=self.pchan, nchan=self.nchan)
 
@@ -103,14 +103,14 @@ class OpenBCIThread(QThread):
                 CytonBase, f"TEST_{test_signal.replace(' ', '_')}")
             self.openbci.command(test_signal)
 
-        else:
-            used_channels = set(self.montage.keys())
-            if used_channels:
-                self.openbci.activate_channel(used_channels)
-            # all_channels = set(range(1, 17 if prop.DAISY else 9))
-            # deactivated = all_channels.difference(used_channels)
-            # if deactivated:
-                # self.openbci.deactivate_channel(deactivated)
+        # else:
+            # used_channels = set(self.montage.keys())
+            # if used_channels:
+                # self.openbci.activate_channel(used_channels)
+            # # all_channels = set(range(1, 17 if prop.DAISY else 9))
+            # # deactivated = all_channels.difference(used_channels)
+            # # if deactivated:
+                # # self.openbci.deactivate_channel(deactivated)
 
         self.start_stream_()
 
@@ -143,15 +143,19 @@ class OpenBCIThread(QThread):
         else:
             return
 
-        self.openbci.command(sample_rate)
-        # if self.checkBox_default_settings:
-            # self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
-        self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
-                                      gain=gain,
-                                      input_type=adsinput,
-                                      bias=bias,
-                                      srb2=[f'{s}'.encode() for s in srb2],
-                                      srb1=srb1)
+        response = self.openbci.command(sample_rate)
+        logging.warning(response)
+
+        if self.checkBox_default_settings:
+            self.openbci.command(self.openbci.DEFAULT_CHANNELS_SETTINGS)
+        else:
+            self.openbci.channel_settings(channels, power_down=CytonBase.POWER_DOWN_ON,
+                                          gain=gain,
+                                          input_type=adsinput,
+                                          bias=bias,
+                                          srb2=[f'{s}'.encode()
+                                                for s in srb2],
+                                          srb1=srb1)
 
     # ----------------------------------------------------------------------
     def disconnect(self) -> None:
@@ -517,7 +521,7 @@ class Connection:
         # self.openbci.checkBox_send_leadoff = self.parent_frame.checkBox_send_leadoff.isChecked()
         self.openbci.checkBox_send_leadoff = self.parent_frame.groupBox_leadoff_impedance.isChecked()
         # self.openbci.checkBox_default_settings = self.parent_frame.checkBox_default_settings.isChecked()
-        self.openbci.checkBox_default_settings = self.parent_frame.groupBox_settings.isChecked()
+        self.openbci.checkBox_default_settings = not self.parent_frame.groupBox_settings.isChecked()
 
         self.openbci.checkBox_test_signal = self.parent_frame.checkBox_test_signal.isChecked()
         self.openbci.comboBox_test_signal = self.parent_frame.comboBox_test_signal.currentText()

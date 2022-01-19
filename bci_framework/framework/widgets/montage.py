@@ -6,6 +6,7 @@ Montage
 
 import os
 import json
+import logging
 from typing import List, TypeVar, Dict, Optional
 
 from PySide6.QtGui import QCursor
@@ -696,9 +697,9 @@ class Montage:
             ['Montage', 'Channels', 'Electrodes'])
         saved_montages = self.core.config['montages']
 
-        for i, saved in enumerate(saved_montages.keys()):
-            if not saved.startswith('montage'):
-                continue
+        montages = filter(lambda m: m.startswith(
+            'montage'), saved_montages.keys())
+        for i, saved in enumerate(montages):
             montage, electrodes = saved_montages.get(saved).split('|')
             self.parent_frame.tableWidget_montages.insertRow(i)
 
@@ -797,8 +798,12 @@ class Montage:
 
             openbci = self.core.connection.openbci.openbci
 
-            openbci.command(openbci.SAMPLE_RATE_250SPS)
-            openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
+            response = openbci.command(openbci.SAMPLE_RATE_250SPS)
+            logging.warning(response)
+
+            response = openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
+            logging.warning(response)
+
             openbci.leadoff_impedance(
                 prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
 
