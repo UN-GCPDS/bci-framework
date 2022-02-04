@@ -157,6 +157,17 @@ class WSHandler(WebSocketHandler):
             print("No Kafka produser available!")
 
     # ----------------------------------------------------------------------
+    def bci_feedback(self, **kwargs):
+        """Use kafka to stream annotations."""
+
+        feedback = kwargs['feedback']
+
+        if hasattr(self, 'kafka_producer'):
+            self.kafka_producer.send('feedback', feedback)
+        else:
+            print("No Kafka produser available!")
+
+    # ----------------------------------------------------------------------
     @thread_this
     def bci_consumer(cls, **kwargs):
         """"""

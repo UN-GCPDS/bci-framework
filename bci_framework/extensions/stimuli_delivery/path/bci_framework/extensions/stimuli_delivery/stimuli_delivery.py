@@ -9,6 +9,7 @@ import copy
 from radiant.utils import WebSocket
 
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
+from typing import Literal
 
 StimuliServer = None
 
@@ -324,6 +325,36 @@ class Pipeline:
 
 
 ########################################################################
+class Feedback:
+    """"""
+    # ----------------------------------------------------------------------
+
+    def __init__(self, analyser, subscribe):
+        """"""
+        self.main = analyser
+
+        self.main._feedback = self
+        self.name = subscribe
+
+    # ----------------------------------------------------------------------
+    def write(self, kwargs) -> None:
+        """"""
+        kwargs['mode'] = 'stimuli2analysis'
+        kwargs['name'] = self.name
+        self.main.send_feedback(kwargs)
+
+    # ----------------------------------------------------------------------
+    def on_feedback(self, fn):
+        """"""
+        # self._on_feedback = fn
+        self.main.listen_feedbacks(fn)
+
+    # # ----------------------------------------------------------------------
+    # def on_feedback_filter(self):
+        # """"""
+
+
+########################################################################
 class StimuliAPI(Pipeline):
     """"""
     listen_feedback_ = False
@@ -333,6 +364,7 @@ class StimuliAPI(Pipeline):
         """"""
         self._latency = 0
         self.build_areas()
+        self._feedback = None
         self.listen_feedbacks(self.latency_feedback_)
 
     # ----------------------------------------------------------------------
@@ -342,6 +374,7 @@ class StimuliAPI(Pipeline):
         self.ws.main = self
 
         if self.listen_feedback_:
+            logging.warning('Rquesting consumer')
             timer.set_timeout(lambda: self.ws.send(
                 {'action': 'consumer', }), 1000)
 
@@ -412,6 +445,15 @@ class StimuliAPI(Pipeline):
             })
 
     # ----------------------------------------------------------------------
+    def send_feedback(self, feedback, force=False):
+        """"""
+        if self.mode == 'stimuli' or force or self.DEBUG:
+            self.ws.send({
+                'action': 'feedback',
+                'feedback': feedback,
+            })
+
+    # ----------------------------------------------------------------------
     def listen_feedbacks(self, handler):
         """"""
         self.feedback_listener_ = handler
@@ -420,7 +462,8 @@ class StimuliAPI(Pipeline):
     # ----------------------------------------------------------------------
     def _on_feedback(self, *args, **kwargs):
         """"""
-        self.feedback_listener_(**kwargs)
+        if kwargs['mode'] == 'analysis2stimuli' and kwargs['name'] == self._feedback.name:
+            self.feedback_listener_(**kwargs)
 
     # ----------------------------------------------------------------------
     # @DeliveryInstance.both
@@ -526,7 +569,7 @@ class StimuliAPI(Pipeline):
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=150, position='lower left', type='round'):
+    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=50, position='upper left', type: Literal['round', 'square'] = 'square'):
         """"""
         self.hide_synchronizer.no_decorator(self)
 
@@ -638,4 +681,8 @@ class StimuliAPI(Pipeline):
             else:
                 timer.set_timeout(set_counter(''), 1000 * (i + 1))
                 timer.set_timeout(hide, 1000 * start)
+
+    # ----------------------------------------------------------------------
+    def map(self, x, in_min, in_max, out_min, out_max):
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 

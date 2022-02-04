@@ -295,10 +295,10 @@ class Visualization:
         item3 = self.parent_frame.tableWidget_anlaysis.item(row, 4)
         item3.setText(status)
 
-        if status in ['Terminated', 'Finalized']:
-            item3.setBackgroundColor(QColor(220, 53, 69, 30))
-        elif status in ['Running...']:
-            item3.setBackgroundColor(QColor(63, 197, 94, 30))
+        # if status in ['Terminated', 'Finalized']:
+            # item3.setBackground(QColor(220, 53, 69, 30))
+        # elif status in ['Running...']:
+            # item3.setBackground(QColor(63, 197, 94, 30))
 
     # ----------------------------------------------------------------------
     def stop_all_scripts(self) -> None:

@@ -1,3 +1,5 @@
+bci\_framework.default\_extensions.Tutorial\_Pipelines package
+==============================================================
 
 .. automodule:: bci_framework.default_extensions.Tutorial_Pipelines
    :members:
@@ -8,6 +10,5 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.default_extensions.Tutorial_Pipelines.main

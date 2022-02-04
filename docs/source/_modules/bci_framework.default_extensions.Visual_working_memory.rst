@@ -1,3 +1,5 @@
+bci\_framework.default\_extensions.Visual\_working\_memory package
+==================================================================
 
 .. automodule:: bci_framework.default_extensions.Visual_working_memory
    :members:
@@ -8,7 +10,6 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.default_extensions.Visual_working_memory.main
    bci_framework.default_extensions.Visual_working_memory.points

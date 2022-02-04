@@ -5,7 +5,7 @@ import gym
 import bci_pacman
 import time
 
-from classifier import classify
+from predictor import predict
 
 
 BUFFER = 3  # Segundos de analisis de la señal
@@ -36,7 +36,7 @@ class Analysis(DataAnalysis):
     @fake_loop_consumer('eeg', package_size=SLIDING_DATA)
     def stream(self, frame):
         """"""
-        action = classify(self.buffer_eeg)
+        action = predict(self.buffer_eeg)
         
         # Move Pacman
         logging.warning(f'Action: {action}')

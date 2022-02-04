@@ -57,6 +57,15 @@ DeliveryInstance = _delivery_instance()
 
 
 ########################################################################
+class Feedback:
+    """"""
+    # ----------------------------------------------------------------------
+
+    def __init__(self):
+        """Constructor"""
+
+
+########################################################################
 class StimuliAPI(RadiantAPI):
     """Rename Randiant with a arand new class."""
 

@@ -1,3 +1,5 @@
+bci\_framework.extensions.timelock\_analysis package
+====================================================
 
 .. automodule:: bci_framework.extensions.timelock_analysis
    :members:
@@ -8,7 +10,6 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.extensions.timelock_analysis.file_handler
    bci_framework.extensions.timelock_analysis.timelock_analysis

@@ -154,7 +154,7 @@ def main() -> None:
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
         light_theme = 'light_teal.xml'
         dark_theme = 'dark_teal.xml'
-        extra['density_scale'] = 2
+        extra['density_scale'] = 0
     else:
         # light_theme = 'light_blue.xml'
         # dark_theme = 'dark_blue.xml'

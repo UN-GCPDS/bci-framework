@@ -1,1 +1,1 @@
-from .stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance
+from .stimuli_delivery import StimuliServer, StimuliAPI, DeliveryInstance, Feedback

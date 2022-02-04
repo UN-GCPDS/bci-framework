@@ -1,3 +1,5 @@
+bci\_framework.extensions package
+=================================
 
 .. automodule:: bci_framework.extensions
    :members:
@@ -8,7 +10,6 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.extensions.data_analysis
    bci_framework.extensions.stimuli_delivery
@@ -19,6 +20,5 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.extensions.properties

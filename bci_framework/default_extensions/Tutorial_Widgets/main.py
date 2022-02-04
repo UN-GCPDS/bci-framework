@@ -1,4 +1,4 @@
-from bci_framework.extensions.stimuli_delivery import StimuliServer, StimuliAPI
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 
 from browser import document, timer, html, window
@@ -137,6 +137,6 @@ class TutorialWidgets(StimuliAPI):
 
 
 if __name__ == '__main__':
-    StimuliServer('TutorialWidgets')
+    TutorialWidgets()
 
 

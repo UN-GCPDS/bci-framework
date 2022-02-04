@@ -1,3 +1,5 @@
+bci\_framework.framework.qtgui package
+======================================
 
 .. automodule:: bci_framework.framework.qtgui
    :members:
@@ -8,6 +10,5 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.framework.qtgui.icons

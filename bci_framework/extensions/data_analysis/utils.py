@@ -72,23 +72,44 @@ def loop_consumer(*topics, package_size=None) -> Callable:
 
     This decorator will call a method on every new data streamming input.
     """
-    global data_tmp_eeg_, data_tmp_aux_
+    global data_tmp_eeg_, data_tmp_aux_, package_size_
+
+    topics = list(topics)
 
     if json.loads(os.getenv('BCISTREAM_RASPAD')):
-        package_size = 1000
+        package_size_ = 1000
+    else:
+        package_size_ = package_size
 
     def wrap_wrap(fn: Callable) -> Callable:
-        global data_tmp_eeg_, data_tmp_aux_
+        global data_tmp_eeg_, data_tmp_aux_, package_size_
 
         arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
 
         def wrap(cls):
-            global data_tmp_eeg_, data_tmp_aux_
+            global data_tmp_eeg_, data_tmp_aux_, package_size_
+
+            if cls._feedback:
+                topics.append('feedback')
+
+            # if cls._package_size:
+                # package_size_ = cls._package_size
 
             with OpenBCIConsumer(host=prop.HOST, topics=topics) as stream:
                 frame = 0
 
                 for data in stream:
+
+                    if cls._package_size:
+                        package_size_ = cls._package_size
+
+                    if data.topic == 'feedback':
+                        feedback = data.value
+                        if feedback['name'] == cls._feedback.name and feedback['mode'] == 'stimuli2analysis':
+
+                            cls._feedback._on_feedback(**feedback)
+
+                        continue
 
                     if data.topic == 'eeg':
                         frame += 1
@@ -114,7 +135,7 @@ def loop_consumer(*topics, package_size=None) -> Callable:
                         latency = (datetime.now(
                         ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
 
-                    if package_size and (data.topic in ['eeg', 'aux']):
+                    if package_size_ and (data.topic in ['eeg', 'aux']):
 
                         if data.topic == 'eeg':
                             if data_tmp_eeg_ is None:
@@ -136,7 +157,7 @@ def loop_consumer(*topics, package_size=None) -> Callable:
                                   'frame': frame,
                                   'latency': latency,
                                   }
-                        n = (package_size // prop.STREAMING_PACKAGE_SIZE)
+                        n = (package_size_ // prop.STREAMING_PACKAGE_SIZE)
                         if frame % n == 0:
                             fn(*[cls] + [kwargs[v] for v in arguments])
                         # else:
@@ -157,7 +178,7 @@ def loop_consumer(*topics, package_size=None) -> Callable:
 
 
 # ----------------------------------------------------------------------
-def fake_loop_consumer(*topics) -> Callable:
+def fake_loop_consumer(*topics, package_size=None) -> Callable:
     """Decorator to iterate methods with new streamming data.
 
     This decorator will call a method with fake data.
@@ -307,8 +328,8 @@ def marker_slicing(markers, t0, t1):
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * t1)
 
-                        t = cls.buffer_aux_timestamp[argmin +
-                                                     start: argmin + stop]
+                        t = cls.buffer_aux_timestamp[argmin
+                                                     + start: argmin + stop]
                         eeg = cls.buffer_eeg_[
                             :, argmin + start: argmin + stop]
                         aux = cls.buffer_aux_[

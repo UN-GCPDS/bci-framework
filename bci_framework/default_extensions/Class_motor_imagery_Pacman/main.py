@@ -74,8 +74,10 @@ class PacmanMotorImagery(StimuliAPI):
             on_change=self.synchronizer,
         )
 
-        self.dashboard <= w.toggle_button([('Start run', self.start), ('Stop run', self.stop)], id='run')
-        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), ('Stop marker synchronization', self.start_marker_synchronization)], id='sync')
+        self.dashboard <= w.toggle_button(
+            [('Start run', self.start), ('Stop run', self.stop)], id='run')
+        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), (
+            'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -87,14 +89,15 @@ class PacmanMotorImagery(StimuliAPI):
             self.start_record()
 
         self.build_trials()
-        
+
         self.show_counter(5)
         timer.set_timeout(self.start_run, 5000)
-        
+
     # ----------------------------------------------------------------------
     def start_run(self):
         """"""
-        self.run_pipeline(self.pipeline_trial, self.trials, callback='stop_run')
+        self.run_pipeline(self.pipeline_trial,
+                          self.trials, callback='stop_run')
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -223,9 +226,6 @@ class PacmanMotorImagery(StimuliAPI):
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
-            
-
-
 
 
 if __name__ == '__main__':

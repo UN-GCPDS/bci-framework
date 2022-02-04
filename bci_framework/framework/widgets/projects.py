@@ -7,6 +7,7 @@ Projects
 import os
 import re
 import sys
+import json
 import pickle
 import shutil
 from typing import TypeVar
@@ -67,14 +68,20 @@ class Projects:
         self.parent_frame.checkBox_projects_show_tutorials.stateChanged.connect(
             self.load_projects)
 
-        self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.path))
-        self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.path))
-        self.parent_frame.listWidget_projects_analysis.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.path))
-        self.parent_frame.listWidget_projects_timelock.itemDoubleClicked.connect(
-            lambda evt: self.open_project(evt.path))
+        if json.loads(os.getenv('BCISTREAM_RASPAD')):
+            self.parent_frame.pushButton_open_project_raspad.clicked.connect(
+                self.on_double_click)
+        else:
+            self.parent_frame.pushButton_open_project_raspad.hide()
+
+            self.parent_frame.listWidget_projects_visualizations.itemDoubleClicked.connect(
+                lambda evt: self.open_project(evt.path))
+            self.parent_frame.listWidget_projects_delivery.itemDoubleClicked.connect(
+                lambda evt: self.open_project(evt.path))
+            self.parent_frame.listWidget_projects_analysis.itemDoubleClicked.connect(
+                lambda evt: self.open_project(evt.path))
+            self.parent_frame.listWidget_projects_timelock.itemDoubleClicked.connect(
+                lambda evt: self.open_project(evt.path))
 
         self.parent_frame.listWidget_projects_visualizations.itemClicked.connect(
             self.there_can_only_be_one)
@@ -112,6 +119,16 @@ class Projects:
             self.close_tab)
         self.parent_frame.tabWidget_project.currentChanged.connect(
             self.tab_changed)
+
+    # ----------------------------------------------------------------------
+    def on_double_click(self, evt) -> None:
+        """"""
+        for listwidget in ['listWidget_projects_delivery',
+                           'listWidget_projects_visualizations',
+                           'listWidget_projects_analysis',
+                           'listWidget_projects_timelock']:
+            if getattr(self.parent_frame, listwidget).currentRow() >= 0:
+                return self.open_project(getattr(self.parent_frame, listwidget).currentItem().path)
 
     # ----------------------------------------------------------------------
     def show_projects(self, evt) -> None:

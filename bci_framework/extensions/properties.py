@@ -28,7 +28,8 @@ class Properties:
     ```
     """
     # print('WARNING - USING CUSTOM PROPERTIES')
-    # HOST = '192.168.1.1'
+    # # HOST = '192.168.1.1'
+    # HOST = 'localhost'
     # CHANNELS = {i + 1: f'ch-{i+1}' for i in range(16)}
     # SAMPLE_RATE = 1000
     # STREAMING_PACKAGE_SIZE = 100

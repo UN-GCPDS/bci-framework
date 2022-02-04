@@ -1,3 +1,5 @@
+bci\_framework.framework.widgets package
+========================================
 
 .. automodule:: bci_framework.framework.widgets
    :members:
@@ -8,7 +10,6 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.framework.widgets.annotations
    bci_framework.framework.widgets.connection

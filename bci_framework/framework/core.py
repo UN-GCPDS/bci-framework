@@ -279,6 +279,7 @@ class BCIFramework(QMainWindow):
 
         self.main.pushButton_open_records_folder.setIcon(icon('folder'))
         self.main.pushButton_open_extension_folder.setIcon(icon('folder'))
+        self.main.pushButton_open_project_raspad.setIcon(icon('folder'))
 
         for i in range(1, 5):
             getattr(self.main, f'pushButton_update_wifi{i}').setIcon(
@@ -764,7 +765,7 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def handle_feedback(self, data) -> None:
         """"""
-        if fn := getattr(self, f"feedback_{data['name']}", False):
+        if fn := getattr(self, f"feedback_{data.get('name', False)}", False):
             fn(data['value'])
 
     # ----------------------------------------------------------------------

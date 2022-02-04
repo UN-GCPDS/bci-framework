@@ -53,6 +53,32 @@ class Transformers:
 
 
 ########################################################################
+class Feedback:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, analyser, subscribe):
+        """"""
+        self.main = analyser
+
+        self.main._feedback = self
+        self.name = subscribe
+
+    # ----------------------------------------------------------------------
+    def write(self, kwargs) -> None:
+        """"""
+        kwargs['mode'] = 'analysis2stimuli'
+        # kwargs['mode'] = 'stimuli2analysis'
+        kwargs['name'] = self.name
+        self.main.generic_produser('feedback', kwargs)
+
+    # ----------------------------------------------------------------------
+    def on_feedback(self, fn):
+        """"""
+        self._on_feedback = fn
+
+
+########################################################################
 class DataAnalysis:
     """"""
 
@@ -65,6 +91,8 @@ class DataAnalysis:
 
         self.transformers_ = {}
         self.transformers_aux_ = {}
+        self._feedback = False
+        self._package_size = None
 
     # ----------------------------------------------------------------------
     def _enable_commands(self):
@@ -346,4 +374,9 @@ class DataAnalysis:
             return interpolate_datetime(self.buffer_aux_timestamp_)
         except:
             return self.buffer_aux_timestamp_
+
+    # ----------------------------------------------------------------------
+    def set_package_size(self, value):
+        """"""
+        self._package_size = value
 

@@ -1,3 +1,5 @@
+bci\_framework.default\_extensions package
+==========================================
 
 .. automodule:: bci_framework.default_extensions
    :members:
@@ -8,7 +10,6 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
 
    bci_framework.default_extensions.Class_motor_imagery
    bci_framework.default_extensions.Class_motor_imagery_Pacman
