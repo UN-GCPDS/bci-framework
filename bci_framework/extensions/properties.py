@@ -28,8 +28,7 @@ class Properties:
     ```
     """
     # print('WARNING - USING CUSTOM PROPERTIES')
-    # # HOST = '192.168.1.1'
-    # HOST = 'localhost'
+    # HOST = '192.168.1.1'
     # CHANNELS = {i + 1: f'ch-{i+1}' for i in range(16)}
     # SAMPLE_RATE = 1000
     # STREAMING_PACKAGE_SIZE = 100
@@ -39,7 +38,7 @@ class Properties:
     # OFFSET = -4442972.687432289
     # DAISY = [True]
     # RASPAD = False
-    # os.environ['BCISTREAM_RASPAD'] = json.dumps('True')
+    # os.environ['BCISTREAM_RASPAD'] = json.dumps('False')
 
     # ----------------------------------------------------------------------
     def __getattr__(self, attr: str):

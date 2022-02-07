@@ -23,11 +23,44 @@ from datetime import datetime, timedelta
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import thread_this, subprocess_this
 
-clients = []
+created_consumer = [False]
+clients = {}
 JSON = TypeVar('json')
 
 logging.getLogger('kafka').setLevel(logging.CRITICAL)
 logging.getLogger('kafka.conn').setLevel(logging.CRITICAL)
+
+
+# ----------------------------------------------------------------------
+@thread_this
+def bci_consumer():
+    """"""
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
+    try:
+        consumer = KafkaConsumer(
+            bootstrap_servers=[f'{prop.HOST}:9092'],
+            value_deserializer=pickle.loads,
+            auto_offset_reset='latest',
+        )
+    except:
+        return
+
+    consumer.subscribe(['feedback'])
+    count = 0
+    for message in consumer:
+        count += 1
+        for client in clients:
+            try:
+                clients[client].write_message(json.dumps({'method': '_on_feedback',
+                                                          'args': [],
+                                                          'kwargs': {**message.value, **{'c': count, }},
+                                                          }))
+            except:
+                pass
+
+
+bci_consumer()
 
 
 ########################################################################
@@ -64,6 +97,8 @@ class WSHandler(WebSocketHandler):
             logging.warning(
                 f'Kafka host ({prop.HOST}:9092) not available!')
 
+        # self.bci_consumer()
+
     # ----------------------------------------------------------------------
     def check_origin(self, *args, **kwargs):
         """"""
@@ -74,11 +109,19 @@ class WSHandler(WebSocketHandler):
         """"""
         self.print_log('tornado_ok')
 
-    # ----------------------------------------------------------------------
-    def on_close(self):
-        """"""
-        if hasattr(self, 'client_id'):
-            print("connection closed: {}".format(self.client_id))
+    # # ----------------------------------------------------------------------
+    # def on_close(self):
+        # """"""
+        # if self in clients:
+            # clients.pop(clients.index(self))
+        # super().on_close(self)
+
+    # # ----------------------------------------------------------------------
+    # def on_connection_close(self):
+        # """"""
+        # if self in clients:
+            # clients.pop(clients.index(self))
+        # super().on_connection_close(self)
 
     # ----------------------------------------------------------------------
     def print_log(self, message: str):
@@ -106,26 +149,36 @@ class WSHandler(WebSocketHandler):
         """
         if message:
             data = json.loads(message)
+
+            # if data['action'] == 'consumer' and not created_consumer[0]:
+                # created_consumer = [True]
+                # # bci_consumer()
+                # # return
+            # elif data['action'] == 'consumer' and created_consumer[0]:
+                # return
+
             getattr(self, f'bci_{data["action"]}')(**data)
 
     # ----------------------------------------------------------------------
     def bci_register(self, **kwargs):
         """Register clients."""
-        if not self in clients:
-            clients.append(self)
-            print('Client added')
-        else:
-            print('Client already registered')
+
+        clients[kwargs['mode']] = self
 
     # ----------------------------------------------------------------------
     def bci_feed(self, **kwargs):
         """Call the same method in all clients."""
-        for i, client in enumerate(clients):
-            if client != self:
-                try:
-                    client.write_message(kwargs)
-                except WebSocketClosedError:
-                    clients.pop(i)
+        # for i, client in enumerate(clients):
+            # if client != self:
+                # try:
+                    # client.write_message(kwargs)
+                # except WebSocketClosedError:
+                    # clients.pop(i)
+        for client in clients:
+            try:
+                clients[client].write_message(kwargs)
+            except:
+                pass
 
     # ----------------------------------------------------------------------
     def bci_marker(self, **kwargs):
@@ -167,33 +220,34 @@ class WSHandler(WebSocketHandler):
         else:
             print("No Kafka produser available!")
 
-    # ----------------------------------------------------------------------
-    @thread_this
-    def bci_consumer(cls, **kwargs):
-        """"""
-        asyncio.set_event_loop(asyncio.new_event_loop())
+    # # ----------------------------------------------------------------------
+    # @thread_this
+    # def bci_consumer(cls, **kwargs):
+        # """"""
+        # asyncio.set_event_loop(asyncio.new_event_loop())
 
-        try:
-            consumer = KafkaConsumer(
-                bootstrap_servers=[f'{prop.HOST}:9092'],
-                value_deserializer=pickle.loads,
-                auto_offset_reset='latest',
-            )
-        except:
-            return
+        # try:
+            # consumer = KafkaConsumer(
+                # bootstrap_servers=[f'{prop.HOST}:9092'],
+                # value_deserializer=pickle.loads,
+                # auto_offset_reset='latest',
+            # )
+        # except:
+            # return
 
-        consumer.subscribe(['feedback'])
-
-        for message in consumer:
-            for i, client in enumerate(clients):
-                # if cls != client:
-                try:
-                    client.write_message(json.dumps({'method': '_on_feedback',
-                                                     'args': [],
-                                                     'kwargs': message.value,
-                                                     }))
-                except:
-                    pass
-                    # clients.pop(i)
+        # consumer.subscribe(['feedback'])
+        # count = 0
+        # for message in consumer:
+            # for client in clients:
+                # if cls != clients[client]:
+                    # try:
+                        # count += 1
+                        # clients[client].write_message(json.dumps({'method': '_on_feedback',
+                                                                  # 'args': [],
+                                                                  # 'kwargs': {**message.value, **{'c': count, }},
+                                                                  # }))
+                    # except:
+                        # pass
+                    # # clients.pop(i)
 
 

@@ -82,7 +82,9 @@ class OpenBCIThread(QThread):
         for _ in range(10):
             response = self.openbci.command(self.boardmode)
             if response and all([b'Success:' in r for r in response]):
-                logging.info(f'Bardmode setted in {self.boardmode} mode')
+                self.boardmode_s = CytonBase.BOARD_MODE_VALUE[self.boardmode]
+                logging.info(
+                    f'Bardmode setted in "{self.boardmode_s}" mode')
                 boardmode_setted = True
                 break
             time.sleep(0.1)
@@ -90,6 +92,7 @@ class OpenBCIThread(QThread):
         # boardmode = self.openbci.boardmode
         if not boardmode_setted:
             logging.warning('Boardmode not setted!')
+            self.boardmode_s = None
         # self.session_settings(self.montage, self.bias,
                               # self.gain, self.srb1, self.adsinput, self.srb2, self.sample_rate)
 
@@ -408,10 +411,11 @@ class Connection:
     # ----------------------------------------------------------------------
     def autoconnect(self) -> None:
         """"""
-        logging.info('Trying to auto connect')
         self.core.calculate_offset()
         if getattr(self.core, 'streaming', False) and not self.openbci.connected:
-            self.openbci_connect()
+            self.on_focus()
+            if self.openbci_connect():
+                self.connection_ok()
 
     # ----------------------------------------------------------------------
     def on_connect(self, toggled: bool) -> None:
@@ -432,7 +436,7 @@ class Connection:
                 self.openbci.disconnect()
 
     # ----------------------------------------------------------------------
-    def openbci_connect(self) -> None:
+    def openbci_connect(self) -> bool:
         """Recollect values from GUI."""
         if 'serial' in self.parent_frame.comboBox_connection_mode.currentText().lower():
             mode = 'serial'
@@ -531,6 +535,7 @@ class Connection:
         self.update_environ()
 
         self.openbci.start()
+        return True
 
     # ----------------------------------------------------------------------
     def update_environ(self) -> None:
@@ -551,7 +556,7 @@ class Connection:
             self.parent_frame.comboBox_boardmode.currentText().lower())
 
     # ----------------------------------------------------------------------
-    @Slot()
+    # @Slot()
     def connection_ok(self) -> None:
         """Event for OpenBCI connected."""
         QApplication.restoreOverrideCursor()

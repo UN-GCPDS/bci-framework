@@ -1,5 +1,5 @@
 from browser import window
-# import json
+import json
 import logging
 
 
@@ -27,10 +27,10 @@ class Properties:
         """Add the prefix to environ variable and try to get it."""
 
         if prop := dict(window.brython_environ).get(f"BCISTREAM_{attr}", None):
-            # p = json.loads(prop)
-            # if attr == 'CHANNELS':
-                # p = {int(k): p[k] for k in p}
-            return prop
+            p = json.loads(prop)
+            if attr == 'CHANNELS':
+                p = {int(k): p[k] for k in p}
+            return p
         else:
             logging.warning(
                 f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}')

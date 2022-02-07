@@ -19,6 +19,7 @@ from PySide6.QtGui import QPixmap, QKeySequence, QShortcut
 
 from ..extensions_handler import ExtensionWidget
 from ..subprocess_handler import run_subprocess
+from ..dialogs import Dialogs
 
 import socket
 from contextlib import closing
@@ -181,6 +182,12 @@ class StimuliDelivery:
     # ----------------------------------------------------------------------
     def start_calibration(self):
         """"""
+        if boardmode := getattr(self.core.connection.openbci, 'boardmode_s', True):
+            if not boardmode in ['analog', 'digital']:
+                Dialogs.critical_message(
+                    self.parent_frame, 'Boardmode no compatible', 'In order to perform the calibration the boardmode must be setted in "analog" or "digital" mode')
+                return
+
         self.core.calculate_offset()
         self.parent_frame.label_calibration_image.hide()
         self.parent_frame.mdiArea_latency.show()

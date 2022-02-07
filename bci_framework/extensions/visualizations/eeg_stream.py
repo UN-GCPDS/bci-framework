@@ -107,9 +107,12 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         port = 5000
         super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
 
-        self._pivot = None
+        # self._pivot = None
         if enable_produser:
             self._enable_commands()
+
+        self._feedback = False
+        self._package_size = None
 
         self.transformers_ = {}
         self.transformers_aux_ = {}

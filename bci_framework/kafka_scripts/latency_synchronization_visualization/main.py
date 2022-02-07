@@ -1,5 +1,5 @@
 from bci_framework.extensions.visualizations import EEGStream
-from bci_framework.extensions.data_analysis import marker_slicing
+from bci_framework.extensions.data_analysis import Feedback, marker_slicing
 from bci_framework.extensions import properties as prop
 
 import logging
@@ -29,9 +29,13 @@ class Stream(EEGStream):
     """"""
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """"""
-        super().__init__(enable_produser=True)
+        super().__init__(*args, **kwargs)
+        
+        
+        self.feedback = Feedback(self, 'VisualWorkingMemory')
+        # self.feedback.on_feedback(self.on_feedback)
 
         # self.N = int(prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)
 
@@ -59,7 +63,7 @@ class Stream(EEGStream):
 
         self.frames_names()
         self.create_buffer(BUFFER, resampling=1000, fill=-1, aux_shape=2)
-
+        
         self.stream()
 
     # ----------------------------------------------------------------------
@@ -132,7 +136,7 @@ class Stream(EEGStream):
 
         if self.timestamp_rises.size > 0:
             v = np.argmin(np.abs(timestamp - self.timestamp_rises[0]))
-            window = aux[int(v - prop.SAMPLE_RATE * 0.3)                         : int(v + prop.SAMPLE_RATE * 0.3)]
+            window = aux[int(v - prop.SAMPLE_RATE * 0.3) : int(v + prop.SAMPLE_RATE * 0.3)]
             t = np.linspace(-300, 300, window.shape[0])
             self.axis_wave.plot(t, window, label='input signal')[0]
 
@@ -204,13 +208,13 @@ class Stream(EEGStream):
         self.feed()
         self.latency_correction = pid(np.mean(self.latencies[-5:]))
 
-        self.send_feedback({'name': 'set_latency',
+        self.feedback.write({'name': 'set_latency',
                             'value': self.latency_correction,
                             })
 
 
 if __name__ == '__main__':
-    Stream()
+    Stream(enable_produser=True)
 
 
 

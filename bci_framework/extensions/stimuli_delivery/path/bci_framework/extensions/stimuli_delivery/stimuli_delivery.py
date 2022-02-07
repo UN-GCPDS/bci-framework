@@ -161,7 +161,9 @@ class BCIWebSocket(WebSocket):
     # ----------------------------------------------------------------------
     def on_open(self, evt):
         """"""
-        self.send({'action': 'register'})
+        self.send({'action': 'register',
+                   'mode': self.main._bci_mode,
+                   })
         print('Connected with dashboard.')
 
         if on_connect := getattr(self.main, 'on_connect', False):
@@ -179,17 +181,17 @@ class BCIWebSocket(WebSocket):
                 getattr(self.main, data['method'])(
                     *data['args'], **data['kwargs'])
 
-    # ----------------------------------------------------------------------
-    def on_close(self, evt):
-        """"""
-        window.location.replace(self.ip_.replace(
-            '/ws', '').replace('ws', 'http'))
+    # # ----------------------------------------------------------------------
+    # def on_close(self, evt):
+        # """"""
+        # window.location.replace(self.ip_.replace(
+            # '/ws', '').replace('ws', 'http'))
 
-    # ----------------------------------------------------------------------
-    def on_error(self, evt):
-        """"""
-        window.location.replace(self.ip_.replace(
-            '/ws', '').replace('ws', 'http'))
+    # # ----------------------------------------------------------------------
+    # def on_error(self, evt):
+        # """"""
+        # window.location.replace(self.ip_.replace(
+            # '/ws', '').replace('ws', 'http'))
 
 
 ########################################################################
@@ -332,6 +334,7 @@ class Feedback:
     def __init__(self, analyser, subscribe):
         """"""
         self.main = analyser
+        # self.main.listen_feedback_ = True
 
         self.main._feedback = self
         self.name = subscribe
@@ -346,12 +349,7 @@ class Feedback:
     # ----------------------------------------------------------------------
     def on_feedback(self, fn):
         """"""
-        # self._on_feedback = fn
         self.main.listen_feedbacks(fn)
-
-    # # ----------------------------------------------------------------------
-    # def on_feedback_filter(self):
-        # """"""
 
 
 ########################################################################
@@ -373,10 +371,10 @@ class StimuliAPI(Pipeline):
         self.ws = BCIWebSocket(f'ws://{ip}:{port}/ws')
         self.ws.main = self
 
-        if self.listen_feedback_:
-            logging.warning('Rquesting consumer')
-            timer.set_timeout(lambda: self.ws.send(
-                {'action': 'consumer', }), 1000)
+        # if self.listen_feedback_:
+            # logging.warning('Requesting consumer')
+            # timer.set_timeout(lambda: self.ws.send(
+                # {'action': 'consumer', }), 1000)
 
     # ----------------------------------------------------------------------
     @property
@@ -393,7 +391,6 @@ class StimuliAPI(Pipeline):
             'latency': self._latency,
             # 'datetime': datetime.now().timestamp(),
         }
-
         if self.mode == 'stimuli' or force or self.DEBUG:
             self.ws.send({
                 'action': 'marker',
@@ -463,7 +460,8 @@ class StimuliAPI(Pipeline):
     def _on_feedback(self, *args, **kwargs):
         """"""
         if kwargs['mode'] == 'analysis2stimuli' and kwargs['name'] == self._feedback.name:
-            self.feedback_listener_(**kwargs)
+            if self.mode == 'stimuli' or self.DEBUG:
+                self.feedback_listener_(**kwargs)
 
     # ----------------------------------------------------------------------
     # @DeliveryInstance.both

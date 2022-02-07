@@ -68,7 +68,6 @@ class Feedback:
     def write(self, kwargs) -> None:
         """"""
         kwargs['mode'] = 'analysis2stimuli'
-        # kwargs['mode'] = 'stimuli2analysis'
         kwargs['name'] = self.name
         self.main.generic_produser('feedback', kwargs)
 
@@ -85,7 +84,7 @@ class DataAnalysis:
     # ----------------------------------------------------------------------
     def __init__(self, enable_produser=False):
         """"""
-        self._pivot = None
+        # self._pivot = None
         if enable_produser:
             self._enable_commands()
 

@@ -106,7 +106,6 @@ def loop_consumer(*topics, package_size=None) -> Callable:
                     if data.topic == 'feedback':
                         feedback = data.value
                         if feedback['name'] == cls._feedback.name and feedback['mode'] == 'stimuli2analysis':
-
                             cls._feedback._on_feedback(**feedback)
 
                         continue
@@ -328,8 +327,8 @@ def marker_slicing(markers, t0, t1):
                         start = int((prop.SAMPLE_RATE) * t0)
                         stop = int((prop.SAMPLE_RATE) * t1)
 
-                        t = cls.buffer_aux_timestamp[argmin
-                                                     + start: argmin + stop]
+                        t = cls.buffer_aux_timestamp[argmin +
+                                                     start: argmin + stop]
                         eeg = cls.buffer_eeg_[
                             :, argmin + start: argmin + stop]
                         aux = cls.buffer_aux_[

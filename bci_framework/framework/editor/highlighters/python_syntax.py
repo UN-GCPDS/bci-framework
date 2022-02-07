@@ -22,7 +22,7 @@ class PythonHighlighter(QSyntaxHighlighter):
                      'for', 'from', 'global', 'if', 'import', 'in',
                      'is', 'lambda', 'not', 'or', 'pass', 'print',
                      'raise', 'return', 'try', 'while', 'yield',
-                     'None', 'True', 'False', 'as',
+                     'None', 'True', 'False', 'as', 'match', 'case'
                      ]
 
     keywords = ['__name__', 'format', 'int', 'float', 'str', 'list', 'tuple',

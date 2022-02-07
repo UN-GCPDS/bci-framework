@@ -96,7 +96,7 @@ class ExtensionWidget(QMdiSubWindow):
             self.load_extension(autostart)
 
         if hide_menu:
-            self.main.widget.hide()
+            self.menubar.hide()
 
     # ----------------------------------------------------------------------
     @property
