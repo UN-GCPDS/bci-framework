@@ -13,6 +13,7 @@ Subpackages
 
    bci_framework.default_extensions.Class_motor_imagery
    bci_framework.default_extensions.Class_motor_imagery_Pacman
+   bci_framework.default_extensions.Neuropathic_pain_Neurofeedback
    bci_framework.default_extensions.OpenBCI_Auxiliar_data
    bci_framework.default_extensions.OpenBCI_Raw_EEG
    bci_framework.default_extensions.OpenBCI_Raw_topoplot
@@ -25,3 +26,5 @@ Subpackages
    bci_framework.default_extensions.Tutorial_Objects_measurement
    bci_framework.default_extensions.Tutorial_Pipelines
    bci_framework.default_extensions.Visual_working_memory
+   bci_framework.default_extensions.Visual_working_memory_Generator
+   bci_framework.default_extensions.Visual_working_memory_Neurofeedback

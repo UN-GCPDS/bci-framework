@@ -25,10 +25,4 @@ An optionally distributed paradigm for data acquisition and streaming is availab
 
 BCI-Framework comprises a graphical user interface (GUI) with a set of individual computational processes (distributed or in a single machine), that feed a visualization, serve a stimuli delivery, handle an acquisition, storage data, or stream a previous one (offline analysis). It has a built-in development environment and a set of libraries that the user can implement to create their specific functionality.
 
-A distributed processing tool, stimuli delivery, psychophysiological experiments designer and real-time data visualizations for OpenBCI.
-
-BCI-Framework is an open-source tool for the acquisition of EEG/EMG/ECG signals developed to work with OpenBCI’s Cyton board. The main core of this software lies on OpenBCI-Stream, a library designed to handle all the low-level hardware features and extend the hardware capabilities with high-level programming libraries. A distributed paradigm for data acquisition and streaming is available to be implemented. This approach stabilizes the sampling rate on non-real-time acquisition systems and consists on delegate the board handle to a dedicated environ and stream out the data in real-time. Write custom visualization for raw or processed time series and design custom neurophysiological experiments are the major features available in this application.
-
-In particular BCI-Framework comprises a graphical user interface (GUI) with a set of individual computational processes (distributed or in a single machine). Also, this application can feed a visualization, serve a stimuli delivery, handle an acquisition, storage data, or stream a previous one (offline analysis). Finally, it integrates a built-in development environment and a set of libraries that the user can implement to create their specific functionality.
-
 ![](https://github.com/UN-GCPDS/bci-framework/blob/master/docs/source/notebooks/images/readme.gif)
