@@ -23,6 +23,7 @@ from openbci_stream.utils import HDF5Writer
 from openbci_stream.utils.pid_admin import autokill_process
 import numpy as np
 
+from bci_framework.extensions.data_analysis import DataAnalysis
 from bci_framework.extensions import properties as prop
 from bci_framework.extensions.data_analysis.utils import loop_consumer
 
@@ -32,12 +33,13 @@ autokill_process(name=f'bci-framework_records')
 
 
 ########################################################################
-class RecordTransformer:
+class RecordTransformer(DataAnalysis):
     """This consumer is basically an extension."""
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """"""
+        super().__init__(*args, **kwargs)
 
         now = datetime.now()
 

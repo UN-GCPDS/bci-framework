@@ -1,0 +1,40 @@
+.bci_stimuli {
+    background-color: #808080;
+}
+
+.bci_dashboard button {
+    margin: 10px;
+}
+
+.mdc-typography--headline3,
+.mdc-typography--headline4 {
+    line-height: 60px;
+}
+
+#cue {
+    color: #4dd0e1;
+    justify-content: center;
+    line-height: 0;
+    z-index: 999;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+.test-button {
+    bottom: 15px;
+    width: 35%;
+    position: absolute;
+}
+
+.test-button#different {
+    left: 10%;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.test-button#identical {
+    right: 10%;
+    color: #ffffff;
+    border-color: #ffffff;
+}

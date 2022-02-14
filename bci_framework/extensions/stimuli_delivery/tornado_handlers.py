@@ -175,10 +175,11 @@ class WSHandler(WebSocketHandler):
                 # except WebSocketClosedError:
                     # clients.pop(i)
         for client in clients:
-            try:
-                clients[client].write_message(kwargs)
-            except:
-                pass
+            if clients[client] != self:
+                try:
+                    clients[client].write_message(kwargs)
+                except:
+                    pass
 
     # ----------------------------------------------------------------------
     def bci_marker(self, **kwargs):

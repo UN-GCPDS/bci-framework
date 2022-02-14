@@ -1,3 +1,10 @@
+"""
+================================
+Visual Working Memory - Paradigm
+================================
+
+"""
+
 import os
 import json
 import time
@@ -392,6 +399,7 @@ class StimuliAPI(Pipeline):
             # 'datetime': datetime.now().timestamp(),
         }
         if self.mode == 'stimuli' or force or self.DEBUG:
+            logging.warning(f'Marker: {marker["marker"]}')
             self.ws.send({
                 'action': 'marker',
                 'marker': marker,
@@ -406,13 +414,6 @@ class StimuliAPI(Pipeline):
         # print(f'MARKER: {marker["marker"]}')
 
     # ----------------------------------------------------------------------
-    @DeliveryInstance.event
-    def start_record(self):
-        """"""
-        self.send_annotation('start_record')
-        timer.set_timeout(self._send_custom_annotations, 15000)
-
-    # ----------------------------------------------------------------------
     def _send_custom_annotations(self):
         """"""
         prefix = 'annotation-'
@@ -423,6 +424,13 @@ class StimuliAPI(Pipeline):
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.event
+    def start_record(self):
+        """"""
+        self.send_annotation('start_record')
+        timer.set_timeout(self._send_custom_annotations, 15000)
+
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.event
     def stop_record(self):
         """"""
         self.send_annotation('stop_record')
@@ -430,8 +438,8 @@ class StimuliAPI(Pipeline):
     # ----------------------------------------------------------------------
     def send_annotation(self, description, duration=0, force=False):
         """"""
-        logging.warning(f'Annotation: {description}')
         if self.mode == 'stimuli' or force or self.DEBUG:
+            logging.warning(f'Annotation: {description}')
             self.ws.send({
                 'action': 'annotation',
                 'annotation': {'duration': duration,
@@ -445,6 +453,7 @@ class StimuliAPI(Pipeline):
     def send_feedback(self, feedback, force=False):
         """"""
         if self.mode == 'stimuli' or force or self.DEBUG:
+            logging.warning(f'Feedback: {feedback}')
             self.ws.send({
                 'action': 'feedback',
                 'feedback': feedback,

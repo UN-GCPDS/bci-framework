@@ -1403,7 +1403,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>83</width>
                   <height>95</height>
                  </rect>
                 </property>
@@ -1445,8 +1445,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>100</width>
-                      <height>30</height>
+                      <width>83</width>
+                      <height>83</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1495,8 +1495,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>448</width>
-                  <height>442</height>
+                  <width>303</width>
+                  <height>145</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -1757,7 +1757,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>427</width>
+                 <width>373</width>
                  <height>996</height>
                 </rect>
                </property>
@@ -3013,6 +3013,14 @@ p, li { white-space: pre-wrap; }
             <number>0</number>
            </property>
            <widget class="QWidget" name="page_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>448</width>
+              <height>514</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Markers</string>
             </attribute>
@@ -3026,6 +3034,29 @@ p, li { white-space: pre-wrap; }
              <property name="rightMargin">
               <number>0</number>
              </property>
+             <item row="1" column="0" colspan="2">
+              <widget class="QTableWidget" name="tableWidget_markers">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>Datetime</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Marker</string>
+                </property>
+               </column>
+              </widget>
+             </item>
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_29">
                <item>
@@ -3066,7 +3097,7 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="0" column="1">
+             <item row="2" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_22">
                <item>
                 <widget class="QLineEdit" name="lineEdit_marker"/>
@@ -3083,29 +3114,6 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="QTableWidget" name="tableWidget_markers">
-               <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
-               </property>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Datetime</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Marker</string>
-                </property>
-               </column>
-              </widget>
-             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="page_10">
@@ -3114,7 +3122,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>448</width>
-              <height>482</height>
+              <height>514</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3251,8 +3259,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>448</width>
-              <height>514</height>
+              <width>175</width>
+              <height>175</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3535,8 +3543,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>448</width>
-                  <height>326</height>
+                  <width>87</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3584,7 +3592,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3633,7 +3641,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3679,7 +3687,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>96</width>
+                  <width>87</width>
                   <height>93</height>
                  </rect>
                 </property>

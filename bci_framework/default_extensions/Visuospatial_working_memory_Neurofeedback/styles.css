@@ -1,0 +1,27 @@
+.bci_dashboard button {
+    margin: 10px;
+}
+
+
+.bci_stimuli {
+    background-color: #808080;
+}
+
+#stimuli {
+
+    display: none;
+
+    width: 50vh;
+    height: 50vh;
+    border-radius: 50%;
+    background-image: url('gradient1.png');
+    
+    
+    position: absolute;
+    top: 25vh;
+    left: calc(50% - 25vh);
+    
+    background-position-x: 50%;
+    background-size: 10000%;
+}
+    
