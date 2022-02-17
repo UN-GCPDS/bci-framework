@@ -10,5 +10,6 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    bci_framework.default_extensions.OpenBCI_Raw_topoplot.main

@@ -10,6 +10,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    bci_framework.framework.widgets.annotations
    bci_framework.framework.widgets.connection

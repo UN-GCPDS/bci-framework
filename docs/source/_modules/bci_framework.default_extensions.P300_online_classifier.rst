@@ -10,5 +10,6 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    bci_framework.default_extensions.P300_online_classifier.main

@@ -156,7 +156,26 @@ latex_elements = {
 
     # Additional stuff for the LaTeX preamble.
     #
-    # 'preamble': '',
+
+    'preamble': '''
+    \\usepackage{svg}
+    \\usepackage{graphicx}
+    \\usepackage{shellesc}
+    \\makeatletter
+    \\edef\\Gin@extensions{\\Gin@extensions,.gif}
+    \\@namedef{Gin@rule@.gif}#1{{gif}{.gif}{#1}}
+    \\def\\Gread@gif#1{%
+      \\IfFileExists{#1}{%
+        \\ifnum\\ShellEscapeStatus=1
+          \\ShellEscape{convert #1[0] #1-converted.png}%
+          \\Gread@png{#1-converted.png}%
+        \\else
+          \\errmessage{Shell escape disabled.}%
+        \\fi}
+      {\\errmessage{gif}{File '#1' does not exist.}}}
+    \\def\\Ginclude@gif#1{\\Ginclude@png{#1-converted.png}}
+    \\makeatother
+    ''',
 
     # Latex figure (float) alignment
     #
@@ -318,18 +337,19 @@ with open('index.rst', 'w') as file:
 .. include:: {notebooks_dir}/readme.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :name: mastertoc
 
    {notebooks}
 
-Indices and tables
-==================
+.. only:: html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    Docstrings
+    ==========
 
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`
     """)
 
 

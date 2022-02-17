@@ -10,5 +10,6 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    bci_framework.framework.qtgui.icons

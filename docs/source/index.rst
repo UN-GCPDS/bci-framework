@@ -2,7 +2,7 @@
 .. include:: notebooks/readme.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :name: mastertoc
 
    notebooks/00-installation
@@ -15,12 +15,14 @@
    notebooks/07-default_stimuli_delivery_paradigms
    notebooks/08-event_marker_synchronization
    notebooks/09-ilustrative_example
+   notebooks/readme_nb
 
-Indices and tables
-==================
+.. only:: html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    Docstrings
+    ==========
 
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`
     

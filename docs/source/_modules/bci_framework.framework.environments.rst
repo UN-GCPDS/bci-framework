@@ -10,6 +10,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    bci_framework.framework.environments.development
    bci_framework.framework.environments.stimuli_delivery
