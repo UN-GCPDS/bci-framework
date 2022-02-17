@@ -1,7 +1,8 @@
    | Developed by `Yeison Nolberto Cardona
-     Álvarez <https://github.com/yeisonCardona>`__, `Andrés Marino
-     Álvarez Meza, PhD. <https://github.com/amalvarezme>`__, César
-     Germán Castellanos Dominguez, PhD.
+     Álvarez <https://github.com/yeisonCardona>`__
+   | `Andrés Marino Álvarez Meza,
+     PhD. <https://github.com/amalvarezme>`__
+   | César Germán Castellanos Dominguez, PhD.
    | *Digital Signal Processing and Control Group* \| *Grupo de Control
      y Procesamiento Digital de Señales
      (*\ `GCPDS <https://github.com/UN-GCPDS/>`__\ *)*

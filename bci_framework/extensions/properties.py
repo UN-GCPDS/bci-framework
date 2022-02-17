@@ -4,6 +4,7 @@ Properties
 ==========
 """
 
+import sys
 import json
 import os
 import logging
@@ -27,20 +28,23 @@ class Properties:
             ...
     ```
     """
-    # print('WARNING - USING CUSTOM PROPERTIES')
-    # HOST = '192.168.1.1'
-    # CHANNELS = {i + 1: f'ch-{i+1}' for i in range(16)}
-    # SAMPLE_RATE = 1000
-    # STREAMING_PACKAGE_SIZE = 100
-    # BOARDMODE = 'default'
-    # CONNECTION = 'wifi'
-    # SYNCLATENCY = 0
-    # OFFSET = -4442972.687432289
-    # DAISY = [True]
-    # RASPAD = False
-    # os.environ['BCISTREAM_RASPAD'] = json.dumps('False')
+
+    if '--fake_properties' in sys.argv:
+        print('WARNING - USING CUSTOM PROPERTIES')
+        HOST = '192.168.1.1'
+        CHANNELS = {i + 1: f'ch-{i+1}' for i in range(16)}
+        SAMPLE_RATE = 1000
+        STREAMING_PACKAGE_SIZE = 100
+        BOARDMODE = 'default'
+        CONNECTION = 'wifi'
+        SYNCLATENCY = 0
+        OFFSET = -4442972.687432289
+        DAISY = [True]
+        RASPAD = False
+        os.environ['BCISTREAM_RASPAD'] = json.dumps('False')
 
     # ----------------------------------------------------------------------
+
     def __getattr__(self, attr: str):
         """Add the prefix to environ variable and try to get it."""
         if prop := os.environ.get(f"BCISTREAM_{attr}", None):
