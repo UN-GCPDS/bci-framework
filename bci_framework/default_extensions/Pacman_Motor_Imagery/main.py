@@ -24,8 +24,8 @@ class Analysis(DataAnalysis):
         
         # Pacman
         self.env = gym.make('BerkeleyPacman-v0')
-        # self.env.reset(chosenLayout='originalClassic', no_ghosts=False)
-        self.env.reset(chosenLayout='openClassic', no_ghosts=True)
+        self.env.reset(chosenLayout='originalClassic', no_ghosts=True)
+        # self.env.reset(chosenLayout='openClassic', no_ghosts=True)
         
         # Buffer
         self.create_buffer(BUFFER, aux_shape=3, fill=0)
@@ -36,7 +36,7 @@ class Analysis(DataAnalysis):
     @fake_loop_consumer('eeg', package_size=SLIDING_DATA)
     def stream(self, frame):
         """"""
-        action = predict(self.buffer_eeg)
+        action = predict(self.buffer_eeg.reshape(1, 16, -1))
         
         # Move Pacman
         logging.warning(f'Action: {action}')

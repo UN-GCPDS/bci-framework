@@ -2,8 +2,13 @@ import numpy as np
 from typing import Literal
 import random
 import logging
+import joblib
+import os
 
 actions = ['up', 'bottom', 'right', 'left']
+
+
+model = joblib.load(os.path.join(os.path.abspath(os.path.dirname(__file__)),'models', 'im_modelo.pkl'))
 
 # ----------------------------------------------------------------------
 def predict(data:np.ndarray) -> Literal[actions]:
@@ -11,7 +16,17 @@ def predict(data:np.ndarray) -> Literal[actions]:
     logging.warning(f'Input: {data.shape}')
     ######
     
-
-    action = random.choice(actions)
-    return action
-0..........................
+    match model.predict(data):
+        
+        case 1:
+            return 'right'
+        case 2:
+            return 'left'
+        case 3:
+            return 'bottom'
+        case 4:
+            return 'up'
+    
+    loging.warning(f'Action: {action}')
+    
+    return action 
