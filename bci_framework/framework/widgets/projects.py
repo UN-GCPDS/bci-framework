@@ -194,15 +194,22 @@ class Projects:
         projects = sorted(list(projects))
 
         for project_dir in projects:
-            project = project_dir
+        project = project_dir
             if os.path.exists(os.path.join(self.projects_dir, project_dir, BCIFR_FILE)):
-                bcifr = pickle.load(
-                    open(os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'rb'))
-                if isinstance(bcifr, set):
-                    pickle.dump({'name': project, 'files': bcifr}, open(
+
+                try:
+                    bcifr = pickle.load(
+                        open(os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'rb'))
+
+                    if isinstance(bcifr, set):
+                        pickle.dump({'name': project, 'files': bcifr}, open(
+                            os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'wb'))
+                    elif isinstance(bcifr, dict):
+                        project = bcifr.get('name', project)
+                except:
+                    pickle.dump({'name': project, 'files': []}, open(
                         os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'wb'))
-                elif isinstance(bcifr, dict):
-                    project = bcifr.get('name', project)
+
             else:
                 pickle.dump({'name': project, 'files': []}, open(
                     os.path.join(self.projects_dir, project_dir, BCIFR_FILE), 'wb'))
