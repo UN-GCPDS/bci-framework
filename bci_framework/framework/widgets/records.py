@@ -316,7 +316,10 @@ class Records:
         """Update the timer to indicate that the records is active."""
         now = datetime.now()
         delta = now - self.start_record
-        n_time = datetime.strptime(str(delta), '%H:%M:%S.%f').time()
+        try:
+            n_time = datetime.strptime(str(delta), '%H:%M:%S.%f').time()
+        except:
+            n_time = datetime.strptime(str(delta), '%H:%M:%S').time()
         self.recording_status = f"Recording [{n_time.strftime('%H:%M:%S')}]"
         self.parent_frame.pushButton_record.setText(self.recording_status)
 
@@ -371,7 +374,7 @@ class Records:
         rm_action.triggered.connect(self.remove_record)
         menu.addAction(rm_action)
 
-        menu.exec_(QCursor.pos())
+        menu.exec(QCursor.pos())
 
     # ----------------------------------------------------------------------
     def export_to_edf(self, filename):
