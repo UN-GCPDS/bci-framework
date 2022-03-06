@@ -194,7 +194,7 @@ class Projects:
         projects = sorted(list(projects))
 
         for project_dir in projects:
-        project = project_dir
+            project = project_dir
             if os.path.exists(os.path.join(self.projects_dir, project_dir, BCIFR_FILE)):
 
                 try:
