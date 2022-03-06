@@ -3,6 +3,7 @@ from radiant.server import RadiantAPI, RadiantServer
 from browser import document, html, window, timer, ajax
 
 from mdc.MDCComponent import MDCComponent
+import logging
 
 
 ########################################################################
@@ -24,21 +25,32 @@ class BareMinimum(RadiantAPI):
     # ----------------------------------------------------------------------
     def on_ping(self, req):
         """"""
-        if req.status != 200:
+        logging.warning(f'Status:{req.status}')
+
+        if req.status == 0:
+            logging.warning('Dashboard disconnected')
+
+        elif req.status != 200:
             url = self.LocalInterpreter.get_url()
             if self.current_stimuli_url != url:
                 self.current_stimuli_url = url
                 window.location.reload()
+                logging.warning('reloaded')
             else:
+                logging.warning('stand by')
                 self.stand_by()
+
+        else:
+            logging.warning('ping ok')
 
     # ----------------------------------------------------------------------
     def ping(self):
         """"""
+        logging.warning('ping...')
         url = f'{self.current_stimuli_url}/mode'
         req = ajax.Ajax()
         req.bind("complete", self.on_ping)
-        req.set_timeout(500)
+        # req.set_timeout(3)
         req.open('GET', url, True)
         req.send()
 
