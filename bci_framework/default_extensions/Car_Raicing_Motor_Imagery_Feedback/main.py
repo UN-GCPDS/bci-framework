@@ -2,15 +2,15 @@ from bci_framework.extensions.data_analysis import DataAnalysis, loop_consumer, 
 import logging
 
 import gym
-import bci_pacman
-import time
+import numpy as np
 
 from predictor import predict
 
 
 BUFFER = 3  # Segundos de analisis de la señal
 SLIDING_DATA = 300  # Cantidad de datos que se actualizaran en cada clasificación
-PACMAN_ACTIONS = ['up', 'bottom', 'right', 'left']
+GAS = 0.01
+BREAK_SYSTEM = 0
 
 
 ########################################################################
@@ -22,11 +22,12 @@ class Analysis(DataAnalysis):
         """"""
         super().__init__(*args, **kwargs)
         
-        # Pacman
-        self.env = gym.make('BerkeleyPacman-v0')
-        self.env.reset(chosenLayout='originalClassic', no_ghosts=True)
-        # self.env.reset(chosenLayout='openClassic', no_ghosts=True)
+        self.steering_wheel = 0
         
+        # Car raicing
+        self.env = gym.make('CarRacing-v0')
+        self.env.reset()
+
         # Buffer
         self.create_buffer(BUFFER, aux_shape=3, fill=0)
         self.stream()
@@ -38,10 +39,19 @@ class Analysis(DataAnalysis):
         """"""
         action = predict(self.buffer_eeg.reshape(1, 16, -1))
         
-        # Move Pacman
-        logging.warning(f'Action: {action}')
-        self.env.step(action)
+        match action:
+            
+            case 'right':
+                self.steering_wheel += 0.1
+                
+            case 'left':
+                self.steering_wheel -= 0.1
         
+        # Move Car
+        logging.warning(f'Action: {action}')
+    
+        self.env.render()
+        self.env.step([self.steering_wheel, GAS, BREAK_SYSTEM])
         
         
 if __name__ == '__main__':

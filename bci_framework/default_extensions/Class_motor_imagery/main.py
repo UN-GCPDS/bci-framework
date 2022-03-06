@@ -17,6 +17,7 @@ UNICODE_CUES = {
     'Left': 'arrow-left-short', 
     'Up': 'arrow-up-short',
     'Bottom': 'arrow-down-short',
+    'INC': 'record',
 }
 
 
@@ -35,7 +36,7 @@ class FourClassMotorImagery(StimuliAPI):
         self.dashboard <= w.label('4-Class motor imagery', 'headline4')
         self.dashboard <= w.checkbox(
             label='Cues',
-            options=[[cue, True] for cue in UNICODE_CUES],
+            options=[[cue, cue!='INC'] for cue in UNICODE_CUES],
             on_change=None,
             id='cues',
         )
@@ -85,7 +86,6 @@ class FourClassMotorImagery(StimuliAPI):
             'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
 
     # ----------------------------------------------------------------------
-
     def start(self) -> None:
         """Start the run.
 
@@ -95,6 +95,15 @@ class FourClassMotorImagery(StimuliAPI):
             self.start_record()
 
         self.build_trials()
+        
+        
+        self.show_counter(5)
+        timer.set_timeout(self.start_run, 5000)
+        
+        
+    # ----------------------------------------------------------------------        
+    def start_run(self):
+        """"""
         timer.set_timeout(lambda: self.run_pipeline(
             self.pipeline_trial, self.trials, callback='stop_run'), 2000)
 
@@ -139,7 +148,7 @@ class FourClassMotorImagery(StimuliAPI):
             element.class_name = ''
 
     # ----------------------------------------------------------------------
-    def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom']) -> None:
+    def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom', 'INC']) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial

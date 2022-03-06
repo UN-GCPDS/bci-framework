@@ -20,6 +20,7 @@ CUES = [
     'Left',
     'Up',
     'Bottom',
+    'INC',
 ]
 
 
@@ -39,7 +40,7 @@ class PacmanMotorImagery(StimuliAPI):
             '4-Class motor imagery (Pacman)', 'headline4')
         self.dashboard <= w.checkbox(
             label='Cues',
-            options=[[cue, True] for cue in CUES],
+            options=[[cue, cue!='INC'] for cue in CUES],
             on_change=None,
             id='cues',
         )
@@ -209,6 +210,11 @@ class PacmanMotorImagery(StimuliAPI):
             }
             self.stimuli_area <= html.DIV(
                 Class='food food__float', style=style)
+                
+    # ----------------------------------------------------------------------
+    def on_inc(self) -> None:
+        """Start Pacman static animation."""
+        pacman = document.select_one('.pacman')
 
     # ----------------------------------------------------------------------
     def to_center(self) -> None:
