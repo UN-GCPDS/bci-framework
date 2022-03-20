@@ -2,6 +2,7 @@ recursive-include bci_framework/ *
 include CHANGELOG
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
+recursive-exclude * *.h5
 recursive-exclude local/ *
 recursive-exclude docs/ *
 recursive-exclude bci_framework/default_projects/*/captures *
