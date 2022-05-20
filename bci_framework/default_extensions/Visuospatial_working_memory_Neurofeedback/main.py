@@ -150,8 +150,9 @@ class VWMNeurofeedback(StimuliAPI):
     # ----------------------------------------------------------------------
     def start_session(self) -> None:
         """Execute the session pipeline."""
+        
         self.run_pipeline(self.pipeline_trial,
-                          self.trials, callback='stop_run')
+                          self.trials, callback='stop_session')
 
     # ----------------------------------------------------------------------
     def stop_session(self) -> None:
@@ -192,7 +193,6 @@ class VWMNeurofeedback(StimuliAPI):
                            sliding_data: int,
                            baseline_packages: int) -> None:
         """Send the configuration values to the generator."""
-
         data = {
             'status': 'on',
             'function': function,

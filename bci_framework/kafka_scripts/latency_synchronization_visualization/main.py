@@ -34,7 +34,7 @@ class Stream(EEGStream):
         super().__init__(*args, **kwargs)
         
         
-        self.feedback = Feedback(self, 'VisualWorkingMemory')
+        self.feedback = Feedback(self, 'SetLatency')
         # self.feedback.on_feedback(self.on_feedback)
 
         # self.N = int(prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)

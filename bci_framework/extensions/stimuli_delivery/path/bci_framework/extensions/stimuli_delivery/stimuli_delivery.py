@@ -14,6 +14,7 @@ from browser import timer, html, document, window
 from datetime import datetime
 import copy
 from radiant.utils import WebSocket
+from radiant.server import RadiantAPI
 
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 from typing import Literal
@@ -40,11 +41,14 @@ class DeliveryInstance_:
 
             # if self._bci_mode == 'dashboard':
             if getattr(self, '_bci_mode', None) == 'dashboard':
-                self.ws.send({'action': 'feed',
-                              'method': method.__name__,
-                              'args': list(args),  # prevent ellipsis objects
-                              'kwargs': dict(kwargs),
-                              })
+                self.ws.send(
+                    {
+                        'action': 'feed',
+                        'method': method.__name__,
+                        'args': list(args),  # prevent ellipsis objects
+                        'kwargs': dict(kwargs),
+                    }
+                )
                 try:  # To call as decorator and as function
                     method(self, *args, **kwargs)
                 except TypeError:
@@ -66,11 +70,14 @@ class DeliveryInstance_:
             # if self._bci_mode == 'stimuli':
             if getattr(self, '_bci_mode', None) == 'stimuli':
                 # First the remote call, because the local call could modify the arguments
-                self.ws.send({'action': 'feed',
-                              'method': method.__name__,
-                              'args': list(args),  # prevent ellipsis objects
-                              'kwargs': dict(kwargs),
-                              })
+                self.ws.send(
+                    {
+                        'action': 'feed',
+                        'method': method.__name__,
+                        'args': list(args),  # prevent ellipsis objects
+                        'kwargs': dict(kwargs),
+                    }
+                )
                 try:  # To call as decorator and as function
                     method(self, *args, **kwargs)
                 except TypeError:
@@ -91,11 +98,14 @@ class DeliveryInstance_:
 
             # if self._bci_mode == 'dashboard':
             if getattr(self, '_bci_mode', None) == 'dashboard':
-                self.ws.send({'action': 'feed',
-                              'method': method.__name__,
-                              'args': list(args),  # prevent ellipsis objects
-                              'kwargs': dict(kwargs),
-                              })
+                self.ws.send(
+                    {
+                        'action': 'feed',
+                        'method': method.__name__,
+                        'args': list(args),  # prevent ellipsis objects
+                        'kwargs': dict(kwargs),
+                    }
+                )
 
         wrap.no_decorator = method
         return wrap
@@ -147,12 +157,12 @@ class DeliveryInstance_:
                 except TypeError:
                     cls.rboth(method_)(*args, **kwargs)
             # except Exception as e:
-                # logging.warning(e)
-                # logging.warning('#' * 15)
-                # logging.warning(f'Method: {method_}')
-                # logging.warning(f'args: {args}')
-                # logging.warning(f'kwargs: {kwargs}')
-                # logging.warning('#' * 15)
+            # logging.warning(e)
+            # logging.warning('#' * 15)
+            # logging.warning(f'Method: {method_}')
+            # logging.warning(f'args: {args}')
+            # logging.warning(f'kwargs: {kwargs}')
+            # logging.warning('#' * 15)
 
         wrap.no_decorator = method
         return wrap
@@ -168,9 +178,12 @@ class BCIWebSocket(WebSocket):
     # ----------------------------------------------------------------------
     def on_open(self, evt):
         """"""
-        self.send({'action': 'register',
-                   'mode': self.main._bci_mode,
-                   })
+        self.send(
+            {
+                'action': 'register',
+                'mode': self.main._bci_mode,
+            }
+        )
         print('Connected with dashboard.')
 
         if on_connect := getattr(self.main, 'on_connect', False):
@@ -183,26 +196,28 @@ class BCIWebSocket(WebSocket):
         if 'method' in data:
             try:
                 getattr(self.main, data['method']).no_decorator(
-                    self.main, *data['args'], **data['kwargs'])
+                    self.main, *data['args'], **data['kwargs']
+                )
             except:
                 getattr(self.main, data['method'])(
-                    *data['args'], **data['kwargs'])
+                    *data['args'], **data['kwargs']
+                )
 
     # # ----------------------------------------------------------------------
     # def on_close(self, evt):
-        # """"""
-        # window.location.replace(self.ip_.replace(
-            # '/ws', '').replace('ws', 'http'))
+    # """"""
+    # window.location.replace(self.ip_.replace(
+    # '/ws', '').replace('ws', 'http'))
 
     # # ----------------------------------------------------------------------
     # def on_error(self, evt):
-        # """"""
-        # window.location.replace(self.ip_.replace(
-            # '/ws', '').replace('ws', 'http'))
+    # """"""
+    # window.location.replace(self.ip_.replace(
+    # '/ws', '').replace('ws', 'http'))
 
 
 ########################################################################
-class Pipeline:
+class Pipeline(RadiantAPI):
     """"""
 
     # ----------------------------------------------------------------------
@@ -224,12 +239,12 @@ class Pipeline:
         return explicit_pipeline
 
     # ----------------------------------------------------------------------
-    def run_pipeline(self, pipeline, trials, callback=None, show_progressbar=True):
+    def run_pipeline(
+        self, pipeline, trials, callback=None, show_progressbar=True
+    ):
         """"""
-        # self._callback = callback
         if show_progressbar:
             self.show_progressbar(len(trials) * len(pipeline))
-        # self.set_autoprogress(show_progressbar)
 
         if self.DEBUG:
             self.set_autoprogress.no_decorator(self, show_progressbar)
@@ -264,25 +279,35 @@ class Pipeline:
         trial = trials.pop(0)
         trial['trial_n'] = self.iteration
 
-        timer.set_timeout(self.wrap_fn(
-            pipeline_m[0], trial), 0)  # First pipeline
+        timer.set_timeout(
+            self.wrap_fn(pipeline_m[0], trial), 0
+        )  # First pipeline
 
         self._timeouts = []
         for i in range(1, len(pipeline_m)):
 
             # Others pipelines
-            t = timer.set_timeout(self.wrap_fn(
-                pipeline_m[i], trial), sum(timeouts[:i]))
+            t = timer.set_timeout(
+                self.wrap_fn(pipeline_m[i], trial), sum(timeouts[:i])
+            )
             self._timeouts.append(t)
 
-            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts[:i])):
+            if t_ := timer.set_timeout(
+                self.increase_progress, sum(timeouts[:i])
+            ):
                 self._timeouts.append(t_)
 
         if trials:
-            t = timer.set_timeout(lambda: self._run_pipeline.no_decorator(self,
-                                                                          pipeline, trials), sum(timeouts))
+            t = timer.set_timeout(
+                lambda: self._run_pipeline.no_decorator(
+                    self, pipeline, trials
+                ),
+                sum(timeouts),
+            )
             self._timeouts.append(t)
-            if t_ := timer.set_timeout(self.increase_progress, sum(timeouts)):
+            if t_ := timer.set_timeout(
+                self.increase_progress, sum(timeouts)
+            ):
                 self._timeouts.append(t_)
 
         elif getattr(self, '_callback', None):
@@ -296,15 +321,18 @@ class Pipeline:
         """"""
         fn_ = fn
         trial_ = trial
-        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+        arguments = fn.__code__.co_varnames[1 : fn.__code__.co_argcount]
 
         def inner():
             if self.DEBUG:
                 DeliveryInstance.both(fn_)(
-                    self, *[trial_[v] for v in arguments])
+                    self, *[trial_[v] for v in arguments]
+                )
             else:
                 DeliveryInstance.rboth(fn_)(
-                    self, *[trial_[v] for v in arguments])
+                    self, *[trial_[v] for v in arguments]
+                )
+
         return inner
 
     # ----------------------------------------------------------------------
@@ -314,7 +342,8 @@ class Pipeline:
             self._stop_pipeline()  # kill timed trials
         else:
             DeliveryInstance.remote(self._stop_pipeline)(
-                self)  # kill timed trials
+                self
+            )  # kill timed trials
 
     # ----------------------------------------------------------------------
     def _stop_pipeline(self):
@@ -336,12 +365,14 @@ class Pipeline:
 ########################################################################
 class Feedback:
     """"""
+
     # ----------------------------------------------------------------------
 
     def __init__(self, analyser, subscribe):
         """"""
         self.main = analyser
-        # self.main.listen_feedback_ = True
+        self.main.listen_feedback_ = True
+        self.main.DEBUG = True
 
         self.main._feedback = self
         self.name = subscribe
@@ -362,11 +393,13 @@ class Feedback:
 ########################################################################
 class StimuliAPI(Pipeline):
     """"""
+
     listen_feedback_ = False
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         """"""
+        super().__init__(*args, **kwargs)
         self._latency = 0
         self.build_areas()
         self._feedback = None
@@ -379,9 +412,9 @@ class StimuliAPI(Pipeline):
         self.ws.main = self
 
         # if self.listen_feedback_:
-            # logging.warning('Requesting consumer')
-            # timer.set_timeout(lambda: self.ws.send(
-                # {'action': 'consumer', }), 1000)
+        # logging.warning('Requesting consumer')
+        # timer.set_timeout(lambda: self.ws.send(
+        # {'action': 'consumer', }), 1000)
 
     # ----------------------------------------------------------------------
     @property
@@ -400,10 +433,12 @@ class StimuliAPI(Pipeline):
         }
         if self.mode == 'stimuli' or force or self.DEBUG:
             logging.warning(f'Marker: {marker["marker"]}')
-            self.ws.send({
-                'action': 'marker',
-                'marker': marker,
-            })
+            self.ws.send(
+                {
+                    'action': 'marker',
+                    'marker': marker,
+                }
+            )
 
         if blink:
             if force:
@@ -440,24 +475,29 @@ class StimuliAPI(Pipeline):
         """"""
         if self.mode == 'stimuli' or force or self.DEBUG:
             logging.warning(f'Annotation: {description}')
-            self.ws.send({
-                'action': 'annotation',
-                'annotation': {'duration': duration,
-                               # 'onset': datetime.now().timestamp(),
-                               'description': description,
-                               'latency': self._latency,
-                               },
-            })
+            self.ws.send(
+                {
+                    'action': 'annotation',
+                    'annotation': {
+                        'duration': duration,
+                        # 'onset': datetime.now().timestamp(),
+                        'description': description,
+                        'latency': self._latency,
+                    },
+                }
+            )
 
     # ----------------------------------------------------------------------
     def send_feedback(self, feedback, force=False):
         """"""
         if self.mode == 'stimuli' or force or self.DEBUG:
             logging.warning(f'Feedback: {feedback}')
-            self.ws.send({
-                'action': 'feedback',
-                'feedback': feedback,
-            })
+            self.ws.send(
+                {
+                    'action': 'feedback',
+                    'feedback': feedback,
+                }
+            )
 
     # ----------------------------------------------------------------------
     def listen_feedbacks(self, handler):
@@ -468,7 +508,10 @@ class StimuliAPI(Pipeline):
     # ----------------------------------------------------------------------
     def _on_feedback(self, *args, **kwargs):
         """"""
-        if kwargs['mode'] == 'analysis2stimuli' and kwargs['name'] == self._feedback.name:
+        if (
+            kwargs['mode'] == 'analysis2stimuli'
+            and kwargs['name'] == self._feedback.name
+        ):
             if self.mode == 'stimuli' or self.DEBUG:
                 self.feedback_listener_(**kwargs)
 
@@ -477,15 +520,24 @@ class StimuliAPI(Pipeline):
     def _blink(self, time=100):
         """"""
         if blink := getattr(self, '_blink_area', False):
-            blink.style = {'background-color': blink.color_on, }
-            timer.set_timeout(lambda: setattr(
-                blink, 'style', {'background-color': blink.color_off}), time)
+            blink.style = {
+                'background-color': blink.color_on,
+            }
+            timer.set_timeout(
+                lambda: setattr(
+                    blink, 'style', {'background-color': blink.color_off}
+                ),
+                time,
+            )
 
     # ----------------------------------------------------------------------
     def add_stylesheet(self, file):
         """"""
         document.select_one('head') <= html.LINK(
-            href=os.path.join('root', file), type='text/css', rel='stylesheet')
+            href=os.path.join('root', file),
+            type='text/css',
+            rel='stylesheet',
+        )
 
     # ----------------------------------------------------------------------
     @property
@@ -538,7 +590,9 @@ class StimuliAPI(Pipeline):
     @DeliveryInstance.both
     def show_progressbar(self, steps=100):
         """"""
+        # logging.warning('Bazinga')
         from mdc.MDCLinearProgress import MDCLinearProgress
+
         if progressbar := getattr(self, 'run_progressbar', False):
             progressbar.remove()
 
@@ -569,14 +623,23 @@ class StimuliAPI(Pipeline):
             self._progressbar_value += self._progressbar_increment
             if self.DEBUG:
                 DeliveryInstance.both(self.set_progress)(
-                    self, self._progressbar_value)
+                    self, self._progressbar_value
+                )
             else:
                 DeliveryInstance.rboth(self.set_progress)(
-                    self, self._progressbar_value)
+                    self, self._progressbar_value
+                )
 
     # ----------------------------------------------------------------------
     @DeliveryInstance.both
-    def show_synchronizer(self, color_on='#000000', color_off='#ffffff', size=50, position='upper left', type: Literal['round', 'square'] = 'square'):
+    def show_synchronizer(
+        self,
+        color_on='#000000',
+        color_off='#ffffff',
+        size=50,
+        position='upper left',
+        type: Literal['round', 'square'] = 'square',
+    ):
         """"""
         self.hide_synchronizer.no_decorator(self)
 
@@ -589,17 +652,20 @@ class StimuliAPI(Pipeline):
                 left = '15px'
             elif 'right' in position:
                 left = f'calc(100% - {size}px - 15px)'
-            self._blink_area = html.DIV('', style={
-                'width': f'{size}px',
-                'height': f'{size}px',
-                'background-color': color_off,
-                'position': 'fixed',
-                'top': top,
-                'left': left,
-                'border-radius': '100%',
-                'border': '3px solid #00bcd4',
-                'z-index': 999,
-            })
+            self._blink_area = html.DIV(
+                '',
+                style={
+                    'width': f'{size}px',
+                    'height': f'{size}px',
+                    'background-color': color_off,
+                    'position': 'fixed',
+                    'top': top,
+                    'left': left,
+                    'border-radius': '100%',
+                    'border': '3px solid #00bcd4',
+                    'z-index': 999,
+                },
+            )
         elif type == 'square':
             if 'upper' in position:
                 top = '0'
@@ -610,15 +676,18 @@ class StimuliAPI(Pipeline):
             elif 'right' in position:
                 left = f'calc(100% - {size}px)'
 
-            self._blink_area = html.DIV('', style={
-                'width': f'{size}px',
-                'height': f'{size}px',
-                'background-color': color_off,
-                'position': 'fixed',
-                'top': top,
-                'left': left,
-                'z-index': 999,
-            })
+            self._blink_area = html.DIV(
+                '',
+                style={
+                    'width': f'{size}px',
+                    'height': f'{size}px',
+                    'background-color': color_off,
+                    'position': 'fixed',
+                    'top': top,
+                    'left': left,
+                    'z-index': 999,
+                },
+            )
 
         self.stimuli_area <= self._blink_area
         self._blink_area.color_on = color_on
@@ -653,7 +722,9 @@ class StimuliAPI(Pipeline):
             del self._timer_marker_synchronization
             return
         self._timer_marker_synchronization = timer.set_interval(
-            lambda: self.send_marker('MARKER', blink=blink, force=True), pause)
+            lambda: self.send_marker('MARKER', blink=blink, force=True),
+            pause,
+        )
 
     # ----------------------------------------------------------------------
     def latency_feedback_(self, name, value):
@@ -667,19 +738,23 @@ class StimuliAPI(Pipeline):
         """"""
         if not document.select('#bci-counter-frame'):
             document.select_one('.bci_stimuli') <= html.DIV(
-                html.SPAN(' ', id='bci-counter'), id='bci-counter-frame')
+                html.SPAN(' ', id='bci-counter'), id='bci-counter-frame'
+            )
         else:
-            document.select_one(
-                '#bci-counter-frame').style = {'display': 'block'}
+            document.select_one('#bci-counter-frame').style = {
+                'display': 'block'
+            }
 
         def hide():
-            document.select_one(
-                '#bci-counter-frame').style = {'display': 'none'}
+            document.select_one('#bci-counter-frame').style = {
+                'display': 'none'
+            }
 
         def set_counter(n):
             def inset():
                 counter = document.select_one('#bci-counter')
                 counter.html = f'{n}'
+
             return inset
 
         for i in range(start):
@@ -691,5 +766,6 @@ class StimuliAPI(Pipeline):
 
     # ----------------------------------------------------------------------
     def map(self, x, in_min, in_max, out_min, out_max):
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
+        return (x - in_min) * (out_max - out_min) / (
+            in_max - in_min
+        ) + out_min

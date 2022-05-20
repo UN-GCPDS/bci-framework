@@ -15,15 +15,17 @@
 # sys.path.insert(0, os.path.abspath('.'))
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../..'))
 # sys.path.insert(0, os.path.abspath('../../bci_framework'))
 # sys.path.insert(0, os.path.abspath('exts'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'BCI-Framework'
-copyright = '2019-2022, Yeison Cardona'
 author = 'Yeison Cardona'
+# author = 'GCPDS'
+project = 'BCI-Framework'
+copyright = f'2021-2022, {author}'
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,15 +38,11 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.todo',
-
     'nbsphinx',
     'sphinx.ext.mathjax',
-
     'sphinxcontrib.bibtex',
-
 ]
 
 naoleon_google_docstring = False
@@ -100,13 +98,9 @@ html_theme = 'alabaster'
 html_theme_options = {
     'page_width': '1280px',
     'sidebar_width': '300px',
-
     # 'fixed_sidebar': True,
-
     # 'show_relbars': True,
     # 'show_relbar_bottom': True,
-
-
     # 'github_user': 'bitprophet',
     # 'github_repo': 'alabaster',
 }
@@ -149,14 +143,11 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
-
     'preamble': '''
     \\usepackage{svg}
     \\usepackage{graphicx}
@@ -176,7 +167,6 @@ latex_elements = {
     \\def\\Ginclude@gif#1{\\Ginclude@png{#1-converted.png}}
     \\makeatother
     ''',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -186,8 +176,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'BCI-Framework.tex',
-     'BCI-Framework Documentation', 'Yeison Cardona', 'manual'),
+    (
+        master_doc,
+        'BCI-Framework.tex',
+        'BCI-Framework Documentation',
+        author,
+        'manual',
+    ),
 ]
 
 
@@ -196,8 +191,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'bci_framework', 'BCI-Framework Documentation',
-     [author], 1)
+    (master_doc, 'bci_framework', 'BCI-Framework Documentation', [author], 1)
 ]
 
 
@@ -207,9 +201,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'BCI-Framework', 'BCI-Framework Documentation',
-     author, 'BCI-Framework', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'BCI-Framework',
+        'BCI-Framework Documentation',
+        author,
+        'BCI-Framework',
+        'One line description of project.',
+        'Miscellaneous',
+    ),
 ]
 
 
@@ -233,7 +233,6 @@ epub_exclude_files = ['search.html']
 # -- Extension configuration -------------------------------------------------
 
 autodoc_mock_imports = [
-
     'IPython',
     'numpy',
     'scipy',
@@ -259,10 +258,8 @@ autodoc_mock_imports = [
     'browser',
     'seaborn',
     'simple_pid',
-
     'pacman',
     'points',
-
 ]
 
 todo_include_todos = True
@@ -272,17 +269,17 @@ html_logo = '_static/logo.svg'
 html_favicon = '_static/favico.ico'
 
 # autodoc_default_options = [
-    # 'members',
-    # 'no-undoc-members',
-    # 'show-inheritance',
+# 'members',
+# 'no-undoc-members',
+# 'show-inheritance',
 # ]
 
 # autodoc_default_options = {
-    # 'members': 'var1, var2',
-    # 'member-order': 'bysource',
-    # 'special-members': '__init__',
-    # 'undoc-members': True,
-    # 'exclude-members': '__weakref__'
+# 'members': 'var1, var2',
+# 'member-order': 'bysource',
+# 'special-members': '__init__',
+# 'undoc-members': True,
+# 'exclude-members': '__weakref__'
 # }
 
 modindex_common_prefix = ['bci_framework.']
@@ -296,8 +293,8 @@ highlight_language = 'none'
 html_sourcelink_suffix = ''
 
 # nbsphinx_execute_arguments = [
-    # "--InlineBackend.figure_formats={'svg', 'pdf'}",
-    # "--InlineBackend.rc={'figure.dpi': 96}",
+# "--InlineBackend.figure_formats={'svg', 'pdf'}",
+# "--InlineBackend.rc={'figure.dpi': 96}",
 # ]
 
 nbsphinx_execute = 'never'
@@ -321,19 +318,24 @@ nbsphinx_prolog = """
 
 notebooks_dir = 'notebooks'
 
-notebooks_list = os.listdir(os.path.join(
-    os.path.abspath(os.path.dirname(__file__)), notebooks_dir))
+notebooks_list = os.listdir(
+    os.path.join(os.path.abspath(os.path.dirname(__file__)), notebooks_dir)
+)
 notebooks_list = filter(lambda s: not s.startswith('__'), notebooks_list)
 
 notebooks = []
 for notebook in notebooks_list:
-    if notebook not in ['readme.ipynb', 'license.ipynb'] and notebook.endswith('.ipynb'):
+    if notebook not in [
+        'readme.ipynb',
+        'license.ipynb',
+    ] and notebook.endswith('.ipynb'):
         notebooks.append(f"{notebooks_dir}/{notebook.replace('.ipynb', '')}")
 
 notebooks = '\n   '.join(sorted(notebooks))
 
 with open('index.rst', 'w') as file:
-    file.write(f"""
+    file.write(
+        f"""
 .. include:: {notebooks_dir}/readme.rst
 
 .. toctree::
@@ -350,7 +352,8 @@ with open('index.rst', 'w') as file:
     * :ref:`genindex`
     * :ref:`modindex`
     * :ref:`search`
-    """)
+    """
+    )
 
 
 bibtex_bibfiles = ['refs.bib']

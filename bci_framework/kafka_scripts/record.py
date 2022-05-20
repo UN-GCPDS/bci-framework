@@ -44,19 +44,24 @@ class RecordTransformer(DataAnalysis):
         now = datetime.now()
 
         filename = now.strftime('%x-%X').replace('/', '_').replace(':', '_')
-        records_dir = os.path.join(os.environ.get(
-            'BCISTREAM_HOME', os.path.expanduser('~/.bciframework')), 'records')
+        records_dir = os.path.join(
+            os.environ.get(
+                'BCISTREAM_HOME', os.path.expanduser('~/.bciframework')
+            ),
+            'records',
+        )
         os.makedirs(records_dir, exist_ok=True)
         filename = os.path.join(records_dir, f'record-{filename}.h5')
         self.writer = HDF5Writer(filename)
 
-        header = {'sample_rate': prop.SAMPLE_RATE,
-                  'streaming_sample_rate': prop.STREAMING_PACKAGE_SIZE,
-                  'datetime': now.timestamp(),
-                  'montage': prop.MONTAGE_NAME,
-                  'channels': prop.CHANNELS,
-                  'channels_by_board': prop.CHANNELS_BY_BOARD,
-                  }
+        header = {
+            'sample_rate': prop.SAMPLE_RATE,
+            'streaming_sample_rate': prop.STREAMING_PACKAGE_SIZE,
+            'datetime': now.timestamp(),
+            'montage': prop.MONTAGE_NAME,
+            'channels': prop.CHANNELS,
+            'channels_by_board': prop.CHANNELS_BY_BOARD,
+        }
         self.writer.add_header(header, prop.HOST)
 
         signal.signal(signal.SIGINT, self.stop)
@@ -73,11 +78,15 @@ class RecordTransformer(DataAnalysis):
         for dt in timestamps:
 
             if prop.CONNECTION == 'wifi' and prop.DAISY and topic == 'aux':
-                end_dt = (datetime.fromtimestamp(
-                    dt) - timedelta(seconds=size / (prop.SAMPLE_RATE * 2))).timestamp()
+                end_dt = (
+                    datetime.fromtimestamp(dt)
+                    - timedelta(seconds=size / (prop.SAMPLE_RATE * 2))
+                ).timestamp()
             else:
-                end_dt = (datetime.fromtimestamp(
-                    dt) - timedelta(seconds=size / prop.SAMPLE_RATE)).timestamp()
+                end_dt = (
+                    datetime.fromtimestamp(dt)
+                    - timedelta(seconds=size / prop.SAMPLE_RATE)
+                ).timestamp()
 
             timestamp.append(np.linspace(end_dt, dt, size, endpoint=False))
 
@@ -85,7 +94,9 @@ class RecordTransformer(DataAnalysis):
 
     # ----------------------------------------------------------------------
     @loop_consumer('eeg', 'aux', 'marker', 'annotation')
-    def save_data(self, data, kafka_stream: KafkaStream, topic: str, **kwargs) -> None:
+    def save_data(
+        self, data, kafka_stream: KafkaStream, topic: str, **kwargs
+    ) -> None:
         """Write data on every strem package.
 
         Parameters
@@ -100,10 +111,19 @@ class RecordTransformer(DataAnalysis):
             return
 
         if topic in ['eeg', 'aux']:
-            timestamp = self.get_timestamps(data.shape[1],
-                                            kafka_stream.value['context']['timestamp.binary'], topic)
+            timestamp = self.get_timestamps(
+                data.shape[1],
+                kafka_stream.value['context']['timestamp.binary'],
+                topic,
+            )
             getattr(self.writer, f'add_{topic}')(
-                data, timestamp - prop.OFFSET)
+                data, timestamp - prop.OFFSET
+            )
+
+            if topic == 'eeg':
+                self.writer.add_sampleid(
+                    np.array(kafka_stream.value['context']['sample_ids'])
+                )
 
         elif topic == 'marker':
             dt = kafka_stream.value['datetime']

@@ -13,6 +13,7 @@
    notebooks/07-neurofeedback
    notebooks/08-event_marker_synchronization
    notebooks/09-ilustrative_example
+   notebooks/10-paradigms
 
 .. only:: html
 

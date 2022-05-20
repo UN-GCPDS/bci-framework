@@ -54,7 +54,8 @@ class Properties:
             return p
         else:
             logging.warning(
-                f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}')
+                f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}'
+            )
             return None
 
 

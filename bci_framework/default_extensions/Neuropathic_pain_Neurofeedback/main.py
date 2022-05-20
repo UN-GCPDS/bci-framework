@@ -1,5 +1,6 @@
+
 """
-================================
+================================ 
 Neuropathic pain - Neurofeedback
 ================================
 
@@ -8,7 +9,6 @@ Neuropathic pain - Neurofeedback
 
 import logging
 from typing import Literal, TypeVar
-
 from bci_framework.extensions.stimuli_delivery import StimuliAPI, Feedback, DeliveryInstance
 from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
 from bci_framework.extensions import properties as prop
@@ -18,6 +18,16 @@ from browser import document, html, timer
 Ts = TypeVar('Time in seconds')
 Tm = TypeVar('Time in milliseconds')
 TM = TypeVar('Time in minutes')
+
+
+bands = {
+
+    'alpha': [[1, 5], 'increase'],
+    'beta': [[5, 10], 'decrease'],
+    'teta': [[10, 15], 'decrease'],
+
+
+}
 
 
 ########################################################################
@@ -32,22 +42,24 @@ class NPNeurofeedback(StimuliAPI):
         self.show_cross()
         self.show_synchronizer()
 
-        self.feedback = Feedback(self, 'NeuropathicPain')
+        self.feedback = Feedback(self, 'PowerBandNeuroFeedback')
         self.feedback.on_feedback(self.on_input_feedback)
 
         self.bci_stimuli <= html.DIV(id='stimuli')
 
         self.dashboard <= w.label(
-            'NeuropathicPain - Neurofeedback', 'headline4')
+            'NeuropathicPain - Neurofeedback', 'headline4'
+        )
         self.dashboard <= html.BR()
 
         self.dashboard <= w.subject_information(
-            paradigm='NeuropathicPain - Neurofeedback')
+            paradigm='NeuropathicPain - Neurofeedback'
+        )
 
         self.dashboard <= w.slider(
             label='Baseline acquisition:',
-            min=1,
-            value=1,
+            min=0,
+            value=0.1,
             max=5,
             step=0.1,
             unit='m',
@@ -85,9 +97,9 @@ class NPNeurofeedback(StimuliAPI):
 
         self.dashboard <= w.select(
             'Analysis Function',
-            [['kTE PAC', 'kTE PAC'], ['CFD', 'CFD'], ['AlphaFz', 'AlphaFz']],
-            value='kTE PAC',
-            id='analysis_function',
+            [['Fourier', 'fourier'], ['Welch', 'welch']],
+            value='fourier',
+            id='method',
         )
 
         self.dashboard <= w.switch(
@@ -97,23 +109,33 @@ class NPNeurofeedback(StimuliAPI):
         )
 
         self.dashboard <= w.toggle_button(
-            [('Start session', self.start), ('Stop session', self.stop_session)], id='run')
-
-        self.dashboard <= w.slider(
-            label='Test feedback:',
-            min=-1,
-            max=1,
-            value=0,
-            step=0.1,
-            id='test',
-            on_change=self.test_feedback,
+            [
+                ('Start session', self.start),
+                ('Stop session', self.stop_session),
+            ],
+            id='run',
         )
 
-    # ----------------------------------------------------------------------
-    @DeliveryInstance.both
-    def test_feedback(self, value):
-        """Test the feedback stimuli."""
-        self.on_input_feedback(**{'feedback': value, })
+        # self.dashboard <= w.slider(
+            # label='Test feedback:',
+            # min=-1,
+            # max=1,
+            # value=0,
+            # step=0.1,
+            # id='test',
+            # on_change=self.test_feedback,
+        # )
+        
+
+    # # ----------------------------------------------------------------------
+    # @DeliveryInstance.both
+    # def test_feedback(self, value):
+        # """Test the feedback stimuli."""
+        # self.on_input_feedback(
+            # **{
+                # 'feedback': value,
+            # }
+        # )
 
     # ----------------------------------------------------------------------
     def on_input_feedback(self, **feedback: dict[str, [str, int]]) -> None:
@@ -126,12 +148,19 @@ class NPNeurofeedback(StimuliAPI):
         """
 
         f = feedback['feedback']
-        self.send_marker(f'{f}')
-        fp = self.map(f, -1, 1, 0, 100)
+        
+        # logging.warning(f'FEEDBACK: {f}')
+        plot = self.BandFeedback.neurofeedback(f)
+        
+        # document.select_one('#stimuli').clear()
+        
+        # self.update_plot(plot)
 
+
+    # @DeliveryInstance.remote
+    # def update_plot(self, plot):
         document.select_one('#stimuli').style = {
-            'background-position-x': f'{fp}%',
-            'display': 'block'
+            'background-image': f'url(data:image/png;base64,{plot})',
         }
 
     # ----------------------------------------------------------------------
@@ -150,8 +179,10 @@ class NPNeurofeedback(StimuliAPI):
     # ----------------------------------------------------------------------
     def start_session(self) -> None:
         """Execute the session pipeline."""
-        self.run_pipeline(self.pipeline_trial,
-                          self.trials, callback='stop_run')
+        logging.warning('START_SESSION')
+        self.run_pipeline(
+            self.pipeline_trial, self.trials, callback='stop_session'
+        )
 
     # ----------------------------------------------------------------------
     def stop_session(self) -> None:
@@ -172,35 +203,45 @@ class NPNeurofeedback(StimuliAPI):
 
         logging.warning(f'BP: {baseline_packages}')
 
-        self.trials = [{
-            'function': w.get_value('analysis_function'),
-            'window_analysis': w.get_value('window_analysis'),
-            'sliding_data': w.get_value('sliding_data') * prop.SAMPLE_RATE,
-            'baseline_packages': baseline_packages,
-        }]
+        self.trials = [
+            {
+                'method': w.get_value('method'),
+                'window_analysis': w.get_value('window_analysis'),
+                'sliding_data': w.get_value('sliding_data') * prop.SAMPLE_RATE,
+                'baseline_packages': baseline_packages,
+            },
+        ]
 
         self.pipeline_trial = [
+            
+            ['stop_analyser', 100],
             ['configure_analyser', 1000],
             ['baseline', baseline_duration * 1000],
             ['session', sesion_duration * 1000],
             ['stop_analyser', 1000],
         ]
+        
 
     # ----------------------------------------------------------------------
-    def configure_analyser(self, function: Literal['kTE PAC', 'CFD', 'AlphaFz'],
-                           window_analysis: Ts,
-                           sliding_data: int,
-                           baseline_packages: int) -> None:
+    def configure_analyser(
+        self,
+        method,
+        window_analysis: Ts,
+        sliding_data: int,
+        baseline_packages: int,
+    ) -> None:
         """Send the configuration values to the generator."""
-
+        
         data = {
             'status': 'on',
-            'function': function,
+            'method': method,
             'window_analysis': window_analysis,
             'sliding_data': sliding_data,
             'baseline_packages': baseline_packages,
             'channels': list(prop.CHANNELS.values()),
+            'target_channels': list(prop.CHANNELS.values()),
             'sample_rate': int(prop.SAMPLE_RATE),
+            'bands': bands,
         }
         logging.warning(f'CONFIG: {data}')
         self.feedback.write(data)
@@ -216,7 +257,8 @@ class NPNeurofeedback(StimuliAPI):
     # ----------------------------------------------------------------------
     def session(self) -> None:
         """Neurofeedback activity."""
-
+        
+        self.hide_cross()
         self.send_marker('End baseline')
         self.feedback.write({'command': 'freeze_baseline'})  # zero location
         document.select_one('#stimuli').style = {'display': 'block'}
@@ -224,12 +266,12 @@ class NPNeurofeedback(StimuliAPI):
     # ----------------------------------------------------------------------
     def stop_analyser(self) -> None:
         """Stop feedback values generation."""
-        self.feedback.write({
-            'status': 'off',
-        })
+        self.feedback.write(
+            {
+                'status': 'off',
+            }
+        )
 
 
 if __name__ == '__main__':
-    NPNeurofeedback()
-
-
+    NPNeurofeedback(python=('feedback.py', 'BandFeedback'))

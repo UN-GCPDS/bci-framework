@@ -30,7 +30,7 @@ except:
 if len(sys.argv) > 1 and sys.argv[1].isdecimal():
     port = sys.argv[1]
 else:
-    port = '5000'
+    port = '5001'
 
 debug = '--debug' in sys.argv
 
@@ -41,6 +41,7 @@ logging.getLogger().setLevel(logging.WARNING)
 ########################################################################
 class _delivery_instance:
     """This class make compatible the functional decorators defined with Brython."""
+
     # ---------------------------------------------------------------------
     @staticmethod
     def no_sense_decorator(method):
@@ -59,6 +60,7 @@ DeliveryInstance = _delivery_instance()
 ########################################################################
 class Feedback:
     """"""
+
     # ----------------------------------------------------------------------
 
     def __init__(self):
@@ -74,9 +76,9 @@ class StimuliAPI(RadiantAPI):
         super().__init__(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __new__(self):
+    def __new__(self, *args, **kwargs):
         """"""
-        StimuliServer(self.__name__)
+        StimuliServer(self.__name__, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -84,34 +86,69 @@ def StimuliServer(class_, *args, **kwargs):
     """Rename `RadiantServer` with a preconfigured `StimuliServer`."""
 
     # brython_environ = {k: os.environ[k] for k in os.environ if k.startswith('BCISTREAM_')}
-    brython_environ = {k: os.environ.get(k) for k in dict(
-        os.environ) if k.startswith('BCISTREAM_')}
-    environ = {'port': port,
-               'ip': ip,
-               'mode': 'stimuli',
-               'debug': debug,
-               'brython_environ': str(brython_environ),
-               }
+    brython_environ = {
+        k: os.environ.get(k)
+        for k in dict(os.environ)
+        if k.startswith('BCISTREAM_')
+    }
+    environ = {
+        'port': port,
+        'ip': ip,
+        'mode': 'stimuli',
+        'debug': debug,
+        'brython_environ': str(brython_environ),
+    }
 
-    return RadiantServer(class_,
-                         path=os.path.realpath(os.path.join(
-                             os.path.dirname(__file__), 'path')),
-                         handlers=([r'^/ws', (os.path.realpath(os.path.join(os.path.dirname(__file__), 'tornado_handlers.py')), 'WSHandler'), {}],
-                                   [r'^/dashboard', RadiantHandler,
-                                       {'mode': 'dashboard', }],
-                                   [r'^/mode', (os.path.realpath(os.path.join(os.path.dirname(
-                                       __file__), 'tornado_handlers.py')), 'ModeHandler'), {}],
-                                   ),
-                         template=os.path.realpath(os.path.join(
-                             os.path.dirname(__file__), 'template.html')),
-                         environ=environ,
-                         port=port,
-                         host='0.0.0.0',
-                         theme=os.path.realpath(os.path.join(
-                             os.path.dirname(__file__), 'colors.xml')),
-                         # callbacks=[(os.path.realpath(os.path.join(
-                         # os.path.dirname(__file__), 'tornado_handlers.py')), 'consumer')]
-                         debug_level=0,
-                         brython_version='3.10.3',
-                         )
-
+    return RadiantServer(
+        class_,
+        path=os.path.realpath(
+            os.path.join(os.path.dirname(__file__), 'path')
+        ),
+        handlers=(
+            [
+                r'^/ws',
+                (
+                    os.path.realpath(
+                        os.path.join(
+                            os.path.dirname(__file__), 'tornado_handlers.py'
+                        )
+                    ),
+                    'WSHandler',
+                ),
+                {},
+            ],
+            [
+                r'^/dashboard',
+                RadiantHandler,
+                {
+                    'mode': 'dashboard',
+                },
+            ],
+            [
+                r'^/mode',
+                (
+                    os.path.realpath(
+                        os.path.join(
+                            os.path.dirname(__file__), 'tornado_handlers.py'
+                        )
+                    ),
+                    'ModeHandler',
+                ),
+                {},
+            ],
+        ),
+        template=os.path.realpath(
+            os.path.join(os.path.dirname(__file__), 'template.html')
+        ),
+        environ=environ,
+        port=port,
+        host='0.0.0.0',
+        theme=os.path.realpath(
+            os.path.join(os.path.dirname(__file__), 'colors.xml')
+        ),
+        # callbacks=[(os.path.realpath(os.path.join(
+        # os.path.dirname(__file__), 'tornado_handlers.py')), 'consumer')]
+        debug_level=0,
+        brython_version='3.10.3',
+        **kwargs,
+    )

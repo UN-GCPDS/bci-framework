@@ -12,4 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   bci_framework.default_extensions.Neuropathic_pain_Neurofeedback.feedback
    bci_framework.default_extensions.Neuropathic_pain_Neurofeedback.main

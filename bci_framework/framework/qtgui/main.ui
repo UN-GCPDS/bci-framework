@@ -1296,7 +1296,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1403,7 +1403,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>83</width>
+                  <width>96</width>
                   <height>95</height>
                  </rect>
                 </property>
@@ -1445,8 +1445,8 @@ p, li { white-space: pre-wrap; }
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>83</width>
-                      <height>83</height>
+                      <width>100</width>
+                      <height>30</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_9">
@@ -1495,7 +1495,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>303</width>
+                  <width>291</width>
                   <height>145</height>
                  </rect>
                 </property>
@@ -1757,7 +1757,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>373</width>
+                 <width>367</width>
                  <height>996</height>
                 </rect>
                </property>
@@ -3017,7 +3017,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>448</width>
+              <width>468</width>
               <height>514</height>
              </rect>
             </property>
@@ -3121,8 +3121,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>448</width>
-              <height>514</height>
+              <width>257</width>
+              <height>274</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3259,7 +3259,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>175</width>
+              <width>170</width>
               <height>175</height>
              </rect>
             </property>
@@ -3367,7 +3367,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_projects">
         <attribute name="title">
-         <string>User scripts</string>
+         <string>Extensions</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_5">
          <property name="topMargin">
@@ -3543,8 +3543,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
-                  <height>93</height>
+                  <width>468</width>
+                  <height>326</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -3592,7 +3592,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3641,7 +3641,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>
@@ -3687,7 +3687,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>87</width>
+                  <width>96</width>
                   <height>93</height>
                  </rect>
                 </property>

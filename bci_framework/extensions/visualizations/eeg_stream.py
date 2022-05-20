@@ -25,10 +25,12 @@ from figurestream import FigureStream
 from typing import Optional, Tuple, Literal, Callable
 
 from ...extensions import properties as prop
-from ... extensions.data_analysis import DataAnalysis
+from ...extensions.data_analysis import DataAnalysis
 
 # Consigure matplotlib
-if ('light' in sys.argv) or ('light' in os.environ.get('QTMATERIAL_THEME', '')):
+if ('light' in sys.argv) or (
+    'light' in os.environ.get('QTMATERIAL_THEME', '')
+):
     pass
 else:
     pyplot.style.use('dark_background')
@@ -36,7 +38,8 @@ else:
 try:
     q = matplotlib.cm.get_cmap('rainbow')
     matplotlib.rcParams['axes.prop_cycle'] = cycler(
-        color=[q(m) for m in np.linspace(0, 1, 16)])
+        color=[q(m) for m in np.linspace(0, 1, 16)]
+    )
     matplotlib.rcParams['figure.dpi'] = 70
     matplotlib.rcParams['font.family'] = 'monospace'
     matplotlib.rcParams['font.size'] = 15
@@ -88,7 +91,7 @@ class MNEObjects:
 
         comment = "bcistream"
         evoked = mne.EvokedArray(
-            self.buffer_eeg_, self.get_mne_info(), 0, comment=comment, nave=0
+            lf.buffer_eeg_, self.get_mne_info(), 0, comment=comment, nave=0
         )
         return evoked
 
@@ -105,7 +108,9 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
     def __init__(self, enable_produser=False, *args, **kwargs):
         """"""
         port = 5000
-        super().__init__(host='0.0.0.0', port=port, endpoint='', *args, **kwargs)
+        super().__init__(
+            host='0.0.0.0', port=port, endpoint='', *args, **kwargs
+        )
 
         # self._pivot = None
         if enable_produser:
@@ -120,12 +125,15 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         self.wait_for_interact()
 
     # ----------------------------------------------------------------------
-    def create_lines(self, mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
-                     time: Optional[int] = -15,
-                     window: Optional[int] = 1000,
-                     cmap: Optional[str] = 'cool',
-                     fill: Optional[np.ndarray] = np.nan,
-                     subplot: Optional[list] = [1, 1, 1],) -> Tuple[matplotlib.axes.Axes, np.ndarray, list[matplotlib.lines]]:
+    def create_lines(
+        self,
+        mode: Literal['eeg', 'accel', 'analog', 'digital'] = 'eeg',
+        time: Optional[int] = -15,
+        window: Optional[int] = 1000,
+        cmap: Optional[str] = 'cool',
+        fill: Optional[np.ndarray] = np.nan,
+        subplot: Optional[list] = [1, 1, 1],
+    ) -> Tuple[matplotlib.axes.Axes, np.ndarray, list[matplotlib.lines]]:
         """Create plot automatically.
 
         Create and configure a subplot to display figures.
@@ -162,7 +170,7 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
             channels = len(prop.CHANNELS)
             labels = None
             ylim = 0, 16
-        elif mode == 'accel' or mode == 'default':
+        elif mode == 'accel' or mode == 'default' or mode == 'aux':
             channels = 3
             labels = ['X', 'Y', 'Z']
             ylim = -6, 6
@@ -170,11 +178,11 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         elif mode == 'analog' and not prop.CONNECTION == 'wifi':
             channels = 3
             labels = ['A5(D11)', 'A6(D12)', 'A7(D13)']
-            ylim = 0, 2 ** 10
+            ylim = 0, 2**10
         elif mode == 'analog' and prop.CONNECTION == 'wifi':
             channels = 2
             labels = ['A5(D11)', 'A6(D12)']
-            ylim = 0, 2 ** 10
+            ylim = 0, 2**10
         elif mode == 'digital' and not prop.CONNECTION == 'wifi':
             channels = 5
             labels = ['D11', 'D12', 'D13', 'D17', 'D18']
@@ -192,9 +200,10 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         axis = self.add_subplot(*subplot)
 
         window = self._get_factor_near_to(
-            prop.SAMPLE_RATE * np.abs(time), n=window)
+            prop.SAMPLE_RATE * np.abs(time), n=window
+        )
         # self._create_resampled_buffer(
-            # prop.SAMPLE_RATE * np.abs(time), n=1000)
+        # prop.SAMPLE_RATE * np.abs(time), n=1000)
 
         a = np.empty(window)
         a.fill(fill)
@@ -221,46 +230,51 @@ class EEGStream(FigureStream, DataAnalysis, MNEObjects):
         axis.set_ylim(*ylim)
 
         # if mode != 'eeg':
-            # axis.legend()
+        # axis.legend()
 
-        axis.grid(True, color=os.environ.get(
-            'QTMATERIAL_SECONDARYLIGHTCOLOR', '#ff0000'), zorder=0)
+        axis.grid(
+            True,
+            color=os.environ.get(
+                'QTMATERIAL_SECONDARYLIGHTCOLOR', '#ff0000'
+            ),
+            zorder=0,
+        )
         lines = np.array(lines)
 
         return axis, time, lines
 
     # # ----------------------------------------------------------------------
     # def reverse_buffer(self, axis: matplotlib.axes.Axes, min: Optional[int] = 0, max: Optional[int] = 17, color: Optional[str] = 'k'):
-        # """Add the boundary line to some visualizations."""
+    # """Add the boundary line to some visualizations."""
 
-        # if hasattr(self, 'boundary_line'):
-            # self.boundary_line.remove()
-            # start = self._pivot / prop.SAMPLE_RATE
-        # else:
-            # self._pivot = 0
-            # self._pivot_aux = 0
-            # start = 0
+    # if hasattr(self, 'boundary_line'):
+    # self.boundary_line.remove()
+    # start = self._pivot / prop.SAMPLE_RATE
+    # else:
+    # self._pivot = 0
+    # self._pivot_aux = 0
+    # start = 0
 
-        # self.boundary_line = axis.vlines(
-            # start, min, max, color=color, zorder=99)
+    # self.boundary_line = axis.vlines(
+    # start, min, max, color=color, zorder=99)
 
     # # ----------------------------------------------------------------------
     # def plot_pivot(self):
-        # """Update the position of the boundary line."""
+    # """Update the position of the boundary line."""
 
-        # if hasattr(self, 'boundary_line'):
-            # segments = self.boundary_line.get_segments()
-            # segments[0][:, 0] = [self._pivot / prop.SAMPLE_RATE,
-                                 # self._pivot / prop.SAMPLE_RATE]
-            # self.boundary_line.set_segments(segments)
+    # if hasattr(self, 'boundary_line'):
+    # segments = self.boundary_line.get_segments()
+    # segments[0][:, 0] = [self._pivot / prop.SAMPLE_RATE,
+    # self._pivot / prop.SAMPLE_RATE]
+    # self.boundary_line.set_segments(segments)
 
-        # else:
-            # logging.warning('No "boundary" to plot')
+    # else:
+    # logging.warning('No "boundary" to plot')
 
     # # ----------------------------------------------------------------------
     # def feed(self):
-        # """"""
-        # super().feed()
+    # """"""
+    # super().feed()
 
     # ----------------------------------------------------------------------
     def wait_for_interact(self):

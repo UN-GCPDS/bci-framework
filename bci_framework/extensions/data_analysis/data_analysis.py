@@ -8,6 +8,7 @@ from kafka import KafkaProducer
 from openbci_stream.utils import interpolate_datetime
 
 from bci_framework.extensions import properties as prop
+
 # from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this, marker_slice
 
 # Set logger
@@ -21,7 +22,9 @@ class Transformers:
     """Used to preprocess EEG streams."""
 
     # ----------------------------------------------------------------------
-    def centralize(self, x: np.array, normalize: bool = False, axis: int = 0) -> np.array:
+    def centralize(
+        self, x: np.array, normalize: bool = False, axis: int = 0
+    ) -> np.array:
         """Crentralize array.
 
         Remove the mean to all axis.
@@ -41,13 +44,20 @@ class Transformers:
             Centralized array.
         """
 
-        cent = np.nan_to_num(np.apply_along_axis(
-            lambda x_: x_ - x_.mean(), 1, x))
+        cent = np.nan_to_num(
+            np.apply_along_axis(lambda x_: x_ - x_.mean(), 1, x)
+        )
 
         if normalize:
             if normalize == True:
                 normalize = 1
-            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
+            return np.nan_to_num(
+                np.apply_along_axis(
+                    lambda x_: normalize * (x_ / (x_.max() - x_.min())),
+                    1,
+                    cent,
+                )
+            )
 
         return cent
 
@@ -114,29 +124,37 @@ class DataAnalysis:
             if self.kafka_producer is None:
                 logging.error('Send command: Kafka not available!')
             else:
-                data = {'command': command,
-                        'value': data,
-                        }
+                data = {
+                    'command': command,
+                    'value': data,
+                }
                 self.kafka_producer.send('command', data)
         else:
             logging.error(
-                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream"
+            )
 
     # ----------------------------------------------------------------------
-    def send_annotation(self, description: str, duration: Optional[int] = 0) -> None:
+    def send_annotation(
+        self, description: str, duration: Optional[int] = 0
+    ) -> None:
         """"""
         if hasattr(self, 'kafka_producer'):
             if self.kafka_producer is None:
                 logging.error('Send annotation: Kafka not available!')
             else:
-                self.kafka_producer.send('annotation', {
-                    'action': 'annotation',
-                    'duration': duration,
-                    'description': description,
-                })
+                self.kafka_producer.send(
+                    'annotation',
+                    {
+                        'action': 'annotation',
+                        'duration': duration,
+                        'description': description,
+                    },
+                )
         else:
             logging.error(
-                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream"
+            )
 
     # ----------------------------------------------------------------------
     def send_feedback(self, kwargs) -> None:
@@ -155,10 +173,16 @@ class DataAnalysis:
                 # self.kafka_producer.send(topic, 888)
         else:
             logging.error(
-                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream")
+                "To send commands add the argument 'enable_produser=True' on the declaration of EEGStream"
+            )
 
     # ----------------------------------------------------------------------
-    def update_buffer(self, eeg: np.ndarray = None, aux: np.ndarray = None, timestamp: float = None) -> None:
+    def update_buffer(
+        self,
+        eeg: np.ndarray = None,
+        aux: np.ndarray = None,
+        timestamp: float = None,
+    ) -> None:
         """Uppdate the buffers.
 
         Parameters
@@ -177,13 +201,13 @@ class DataAnalysis:
             self.buffer_eeg_[:, -c:] = eeg
 
             self.buffer_timestamp_ = np.roll(
-                self.buffer_timestamp_, -c, axis=0)
+                self.buffer_timestamp_, -c, axis=0
+            )
             self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
             self.buffer_timestamp_[-1] = timestamp
 
             if hasattr(self, 'buffer_eeg_split'):
-                self.buffer_eeg_split = np.roll(
-                    self.buffer_eeg_split, -c)
+                self.buffer_eeg_split = np.roll(self.buffer_eeg_split, -c)
 
         if not aux is None:
 
@@ -192,13 +216,13 @@ class DataAnalysis:
             self.buffer_aux_[:, -d:] = aux
 
             self.buffer_aux_timestamp_ = np.roll(
-                self.buffer_aux_timestamp_, -d, axis=0)
+                self.buffer_aux_timestamp_, -d, axis=0
+            )
             self.buffer_aux_timestamp_[-d:] = np.zeros(aux.shape[1])
             self.buffer_aux_timestamp_[-1] = timestamp
 
             if hasattr(self, 'buffer_aux_split'):
-                self.buffer_aux_split = np.roll(
-                    self.buffer_aux_split, -d)
+                self.buffer_aux_split = np.roll(self.buffer_aux_split, -d)
 
     # ----------------------------------------------------------------------
     def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -> int:
@@ -219,15 +243,18 @@ class DataAnalysis:
             Factor.
         """
         a = np.array(
-            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
+            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)]
+        )[0]
         a[a % 1 != 0] = 0
         return int(a[np.argmin(np.abs(a - n))])
 
     # ----------------------------------------------------------------------
-    def _create_resampled_buffer(self, x: int, resampling: Optional[int] = 1000) -> np.ndarray:
+    def _create_resampled_buffer(
+        self, x: int, resampling: Optional[int] = 1000
+    ) -> np.ndarray:
         """"""
         f = self._get_factor_near_to(x, resampling)
-        self.buffer_eeg_split = np.zeros(x)
+        self.buffer_eeg_split = np.zeros(int(x))
         index = np.linspace(0, x, f + 1).astype(int)[:-1]
         self.buffer_eeg_split[index] = 1
 
@@ -240,7 +267,14 @@ class DataAnalysis:
         self.buffer_aux_split[index] = 1
 
     # ----------------------------------------------------------------------
-    def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, resampling: Optional[int] = 1000):
+    def create_buffer(
+        self,
+        seconds: Optional[int] = 30,
+        # aux_shape: Optional[int] = 3,
+        fill: Optional[int] = 0,
+        resampling: Optional[int] = 1000,
+        # aux_mode: Optional[Literal['accel', 'analog', 'digital']] = None,
+    ):
         """Create a buffer with fixed time length.
 
         Since the `loop_consumer` iterator only return the last data package, the
@@ -259,12 +293,26 @@ class DataAnalysis:
         """
 
         chs = len(prop.CHANNELS)
-        time = prop.SAMPLE_RATE * seconds
+        time = int(prop.SAMPLE_RATE * seconds)
 
         self._create_resampled_buffer(abs(time), resampling=resampling)
 
         self.buffer_eeg_ = np.empty((chs, time))
         self.buffer_timestamp_ = np.zeros(time)
+
+        aux_mode = prop.BOARDMODE
+        aux_mode = aux_mode.lower()
+
+        if aux_mode in ['accel', 'default']:
+            aux_shape = 3
+        elif aux_mode == 'analog' and not prop.CONNECTION == 'wifi':
+            aux_shape = 3
+        elif aux_mode == 'analog' and prop.CONNECTION == 'wifi':
+            aux_shape = 2
+        elif aux_mode == 'digital' and not prop.CONNECTION == 'wifi':
+            aux_shape = 5
+        elif aux_mode == 'digital' and prop.CONNECTION == 'wifi':
+            aux_shape = 3
 
         if prop.CONNECTION == 'wifi' and prop.DAISY:
             self.buffer_aux_ = np.empty((aux_shape, time * 2))
@@ -338,13 +386,17 @@ class DataAnalysis:
     @property
     def buffer_eeg_resampled(self):
         """"""
-        return self.buffer_eeg[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
+        return self.buffer_eeg[:, np.argwhere(self.buffer_eeg_split == 1)][
+            :, :, 0
+        ]
 
     # ----------------------------------------------------------------------
     @property
     def buffer_aux_resampled(self):
         """"""
-        return self.buffer_aux[:, np.argwhere(self.buffer_aux_split == 1)][:, :, 0]
+        return self.buffer_aux[:, np.argwhere(self.buffer_aux_split == 1)][
+            :, :, 0
+        ]
 
     # ----------------------------------------------------------------------
     @property
@@ -378,4 +430,3 @@ class DataAnalysis:
     def set_package_size(self, value):
         """"""
         self._package_size = value
-

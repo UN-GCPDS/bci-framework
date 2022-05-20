@@ -111,8 +111,8 @@ class FourClassMotorImagery(StimuliAPI):
     # ----------------------------------------------------------------------        
     def start_run(self):
         """"""
-        timer.set_timeout(lambda: self.run_pipeline(
-            self.pipeline_trial, self.trials, callback='stop_run'), 2000)
+        self.run_pipeline(
+            self.pipeline_trial, self.trials, callback='stop_run')
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:

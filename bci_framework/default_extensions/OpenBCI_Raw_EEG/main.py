@@ -5,7 +5,10 @@ Raw EEG
 """
 
 from bci_framework.extensions.visualizations import EEGStream, Widgets
-from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
+from bci_framework.extensions.data_analysis import (
+    loop_consumer,
+    fake_loop_consumer,
+)
 from bci_framework.extensions import properties as prop
 
 import numpy as np
@@ -22,16 +25,18 @@ class RawEEG(EEGStream, Widgets):
         DATAWIDTH = 1000
         BUFFER = 30
 
-        self.enable_widgets('BandPass',
-                            'Notch',
-                            'Scale',
-                            'Channels',
-                            'Substract',
-                            'Window time',
-                            )
+        self.enable_widgets(
+            'BandPass',
+            'Notch',
+            'Scale',
+            'Channels',
+            'Substract',
+            'Window time',
+        )
 
         self.axis, self.time, self.lines = self.create_lines(
-            time=-BUFFER, window=DATAWIDTH)
+            time=-BUFFER, window=DATAWIDTH
+        )
         self.axis.set_title('Raw EEG')
         self.axis.set_xlabel('Time')
         self.axis.set_ylabel('Channels')
@@ -39,22 +44,24 @@ class RawEEG(EEGStream, Widgets):
         self.axis.set_ylim(0, len(prop.CHANNELS) + 1)
         self.axis.set_yticklabels(prop.CHANNELS.values())
 
-        self.create_buffer(BUFFER, aux_shape=3, resampling=DATAWIDTH, fill=0)
+        self.create_buffer(BUFFER, DATAWIDTH, fill=0)
 
         self.stream()
 
     # ----------------------------------------------------------------------
     @loop_consumer('eeg')
-    def stream(self, latency):
+    def stream(self, data, latency):
         """"""
         scale = self.widget_value['Scale']
         substract = self.widget_value['Substract']
         channels = self.widget_value['Channels']
         window_time = self.widget_value['Window time']
 
-        logging.warning(f'Latency: {latency}')
+        # logging.warning(f'Latency: {latency}')
+        if data.shape[1] != 100:
+            logging.warning(f'Shape: {data.shape[1]}')
 
-        eeg = self.buffer_eeg[:, -window_time * prop.SAMPLE_RATE:]
+        eeg = self.buffer_eeg[:, -window_time * prop.SAMPLE_RATE :]
         t = np.linspace(-window_time, 0, eeg.shape[1])
         self.axis.set_xlim(-window_time, 0)
 

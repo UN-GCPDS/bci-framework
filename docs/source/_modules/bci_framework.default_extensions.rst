@@ -14,6 +14,7 @@ Subpackages
 
    bci_framework.default_extensions.Class_motor_imagery
    bci_framework.default_extensions.Class_motor_imagery_Pacman
+   bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory
    bci_framework.default_extensions.Neuropathic_pain
    bci_framework.default_extensions.Neuropathic_pain_Generator
    bci_framework.default_extensions.Neuropathic_pain_Neurofeedback
@@ -29,5 +30,4 @@ Subpackages
    bci_framework.default_extensions.Tutorial_Objects_measurement
    bci_framework.default_extensions.Tutorial_Pipelines
    bci_framework.default_extensions.Visuospatial_working_memory_Change_detection_task
-   bci_framework.default_extensions.Visuospatial_working_memory_Generator
    bci_framework.default_extensions.Visuospatial_working_memory_Neurofeedback

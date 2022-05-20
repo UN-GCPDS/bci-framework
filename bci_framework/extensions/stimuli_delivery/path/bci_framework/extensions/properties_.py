@@ -26,14 +26,17 @@ class Properties:
     def __getattr__(self, attr: str):
         """Add the prefix to environ variable and try to get it."""
 
-        if prop := dict(window.brython_environ).get(f"BCISTREAM_{attr}", None):
+        if prop := dict(window.brython_environ).get(
+            f"BCISTREAM_{attr}", None
+        ):
             p = json.loads(prop)
             if attr == 'CHANNELS':
                 p = {int(k): p[k] for k in p}
             return p
         else:
             logging.warning(
-                f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}')
+                f'{attr} not found, it must be defined in the environ as BCISTREAM_{attr}'
+            )
             return None
 
 

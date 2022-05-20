@@ -16,7 +16,8 @@ class fake:
         return None
 
 
-brython = ['Widgets', 'Tone', 'Units', 'keypress']
+brython = ['Widgets', 'Tone', 'Audio', 'Units', 'keypress', 'icons']
 for module in brython:
-    sys.modules[f"bci_framework.extensions.stimuli_delivery.utils.{module}"] = fake(
-    )
+    sys.modules[
+        f"bci_framework.extensions.stimuli_delivery.utils.{module}"
+    ] = fake()
