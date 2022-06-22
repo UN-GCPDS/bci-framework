@@ -6,7 +6,7 @@ pygments>=2.4.1
 mne==0.22.0
 scipy==1.6.1
 simple_pid==1.0.0
-numpy==1.20.1
+numpy==1.22.0
 cycler==0.10.0
 kafka_python==2.0.2
 qt_material==2.8
