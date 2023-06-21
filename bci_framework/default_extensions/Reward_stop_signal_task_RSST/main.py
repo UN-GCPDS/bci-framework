@@ -5,9 +5,9 @@ import logging
 from browser import html, timer
 import random
 
-from figures import Stimuli  
-  
-from typing import Literal     
+from figures import Stimuli
+
+from typing import Literal
 
 
 ########################################################################
@@ -55,7 +55,7 @@ class StimuliDelivery(StimuliAPI):
         self.dashboard <= w.slider(
             label='Stmuli duration',
             min=50,
-            max=1000,
+            max=5000,
             value=170,
             step=10,
             unit='ms',
@@ -317,11 +317,9 @@ class StimuliDelivery(StimuliAPI):
         """Show or hide synchronizer."""
         if value:
             self.show_synchronizer(
-                size=60, type='square', position='upper left')
+                size=60, type_='square', position='upper left')
         else:
             self.hide_synchronizer()
-            
-
 
 
 if __name__ == '__main__':

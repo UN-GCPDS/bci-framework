@@ -173,7 +173,7 @@ class BCIEditor(QTextEdit):
         if (event.key() == Qt.Key_Period) and bool(event.modifiers() & Qt.ControlModifier):
             tc = self.textCursor()
             # pos = tc.position()
-            tc.select(tc.LineUnderCursor)
+            tc.select(tc.SelectionType.LineUnderCursor)
             line = tc.selectedText()
 
             if line.strip() and line.strip()[0] == '#':
@@ -223,7 +223,7 @@ class BCIEditor(QTextEdit):
             return super().keyPressEvent(event)
 
         pos = tc.position()
-        tc.movePosition(tc.StartOfLine, tc.KeepAnchor)
+        tc.movePosition(tc.MoveOperation.StartOfLine, tc.MoveMode.KeepAnchor)
         previous = tc.selectedText()
 
         if previous[-4:] == '    ':
@@ -241,7 +241,7 @@ class BCIEditor(QTextEdit):
         """"""
         tc = self.textCursor()
         pos = tc.position()
-        tc.select(tc.LineUnderCursor)
+        tc.select(tc.SelectionType.LineUnderCursor)
         line = tc.selectedText()
 
         if line.isspace() or line == "":
@@ -275,7 +275,7 @@ class BCIEditor(QTextEdit):
             end = tc.position()
 
             tc.setPosition(start, tc.MoveAnchor)
-            tc.setPosition(end, tc.KeepAnchor)
+            tc.setPosition(end, tc.MoveMode.KeepAnchor)
             selected = tc.selectedText()
             tc.removeSelectedText()
 
@@ -300,14 +300,14 @@ class BCIEditor(QTextEdit):
 
             if uncommented:
                 tc.insertText('\u2029'.join(uncommented))
-                tc.setPosition(start, tc.MoveAnchor)
-                tc.setPosition(end, tc.KeepAnchor)
+                tc.setPosition(start, tc.MoveMode.MoveAnchor)
+                tc.setPosition(end, tc.MoveMode.KeepAnchor)
                 self.setTextCursor(tc)
             else:
                 tc.insertText(selected)
 
         else:
-            tc.select(tc.LineUnderCursor)
+            tc.select(tc.SelectionType.LineUnderCursor)
             if line := tc.selectedText():
                 tc.removeSelectedText()
 
@@ -329,16 +329,16 @@ class BCIEditor(QTextEdit):
             start = tc.selectionStart()
             end = tc.selectionEnd()
 
-            tc.setPosition(start, tc.MoveAnchor)
-            tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
+            tc.setPosition(start, tc.MoveMode.MoveAnchor)
+            tc.movePosition(tc.MoveOperation.StartOfLine, tc.MoveMode.MoveAnchor)
             start = tc.position()
 
-            tc.setPosition(end, tc.MoveAnchor)
-            tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
+            tc.setPosition(end, tc.MoveMode.MoveAnchor)
+            tc.movePosition(tc.MoveOperation.EndOfLine, tc.MoveMode.MoveAnchor)
             end = tc.position()
 
-            tc.setPosition(start, tc.MoveAnchor)
-            tc.setPosition(end, tc.KeepAnchor)
+            tc.setPosition(start, tc.MoveMode.MoveAnchor)
+            tc.setPosition(end, tc.MoveMode.KeepAnchor)
             selected = tc.selectedText()
             tc.removeSelectedText()
 
@@ -352,12 +352,12 @@ class BCIEditor(QTextEdit):
                 else:
                     commented.append(line)
             tc.insertText('\u2029'.join(commented))
-            tc.setPosition(start, tc.MoveAnchor)
-            tc.setPosition(end, tc.KeepAnchor)
+            tc.setPosition(start, tc.MoveMode.MoveAnchor)
+            tc.setPosition(end, tc.MoveMode.KeepAnchor)
             self.setTextCursor(tc)
 
         else:
-            tc.select(tc.LineUnderCursor)
+            tc.select(tc.SelectionType.LineUnderCursor)
             if line := tc.selectedText():
                 if line.strip():
                     tc.removeSelectedText()
@@ -400,8 +400,8 @@ class BCIEditor(QTextEdit):
         tc.insertText(extra)
 
         if text_position > 0:
-            tc.setPosition(pos + text_position +
-                           (4 * extra[:text_position].count('\n')))
+            tc.setPosition(pos + text_position
+                           + (4 * extra[:text_position].count('\n')))
 
         self.setTextCursor(tc)
 
@@ -413,18 +413,18 @@ class BCIEditor(QTextEdit):
             tc = self.textCursor()
 
         # word like: cdc|
-        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        tc.movePosition(tc.MoveOperation.WordLeft, tc.MoveMode.KeepAnchor)
 
         # word like: cdc.|
         if tc.selectedText().startswith("."):
-            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+            tc.movePosition(tc.MoveOperation.WordLeft, tc.MoveMode.KeepAnchor)
 
         # word like: cdc.pri|
-        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        tc.movePosition(tc.MoveOperation.WordLeft, tc.MoveMode.KeepAnchor)
         if tc.selectedText().startswith("."):
-            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+            tc.movePosition(tc.MoveOperation.WordLeft, tc.MoveMode.KeepAnchor)
         else:
-            tc.movePosition(tc.WordRight, tc.KeepAnchor)
+            tc.movePosition(tc.MoveOperation.WordRight, tc.MoveMode.KeepAnchor)
 
         # tc.select(QTextCursor.WordUnderCursor)
         completionPrefix = tc.selectedText()
@@ -434,8 +434,8 @@ class BCIEditor(QTextEdit):
                 '.', 0, completionPrefix.rfind('.'))
             completionPrefix = completionPrefix[index + 1:]
             for _ in range(tc.selectedText().count('.') - 1):
-                tc.movePosition(tc.WordRight, tc.KeepAnchor)
-                tc.movePosition(tc.WordRight, tc.KeepAnchor)
+                tc.movePosition(tc.MoveOperation.WordRight, tc.MoveMode.KeepAnchor)
+                tc.movePosition(tc.MoveOperation.WordRight, tc.MoveMode.KeepAnchor)
 
         return completionPrefix
 

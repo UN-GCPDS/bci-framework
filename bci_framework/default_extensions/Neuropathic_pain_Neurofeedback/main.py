@@ -25,9 +25,11 @@ bands = {
     'alpha': [[1, 5], 'increase'],
     'beta': [[5, 10], 'decrease'],
     'teta': [[10, 15], 'decrease'],
-
-
 }
+
+
+
+
 
 
 ########################################################################
@@ -116,26 +118,38 @@ class NPNeurofeedback(StimuliAPI):
             id='run',
         )
 
-        # self.dashboard <= w.slider(
-            # label='Test feedback:',
-            # min=-1,
-            # max=1,
-            # value=0,
-            # step=0.1,
-            # id='test',
-            # on_change=self.test_feedback,
-        # )
+      
+        
+        self.dashboard <= w.switch('alpha', checked=True, id='ban_alpha')
+        self.dashboard <= w.switch('beta', checked=True, id='ban_beta')
+        self.dashboard <= w.switch('teta', checked=True, id='ban_teta')
+        
+        self.dashboard <= w.button('Feed', on_click=self.test_feedback)
+
+
+        
         
 
-    # # ----------------------------------------------------------------------
-    # @DeliveryInstance.both
-    # def test_feedback(self, value):
-        # """Test the feedback stimuli."""
-        # self.on_input_feedback(
-            # **{
-                # 'feedback': value,
-            # }
-        # )
+    # ----------------------------------------------------------------------
+    @DeliveryInstance.both
+    def test_feedback(self):
+        """Test the feedback stimuli."""
+        
+        bands_status = {
+
+            'alpha': [w.get_value('ban_alpha'), 'increase'],
+            'beta': [w.get_value('ban_beta'), 'decrease'],
+            'teta': [w.get_value('ban_teta'), 'decrease'],
+
+        }
+        
+        document.select_one('#stimuli').style = {'display': 'block'}
+        
+        self.on_input_feedback(
+            **{
+                'feedback': bands_status,
+            }
+        )
 
     # ----------------------------------------------------------------------
     def on_input_feedback(self, **feedback: dict[str, [str, int]]) -> None:
@@ -148,17 +162,8 @@ class NPNeurofeedback(StimuliAPI):
         """
 
         f = feedback['feedback']
-        
-        # logging.warning(f'FEEDBACK: {f}')
         plot = self.BandFeedback.neurofeedback(f)
         
-        # document.select_one('#stimuli').clear()
-        
-        # self.update_plot(plot)
-
-
-    # @DeliveryInstance.remote
-    # def update_plot(self, plot):
         document.select_one('#stimuli').style = {
             'background-image': f'url(data:image/png;base64,{plot})',
         }

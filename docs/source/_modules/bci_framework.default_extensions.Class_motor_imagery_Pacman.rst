@@ -14,3 +14,4 @@ Submodules
 
    bci_framework.default_extensions.Class_motor_imagery_Pacman.main
    bci_framework.default_extensions.Class_motor_imagery_Pacman.pacman
+   bci_framework.default_extensions.Class_motor_imagery_Pacman.pyscript_fn

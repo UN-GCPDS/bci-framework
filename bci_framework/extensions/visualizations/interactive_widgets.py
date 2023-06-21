@@ -14,7 +14,8 @@ notch_filters = ('none', '50 Hz', '60 Hz')
 bandpass_filters = ('none', 'delta', 'theta', 'alpha', 'beta',
                     '5-45 Hz', '3-30 Hz', '4-40 Hz', '2-45 Hz', '1-50 Hz',
                     '7-13 Hz', '15-50 Hz', '1-100 Hz', '5-50 Hz',)
-scale = ('50 µV', '100 µV', '200 µV', '400 µV', '800 µV', '1000 µV')
+scale = ('50 µV', '100 µV', '200 µV', '400 µV', '800 µV',
+         '1000 µV', '2000 µV', '5000 µV', '10000 µV')
 channels = ['All'] + list(prop.CHANNELS.values())
 substract = ('none', 'channel mean', 'global mean', 'Cz')
 
@@ -41,8 +42,8 @@ def interact(*topics, exclusive=True) -> Callable:
                 extra = [topics[-1]]
             else:
                 extra = []
-            file.write(json.dumps(['#'] + list(topics)
-                                  + extra + [exclusive]) + '\n')
+            file.write(json.dumps(['#'] + list(topics) +
+                                  extra + [exclusive]) + '\n')
 
         def wrap(cls, *args, **kwargs):
             cls.widget_value[topics[0]] = topics[2]

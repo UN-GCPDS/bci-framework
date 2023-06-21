@@ -44,7 +44,7 @@ class RawEEG(EEGStream, Widgets):
         self.axis.set_ylim(0, len(prop.CHANNELS) + 1)
         self.axis.set_yticklabels(prop.CHANNELS.values())
 
-        self.create_buffer(BUFFER, DATAWIDTH, fill=0)
+        self.create_buffer(BUFFER, resampling=DATAWIDTH, fill=0)
 
         self.stream()
 

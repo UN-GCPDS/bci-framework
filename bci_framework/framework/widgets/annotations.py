@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Optional
 
 from PySide6.QtWidgets import QTableWidgetItem
-
+from PySide6.QtCore import Qt
 
 ########################################################################
 class Annotations:
@@ -32,28 +32,38 @@ class Annotations:
     def connect(self) -> None:
         """Connect events."""
         self.parent_frame.pushButton_save_annotation.clicked.connect(
-            self.save_annotation)
+            self.save_annotation
+        )
         self.parent_frame.pushButton_save_marker.clicked.connect(
-            self.save_marker)
+            self.save_marker
+        )
         self.parent_frame.pushButton_save_command.clicked.connect(
-            self.save_command)
+            self.save_command
+        )
 
-        self.parent_frame.pushButton_remove_annotations.clicked.connect(lambda:
-                                                                        self.parent_frame.tableWidget_annotations.setRowCount(0))
-        self.parent_frame.pushButton_remove_markers.clicked.connect(lambda:
-                                                                    self.parent_frame.tableWidget_markers.setRowCount(0))
-        self.parent_frame.pushButton_remove_commands.clicked.connect(lambda:
-                                                                     self.parent_frame.tableWidget_commands.setRowCount(0))
+        self.parent_frame.pushButton_remove_annotations.clicked.connect(
+            lambda: self.parent_frame.tableWidget_annotations.setRowCount(0)
+        )
+        self.parent_frame.pushButton_remove_markers.clicked.connect(
+            lambda: self.parent_frame.tableWidget_markers.setRowCount(0)
+        )
+        self.parent_frame.pushButton_remove_commands.clicked.connect(
+            lambda: self.parent_frame.tableWidget_commands.setRowCount(0)
+        )
 
     # ----------------------------------------------------------------------
     def save_annotation(self) -> None:
         """Write the annotation in the streaming."""
         content = self.parent_frame.textEdit_annotations.toPlainText()
-        duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
+        duration = (
+            self.parent_frame.doubleSpinBox_annotation_duration.value()
+        )
 
-        data_ = {'duration': duration,
-                 'description': content,
-                 'onset': datetime.now()}
+        data_ = {
+            'duration': duration,
+            'description': content,
+            'onset': datetime.now(),
+        }
 
         self.core.thread_kafka.produser.send('annotation', data_)
 
@@ -61,20 +71,24 @@ class Annotations:
     def save_marker(self) -> None:
         """Write the marker in the streaming."""
         marker = self.parent_frame.lineEdit_marker.text()
-        data_ = {'marker': marker,
-                 'datetime': datetime.now()}
+        data_ = {'marker': marker, 'datetime': datetime.now()}
         self.core.thread_kafka.produser.send('marker', data_)
 
     # ----------------------------------------------------------------------
     def save_command(self) -> None:
         """Write the command in the streaming."""
         command = self.parent_frame.lineEdit_command.text()
-        data_ = {'command': command,
-                 'datetime': datetime.now()}
+        data_ = {'command': command, 'datetime': datetime.now()}
         self.core.thread_kafka.produser.send('command', data_)
 
     # ----------------------------------------------------------------------
-    def add_annotation(self, onset, duration: str, description: str, action: Optional[bool] = True) -> None:
+    def add_annotation(
+        self,
+        onset,
+        duration: str,
+        description: str,
+        action: Optional[bool] = True,
+    ) -> None:
         """Write the annotation in the GUI."""
         row = self.parent_frame.tableWidget_annotations.rowCount()
         self.parent_frame.tableWidget_annotations.insertRow(row)
@@ -92,7 +106,9 @@ class Annotations:
             self.core.records.record_signal(False)
 
     # ----------------------------------------------------------------------
-    def add_marker(self, onset: str, marker: str, timestamp: Optional[bool] = True) -> None:
+    def add_marker(
+        self, onset: str, marker: str, timestamp: Optional[bool] = True
+    ) -> None:
         """Write the marker in the GUI."""
         row = self.parent_frame.tableWidget_markers.rowCount()
         self.parent_frame.tableWidget_markers.insertRow(row)
@@ -123,14 +139,19 @@ class Annotations:
         self.parent_frame.tableWidget_annotations.clear()
         self.parent_frame.tableWidget_annotations.setRowCount(0)
         self.parent_frame.tableWidget_annotations.setColumnCount(
-            len(columns))
+            len(columns)
+        )
         self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
-            columns)
+            columns
+        )
         for onset, duration, description in annotations:
             if not description in ['start_record', 'stop_record']:
                 self.add_annotation(
-                    onset, duration, description, action=False)
-        self.parent_frame.tableWidget_annotations.sortByColumn(0)
+                    onset, duration, description, action=False
+                )
+        self.parent_frame.tableWidget_annotations.sortByColumn(
+            0, Qt.SortOrder.AscendingOrder
+        )
 
     # ----------------------------------------------------------------------
     def bulk_markers(self, markers):
@@ -140,9 +161,13 @@ class Annotations:
         self.parent_frame.tableWidget_markers.setRowCount(0)
         self.parent_frame.tableWidget_markers.setColumnCount(len(columns))
         self.parent_frame.tableWidget_markers.setHorizontalHeaderLabels(
-            columns)
+            columns
+        )
         for marker in markers:
             for onset in markers[marker]:
-                self.add_marker(f'{onset/1000:.2f} s',
-                                marker, timestamp=False)
-        self.parent_frame.tableWidget_markers.sortByColumn(0)
+                self.add_marker(
+                    f'{onset/1000:.2f} s', marker, timestamp=False
+                )
+        self.parent_frame.tableWidget_markers.sortByColumn(
+            0, Qt.SortOrder.AscendingOrder
+        )

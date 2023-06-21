@@ -14,3 +14,4 @@ Submodules
 
    bci_framework.default_extensions.Visuospatial_working_memory_Change_detection_task.main
    bci_framework.default_extensions.Visuospatial_working_memory_Change_detection_task.points
+   bci_framework.default_extensions.Visuospatial_working_memory_Change_detection_task.pyscript_fn

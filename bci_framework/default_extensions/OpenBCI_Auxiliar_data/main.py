@@ -37,7 +37,7 @@ class OpenBCIAuxiliarData(EEGStream, Widgets):
         self.axis = axis
 
    
-        self.create_buffer(WINDOW, resampling=DATAWIDTH, fill=0, aux_shape=len(self.lines))
+        self.create_buffer(WINDOW, resampling=DATAWIDTH, fill=0)
         self.stream()
         
     

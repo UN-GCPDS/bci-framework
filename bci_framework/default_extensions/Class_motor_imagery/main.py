@@ -14,7 +14,7 @@ from typing import Literal
 
 UNICODE_CUES = {
     'Right': 'arrow-right-short',
-    'Left': 'arrow-left-short', 
+    'Left': 'arrow-left-short',
     'Up': 'arrow-up-short',
     'Bottom': 'arrow-down-short',
     'INC': 'record',
@@ -34,10 +34,11 @@ class FourClassMotorImagery(StimuliAPI):
         self.dashboard <= w.label('4-Class motor imagery', 'headline4')
         self.dashboard <= w.checkbox(
             label='Cues',
-            options=[[cue, cue!='INC'] for cue in UNICODE_CUES],
+            options=[[cue, cue != 'INC'] for cue in UNICODE_CUES],
             on_change=None,
             id='cues',
         )
+
         self.dashboard <= w.slider(
             label='Trials per class:',
             min=1,
@@ -88,9 +89,21 @@ class FourClassMotorImagery(StimuliAPI):
         )
 
         self.dashboard <= w.toggle_button(
-            [('Start run', self.start), ('Stop run', self.stop)], id='run')
-        self.dashboard <= w.toggle_button([('Start marker synchronization', self.start_marker_synchronization), (
-            'Stop marker synchronization', self.start_marker_synchronization)], id='sync')
+            [('Start run', self.start), ('Stop run', self.stop)], id='run'
+        )
+        self.dashboard <= w.toggle_button(
+            [
+                (
+                    'Start marker synchronization',
+                    self.start_marker_synchronization,
+                ),
+                (
+                    'Stop marker synchronization',
+                    self.start_marker_synchronization,
+                ),
+            ],
+            id='sync',
+        )
 
     # ----------------------------------------------------------------------
     def start(self) -> None:
@@ -102,17 +115,16 @@ class FourClassMotorImagery(StimuliAPI):
             self.start_record()
 
         self.build_trials()
-        
-        
+
         self.show_counter(5)
         timer.set_timeout(self.start_run, 5000)
-        
-        
-    # ----------------------------------------------------------------------        
+
+    # ----------------------------------------------------------------------
     def start_run(self):
         """"""
         self.run_pipeline(
-            self.pipeline_trial, self.trials, callback='stop_run')
+            self.pipeline_trial, self.trials, callback='stop_run'
+        )
 
     # ----------------------------------------------------------------------
     def stop(self) -> None:
@@ -146,10 +158,9 @@ class FourClassMotorImagery(StimuliAPI):
             ['i_trial', 'intentional'],  # `duration` is a slider reference
             ['trial', 'duration'],  # `duration` is a slider reference
         ]
-        
+
         if w.get_value('intentional') == 0:
             self.pipeline_trial.pop(1)
-        
 
     # ----------------------------------------------------------------------
     def soa(self, *args) -> None:
@@ -161,22 +172,28 @@ class FourClassMotorImagery(StimuliAPI):
             element.class_name = ''
 
     # ----------------------------------------------------------------------
-    def i_trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom', 'INC']) -> None:
+    def i_trial(
+        self, cue: Literal['Right', 'Left', 'Up', 'Bottom', 'INC']
+    ) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial
         as argument each time is called.
         """
         if not hasattr(self, 'cue_placeholder'):
-            self.cue_placeholder = html.I('', id='cue') 
+            self.cue_placeholder = html.I('', id='cue')
             self.stimuli_area <= self.cue_placeholder
 
         self.send_marker(f'I-{cue}')
-        self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]} cue-intention'
+        self.cue_placeholder.class_name = (
+            f'bi bi-{UNICODE_CUES[cue]} cue-intention'
+        )
         self.cue_placeholder.style = {'display': 'flex'}
-        
+
     # ----------------------------------------------------------------------
-    def trial(self, cue: Literal['Right', 'Left', 'Up', 'Bottom', 'INC']) -> None:
+    def trial(
+        self, cue: Literal['Right', 'Left', 'Up', 'Bottom', 'INC']
+    ) -> None:
         """Cue visualization.
 
         This is a pipeline method, that means it receives the respective trial
@@ -189,8 +206,6 @@ class FourClassMotorImagery(StimuliAPI):
         self.send_marker(cue)
         self.cue_placeholder.class_name = f'bi bi-{UNICODE_CUES[cue]}'
         self.cue_placeholder.style = {'display': 'flex'}
-        
-        
 
     # ----------------------------------------------------------------------
     def synchronizer(self, value: bool) -> None:
@@ -199,10 +214,7 @@ class FourClassMotorImagery(StimuliAPI):
             self.show_synchronizer()
         else:
             self.hide_synchronizer()
-            
-            
 
 
 if __name__ == '__main__':
     FourClassMotorImagery()
-

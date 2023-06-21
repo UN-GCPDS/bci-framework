@@ -1296,7 +1296,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="tabBarAutoHide">
         <bool>true</bool>
@@ -1325,293 +1325,399 @@ p, li { white-space: pre-wrap; }
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0,0">
-              <item row="0" column="0">
-               <widget class="QComboBox" name="comboBox_montages">
-                <property name="currentIndex">
-                 <number>-1</number>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QSpinBox" name="spinBox_montage_channels">
-                <property name="suffix">
-                 <string> channels</string>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>256</number>
-                </property>
-                <property name="value">
-                 <number>8</number>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <spacer name="horizontalSpacer_9">
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_22">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>30</width>
+                  <width>40</width>
                   <height>20</height>
                  </size>
                 </property>
                </spacer>
               </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_noneeg">
+                <property name="text">
+                 <string>non-EEG montage</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
-            <item row="2" column="0">
-             <widget class="QSplitter" name="splitter_montage">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+            <item row="1" column="0">
+             <widget class="QStackedWidget" name="stackedWidget_noneeg">
+              <property name="currentIndex">
+               <number>0</number>
               </property>
-              <widget class="QStackedWidget" name="stackedWidget_montage">
-               <property name="currentIndex">
-                <number>0</number>
-               </property>
-               <widget class="QWidget" name="page_montage">
-                <layout class="QGridLayout" name="gridLayout_27">
-                 <item row="2" column="0">
-                  <layout class="QGridLayout" name="gridLayout_montage"/>
-                 </item>
-                 <item row="1" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_20"/>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="page_impedances">
-                <layout class="QGridLayout" name="gridLayout_38">
-                 <item row="1" column="0">
-                  <layout class="QGridLayout" name="gridLayout_impedances"/>
-                 </item>
-                </layout>
-               </widget>
-              </widget>
-              <widget class="QToolBox" name="toolBox">
-               <property name="currentIndex">
-                <number>1</number>
-               </property>
-               <widget class="QWidget" name="page_5">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>96</width>
-                  <height>95</height>
-                 </rect>
+              <widget class="QWidget" name="page_8">
+               <layout class="QGridLayout" name="gridLayout_42">
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-                <attribute name="label">
-                 <string>Electrodes distribution</string>
-                </attribute>
-                <layout class="QGridLayout" name="gridLayout_19">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QScrollArea" name="scrollArea">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Plain</enum>
-                   </property>
-                   <property name="lineWidth">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="horizontalSpacing">
+                 <number>0</number>
+                </property>
+                <item row="2" column="0">
+                 <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0,0">
+                  <item row="0" column="0">
+                   <widget class="QComboBox" name="comboBox_montages">
+                    <property name="currentIndex">
+                     <number>-1</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>30</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QSpinBox" name="spinBox_montage_channels">
+                    <property name="suffix">
+                     <string> channels</string>
+                    </property>
+                    <property name="minimum">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <number>256</number>
+                    </property>
+                    <property name="value">
+                     <number>8</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QSplitter" name="splitter_montage">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <widget class="QStackedWidget" name="stackedWidget_montage">
+                   <property name="currentIndex">
                     <number>0</number>
                    </property>
-                   <property name="widgetResizable">
-                    <bool>true</bool>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                   </property>
-                   <widget class="QWidget" name="scrollAreaWidgetContents">
-                    <property name="geometry">
-                     <rect>
-                      <x>0</x>
-                      <y>0</y>
-                      <width>100</width>
-                      <height>30</height>
-                     </rect>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_9">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>15</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="1" column="2">
-                      <layout class="QGridLayout" name="gridLayout_list_channels_right"/>
+                   <widget class="QWidget" name="page_montage">
+                    <layout class="QGridLayout" name="gridLayout_27">
+                     <item row="2" column="0">
+                      <layout class="QGridLayout" name="gridLayout_montage"/>
                      </item>
                      <item row="1" column="0">
-                      <layout class="QGridLayout" name="gridLayout_list_channels_left"/>
+                      <layout class="QHBoxLayout" name="horizontalLayout_20"/>
                      </item>
-                     <item row="1" column="1">
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Fixed</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>30</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="page_impedances">
+                    <layout class="QGridLayout" name="gridLayout_38">
+                     <item row="1" column="0">
+                      <layout class="QGridLayout" name="gridLayout_impedances"/>
                      </item>
                     </layout>
                    </widget>
                   </widget>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="page_6">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>291</width>
-                  <height>145</height>
-                 </rect>
-                </property>
-                <attribute name="label">
-                 <string>Preconfigured montages</string>
-                </attribute>
-                <layout class="QGridLayout" name="gridLayout_30" rowstretch="0,0">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QTableWidget" name="tableWidget_montages">
-                   <property name="focusPolicy">
-                    <enum>Qt::NoFocus</enum>
+                  <widget class="QToolBox" name="toolBox">
+                   <property name="currentIndex">
+                    <number>1</number>
                    </property>
-                   <property name="editTriggers">
-                    <set>QAbstractItemView::NoEditTriggers</set>
-                   </property>
-                   <property name="selectionMode">
-                    <enum>QAbstractItemView::SingleSelection</enum>
-                   </property>
-                   <property name="selectionBehavior">
-                    <enum>QAbstractItemView::SelectRows</enum>
-                   </property>
-                   <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>130</number>
-                   </attribute>
-                   <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>true</bool>
-                   </attribute>
-                   <attribute name="verticalHeaderVisible">
-                    <bool>false</bool>
-                   </attribute>
-                   <column>
-                    <property name="text">
-                     <string>Montage</string>
+                   <widget class="QWidget" name="page_5">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>96</width>
+                      <height>95</height>
+                     </rect>
                     </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Channels</string>
+                    <attribute name="label">
+                     <string>Electrodes distribution</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_19">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QScrollArea" name="scrollArea">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Plain</enum>
+                       </property>
+                       <property name="lineWidth">
+                        <number>0</number>
+                       </property>
+                       <property name="widgetResizable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                       </property>
+                       <widget class="QWidget" name="scrollAreaWidgetContents">
+                        <property name="geometry">
+                         <rect>
+                          <x>0</x>
+                          <y>0</y>
+                          <width>100</width>
+                          <height>30</height>
+                         </rect>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_9">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>15</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item row="1" column="2">
+                          <layout class="QGridLayout" name="gridLayout_list_channels_right"/>
+                         </item>
+                         <item row="1" column="0">
+                          <layout class="QGridLayout" name="gridLayout_list_channels_left"/>
+                         </item>
+                         <item row="1" column="1">
+                          <spacer name="horizontalSpacer_2">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeType">
+                            <enum>QSizePolicy::Fixed</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>30</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </widget>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="page_6">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>468</width>
+                      <height>414</height>
+                     </rect>
                     </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Electrodes</string>
-                    </property>
-                   </column>
+                    <attribute name="label">
+                     <string>Preconfigured montages</string>
+                    </attribute>
+                    <layout class="QGridLayout" name="gridLayout_30" rowstretch="0,0">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="0" column="0" colspan="2">
+                      <widget class="QTableWidget" name="tableWidget_montages">
+                       <property name="focusPolicy">
+                        <enum>Qt::NoFocus</enum>
+                       </property>
+                       <property name="editTriggers">
+                        <set>QAbstractItemView::NoEditTriggers</set>
+                       </property>
+                       <property name="selectionMode">
+                        <enum>QAbstractItemView::SingleSelection</enum>
+                       </property>
+                       <property name="selectionBehavior">
+                        <enum>QAbstractItemView::SelectRows</enum>
+                       </property>
+                       <attribute name="horizontalHeaderDefaultSectionSize">
+                        <number>130</number>
+                       </attribute>
+                       <attribute name="horizontalHeaderStretchLastSection">
+                        <bool>true</bool>
+                       </attribute>
+                       <attribute name="verticalHeaderVisible">
+                        <bool>false</bool>
+                       </attribute>
+                       <column>
+                        <property name="text">
+                         <string>Montage</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Channels</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Electrodes</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_7">
+                       <item>
+                        <widget class="QPushButton" name="pushButton_save_montage">
+                         <property name="text">
+                          <string>Save actual montage</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_8">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>181</width>
+                           <height>35</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_remove_montage">
+                         <property name="text">
+                          <string>Remove selected</string>
+                         </property>
+                         <property name="icon">
+                          <iconset theme="edit-delete">
+                           <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>22</width>
+                           <height>22</height>
+                          </size>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                         <property name="class" stdset="0">
+                          <string>danger icon_button</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
                   </widget>
-                 </item>
-                 <item row="1" column="0" colspan="2">
-                  <layout class="QHBoxLayout" name="horizontalLayout_7">
-                   <item>
-                    <widget class="QPushButton" name="pushButton_save_montage">
-                     <property name="text">
-                      <string>Save actual montage</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_8">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>181</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_remove_montage">
-                     <property name="text">
-                      <string>Remove selected</string>
-                     </property>
-                     <property name="icon">
-                      <iconset theme="edit-delete">
-                       <normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../.designer/backup</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>22</width>
-                       <height>22</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                     <property name="class" stdset="0">
-                      <string>danger icon_button</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QCheckBox" name="checkBox_view_impedances">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
+                  </property>
+                  <property name="text">
+                   <string>View impedances</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="checkBox_view_impedances">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>View impedances</string>
-              </property>
+              <widget class="QWidget" name="page_9">
+               <layout class="QGridLayout" name="gridLayout_58">
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_26">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>334</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QSpinBox" name="spinBox_montage_channels_noneeg">
+                  <property name="suffix">
+                   <string> channels</string>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>256</number>
+                  </property>
+                  <property name="value">
+                   <number>8</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="2">
+                 <widget class="QTableWidget" name="tableWidget_noneeg">
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                  <column>
+                   <property name="text">
+                    <string>Label</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Connection</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -1757,7 +1863,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>367</width>
+                 <width>447</width>
                  <height>996</height>
                 </rect>
                </property>
@@ -2207,7 +2313,7 @@ p, li { white-space: pre-wrap; }
                      <item row="9" column="1">
                       <widget class="QComboBox" name="comboBox_streaming_sample_rate">
                        <property name="currentIndex">
-                        <number>4</number>
+                        <number>0</number>
                        </property>
                        <item>
                         <property name="text">
@@ -2217,6 +2323,16 @@ p, li { white-space: pre-wrap; }
                        <item>
                         <property name="text">
                          <string>100</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>150</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>200</string>
                         </property>
                        </item>
                        <item>
@@ -3017,8 +3133,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>468</width>
-              <height>514</height>
+              <width>160</width>
+              <height>181</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3543,8 +3659,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>468</width>
-                  <height>326</height>
+                  <width>96</width>
+                  <height>93</height>
                  </rect>
                 </property>
                 <attribute name="label">
@@ -4170,12 +4286,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1111</x>
-     <y>665</y>
+     <x>678</x>
+     <y>629</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>279</y>
+     <x>1098</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>
@@ -4186,12 +4302,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>143</y>
+     <x>1098</x>
+     <y>173</y>
     </hint>
    </hints>
   </connection>
@@ -4202,12 +4318,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1146</x>
-     <y>277</y>
+     <x>1086</x>
+     <y>485</y>
     </hint>
    </hints>
   </connection>
@@ -4218,12 +4334,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1111</x>
-     <y>665</y>
+     <x>678</x>
+     <y>629</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>151</y>
+     <x>1098</x>
+     <y>197</y>
     </hint>
    </hints>
   </connection>
@@ -4234,12 +4350,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1351</x>
-     <y>719</y>
+     <x>874</x>
+     <y>683</y>
     </hint>
    </hints>
   </connection>
@@ -4250,12 +4366,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1162</x>
-     <y>714</y>
+     <x>725</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1588</x>
-     <y>492</y>
+     <x>1071</x>
+     <y>914</y>
     </hint>
    </hints>
   </connection>
@@ -4266,12 +4382,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1454</x>
-     <y>114</y>
+     <x>942</x>
+     <y>144</y>
     </hint>
    </hints>
   </connection>
@@ -4282,12 +4398,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1335</x>
-     <y>-15</y>
+     <x>1071</x>
+     <y>82</y>
     </hint>
    </hints>
   </connection>
@@ -4298,12 +4414,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1208</x>
-     <y>718</y>
+     <x>768</x>
+     <y>682</y>
     </hint>
    </hints>
   </connection>
@@ -4314,12 +4430,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1162</x>
-     <y>714</y>
+     <x>725</x>
+     <y>678</y>
     </hint>
    </hints>
   </connection>
@@ -4330,12 +4446,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1588</x>
-     <y>492</y>
+     <x>1071</x>
+     <y>914</y>
     </hint>
    </hints>
   </connection>
@@ -4346,12 +4462,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1111</x>
-     <y>665</y>
+     <x>678</x>
+     <y>629</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>329</y>
+     <x>1098</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -4362,12 +4478,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1588</x>
-     <y>230</y>
+     <x>1071</x>
+     <y>670</y>
     </hint>
    </hints>
   </connection>
@@ -4378,12 +4494,12 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1612</x>
-     <y>724</y>
+     <x>726</x>
+     <y>127</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1360</x>
-     <y>507</y>
+     <x>728</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -4394,12 +4510,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1162</x>
-     <y>714</y>
+     <x>725</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1351</x>
-     <y>719</y>
+     <x>874</x>
+     <y>683</y>
     </hint>
    </hints>
   </connection>
@@ -4410,12 +4526,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1162</x>
-     <y>714</y>
+     <x>725</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1588</x>
-     <y>230</y>
+     <x>1071</x>
+     <y>670</y>
     </hint>
    </hints>
   </connection>
@@ -4426,12 +4542,12 @@ p, li { white-space: pre-wrap; }
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1609</x>
-     <y>720</y>
+     <x>1092</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>675</y>
+     <x>1098</x>
+     <y>639</y>
     </hint>
    </hints>
   </connection>
@@ -4442,12 +4558,12 @@ p, li { white-space: pre-wrap; }
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1614</x>
-     <y>620</y>
+     <x>1097</x>
+     <y>584</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1615</x>
-     <y>721</y>
+     <x>1098</x>
+     <y>685</y>
     </hint>
    </hints>
   </connection>
@@ -4458,12 +4574,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1093</x>
-     <y>-7</y>
+     <x>712</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1269</x>
-     <y>-3</y>
+     <x>803</x>
+     <y>421</y>
     </hint>
    </hints>
   </connection>
@@ -4474,12 +4590,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1133</x>
-     <y>-14</y>
+     <x>712</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1377</x>
-     <y>-5</y>
+     <x>972</x>
+     <y>421</y>
     </hint>
    </hints>
   </connection>
@@ -4490,12 +4606,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1141</x>
-     <y>0</y>
+     <x>712</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1504</x>
-     <y>6</y>
+     <x>1009</x>
+     <y>421</y>
     </hint>
    </hints>
   </connection>
@@ -4506,12 +4622,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1122</x>
-     <y>-47</y>
+     <x>712</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1260</x>
-     <y>-47</y>
+     <x>803</x>
+     <y>347</y>
     </hint>
    </hints>
   </connection>
@@ -4522,12 +4638,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1121</x>
-     <y>-43</y>
+     <x>712</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1391</x>
-     <y>-45</y>
+     <x>972</x>
+     <y>347</y>
     </hint>
    </hints>
   </connection>
@@ -4538,12 +4654,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1128</x>
-     <y>-49</y>
+     <x>712</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1517</x>
-     <y>-36</y>
+     <x>1009</x>
+     <y>347</y>
     </hint>
    </hints>
   </connection>
@@ -4554,12 +4670,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1120</x>
-     <y>-82</y>
+     <x>712</x>
+     <y>241</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1239</x>
-     <y>-88</y>
+     <x>803</x>
+     <y>273</y>
     </hint>
    </hints>
   </connection>
@@ -4570,12 +4686,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1148</x>
-     <y>-88</y>
+     <x>712</x>
+     <y>241</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1392</x>
-     <y>-88</y>
+     <x>972</x>
+     <y>273</y>
     </hint>
    </hints>
   </connection>
@@ -4586,12 +4702,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1098</x>
-     <y>-75</y>
+     <x>712</x>
+     <y>241</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1497</x>
-     <y>-74</y>
+     <x>1009</x>
+     <y>273</y>
     </hint>
    </hints>
   </connection>
@@ -4602,12 +4718,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1118</x>
-     <y>-126</y>
+     <x>712</x>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1247</x>
-     <y>-133</y>
+     <x>803</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>
@@ -4618,12 +4734,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1129</x>
-     <y>-128</y>
+     <x>712</x>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1388</x>
-     <y>-126</y>
+     <x>972</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>
@@ -4634,12 +4750,12 @@ p, li { white-space: pre-wrap; }
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1139</x>
-     <y>-122</y>
+     <x>712</x>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1519</x>
-     <y>-120</y>
+     <x>1009</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>

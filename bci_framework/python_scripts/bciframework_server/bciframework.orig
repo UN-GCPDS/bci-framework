@@ -1,0 +1,53 @@
+[connection]
+mode = WiFi Module
+port = /dev/ttyUSB1
+ip = 192.168.4.1
+host = localhost
+tcp_latency = 50000
+acquisition_sample_rate = 250
+streaming_sample_rate = 100
+boardmode = DEFAULT
+gain = 24
+input_type = NORMAL
+bias = INCLUDE
+srb1 = DISCONNECT
+srb2 = CONNECT
+pchan = TEST SIGNAL APPLIED
+nchan = TEST SIGNAL APPLIED
+test_signal_type = 1X SLOW
+test_signal = True
+port1 = /dev/ttyUSB0
+port2 = /dev/ttyUSB1
+port3 = /dev/ttyUSB2
+port4 = /dev/ttyUSB3
+ip1 = 192.168.4.1
+ip2 = 192.168.1.185
+ip3 = 192.168.1.115
+ip4 = 192.168.1.116
+check1 = True
+check2 = False
+check3 = False
+check4 = False
+
+[framework]
+theme = light
+
+[montages]
+montage1 = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,P7,P3,Pz,P4,P8,O1,Oz,O2
+montage2 = standard_1020|Fp1,Fp2,T7,C3,C4,T8,O1,O2
+montage3 = standard_1020|F3,Fz,F4,C3,C4,P3,Pz,P4
+montage4 = standard_1020|Fp1,Fp2,F7,F3,F4,F8,T7,C3,C4,T8,P7,P3,P4,P8,O1,O2
+montage5 = standard_1020|Fp1,Fp2,F7,Fz,F8,T7,C3,Cz,C4,T8,P3,Pz,P4,O1,O2
+montage6 = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,P7,P3,Pz,P4,P8,O1,Oz,O2
+montage7 = standard_1005|Fp1,Fp2,F7,Fz,F8,T7,C3,Cz,C4,T8,P7,Pz,P8,O1,O2
+montage8 = standard_1020|Fp1,Fpz,Fp2,AF3,AF4,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,CP5,CP1,CP2,CP6,P7,P3,Pz,P4,P8,POz,O1,Oz,O2
+montage9 = standard_1020|Fp1,Fp2,F7,F8
+montage10 = standard_1020|Fp1,Fp2,F7,F3,Fz,F4,F8,T7,T8,P7,P3,Pz,P4,P8,O1,O2
+montage11 = standard_1020|Fp1,Fp2,F7,F1,F2,F8,T9,C3,Cz,C4,T10,P7,Pz,P8,O2,O1
+montage12 = standard_1020|Fp1,Fp2,Fz,FC3,FC4,C5,C3,C1,Cz,C2,C4,C6,CP3,CP6,P3,P4
+last_montage = standard_1020|Fp1,Fp2,F7,Fz,F8,C3,Cz,C4,P7,P3,Pz,P4,P8,O1,Oz,O2
+montage13 = standard_1020|Fp1,Fp2,F7,F3,Fz,F4,F8,T7,C3,Cz,C4,T8,P7,P3,P8,P4
+type13 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+montage14 = standard_1020|Fp1,Fp2,F7,F3,Fz,F4,F8,T7,C3,Cz,C4,T8,P7,P3,P4,P8
+type14 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+

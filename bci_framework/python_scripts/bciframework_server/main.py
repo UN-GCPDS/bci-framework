@@ -46,6 +46,7 @@ class BareMinimum(RadiantAPI):
     # ----------------------------------------------------------------------
     def ping(self):
         """"""
+        # self.stand_by()
         logging.warning('ping...')
         url = f'{self.current_stimuli_url}/mode'
         req = ajax.Ajax()

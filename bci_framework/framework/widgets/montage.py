@@ -11,7 +11,14 @@ from typing import List, TypeVar, Dict, Optional
 
 from PySide6.QtGui import QCursor
 from PySide6.QtCore import QTimer, QSize, Qt
-from PySide6.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
+from PySide6.QtWidgets import (
+    QLabel,
+    QComboBox,
+    QTableWidgetItem,
+    QApplication,
+    QCheckBox,
+    QHeaderView,
+)
 from PySide6.QtGui import QResizeEvent
 
 import mne
@@ -21,7 +28,9 @@ import matplotlib
 from matplotlib import cm, pyplot
 from matplotlib.figure import Figure
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import (
+    FigureCanvasQTAgg as FigureCanvas,
+)
 
 from openbci_stream.acquisition import OpenBCIConsumer
 from gcpds.filters import frequency as filters
@@ -110,10 +119,11 @@ class DragAndDropMontage:
         b = None
 
         pos = _find_topomap_coords(
-            self.info_, picks=self.channels_labels_, sphere=0.1)
+            self.info_, picks=self.channels_labels_, sphere=0.1
+        )
 
         for i, (x, y) in enumerate(pos):
-        # for i, (x, y) in enumerate(zip(*line.get_data())):
+            # for i, (x, y) in enumerate(zip(*line.get_data())):
 
             d = euclidean((event.xdata, event.ydata), (x, y))
             if distance > d:
@@ -122,7 +132,8 @@ class DragAndDropMontage:
                 b = [x], [y]
 
         self.figure.axes[0].plot(
-            *b, 'o', color='w', alpha=0.7, markersize=self.markersize)[0]
+            *b, 'o', color='w', alpha=0.7, markersize=self.markersize
+        )[0]
 
         self.target_start = mk
 
@@ -154,7 +165,8 @@ class DragAndDropMontage:
         t = None
 
         pos = _find_topomap_coords(
-            self.info_, picks=self.channels_names_, sphere=0.1)
+            self.info_, picks=self.channels_names_, sphere=0.1
+        )
 
         for i, (x, y) in enumerate(pos):
             xe, ye = event.xdata, event.ydata
@@ -168,10 +180,18 @@ class DragAndDropMontage:
 
         if not hasattr(self, 'marker_placeholder'):
             self.marker_placeholder = self.figure.axes[0].plot(
-                *b, 'o', color='k', alpha=0.5, markersize=self.markersize)[0]
+                *b, 'o', color='k', alpha=0.5, markersize=self.markersize
+            )[0]
 
             self.text_placeholder = self.figure.axes[0].text(
-                *b, self.channels_names_[mk], color='w', fontsize=self.font_size, va='center', ha='center', fontdict={})
+                *b,
+                self.channels_names_[mk],
+                color='w',
+                fontsize=self.font_size,
+                va='center',
+                ha='center',
+                fontdict={},
+            )
 
         self.marker_placeholder.set_data(*b)
         self.text_placeholder.set_position(t)
@@ -205,10 +225,16 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
     def reset_plot(self) -> None:
         """Ajust figure positions."""
         self.figure.subplots_adjust(
-            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0)
+            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0
+        )
 
     # ----------------------------------------------------------------------
-    def update_montage(self, montage: mne.channels.DigMontage, electrodes: List[str], montage_name: str = None) -> None:
+    def update_montage(
+        self,
+        montage: mne.channels.DigMontage,
+        electrodes: List[str],
+        montage_name: str = None,
+    ) -> None:
         """Redraw electrodes positions."""
 
         self.args_update = (montage, electrodes, montage_name)
@@ -216,7 +242,9 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
 
         # ----------------------------------------------------------------------
         def map_(x, in_min, in_max, out_min, out_max):
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+            return (x - in_min) * (out_max - out_min) / (
+                in_max - in_min
+            ) + out_min
 
         matplotlib.rcParams['text.color'] = "#ffffff"
         if hasattr(self, 'lastEvent'):
@@ -231,8 +259,9 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
         self.ax.clear()
         self.channels_names = montage.ch_names.copy()
 
-        info = mne.create_info(self.channels_names,
-                               sfreq=1000, ch_types="eeg")
+        info = mne.create_info(
+            self.channels_names, sfreq=1000, ch_types="eeg"
+        )
         info.set_montage(montage)
 
         self.channels_names_ = self.channels_names.copy()
@@ -240,14 +269,16 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
             for ch in ['T3', 'T5', 'T4', 'T6']:
                 self.channels_names.pop(self.channels_names.index(ch))
 
-        info = mne.create_info(self.channels_names,
-                               sfreq=1000, ch_types="eeg")
+        info = mne.create_info(
+            self.channels_names, sfreq=1000, ch_types="eeg"
+        )
         info.set_montage(montage)
 
         self.info_ = info.copy()
 
         channels_mask = np.array(
-            [ch in electrodes for ch in self.channels_names])
+            [ch in electrodes for ch in self.channels_names]
+        )
         values = [0] * len(channels_mask)
 
         channels_labels = []
@@ -256,13 +287,16 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
             if ch in electrodes:
                 i = electrodes.index(ch)
                 channels_labels.append(
-                    f'$\\mathsf{{{ch}}}$\n$\\mathsf{{ch{i+1}}}$')
+                    f'$\\mathsf{{{ch}}}$\n$\\mathsf{{ch{i+1}}}$'
+                )
             else:
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
         # colors = ['#3d7a84', '#3d7a84']
-        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get(
-            'QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
+        colors = [
+            os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'),
+            os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'),
+        ]
         cm = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         # pos = np.stack([k['r'] for k in self.info_['dig'][3:]])
@@ -273,12 +307,29 @@ class TopoplotMontage(TopoplotBase, DragAndDropMontage):
         # z = pos[:, -1].mean()
         # [x, y, z, radius]
 
-        mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0, cmap=cm, outlines='skirt', names=channels_labels, show_names=True, axes=self.ax, sensors=True, show=False,
-                             mask_params=dict(marker='o', markerfacecolor='#263238',
-                                              markeredgecolor='#4f5b62', linewidth=0, markersize=self.markersize),
-                             mask=channels_mask,
-                             # sphere=[0, 0, 0, 0.1],
-                             )
+        mne.viz.plot_topomap(
+            values,
+            info,
+            vmin=-1,
+            vmax=1,
+            contours=0,
+            cmap=cm,
+            outlines='skirt',
+            names=channels_labels,
+            show_names=True,
+            axes=self.ax,
+            sensors=True,
+            show=False,
+            mask_params=dict(
+                marker='o',
+                markerfacecolor='#263238',
+                markeredgecolor='#4f5b62',
+                linewidth=0,
+                markersize=self.markersize,
+            ),
+            mask=channels_mask,
+            # sphere=[0, 0, 0, 0.1],
+        )
 
         self.draw()
 
@@ -294,8 +345,7 @@ class TopoplotImpedances(TopoplotBase):
         self.ax = self.figure.add_subplot(111)
         self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
         self.cmap = matplotlib.cm.get_cmap('YlGn')
-        self.cmap = self.truncate_colormap(
-            self.cmap, minval=0, maxal=0.66)
+        self.cmap = self.truncate_colormap(self.cmap, minval=0, maxal=0.66)
 
         self.band_2737 = filters.GenericButterBand(27, 37, fs=250)
         self.reset_plot()
@@ -316,7 +366,8 @@ class TopoplotImpedances(TopoplotBase):
     def reset_plot(self) -> None:
         """Ajust figure positions."""
         self.figure.subplots_adjust(
-            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0)
+            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0
+        )
         self.add_colorbar()
 
     # ----------------------------------------------------------------------
@@ -324,33 +375,42 @@ class TopoplotImpedances(TopoplotBase):
         """"""
         new_cmap = LinearSegmentedColormap.from_list(
             f'trunc({cmap.name}, {minval:.2f}, {maxal:.2f})',
-            cmap(np.linspace(minval, maxal, n)))
+            cmap(np.linspace(minval, maxal, n)),
+        )
         return new_cmap
 
     # ----------------------------------------------------------------------
-    def update_impedances(self, montage: mne.channels.DigMontage, electrodes: List[str], impedances: Dict[str, float], montage_name: str = None) -> None:
+    def update_impedances(
+        self,
+        montage: mne.channels.DigMontage,
+        electrodes: List[str],
+        impedances: Dict[str, float],
+        montage_name: str = None,
+    ) -> None:
         """Redraw electrodes with background colors."""
 
         self.args_update = (montage, electrodes, impedances, montage_name)
 
         # ----------------------------------------------------------------------
         def map_(x, in_min, in_max, out_min, out_max):
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+            return (x - in_min) * (out_max - out_min) / (
+                in_max - in_min
+            ) + out_min
 
         matplotlib.rcParams['text.color'] = "#000000"
         if hasattr(self, 'lastEvent'):
             factor = map_(len(electrodes), 1, 32, 1.2, 0.6)
 
-            matplotlib.rcParams['font.size'] = int(
-                min(self.lastEvent) / 25) * factor
+            matplotlib.rcParams['font.size'] = (
+                int(min(self.lastEvent) / 25) * factor
+            )
             markersize = int(min(self.lastEvent) / 10) * factor
         else:
             matplotlib.rcParams['font.size'] = 13
             markersize = 35
 
         channels_names = montage.ch_names.copy()
-        info = mne.create_info(
-            montage.ch_names, sfreq=1000, ch_types="eeg")
+        info = mne.create_info(montage.ch_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
         # channels_names = self.remove_overlaping(info, channels_names)
@@ -364,8 +424,7 @@ class TopoplotImpedances(TopoplotBase):
         info = mne.create_info(channels_names, sfreq=1000, ch_types="eeg")
         info.set_montage(montage)
 
-        channels_mask = np.array(
-            [ch in electrodes for ch in channels_names])
+        channels_mask = np.array([ch in electrodes for ch in channels_names])
         values = [0] * len(channels_mask)
 
         channels_labels = []
@@ -385,22 +444,34 @@ class TopoplotImpedances(TopoplotBase):
 
                 i = electrodes.index(ch)
                 channels_labels.append(
-                    f'$\\mathsf{{{ch}|ch{i+1}}}$\n$\\mathsf{{{label}}}$')
+                    f'$\\mathsf{{{ch}|ch{i+1}}}$\n$\\mathsf{{{label}}}$'
+                )
             else:
                 channels_labels.append(f'$\\mathsf{{{ch}}}$')
 
-        colors = [os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'), os.environ.get(
-            'QTMATERIAL_PRIMARYCOLOR', '#ffffff')]
+        colors = [
+            os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'),
+            os.environ.get('QTMATERIAL_PRIMARYCOLOR', '#ffffff'),
+        ]
         cmap_ = LinearSegmentedColormap.from_list('plane', colors, N=2)
 
         self.ax.clear()
-        mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0,
-                             cmap=cmap_, outlines='skirt', axes=self.ax,
-                             names=channels_labels, show_names=True,
-                             sensors=True, show=False,
-                             mask_params={'marker': ''},
-                             mask=channels_mask,
-                             )
+        mne.viz.plot_topomap(
+            values,
+            info,
+            vmin=-1,
+            vmax=1,
+            contours=0,
+            cmap=cmap_,
+            outlines='skirt',
+            axes=self.ax,
+            names=channels_labels,
+            show_names=True,
+            sensors=True,
+            show=False,
+            mask_params={'marker': ''},
+            mask=channels_mask,
+        )
         q = self.cmap
 
         markers = [l.get_marker() for l in self.ax.axes.lines]
@@ -419,8 +490,15 @@ class TopoplotImpedances(TopoplotBase):
                     color = '#da4453'
                 else:
                     color = q(impedances[channels[i]] / 20)
-                self.ax.plot([x], [y], marker='o', markerfacecolor=color,
-                             markeredgecolor=color, markersize=markersize, linewidth=0)
+                self.ax.plot(
+                    [x],
+                    [y],
+                    marker='o',
+                    markerfacecolor=color,
+                    markeredgecolor=color,
+                    markersize=markersize,
+                    linewidth=0,
+                )
             except IndexError:
                 return
         self.draw()
@@ -433,8 +511,11 @@ class TopoplotImpedances(TopoplotBase):
 
         sm = cm.ScalarMappable(cmap=self.cmap, norm=norm)
         cbr = pyplot.colorbar(sm, cax=self.cax, orientation="horizontal")
-        pyplot.setp(pyplot.getp(cbr.ax.axes, 'xticklabels'),
-                    color=os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR', '#000000'), size=10)
+        pyplot.setp(
+            pyplot.getp(cbr.ax.axes, 'xticklabels'),
+            color=os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR', '#000000'),
+            size=10,
+        )
         ticks = [0, 5, 10, 15]
         cbr.set_ticks(ticks)
         cbr.set_ticklabels([f'{i} k$\Omega$' for i in ticks])
@@ -448,7 +529,9 @@ class TopoplotImpedances(TopoplotBase):
         if len(locs3d) > 1 and np.min(dist) < 1e-10:
             problematic_electrodes = [
                 info['chs'][elec_i]
-                for elec_i in squareform(dist < 1e-10).any(axis=0).nonzero()[0]
+                for elec_i in squareform(dist < 1e-10)
+                .any(axis=0)
+                .nonzero()[0]
             ]
 
         issued = []
@@ -462,8 +545,9 @@ class TopoplotImpedances(TopoplotBase):
                     issued.extend([ch_i['ch_name'], ch_j['ch_name']])
                     if ch_i['ch_name'] in channels_names:
 
-                        channels_names.pop(channels_names.index(
-                            ch_i['ch_name']))
+                        channels_names.pop(
+                            channels_names.index(ch_i['ch_name'])
+                        )
 
         return channels_names
 
@@ -491,10 +575,11 @@ class Montage:
         self.parent_frame.gridLayout_montage.addWidget(self.topoplot)
 
         self.parent_frame.comboBox_montages.addItems(
-            mne.channels.get_builtin_montages())
+            mne.channels.get_builtin_montages()
+        )
 
         # self.parent_frame.comboBox_montage_channels.addItems(
-            # [f"{i+1} channel{'s'[:i]}" for i in range(128)])
+        # [f"{i+1} channel{'s'[:i]}" for i in range(128)])
 
         self.set_saved_montages()
         self.update_environ()
@@ -502,7 +587,8 @@ class Montage:
 
         self.topoplot_impedance = TopoplotImpedances()
         self.parent_frame.gridLayout_impedances.addWidget(
-            self.topoplot_impedance)
+            self.topoplot_impedance
+        )
         # self.update_impedance()
 
         self.load_montage()
@@ -520,40 +606,118 @@ class Montage:
 
         impedances = {ch: z for ch, z in zip(electrodes, z)}
         self.topoplot_impedance.update_impedances(
-            montage, electrodes, impedances)
+            montage, electrodes, impedances
+        )
 
     # ----------------------------------------------------------------------
     def set_spliter_position(self) -> None:
         """Delay method to redraw the figure."""
         self.parent_frame.splitter_montage.moveSplitter(
-            self.parent_frame.splitter_montage.getRange(1)[1] // 2, 1)
+            self.parent_frame.splitter_montage.getRange(1)[1] // 2, 1
+        )
 
     # ----------------------------------------------------------------------
     def connect(self) -> None:
         """Connect events."""
         self.parent_frame.comboBox_montages.activated.connect(
-            self.update_topoplot)
+            self.update_topoplot
+        )
 
         self.parent_frame.spinBox_montage_channels.valueChanged.connect(
-            self.update_topoplot)
+            self.update_topoplot
+        )
         # self.parent_frame.spinBox_montage_channels.activated.connect(
-            # self.update_topoplot)
+        # self.update_topoplot)
 
         self.parent_frame.pushButton_save_montage.clicked.connect(
-            self.save_montage)
+            self.save_montage
+        )
         self.parent_frame.pushButton_remove_montage.clicked.connect(
-            self.delete_montage)
+            self.delete_montage
+        )
 
         self.parent_frame.tableWidget_montages.itemClicked.connect(
-            self.load_montage)
+            self.load_montage
+        )
 
         self.parent_frame.checkBox_view_impedances.clicked.connect(
-            self.change_plot)
+            self.change_plot
+        )
+
+        self.parent_frame.radioButton_noneeg.clicked.connect(
+            self.set_channels_mode
+        )
+        self.parent_frame.spinBox_montage_channels_noneeg.valueChanged.connect(
+            self.set_non_eeg_montage
+        )
+
+        self.parent_frame.tableWidget_noneeg.itemChanged.connect(
+            self.update_noneeg_channels_montage
+        )
+
+    # ----------------------------------------------------------------------
+    def set_channels_mode(self, non_eeg):
+        """"""
+        if non_eeg:
+            self.parent_frame.stackedWidget_noneeg.setCurrentIndex(1)
+            self.set_non_eeg_montage()
+        else:
+            self.parent_frame.stackedWidget_noneeg.setCurrentIndex(0)
+
+    # ----------------------------------------------------------------------
+    def set_non_eeg_montage(self):
+        """"""
+        rows = self.parent_frame.spinBox_montage_channels_noneeg.value()
+        # self.parent_frame.tableWidget_noneeg.clear()
+        self.parent_frame.tableWidget_noneeg.setRowCount(rows)
+
+        header = self.parent_frame.tableWidget_noneeg.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+
+        self.noneeg_channels = []
+        self.noneeg_channels_type = []
+
+        for r in range(rows):
+            item = QTableWidgetItem('Bipolar')
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setCheckState(Qt.Unchecked)
+            self.parent_frame.tableWidget_noneeg.setItem(r, 1, item)
+            self.noneeg_channels_type.append(item)
+
+            item = QTableWidgetItem('Hola')
+            self.parent_frame.tableWidget_noneeg.setItem(r, 0, item)
+            self.noneeg_channels.append(item)
+
+            item = QTableWidgetItem(f'channel {r+1}  ')
+            self.parent_frame.tableWidget_noneeg.setVerticalHeaderItem(
+                r, item
+            )
+
+    # ----------------------------------------------------------------------
+    def update_noneeg_channels_montage(self):
+        """"""
+        rows = self.parent_frame.spinBox_montage_channels_noneeg.value()
+        if len(self.noneeg_channels) != rows:
+            return
+
+        montage = {
+            i + 1: item.text() for i, item in enumerate(self.noneeg_channels)
+        }
+        types = [
+            int(i.checkState() == Qt.CheckState.Unchecked)
+            for i in self.noneeg_channels_type
+        ]
+
+        os.environ['BCISTREAM_CHANNELS'] = json.dumps(montage)
+        os.environ['BCISTREAM_MONTAGE_TYPE'] = json.dumps(types)
+        os.environ['BCISTREAM_MONTAGE_NAME'] = json.dumps('NON-EEG')
 
     # ----------------------------------------------------------------------
     def change_plot(self) -> None:
         """Switch between Montage and Impedance."""
-        if self.parent_frame.checkBox_view_impedances.isChecked():  # impedances
+        if (
+            self.parent_frame.checkBox_view_impedances.isChecked()
+        ):  # impedances
             self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
         else:  # montage
             self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
@@ -575,7 +739,8 @@ class Montage:
         self.generate_list_channels()
         electrodes = [ch.currentText() for ch in self.channels_names_widgets]
         self.topoplot.update_montage(
-            montage, electrodes, montage_name=montage_name)
+            montage, electrodes, montage_name=montage_name
+        )
         self.validate_channels()
         self.update_environ()
         self.topoplot_impedance.reset_plot()
@@ -584,7 +749,10 @@ class Montage:
     # ----------------------------------------------------------------------
     def generate_list_channels(self) -> None:
         """Update the widgets to set the channel to the electrode."""
-        for layout in [self.parent_frame.gridLayout_list_channels_right, self.parent_frame.gridLayout_list_channels_left]:
+        for layout in [
+            self.parent_frame.gridLayout_list_channels_right,
+            self.parent_frame.gridLayout_list_channels_left,
+        ]:
 
             for i in reversed(range(layout.count())):
                 if item := layout.takeAt(i):
@@ -596,8 +764,9 @@ class Montage:
             layout.setColumnStretch(2, 1)
 
         if self.channels_names_widgets:
-            previous_labels = [ch.currentText()
-                               for ch in self.channels_names_widgets]
+            previous_labels = [
+                ch.currentText() for ch in self.channels_names_widgets
+            ]
         else:
             previous_labels = []
 
@@ -621,7 +790,10 @@ class Montage:
             channel_name = QComboBox()
             channel_name.addItems(['Off'] + montage.ch_names)
 
-            if len(previous_labels) > i and previous_labels[i] in montage.ch_names:
+            if (
+                len(previous_labels) > i
+                and previous_labels[i] in montage.ch_names
+            ):
                 index = montage.ch_names.index(previous_labels[i])
             elif len(previous_labels) > i and previous_labels[i] == 'Off':
                 index = -1
@@ -650,27 +822,37 @@ class Montage:
     def save_montage(self) -> None:
         """Save current montage."""
         montage_name = self.parent_frame.comboBox_montages.currentText()
-        channels_names = ','.join([ch.currentText()
-                                   for ch in self.channels_names_widgets])
+        channels_names = ','.join(
+            [ch.currentText() for ch in self.channels_names_widgets]
+        )
         # channels_bipolar = ','.join([str(int(ch.currentText() == 'Monopolar'))
-                                     # for ch in self.channels_bipolar_widgets])
+        # for ch in self.channels_bipolar_widgets])
 
         channels_bipolar = ','.join(
-            [str(int(w.isChecked())) for w in self.channels_bipolar_widgets])
+            [str(int(w.isChecked())) for w in self.channels_bipolar_widgets]
+        )
 
-        channels_bipolar = [int(w.isChecked())
-                            for w in self.channels_bipolar_widgets]
+        channels_bipolar = [
+            int(w.isChecked()) for w in self.channels_bipolar_widgets
+        ]
 
         # saved_montages = self.config['montages']
         for i in range(1, 999):
             if self.core.config.has_option('montages', f'montage{i}'):
-                if self.core.config.get('montages', f'montage{i}') == f"{montage_name}|{channels_names}":
+                if (
+                    self.core.config.get('montages', f'montage{i}')
+                    == f"{montage_name}|{channels_names}"
+                ):
                     return  # Duplicated montage
             else:
                 self.core.config.set(
-                    'montages', f'montage{i}', f"{montage_name}|{channels_names}")
+                    'montages',
+                    f'montage{i}',
+                    f"{montage_name}|{channels_names}",
+                )
                 self.core.config.set(
-                    'montages', f'type{i}', f"{channels_bipolar}")
+                    'montages', f'type{i}', f"{channels_bipolar}"
+                )
                 # self.parent.comboBox_historical_montages.addItem(name)
                 self.core.config.save()
                 self.set_saved_montages()
@@ -681,7 +863,8 @@ class Montage:
         """Remove montage."""
         row = self.parent_frame.tableWidget_montages.currentRow()
         config_name = self.parent_frame.tableWidget_montages.item(
-            row, 0).config_name
+            row, 0
+        ).config_name
         self.core.config.remove_option('montages', config_name)
         self.core.config.save()
         self.set_saved_montages()
@@ -692,13 +875,17 @@ class Montage:
         self.parent_frame.tableWidget_montages.clear()
         self.parent_frame.tableWidget_montages.setRowCount(0)
         self.parent_frame.tableWidget_montages.setColumnCount(3)
-        self.parent_frame.tableWidget_montages.verticalHeader().setVisible(True)
+        self.parent_frame.tableWidget_montages.verticalHeader().setVisible(
+            True
+        )
         self.parent_frame.tableWidget_montages.setHorizontalHeaderLabels(
-            ['Montage', 'Channels', 'Electrodes'])
+            ['Montage', 'Channels', 'Electrodes']
+        )
         saved_montages = self.core.config['montages']
 
-        montages = filter(lambda m: m.startswith(
-            'montage'), saved_montages.keys())
+        montages = filter(
+            lambda m: m.startswith('montage'), saved_montages.keys()
+        )
         for i, saved in enumerate(montages):
             montage, electrodes = saved_montages.get(saved).split('|')
             self.parent_frame.tableWidget_montages.insertRow(i)
@@ -709,14 +896,20 @@ class Montage:
             itemh = QTableWidgetItem(montage)
             itemh.setText(f'#{i+1}')
             self.parent_frame.tableWidget_montages.setVerticalHeaderItem(
-                i, itemh)
+                i, itemh
+            )
 
+            self.parent_frame.tableWidget_montages.setItem(i, 0, item)
             self.parent_frame.tableWidget_montages.setItem(
-                i, 0, item)
+                i,
+                1,
+                QTableWidgetItem(
+                    f"{len(electrodes.split(','))-electrodes.split(',').count('Off')} ch"
+                ),
+            )
             self.parent_frame.tableWidget_montages.setItem(
-                i, 1, QTableWidgetItem(f"{len(electrodes.split(','))-electrodes.split(',').count('Off')} ch"))
-            self.parent_frame.tableWidget_montages.setItem(
-                i, 2, QTableWidgetItem(' '.join(electrodes.split(','))))
+                i, 2, QTableWidgetItem(' '.join(electrodes.split(',')))
+            )
 
             i += 1
 
@@ -726,32 +919,40 @@ class Montage:
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         if event is None:
             montage_name, channels = self.core.config.get(
-                'montages', 'last_montage').split('|')
+                'montages', 'last_montage'
+            ).split('|')
             channels = channels.split(',')
 
             # montage_name, channels = self.core.config.get(
-                # 'montages', 'last_montage').split('|')
+            # 'montages', 'last_montage').split('|')
             # channels = channels.split(',')
 
         else:
             montage_name = self.parent_frame.tableWidget_montages.item(
-                event.row(), 0).text()
+                event.row(), 0
+            ).text()
             channels = self.parent_frame.tableWidget_montages.item(
-                event.row(), 2).text()
+                event.row(), 2
+            ).text()
             channels = channels.split(' ')
-            self.core.config.set('montages', 'last_montage',
-                                 f"{montage_name}|{','.join(channels)}")
+            self.core.config.set(
+                'montages',
+                'last_montage',
+                f"{montage_name}|{','.join(channels)}",
+            )
             # channels = channels.split(' ')
             # self.core.config.set('montages', 'last_type',
-                                 # f"{','.join(channels)}")
+            # f"{','.join(channels)}")
             self.core.config.save()
 
         self.parent_frame.comboBox_montages.setCurrentText(montage_name)
         self.parent_frame.spinBox_montage_channels.setValue(len(channels))
 
         self.generate_list_channels()
-        [wg.setCurrentText(ch) for wg, ch in zip(
-            self.channels_names_widgets, channels)]
+        [
+            wg.setCurrentText(ch)
+            for wg, ch in zip(self.channels_names_widgets, channels)
+        ]
 
         self.update_topoplot()
         QApplication.restoreOverrideCursor()
@@ -763,29 +964,36 @@ class Montage:
         for channel, label in zip(channels, self.labels_names_widgets):
             if channels.count(channel) > 1:
                 label.setStyleSheet(
-                    "QLabel{color: #ff1744;}QLabel:disabled{color: rgba(255, 23, 68, 0.2)};")
+                    "QLabel{color: #ff1744;}QLabel:disabled{color: rgba(255, 23, 68, 0.2)};"
+                )
             else:
                 label.setStyleSheet(
                     f"QLabel{{color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR', '')};}}"
-                    f"QLabel:disabled{{color: rgba(255, 255, 255, 0.2) }}")
+                    f"QLabel:disabled{{color: rgba(255, 255, 255, 0.2) }}"
+                )
 
     # ----------------------------------------------------------------------
     def update_environ(self) -> None:
         """Update environment variables."""
-        montage = {i + 1: ch.currentText() for i, ch in enumerate(
-            (self.channels_names_widgets)) if ch.currentText() != 'Off'}
+        montage = {
+            i + 1: ch.currentText()
+            for i, ch in enumerate((self.channels_names_widgets))
+            if ch.currentText() != 'Off'
+        }
 
         # types = [int(w.currentText() == 'Monopolar')
-                 # for w in self.channels_bipolar_widgets]
-        types = [int(not w.isChecked())
-                 for w in self.channels_bipolar_widgets]
+        # for w in self.channels_bipolar_widgets]
+        types = [
+            int(not w.isChecked()) for w in self.channels_bipolar_widgets
+        ]
 
         os.environ['BCISTREAM_CHANNELS'] = json.dumps(montage)
         os.environ['BCISTREAM_MONTAGE_TYPE'] = json.dumps(types)
         os.environ['BCISTREAM_MONTAGE_NAME'] = json.dumps(
-            self.parent_frame.comboBox_montages.currentText())
+            self.parent_frame.comboBox_montages.currentText()
+        )
         # os.environ['BCISTREAM_DAISY'] = json.dumps(
-            # bool(list(filter(lambda x: x > 8, montage.keys()))))
+        # bool(list(filter(lambda x: x > 8, montage.keys()))))
 
     # ----------------------------------------------------------------------
     @thread_this
@@ -805,13 +1013,16 @@ class Montage:
             logging.warning(response)
 
             openbci.leadoff_impedance(
-                prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
+                prop.CHANNELS,
+                pchan=openbci.TEST_SIGNAL_NOT_APPLIED,
+                nchan=openbci.TEST_SIGNAL_APPLIED,
+            )
 
             self.measuring_impedance = True
             V = []
             with OpenBCIConsumer(host=prop.HOST, topics=['eeg']) as stream:
 
-                n = (1000 // prop.STREAMING_PACKAGE_SIZE)
+                n = 1000 // prop.STREAMING_PACKAGE_SIZE
                 frame = 0
                 for data in stream:
                     frame += 1
@@ -825,7 +1036,11 @@ class Montage:
 
                         if frame % n == 0:
                             z = np.array(
-                                [self.topoplot_impedance.raw_to_z(v) for v in np.concatenate(V, axis=1)])
+                                [
+                                    self.topoplot_impedance.raw_to_z(v)
+                                    for v in np.concatenate(V, axis=1)
+                                ]
+                            )
                             self.update_impedance(z / 1000)
 
                         if not self.measuring_impedance:
@@ -834,3 +1049,12 @@ class Montage:
 
         else:
             self.measuring_impedance = False
+
+
+########################################################################
+class NonEEGMontage:
+    """"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        """Constructor"""

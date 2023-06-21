@@ -11,7 +11,7 @@ from scipy.signal import savgol_filter
 
 from simple_pid import PID
 
-MAX_LATENCY = 150
+MAX_LATENCY = 1000
 BUFFER = 15
 
 pid = PID(Kp=0.7, Ki=0.07, Kd=0.0001, setpoint=0,
@@ -62,10 +62,10 @@ class Stream(EEGStream):
         self.latency_correction = 0
 
         self.frames_names()
-        self.create_buffer(BUFFER, resampling=1000, fill=-1, aux_shape=2)
+        self.create_buffer(BUFFER, resampling=1000, fill=-1)
         
         self.stream()
-
+        
     # ----------------------------------------------------------------------
     def get_rises(self, data, timestamp):
         """"""
@@ -206,9 +206,9 @@ class Stream(EEGStream):
             self.latencies.append(latency.min())
 
         self.feed()
-        self.latency_correction = pid(np.mean(self.latencies[-5:]))
+        self.latency_correction = pid(np.mean(self.latencies[-20:]))
 
-        self.feedback.write({'name': 'set_latency',
+        self.feedback.write({'command': 'set_latency',
                             'value': self.latency_correction,
                             })
 

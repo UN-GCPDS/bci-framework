@@ -4,11 +4,13 @@ Connections
 ===========
 """
 
+import sys
 import os
 import json
 import time
 import types
 import pickle
+import shutil
 import logging
 import requests
 
@@ -46,7 +48,7 @@ class OpenBCIThread(QThread):
     def run(self) -> None:
         """Connect and configure OpenBCI board."""
 
-        if sum(self.channels_assignations) != len(self.montage):
+        if sum(self.channels_assignations) < len(self.montage):
             self.connection_fail.emit(
                 [
                     '* The number of electrodes defined in montage not correspon with the number of boards available.'
@@ -501,6 +503,8 @@ class Connection:
         """Event to handle connection."""
 
         self.core.calculate_offset()
+        self.restart_services()
+
         if (
             getattr(self.core, 'streaming', False)
             and not self.openbci.connected
@@ -512,7 +516,7 @@ class Connection:
                 self.core.update_kafka(
                     self.parent_frame.comboBox_host.currentText()
                 )
-                self.restart_services()
+                # self.restart_services()
                 self.openbci_connect()
 
             else:  # Disconnect
@@ -683,7 +687,24 @@ class Connection:
         self.parent_frame.pushButton_connect.setEnabled(True)
         self.parent_frame.pushButton_connect.setChecked(True)
 
+        if '--local' in sys.argv:
+            dst_config = os.path.join(os.environ['BCISTREAM_ROOT'],
+                                      'python_scripts', 'bciframework_server', 'bciframework.config')
+            src_config = os.path.join(
+                os.getenv('BCISTREAM_ROOT'), 'assets', 'bciframework.default')
+        else:
+            dst_config = os.path.join(
+                os.environ['BCISTREAM_HOME'], 'python_scripts', 'bciframework_server', 'bciframework.config')
+            src_config = os.path.join(
+                os.getenv('BCISTREAM_HOME'), '.bciframework')
+
+        if os.path.exists(dst_config):
+            os.remove(dst_config)
+
+        shutil.copyfile(src_config, dst_config)
+
     # ----------------------------------------------------------------------
+
     @Slot()
     def connection_fail(self, reasons):
         """Event for OpenBCI failed connection."""

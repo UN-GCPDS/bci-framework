@@ -189,8 +189,12 @@ class WSHandler(WebSocketHandler):
         marker = kwargs['marker']
         marker['datetime'] = (
             datetime.now() - timedelta(milliseconds=marker['latency'] + prop.SYNCLATENCY)).timestamp()
-        del marker['latency']
         # marker['datetime'] = datetime.now().timestamp()
+        # logging.warning(f'Latency: XXXXX')
+        # logging.warning(f'Latency: {prop.SYNCLATENCY}')
+        # logging.warning(f'Latency: {marker["latency"]}')
+        # logging.warning(f'Latency: XXXXX')
+        del marker['latency']
 
         if hasattr(self, 'kafka_producer'):
             self.kafka_producer.send('marker', marker)

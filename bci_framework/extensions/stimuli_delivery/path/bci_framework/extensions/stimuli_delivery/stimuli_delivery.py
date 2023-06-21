@@ -321,7 +321,7 @@ class Pipeline(RadiantAPI):
         """"""
         fn_ = fn
         trial_ = trial
-        arguments = fn.__code__.co_varnames[1 : fn.__code__.co_argcount]
+        arguments = fn.__code__.co_varnames[1: fn.__code__.co_argcount]
 
         def inner():
             if self.DEBUG:
@@ -506,11 +506,11 @@ class StimuliAPI(Pipeline):
         self.listen_feedback_ = True
 
     # ----------------------------------------------------------------------
-    def _on_feedback(self, *args, **kwargs):
+    def on_feedback(self, *args, **kwargs):
         """"""
         if (
-            kwargs['mode'] == 'analysis2stimuli'
-            and kwargs['name'] == self._feedback.name
+            kwargs['mode'] == 'analysis2stimuli' and
+            kwargs['name'] == self._feedback.name
         ):
             if self.mode == 'stimuli' or self.DEBUG:
                 self.feedback_listener_(**kwargs)
@@ -638,12 +638,12 @@ class StimuliAPI(Pipeline):
         color_off='#ffffff',
         size=50,
         position='upper left',
-        type: Literal['round', 'square'] = 'square',
+        type_: Literal['round', 'square'] = 'square',
     ):
         """"""
         self.hide_synchronizer.no_decorator(self)
 
-        if type == 'round':
+        if type_ == 'round':
             if 'upper' in position:
                 top = '15px'
             elif 'lower' in position:
@@ -666,7 +666,7 @@ class StimuliAPI(Pipeline):
                     'z-index': 999,
                 },
             )
-        elif type == 'square':
+        elif type_ == 'square':
             if 'upper' in position:
                 top = '0'
             elif 'lower' in position:

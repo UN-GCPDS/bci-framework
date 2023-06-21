@@ -14,6 +14,7 @@ Subpackages
 
    bci_framework.default_extensions.Class_motor_imagery
    bci_framework.default_extensions.Class_motor_imagery_Pacman
+   bci_framework.default_extensions.EMG Hands positions
    bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory
    bci_framework.default_extensions.Neuropathic_pain
    bci_framework.default_extensions.Neuropathic_pain_Generator

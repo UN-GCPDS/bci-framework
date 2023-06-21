@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 author = 'Yeison Cardona'
-# author = 'GCPDS'
+author = 'GCPDS'
 project = 'BCI-Framework'
 copyright = f'2021-2022, {author}'
 
@@ -354,6 +354,5 @@ with open('index.rst', 'w') as file:
     * :ref:`search`
     """
     )
-
 
 bibtex_bibfiles = ['refs.bib']

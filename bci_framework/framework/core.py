@@ -17,14 +17,31 @@ from typing import TypeVar, Optional
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import Qt, QTimer, QSize, Signal, QThread, Slot
-from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QKeySequence, QShortcut
-from PySide6.QtWidgets import QWidget, QMainWindow, QPushButton, QLabel, QCheckBox
+from PySide6.QtGui import (
+    QPixmap,
+    QIcon,
+    QFontDatabase,
+    QKeySequence,
+    QShortcut,
+)
+from PySide6.QtWidgets import (
+    QWidget,
+    QMainWindow,
+    QPushButton,
+    QLabel,
+    QCheckBox,
+)
 
 from kafka import KafkaProducer, KafkaConsumer
 import ntplib
 
 from .widgets import Montage, Projects, Connection, Records, Annotations
-from .environments import Development, Visualization, StimuliDelivery, TimeLockAnalysis
+from .environments import (
+    Development,
+    Visualization,
+    StimuliDelivery,
+    TimeLockAnalysis,
+)
 from .config_manager import ConfigManager
 from .configuration import ConfigurationFrame
 from .subprocess_handler import run_subprocess
@@ -39,6 +56,7 @@ Millis = TypeVar('Milliseconds')
 ########################################################################
 class ClockOffset(QThread):
     """"""
+
     signal_offset = Signal(object)
 
     # ----------------------------------------------------------------------
@@ -62,6 +80,7 @@ class ClockOffset(QThread):
 ########################################################################
 class Kafka(QThread):
     """Kafka run on a thread."""
+
     signal_kafka_message = Signal(object)
     signal_exception_message = Signal()
     signal_produser = Signal()
@@ -94,12 +113,19 @@ class Kafka(QThread):
     def create_consumer(self) -> None:
         """Basic consumer to check stream status and availability."""
         bootstrap_servers = [f'{self.host}:9092']
-        topics = ['annotation', 'marker',
-                  'command', 'eeg', 'aux', 'feedback']
-        self.consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
-                                      value_deserializer=pickle.loads,
-                                      auto_offset_reset='latest',
-                                      )
+        topics = [
+            'annotation',
+            'marker',
+            'command',
+            'eeg',
+            'aux',
+            'feedback',
+        ]
+        self.consumer = KafkaConsumer(
+            bootstrap_servers=bootstrap_servers,
+            value_deserializer=pickle.loads,
+            auto_offset_reset='latest',
+        )
 
         self.consumer.subscribe(topics)
         for message in self.consumer:
@@ -107,7 +133,8 @@ class Kafka(QThread):
             message.value['timestamp'] = message.timestamp / 1000
 
             self.signal_kafka_message.emit(
-                {'topic': message.topic, 'value': message.value})
+                {'topic': message.topic, 'value': message.value}
+            )
 
             if not self.keep_alive:
                 return
@@ -115,10 +142,11 @@ class Kafka(QThread):
     # ----------------------------------------------------------------------
     def create_produser(self) -> None:
         """The produser is used for stream annotations and markers."""
-        self.produser = KafkaProducer(bootstrap_servers=[f'{self.host}:9092'],
-                                      compression_type='gzip',
-                                      value_serializer=pickle.dumps,
-                                      )
+        self.produser = KafkaProducer(
+            bootstrap_servers=[f'{self.host}:9092'],
+            compression_type='gzip',
+            value_serializer=pickle.dumps,
+        )
 
 
 ########################################################################
@@ -130,36 +158,51 @@ class BCIFramework(QMainWindow):
         super().__init__(*args, **kwargs)
 
         self.load_fonts()
-        self.main = QUiLoader().load(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                                  'qtgui', 'main.ui'))
+        self.main = QUiLoader().load(
+            os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                'qtgui',
+                'main.ui',
+            )
+        )
         self.set_icons()
 
         self.main.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
         self.main.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
 
         self.main.actionDevelopment.triggered.connect(
-            lambda evt: self.show_interface('Development'))
+            lambda evt: self.show_interface('Development')
+        )
         self.main.actionVisualizations.triggered.connect(
-            lambda evt: self.show_interface('Visualizations'))
+            lambda evt: self.show_interface('Visualizations')
+        )
         self.main.actionStimuli_delivery.triggered.connect(
-            lambda evt: self.show_interface('Stimuli_delivery'))
+            lambda evt: self.show_interface('Stimuli_delivery')
+        )
         self.main.actionTimelock_analysis.triggered.connect(
-            lambda evt: self.show_interface('Timelock_analysis'))
+            lambda evt: self.show_interface('Timelock_analysis')
+        )
         self.main.actionHome.triggered.connect(
-            lambda evt: self.show_interface('Home'))
+            lambda evt: self.show_interface('Home')
+        )
         self.main.actionDocumentation.triggered.connect(
-            lambda evt: self.show_interface('Documentation'))
+            lambda evt: self.show_interface('Documentation')
+        )
         self.main.actionRaspad_settings.triggered.connect(
-            lambda evt: self.show_interface('Raspad_settings'))
+            lambda evt: self.show_interface('Raspad_settings')
+        )
 
         self.main.stackedWidget_montage.setCurrentWidget(
-            self.main.page_montage)
+            self.main.page_montage
+        )
 
         self.show_interface('Home')
         self.config = ConfigManager()
 
         for i in range(self.main.toolBar_Environs.layout().count()):
-            tool_button = self.main.toolBar_Environs.layout().itemAt(i).widget()
+            tool_button = (
+                self.main.toolBar_Environs.layout().itemAt(i).widget()
+            )
             tool_button.setMaximumWidth(200)
             tool_button.setMinimumWidth(200)
 
@@ -183,12 +226,18 @@ class BCIFramework(QMainWindow):
         self.main.tabWidget_widgets.setCurrentIndex(0)
         self.main.tabWidget_data_analysis.setCurrentIndex(0)
         self.main.tabWidget_stimuli_delivery.setCurrentIndex(0)
+        self.main.stackedWidget_noneeg.setCurrentIndex(0)
         self.style_home_page()
 
         self.connect()
 
-        docs = os.path.abspath(os.path.join(os.environ.get(
-            'BCISTREAM_ROOT'), 'documentation', 'index.html'))
+        docs = os.path.abspath(
+            os.path.join(
+                os.environ.get('BCISTREAM_ROOT'),
+                'documentation',
+                'index.html',
+            )
+        )
         self.main.webEngineView_documentation.setUrl(f'file://{docs}')
 
         self.subprocess_timer = QTimer()
@@ -208,29 +257,37 @@ class BCIFramework(QMainWindow):
         self.status_bar(message='', right_message=('disconnected', None))
 
         shortcut_fullscreen = QShortcut(QKeySequence('F11'), self.main)
-        shortcut_fullscreen.activated.connect(lambda: self.main.showMaximized(
-        ) if self.main.windowState() & Qt.WindowFullScreen else self.main.showFullScreen())
+        shortcut_fullscreen.activated.connect(
+            lambda: self.main.showMaximized()
+            if self.main.windowState() & Qt.WindowFullScreen
+            else self.main.showFullScreen()
+        )
 
         shortcut_docs = QShortcut(QKeySequence('F1'), self.main)
         shortcut_docs.activated.connect(
-            lambda: self.show_interface('Documentation'))
+            lambda: self.show_interface('Documentation')
+        )
 
         shortcut_docs = QShortcut(QKeySequence('F2'), self.main)
         shortcut_docs.activated.connect(self.toggle_dock_collapsed)
 
         shortcut_docs = QShortcut(QKeySequence('F9'), self.main)
         shortcut_docs.activated.connect(
-            self.timelock_analysis.show_fullscreen)
+            self.timelock_analysis.show_fullscreen
+        )
 
-        self.main.toolBar_Environs.setStyleSheet("""
+        self.main.toolBar_Environs.setStyleSheet(
+            """
           * {
           min-width: 200px;
           }
-          """)
+          """
+        )
 
     # ----------------------------------------------------------------------
     def set_icons(self) -> None:
         """The Qt resource system has been deprecated."""
+
         def icon(name):
             return QIcon(f"bci:/primary/{name}.svg")
 
@@ -255,11 +312,14 @@ class BCIFramework(QMainWindow):
         self.main.pushButton_timelock.setIcon(icon("latency2"))
 
         self.main.pushButton_stop_preview.setIcon(
-            icon('media-playback-stop'))
+            icon('media-playback-stop')
+        )
         self.main.pushButton_script_preview.setIcon(
-            icon('media-playback-start'))
+            icon('media-playback-start')
+        )
         self.main.pushButton_play_signal.setIcon(
-            icon('media-playback-start'))
+            icon('media-playback-start')
+        )
         self.main.pushButton_clear_debug.setIcon(icon('edit-delete'))
         self.main.pushButton_remove_record.setIcon(icon('edit-delete'))
         self.main.pushButton_remove_annotations.setIcon(icon('edit-delete'))
@@ -283,7 +343,8 @@ class BCIFramework(QMainWindow):
 
         for i in range(1, 5):
             getattr(self.main, f'pushButton_update_wifi{i}').setIcon(
-                icon('gtk-convert'))
+                icon('gtk-convert')
+            )
 
         self.main.setWindowIcon(icon("logo"))
 
@@ -296,8 +357,9 @@ class BCIFramework(QMainWindow):
         file = os.path.join(os.environ['BCISTREAM_HOME'], '.subprocess')
         try:
             with open(file, 'w') as file_:
-                json.dump({ch.pid: ch.name()
-                           for ch in children}, file_, indent=2)
+                json.dump(
+                    {ch.pid: ch.name() for ch in children}, file_, indent=2
+                )
         except:  # psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists
             pass
 
@@ -305,12 +367,17 @@ class BCIFramework(QMainWindow):
     def load_fonts(self) -> None:
         """Load custom fonts."""
         fonts_path = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'assets', 'fonts')
+            os.environ['BCISTREAM_ROOT'], 'assets', 'fonts'
+        )
 
         for font_dir in [os.path.join('dejavu', 'ttf')]:
-            for font in filter(lambda s: s.endswith('.ttf'), os.listdir(os.path.join(fonts_path, font_dir))):
+            for font in filter(
+                lambda s: s.endswith('.ttf'),
+                os.listdir(os.path.join(fonts_path, font_dir)),
+            ):
                 QFontDatabase.addApplicationFont(
-                    os.path.join(fonts_path, font_dir, font))
+                    os.path.join(fonts_path, font_dir, font)
+                )
 
     # ----------------------------------------------------------------------
     def build_collapse_button(self) -> None:
@@ -318,9 +385,11 @@ class BCIFramework(QMainWindow):
         # This dockWidget has empy name so,
         # with in that space is possible to add a custom widget
         self.pushButton_collapse_dock = QPushButton(
-            self.main.dockWidget_global)
+            self.main.dockWidget_global
+        )
         self.pushButton_collapse_dock.clicked.connect(
-            self.set_dock_collapsed)
+            self.set_dock_collapsed
+        )
 
         icon = QIcon('bci:/primary/arrow-right-double.svg')
         self.pushButton_collapse_dock.setIcon(icon)
@@ -365,46 +434,65 @@ class BCIFramework(QMainWindow):
     def connect(self) -> None:
         """Connect events."""
         self.main.tabWidget_widgets.currentChanged.connect(
-            lambda: self.set_dock_collapsed(False))
+            lambda: self.set_dock_collapsed(False)
+        )
 
         self.main.pushButton_add_project_2.clicked.connect(
-            self.projects.show_create_project_dialog)
+            self.projects.show_create_project_dialog
+        )
 
         self.main.pushButton_show_visualization.clicked.connect(
-            lambda evt: self.show_interface('Visualizations'))
+            lambda evt: self.show_interface('Visualizations')
+        )
         self.main.pushButton_show_stimuli_delivery.clicked.connect(
-            lambda evt: self.show_interface('Stimuli_delivery', 0))
+            lambda evt: self.show_interface('Stimuli_delivery', 0)
+        )
         self.main.pushButton_show_timelock.clicked.connect(
-            lambda evt: self.show_interface('Timelock_analysis', 0))
+            lambda evt: self.show_interface('Timelock_analysis', 0)
+        )
 
         self.main.pushButton_show_documentation.clicked.connect(
-            lambda evt: self.show_interface('Documentation'))
+            lambda evt: self.show_interface('Documentation')
+        )
 
         self.main.pushButton_show_about.clicked.connect(self.show_about)
         self.main.pushButton_show_configurations.clicked.connect(
-            self.show_configurations)
+            self.show_configurations
+        )
 
         self.main.pushButton_show_latency_correction.clicked.connect(
-            lambda evt: self.show_interface('Stimuli_delivery', 1))
+            lambda evt: self.show_interface('Stimuli_delivery', 1)
+        )
 
         self.main.pushButton_show_annotations.clicked.connect(
-            lambda evt: self.main.tabWidget_widgets.setCurrentIndex(3))
+            lambda evt: self.main.tabWidget_widgets.setCurrentIndex(3)
+        )
 
         self.main.tabWidget_widgets.currentChanged.connect(self.show_widget)
 
         self.main.pushButton_open_extension_folder.clicked.connect(
-            lambda: self.open_folder_in_system(self.main.label_projects_path.text()))
+            lambda: self.open_folder_in_system(
+                self.main.label_projects_path.text()
+            )
+        )
         self.main.pushButton_open_records_folder.clicked.connect(
-            lambda: self.open_folder_in_system(self.main.label_records_path.text()))
+            lambda: self.open_folder_in_system(
+                self.main.label_records_path.text()
+            )
+        )
 
         self.main.checkBox_board1.toggled.connect(
-            lambda checked: not checked and self.main.checkBox_board1.setChecked(True))
+            lambda checked: not checked
+            and self.main.checkBox_board1.setChecked(True)
+        )
         # self.main.checkBox_board1.toggled.connect(
-            # lambda b: self.board_handle(self.main.checkBox_board2, b))
+        # lambda b: self.board_handle(self.main.checkBox_board2, b))
         self.main.checkBox_board2.toggled.connect(
-            lambda b: self.board_handle(self.main.checkBox_board3, b))
+            lambda b: self.board_handle(self.main.checkBox_board3, b)
+        )
         self.main.checkBox_board3.toggled.connect(
-            lambda b: self.board_handle(self.main.checkBox_board4, b))
+            lambda b: self.board_handle(self.main.checkBox_board4, b)
+        )
 
     # ----------------------------------------------------------------------
     def board_handle(self, chbox: QCheckBox, enable: bool) -> None:
@@ -423,10 +511,13 @@ class BCIFramework(QMainWindow):
             subprocess.Popen(["xdg-open", path])
 
     # ----------------------------------------------------------------------
-    def show_interface(self, interface: str, sub_widget: Optional[int] = None) -> None:
+    def show_interface(
+        self, interface: str, sub_widget: Optional[int] = None
+    ) -> None:
         """Switch between environs."""
         self.main.stackedWidget_modes.setCurrentWidget(
-            getattr(self.main, f"page{interface}"))
+            getattr(self.main, f"page{interface}")
+        )
         for action in self.main.toolBar_Environs.actions():
             action.setChecked(False)
         for action in self.main.toolBar_Documentation.actions():
@@ -434,14 +525,17 @@ class BCIFramework(QMainWindow):
         if action := getattr(self.main, f"action{interface}", False):
             action.setChecked(True)
 
-        if mod := getattr(self, f'{interface.lower().replace(" ", "_")}', False):
+        if mod := getattr(
+            self, f'{interface.lower().replace(" ", "_")}', False
+        ):
             if on_focus := getattr(mod, 'on_focus'):
                 on_focus()
 
         if sub_widget != None:
             if interface == 'Stimuli_delivery':
                 self.main.tabWidget_stimuli_delivery.setCurrentIndex(
-                    sub_widget)
+                    sub_widget
+                )
 
     # ----------------------------------------------------------------------
     def show_widget(self, index: int) -> None:
@@ -454,36 +548,47 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def set_editor(self) -> None:
         """Change some styles."""
-        self.main.plainTextEdit_preview_log.setStyleSheet("""
+        self.main.plainTextEdit_preview_log.setStyleSheet(
+            """
         *{
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
         }
-        """)
+        """
+        )
 
-        self.main.mdiArea.setStyleSheet(f"""
+        self.main.mdiArea.setStyleSheet(
+            f"""
         *{{
         background: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
         }}
-        """)
+        """
+        )
 
     # # ----------------------------------------------------------------------
     # def remove_widgets_from_layout(self, layout) -> None:
-        # """"""
-        # for i in reversed(range(layout.count())):
-        # if item := layout.takeAt(i):
-        # item.widget().deleteLater()
+    # """"""
+    # for i in reversed(range(layout.count())):
+    # if item := layout.takeAt(i):
+    # item.widget().deleteLater()
 
     # ----------------------------------------------------------------------
-    def status_bar(self, message: Optional[str] = None, right_message: Optional[str] = None) -> None:
+    def status_bar(
+        self,
+        message: Optional[str] = None,
+        right_message: Optional[str] = None,
+    ) -> None:
         """Update messages for status bar."""
         statusbar = self.main.statusBar()
 
         if not hasattr(statusbar, 'right_label'):
             statusbar.right_label = QLabel(statusbar)
             statusbar.right_label.setAlignment(Qt.AlignRight)
-            statusbar.right_label.mousePressEvent = lambda evt: self.main.tabWidget_widgets.setCurrentWidget(
-                self.main.tab_connection)
+            statusbar.right_label.mousePressEvent = (
+                lambda evt: self.main.tabWidget_widgets.setCurrentWidget(
+                    self.main.tab_connection
+                )
+            )
             statusbar.addPermanentWidget(statusbar.right_label)
 
             statusbar.btn = QPushButton()
@@ -501,23 +606,31 @@ class BCIFramework(QMainWindow):
             if status is None:
                 statusbar.btn.setDisabled(True)
                 if 'light' in os.environ.get('QTMATERIAL_THEME'):
-                    statusbar.btn.setStyleSheet(f"""*{{
+                    statusbar.btn.setStyleSheet(
+                        f"""*{{
                     border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};
-                    background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};}}""")
+                    background-color: {os.environ.get('QTMATERIAL_SECONDARYDARKCOLOR')};}}"""
+                    )
                 else:
-                    statusbar.btn.setStyleSheet(f"""*{{
+                    statusbar.btn.setStyleSheet(
+                        f"""*{{
                     border: 1px solid {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};
-                    background-color: {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};}}""")
+                    background-color: {os.environ.get('QTMATERIAL_SECONDARYLIGHTCOLOR')};}}"""
+                    )
             else:
                 statusbar.btn.setDisabled(False)
                 if status:
-                    statusbar.btn.setStyleSheet("""*{
+                    statusbar.btn.setStyleSheet(
+                        """*{
                       border: 1px solid #3fc55e;
-                    background-color: #3fc55e;}""")
+                    background-color: #3fc55e;}"""
+                    )
                 else:
-                    statusbar.btn.setStyleSheet("""*{
+                    statusbar.btn.setStyleSheet(
+                        """*{
                       border: 1px solid #dc3545;
-                    background-color: #dc3545;}""")
+                    background-color: #dc3545;}"""
+                    )
 
     # ----------------------------------------------------------------------
     def style_home_page(self) -> None:
@@ -574,39 +687,51 @@ class BCIFramework(QMainWindow):
         """
 
         # FONTSIZE
-        labels = [self.main.label_15, self.main.label_16, self.main.label_17,
-                  self.main.label_20, self.main.label_21, self.main.label_22,
-                  self.main.label_23]
+        labels = [
+            self.main.label_15,
+            self.main.label_16,
+            self.main.label_17,
+            self.main.label_20,
+            self.main.label_21,
+            self.main.label_22,
+            self.main.label_23,
+        ]
         for label in labels:
             if json.loads(os.getenv('BCISTREAM_RASPAD')):
-                label.setText(label.text().replace(
-                    'font-size:12pt', 'font-size:10pt'))
+                label.setText(
+                    label.text().replace('font-size:12pt', 'font-size:10pt')
+                )
 
-        with open(os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r') as file:
+        with open(
+            os.path.join(os.environ['BCISTREAM_ROOT'], '_version.txt'), 'r'
+        ) as file:
             self.main.label_software_version.setText(
-                f'{file.read().strip()} {version} {mode}')
+                f'{file.read().strip()} {version} {mode}'
+            )
 
     # ----------------------------------------------------------------------
     def show_about(self, *args, **wargs) -> None:
         """Display about window."""
         frame = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'about.ui')
+            os.environ['BCISTREAM_ROOT'], 'framework', 'qtgui', 'about.ui'
+        )
         about = QUiLoader().load(frame, self.main)
         about.label.setScaledContents(True)
 
-        about.pushButton_close.clicked.connect(
-            lambda evt: about.destroy())
+        about.pushButton_close.clicked.connect(lambda evt: about.destroy())
 
         about.label.setMinimumSize(QSize(600, 200))
         about.label.setMaximumSize(QSize(600, 200))
 
         banner = os.path.join(
-            os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png')
+            os.environ['BCISTREAM_ROOT'], 'assets', 'banner.png'
+        )
         about.label.setPixmap(QPixmap(banner))
 
         about.tabWidget.setCurrentIndex(0)
 
-        about.setStyleSheet(f"""
+        about.setStyleSheet(
+            f"""
         QPlainTextEdit {{
         font-weight: normal;
         font-family: 'DejaVu Sans Mono';
@@ -616,7 +741,8 @@ class BCIFramework(QMainWindow):
         QTextEdit {{
         color: {os.environ.get('QTMATERIAL_SECONDARYTEXTCOLOR')};
         }}
-        """)
+        """
+        )
 
         center = QWidget.screen(self).availableGeometry().center()
         geometry = about.frameGeometry()
@@ -633,15 +759,21 @@ class BCIFramework(QMainWindow):
         self.streaming = True
 
         if value['topic'] == 'marker':
-            self.annotations.add_marker(datetime.fromtimestamp(
-                value['value']['timestamp']), value['value']['marker'])
+            self.annotations.add_marker(
+                datetime.fromtimestamp(value['value']['timestamp']),
+                value['value']['marker'],
+            )
         elif value['topic'] == 'command':
-            self.annotations.add_command(datetime.fromtimestamp(
-                value['value']['timestamp']), value['value']['command'])
+            self.annotations.add_command(
+                datetime.fromtimestamp(value['value']['timestamp']),
+                value['value']['command'],
+            )
         elif value['topic'] == 'annotation':
-            self.annotations.add_annotation(datetime.fromtimestamp(value['value']['timestamp']),
-                                            value['value']['duration'],
-                                            value['value']['description'])
+            self.annotations.add_annotation(
+                datetime.fromtimestamp(value['value']['timestamp']),
+                value['value']['duration'],
+                value['value']['description'],
+            )
         elif value['topic'] == 'feedback':
             self.handle_feedback(value['value'])
 
@@ -654,9 +786,11 @@ class BCIFramework(QMainWindow):
             # Use only remote times to make the calculation, so the
             # differents clocks not affect the measure
             binary_created = datetime.fromtimestamp(
-                min(value['value']['context']['timestamp.binary']))
+                min(value['value']['context']['timestamp.binary'])
+            )
             message_created = datetime.fromtimestamp(
-                value['value']['timestamp'])
+                value['value']['timestamp']
+            )
             since = (message_created - binary_created).total_seconds()
             if value['topic'] == 'eeg':
                 self.eeg_size = value['value']['data'].shape
@@ -686,11 +820,13 @@ class BCIFramework(QMainWindow):
         self.thread_kafka = Kafka()
         self.thread_kafka.signal_kafka_message.connect(self.on_kafka_event)
         # self.thread_kafka.first_consume.connect(lambda: self.connection.on_connect(
-            # True))
+        # True))
         self.thread_kafka.signal_exception_message.connect(
-            self.kafka_message)
+            self.kafka_message
+        )
         self.thread_kafka.signal_produser.connect(
-            self.kafka_produser_connected)
+            self.kafka_produser_connected
+        )
         self.thread_kafka.set_host(host)
         self.thread_kafka.start()
 
@@ -727,7 +863,9 @@ class BCIFramework(QMainWindow):
     # ----------------------------------------------------------------------
     def keep_updated(self) -> None:
         """The status is update each 3 seconds."""
-        if hasattr(self, 'thread_kafka') and hasattr(self.thread_kafka, 'last_message'):
+        if hasattr(self, 'thread_kafka') and hasattr(
+            self.thread_kafka, 'last_message'
+        ):
             last = datetime.now() - self.thread_kafka.last_message
             if last.seconds > 3:
                 self.status_bar(right_message=('No streaming', False))
@@ -746,7 +884,9 @@ class BCIFramework(QMainWindow):
         if self.main.comboBox_host.currentText() != 'localhost':
             self.conection_message = f'* Imposible to connect with remote Kafka on "{self.main.comboBox_host.currentText()}".'
         else:
-            self.conection_message = '* Kafka is not running on this machine.'
+            self.conection_message = (
+                '* Kafka is not running on this machine.'
+            )
 
         self.status_bar(right_message=('Disconnected', None))
 
@@ -767,6 +907,8 @@ class BCIFramework(QMainWindow):
         """"""
         if fn := getattr(self, f"feedback_{data.get('name', False)}", False):
             fn(data['value'])
+        if fn := getattr(self, f"feedback_{data.get('command', False)}", False):
+            fn(data['value'])
 
     # ----------------------------------------------------------------------
     def feedback_set_latency(self, latency: Millis) -> None:
@@ -777,8 +919,26 @@ class BCIFramework(QMainWindow):
     def start_stimuli_server(self) -> None:
         """"""
         if '--local' in sys.argv:
-            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
-                os.environ['BCISTREAM_ROOT'], 'python_scripts', 'bciframework_server', 'main.py')])
+            self.bciframework_server = run_subprocess(
+                [
+                    sys.executable,
+                    os.path.join(
+                        os.environ['BCISTREAM_ROOT'],
+                        'python_scripts',
+                        'bciframework_server',
+                        'main.py',
+                    ),
+                ]
+            )
         else:
-            self.bciframework_server = run_subprocess([sys.executable, os.path.join(
-                os.environ['BCISTREAM_HOME'], 'python_scripts', 'bciframework_server', 'main.py')])
+            self.bciframework_server = run_subprocess(
+                [
+                    sys.executable,
+                    os.path.join(
+                        os.environ['BCISTREAM_HOME'],
+                        'python_scripts',
+                        'bciframework_server',
+                        'main.py',
+                    ),
+                ]
+            )

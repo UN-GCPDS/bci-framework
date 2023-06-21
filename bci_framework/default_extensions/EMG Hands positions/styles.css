@@ -1,0 +1,26 @@
+#cue {
+    font-size: 60vh;
+    color: #4dd0e1;
+    justify-content: center;
+    padding-top: calc(50vh - 30vh);
+    line-height: 60vh;
+}
+
+
+.cue-intention {
+
+  text-shadow: -1px -1px 0 #4dd0e1, 1px -1px 0 #4dd0e1, -1px 1px 0 #4dd0e1, 1px 1px 0 #4dd0e1;
+  color: #f5f5f5 !important;
+  
+}
+
+
+
+.bci_dashboard button {
+    margin: 10px;
+}
+
+
+.bci_stimuli {
+  background: #f5f5f5;
+} 

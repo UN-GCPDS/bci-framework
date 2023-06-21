@@ -1,13 +1,13 @@
 from .widgets import Widgets as w
 from radiant.sound import Tone as t
-from radiant.sound import Audio as a
-from radiant import icons
+# from radiant.sound import Audio as a
+# from radiant import icons
 from .units import Units
 from browser import html, document, timer
 
 Widgets = w()
 Tone = t()
-Audio = a()
+# Audio = a()
 
 
 # ----------------------------------------------------------------------

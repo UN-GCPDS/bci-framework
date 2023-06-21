@@ -50,7 +50,7 @@ class VisuospatialWorkingMemory(StimuliAPI):
         self.dashboard <= w.label(
             'Visuospatial working memory - Change detection task', 'headline4')
         self.dashboard <= html.BR()
-        
+
         self.dashboard <= w.subject_information(paradigm='Visuospatial working memory - Change detection task')
 
         # Markers
@@ -433,7 +433,7 @@ class VisuospatialWorkingMemory(StimuliAPI):
         """Show or hide synchronizer."""
         if value:
             self.show_synchronizer(
-                size=60, type='square', position='upper left')
+                size=60, type_='square', position='upper left')
         else:
             self.hide_synchronizer()
 

@@ -8,7 +8,7 @@ from bci_framework.extensions.visualizations import EEGStream
 from bci_framework.extensions.data_analysis import loop_consumer, fake_loop_consumer
 from bci_framework.extensions import properties as prop
 import mne
-
+import logging
 
 ########################################################################
 class Stream(EEGStream):
