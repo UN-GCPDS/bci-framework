@@ -1,7 +1,8 @@
 FROM archlinux:base-devel
 
 LABEL image="dunderlab/bci_framework"
-LABEL version="1.0"
+LABEL version="1.2"
+
 LABEL maintainer="yencardonaal@unal.edu.co"
 LABEL description=""
 LABEL project=""
@@ -28,11 +29,12 @@ RUN git clone https://aur.archlinux.org/yay.git \
 RUN yay -S --noconfirm kafka
 
 USER root
-RUN pacman -S python python-pip python-setuptools libglvnd libxkbcommon \
+RUN pacman -S python python-pip python-setuptools breeze-icons libglvnd libxkbcommon \
     fontconfig nss libxcomposite libxrender libxrandr libxtst alsa-lib \
     libxkbfile qt6 xcb-util xcb-util-wm xcb-util-keysyms \
+    swig box2d \
     --overwrite='/usr/lib/python3.11/site-packages/platformdirs/*' --noconfirm \
-    && pip install bci_framework mne==0.24 --break-system-packages
+    && pip install bci_framework mne==0.24 tensorflow gymnasium[box2d] joblib --break-system-packages
 
 WORKDIR /app
 

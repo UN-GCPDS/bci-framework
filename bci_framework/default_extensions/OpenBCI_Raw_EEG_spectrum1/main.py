@@ -48,7 +48,6 @@ class RawEEG(EEGStream, Widgets):
         self.stream()
 
     # ----------------------------------------------------------------------
-
     @loop_consumer('eeg')
     def stream(self, frame):
 
